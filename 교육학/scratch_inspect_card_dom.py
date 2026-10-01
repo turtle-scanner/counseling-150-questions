@@ -1,0 +1,10 @@
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+
+target_path = 'G:/내 드라이브/ANTI GRAVITY/전문상담임용고시/kice-300-wordbook/index.html'
+
+with open(target_path, 'r', encoding='utf-8') as f:
+    text = f.read()
+
+pos_card = text.find('id="flashcardView"')
+print(text[pos_card:pos_card+1500])

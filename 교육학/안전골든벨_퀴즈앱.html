@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔔 서울지역 직업계고 안전골든벨 퀴즈앱</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --blue: #3b82f6;
+      --green: #10b981;
+      --red: #ef4444;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    .app-container {
+      width: 100%;
+      max-width: 640px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid #334155;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .badge-user { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid #3b82f6; }
+    .badge-stage1 { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+    .badge-stage2 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .badge-stage3 { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+    
+    /* Login Screen */
+    .login-box {
+      text-align: center;
+      padding: 10px 0;
+    }
+    .login-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .login-desc {
+      color: var(--text-dim);
+      font-size: 15px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .login-input {
+      width: 100%;
+      background: #0f172a;
+      border: 2px solid #475569;
+      color: var(--text);
+      padding: 14px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-input:focus {
+      border-color: var(--gold);
+    }
+    .start-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #0f172a;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      transition: transform 0.15s;
+    }
+    .start-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Progress Bar */
+    .progress-bar-container {
+      background: #334155;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--green));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Question Screen */
+    .question-box {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+    }
+    .q-number {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .q-text {
+      font-size: 17px;
+      line-height: 1.5;
+      font-weight: 600;
+      word-break: keep-all;
+    }
+    
+    /* Choice Buttons */
+    .btn-grid {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .ox-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .choice-btn {
+      background: #334155;
+      color: var(--text);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+    .choice-btn:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+    .ox-btn {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 900;
+      padding: 20px;
+    }
+    .btn-o { color: #34d399; border-color: rgba(52, 211, 153, 0.4); }
+    .btn-x { color: #f87171; border-color: rgba(248, 113, 113, 0.4); }
+    
+    /* Short Answer Input */
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .text-input {
+      flex: 1;
+      background: #0f172a;
+      border: 2px solid #475569;
+      color: var(--text);
+      padding: 14px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      outline: none;
+    }
+    .text-input:focus {
+      border-color: var(--gold);
+    }
+    .submit-btn {
+      background: var(--gold);
+      color: #0f172a;
+      border: none;
+      border-radius: 12px;
+      padding: 0 20px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Feedback */
+    .feedback-box {
+      display: none;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .feedback-correct { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; }
+    .feedback-wrong { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; }
+    .explanation {
+      margin-top: 6px;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    .next-btn {
+      display: none;
+      width: 100%;
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .next-btn:hover { background: #2563eb; }
+
+    /* Result Screen */
+    .result-screen {
+      display: none;
+      text-align: center;
+      padding: 10px 0;
+    }
+    .user-result-badge {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .score-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 20px;
+      font-size: 32px;
+      font-weight: 900;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+    }
+    .score-circle span { font-size: 13px; font-weight: 700; }
+    .restart-btn {
+      background: var(--gold);
+      color: #0f172a;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- 0. Login Screen -->
+  <div id="login-area" class="login-box">
+    <div class="login-icon">🔔</div>
+    <h2 class="title" style="margin-bottom: 8px;">서울지역 직업계고 안전골든벨</h2>
+    <p class="login-desc">도전자 정보를 입력하고 골든벨에 도전하세요!</p>
+
+    <div class="form-group">
+      <label class="form-label" for="user-id">📌 학번 (예: 2503, 3513)</label>
+      <input type="text" id="user-id" class="login-input" placeholder="학번 4자리를 입력하세요" maxlength="10" autofocus>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="user-name">👤 이름 (예: 김찬영, 홍길동)</label>
+      <input type="text" id="user-name" class="login-input" placeholder="이름을 입력하세요" maxlength="10" onkeypress="if(event.keyCode==13) startQuiz()">
+    </div>
+
+    <button class="start-btn" onclick="startQuiz()">🏆 골든벨 도전 시작하기 ➔</button>
+  </div>
+
+  <!-- Main Quiz Area -->
+  <div id="main-area" style="display: none;">
+    <!-- Header -->
+    <div class="header">
+      <div id="user-display-badge" class="badge badge-user" style="margin-right: 4px;">도전자: 홍길동 (2522)</div>
+      <div id="stage-badge" class="badge badge-stage1">1단계: 예선전 (O/X 퀴즈)</div>
+      <div class="title" style="font-size: 19px; margin-top: 4px;">🔔 안전골든벨 실전 테스트</div>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- Quiz Box -->
+    <div id="quiz-area">
+      <div class="question-box">
+        <div id="q-number" class="q-number">문제 1 / 20</div>
+        <div id="q-text" class="q-text">문제가 여기에 표시됩니다.</div>
+      </div>
+
+      <!-- Interactive Answer Area -->
+      <div id="answers-container"></div>
+
+      <!-- Feedback -->
+      <div id="feedback-box" class="feedback-box">
+        <div id="feedback-title" style="font-weight:700;"></div>
+        <div id="feedback-desc" class="explanation"></div>
+      </div>
+
+      <button id="next-btn" class="next-btn" onclick="nextQuestion()">다음 문제로 ➔</button>
+    </div>
+
+    <!-- Result Box -->
+    <div id="result-area" class="result-screen">
+      <h2 style="font-size: 24px; color: var(--gold-light); margin-bottom: 6px;">🎉 골든벨 도전 완료!</h2>
+      <div id="result-user-info" class="user-result-badge">2522 홍길동 도전자</div>
+      
+      <div class="score-circle">
+        <div id="final-score">100</div>
+        <span>/ 100점</span>
+      </div>
+
+      <div id="result-msg" style="font-size: 16px; font-weight: 600; margin-bottom: 20px; line-height: 1.6;"></div>
+      
+      <button class="restart-btn" onclick="restartQuiz()">🔄 처음부터 다시 풀기</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const quizData = [
+  // 1단계: 예선전 OX (1~5)
+  {
+    stage: 1,
+    type: "ox",
+    q: "소화기를 사용할 때는 바람을 마주 보고(맞바람) 뿌려야 한다?",
+    answer: "X",
+    exp: "소화기는 반드시 바람을 등지고 비로 쓸듯이 골고루 방사해야 합니다."
+  },
+  {
+    stage: 1,
+    type: "ox",
+    q: "성인 심폐소생술(CPR) 시 인공호흡이 어렵거나 꺼려지면 가슴압박만 지속해도 된다?",
+    answer: "O",
+    exp: "인공호흡을 못 하더라도 119가 올 때까지 가슴압박만 지속(Hands-Only CPR)하는 것이 매우 효과적입니다."
+  },
+  {
+    stage: 1,
+    type: "ox",
+    q: "회전하는 기계(밀링, 선반, 드릴 등)를 다룰 때는 손 보호를 위해 면장갑을 착용해야 한다?",
+    answer: "X",
+    exp: "장갑이 회전체에 말려 들어가는 '끼임(협착) 사고'가 발생하므로 회전체 작업 시 장갑 착용은 절대 금지(맨손 작업)입니다."
+  },
+  {
+    stage: 1,
+    type: "ox",
+    q: "산업안전보건표지 중 '파란색 원형'은 특정 행동을 지시하는 지시표지(보호구 착용 등)이다?",
+    answer: "O",
+    exp: "파란색 원형은 보안경, 안전모, 안전화 등 '보호구 착용 지시표지'를 나타냅니다."
+  },
+  {
+    stage: 1,
+    type: "ox",
+    q: "전기가 흐르고 있는 전기 화재(C급 화재) 진압 시 물을 뿌려서 진화한다?",
+    answer: "X",
+    exp: "물을 뿌리면 감전 위험이 있으므로, 분말 소화기(ABC 소화기)나 이산화탄소(CO2) 소화기를 써야 합니다."
+  },
+
+  // 2단계: 본선전 4지선다 (6~10)
+  {
+    stage: 2,
+    type: "choice",
+    q: "화학물질의 명칭, 유해성, 취급 주의사항, 응급조치 요령이 적힌 '화학물질 설명서'의 영문 약칭은?",
+    choices: ["KOSHA", "ISO", "MSDS", "OSHA"],
+    answer: 2,
+    exp: "정답은 MSDS(물질안전보건자료, Material Safety Data Sheet)입니다."
+  },
+  {
+    stage: 2,
+    type: "choice",
+    q: "화재의 종류 중 '주방(식용유 등) 화재'를 분류하는 등급 기호는?",
+    choices: ["A급 화재", "B급 화재", "C급 화재", "K급 화재"],
+    answer: 3,
+    exp: "주방 화재는 Kitchen의 앞 글자를 딴 K급 화재입니다. (A급:일반, B급:유류·가스, C급:전기)"
+  },
+  {
+    stage: 2,
+    type: "choice",
+    q: "인간의 부주의 현상 중 '다른 생각이나 걱정에 정신이 팔려 현재 작업을 놓치는 현상'은?",
+    choices: ["의식의 단절", "의식의 우회", "의식의 협착", "의식의 과잉"],
+    answer: 1,
+    exp: "다른 일에 마음이 쏠려 주의가 벗어나는 현상을 '의식의 우회'라고 합니다."
+  },
+  {
+    stage: 2,
+    type: "choice",
+    q: "산업안전보건법상 밀폐공간의 '적정 산소농도 기준 범위'로 올바른 것은?",
+    choices: ["10% ~ 15%", "15% ~ 20%", "18% 이상 ~ 23.5% 미만", "25% 이상"],
+    answer: 2,
+    exp: "밀폐공간의 적정 산소 농도는 18% 이상 23.5% 미만입니다. 18% 미만은 산소결핍증 위험이 있습니다."
+  },
+  {
+    stage: 2,
+    type: "choice",
+    q: "높이 몇 미터 이상의 추락 위험 장소에서 작업 시 안전대(추락방지대)를 의무 착용해야 하는가?",
+    choices: ["1m 이상", "2m 이상", "3m 이상", "4m 이상"],
+    answer: 1,
+    exp: "산업안전보건기준에 관한 규칙상 높이 2m 이상 고소작업 시 안전대 착용이 의무입니다."
+  },
+
+  // 3단계: 결선전 주관식 단답형 (11~20)
+  {
+    stage: 3,
+    type: "text",
+    q: "1건의 대형사고(중대재해) 전에 29건의 경상해와 300건의 무상해 사고(아차사고)가 발생한다는 통계 법칙은?",
+    answers: ["하인리히", "하인리히법칙", "하인리히 법칙"],
+    exp: "정답은 '하인리히 법칙(1:29:300 법칙)'입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "성인 심폐소생술(CPR) 시 '가슴압박'과 '인공호흡'의 공식 비율은? (예: OO : O)",
+    answers: ["30:2", "30 : 2", "30대2", "30 대 2"],
+    exp: "정답은 가슴압박 30회 : 인공호흡 2회인 '30:2'입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "심정지 환자 발생 시 뇌손상을 막기 위한 응급처치 골든타임은 몇 분 이내인가? (숫자만 입력)",
+    answers: ["4", "4분"],
+    exp: "심정지 후 4분이 지나면 뇌세포 괴사가 시작되므로 골든타임은 4분입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "성인 심폐소생술 시 1분당 가슴압박 권장 횟수는 몇 회에서 몇 회 사이인가? (예: 100~120)",
+    answers: ["100~120", "100-120", "100~120회", "100-120회", "100에서120"],
+    exp: "정답은 분당 '100~120회' 속도입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "심정지 환자에게 전기 충격을 주어 심장 박동을 회복시키는 장비(자동심장충격기)의 영문 약어는?",
+    answers: ["AED", "aed"],
+    exp: "정답은 'AED(Automated External Defibrillator)'입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "산업재해 발생의 급박한 위험이 있을 때, 근로자 스스로 작업을 중단하고 대피할 수 있는 권리는?",
+    answers: ["작업중지권", "작업 중지권"],
+    exp: "정답은 근로자의 정당한 권리인 '작업중지권'입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "분진을 막는 것은 방진마스크이다. 유독가스나 유기용제 증기를 차단하기 위해 착용하는 마스크는?",
+    answers: ["방독마스크", "방독 마스크"],
+    exp: "정답은 '방독마스크'입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "낙하·비래(A), 추락(B)뿐만 아니라 '전기 감전(E)'까지 방지할 수 있는 안전모의 기호 등급은? (알파벳 조합)",
+    answers: ["ABE", "abe", "ABE형", "abe형"],
+    exp: "전기 절연 성능을 가진 안전모 등급은 'ABE형'입니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "불이 났을 때 공기 중의 '산소를 차단'하여 불을 끄는 소화 원리를 무엇이라 하는가? (O O 소화)",
+    answers: ["질식소화", "질식 소화"],
+    exp: "산소 공급을 막아 불을 끄는 것을 '질식소화'라고 합니다."
+  },
+  {
+    stage: 3,
+    type: "text",
+    q: "사업장에서 중대재해 발생 시 사업주 및 경영책임자의 안전의무 위반을 처벌하기 위해 제정된 법률은?",
+    answers: ["중대재해처벌법", "중대재해 처벌법", "중대재해처벌 등에 관한 법률"],
+    exp: "정답은 '중대재해처벌법'입니다."
+  }
+];
+
+let currentUser = { id: "", name: "" };
+let currentIdx = 0;
+let score = 0;
+let answered = false;
+
+function startQuiz() {
+  const idInput = document.getElementById('user-id').value.trim();
+  const nameInput = document.getElementById('user-name').value.trim();
+
+  if (!idInput || !nameInput) {
+    alert("학번과 이름을 모두 입력해주세요! (예: 2503 김찬영)");
+    return;
+  }
+
+  currentUser.id = idInput;
+  currentUser.name = nameInput;
+
+  document.getElementById('login-area').style.display = 'none';
+  document.getElementById('main-area').style.display = 'block';
+  document.getElementById('user-display-badge').innerText = `도전자: ${currentUser.name} (${currentUser.id})`;
+
+  initQuiz();
+}
+
+function initQuiz() {
+  currentIdx = 0;
+  score = 0;
+  answered = false;
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-area').style.display = 'none';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = quizData[currentIdx];
+  
+  // Progress Bar
+  const progressPercent = ((currentIdx) / quizData.length) * 100;
+  document.getElementById('progress-bar').style.width = progressPercent + '%';
+
+  // Badge & Stage Update
+  const badge = document.getElementById('stage-badge');
+  if (q.stage === 1) {
+    badge.className = 'badge badge-stage1';
+    badge.innerText = '1단계: 예선전 (O / X 퀴즈)';
+  } else if (q.stage === 2) {
+    badge.className = 'badge badge-stage2';
+    badge.innerText = '2단계: 본선전 (4지선다 객관식)';
+  } else {
+    badge.className = 'badge badge-stage3';
+    badge.innerText = '3단계: 결선전 (주관식 골든벨)';
+  }
+
+  // Question Info
+  document.getElementById('q-number').innerText = `문제 ${currentIdx + 1} / ${quizData.length}`;
+  document.getElementById('q-text').innerText = q.q;
+
+  // Reset Feedback & Next Button
+  document.getElementById('feedback-box').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+
+  // Render Answers Area
+  const container = document.getElementById('answers-container');
+  container.innerHTML = '';
+
+  if (q.type === 'ox') {
+    const grid = document.createElement('div');
+    grid.className = 'btn-grid ox-grid';
+    grid.innerHTML = `
+      <button class="choice-btn ox-btn btn-o" onclick="checkAnswer('O')">⭕ O</button>
+      <button class="choice-btn ox-btn btn-x" onclick="checkAnswer('X')">❌ X</button>
+    `;
+    container.appendChild(grid);
+  } else if (q.type === 'choice') {
+    const grid = document.createElement('div');
+    grid.className = 'btn-grid';
+    q.choices.forEach((choice, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<b>${idx + 1}.</b> ${choice}`;
+      btn.onclick = () => checkAnswer(idx);
+      grid.appendChild(btn);
+    });
+    container.appendChild(grid);
+  } else if (q.type === 'text') {
+    const group = document.createElement('div');
+    group.className = 'input-group';
+    group.innerHTML = `
+      <input type="text" id="text-ans" class="text-input" placeholder="정답을 입력하세요 (예: MSDS)" autofocus onkeypress="if(event.keyCode==13) submitTextAnswer()">
+      <button class="submit-btn" onclick="submitTextAnswer()">정답 제출</button>
+    `;
+    container.appendChild(group);
+    setTimeout(() => document.getElementById('text-ans').focus(), 100);
+  }
+}
+
+function submitTextAnswer() {
+  if (answered) return;
+  const input = document.getElementById('text-ans');
+  const val = input.value.trim();
+  if (!val) {
+    alert('정답을 입력해주세요!');
+    return;
+  }
+  checkAnswer(val);
+}
+
+function checkAnswer(userAns) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[currentIdx];
+  let isCorrect = false;
+
+  if (q.type === 'ox') {
+    isCorrect = (userAns === q.answer);
+  } else if (q.type === 'choice') {
+    isCorrect = (userAns === q.answer);
+  } else if (q.type === 'text') {
+    const cleanUser = userAns.replace(/\s+/g, '').toLowerCase();
+    isCorrect = q.answers.some(a => a.replace(/\s+/g, '').toLowerCase() === cleanUser);
+  }
+
+  const feedbackBox = document.getElementById('feedback-box');
+  const feedbackTitle = document.getElementById('feedback-title');
+  const feedbackDesc = document.getElementById('feedback-desc');
+
+  if (isCorrect) {
+    score += 5; // 20문항 * 5점 = 100점
+    feedbackBox.className = 'feedback-box feedback-correct';
+    feedbackTitle.innerHTML = '🎉 정답입니다! 딩동댕 🔔';
+  } else {
+    feedbackBox.className = 'feedback-box feedback-wrong';
+    feedbackTitle.innerHTML = `❌ 아쉽습니다! 오답입니다.`;
+  }
+
+  feedbackDesc.innerHTML = `<b>[정답 해설]</b> ${q.exp}`;
+  feedbackBox.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx < quizData.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('result-area').style.display = 'block';
+  document.getElementById('progress-bar').style.width = '100%';
+  
+  document.getElementById('result-user-info').innerText = `도전자: ${currentUser.name} (${currentUser.id})`;
+  document.getElementById('final-score').innerText = score;
+  const msg = document.getElementById('result-msg');
+  
+  if (score >= 90) {
+    msg.innerHTML = `🏆 <b>축하합니다, ${currentUser.name} 학생!</b><br>골든벨을 완벽하게 울렸습니다! 8월 31일 실전에서도 만점 확정입니다!`;
+    msg.style.color = "#34d399";
+  } else if (score >= 70) {
+    msg.innerHTML = `👏 <b>우수한 성적입니다, ${currentUser.name} 학생!</b><br>틀린 문제 해설을 한 번 더 복습하고 실전에 도전하세요!`;
+    msg.style.color = "#fbbf24";
+  } else {
+    msg.innerHTML = `💪 <b>${currentUser.name} 학생, 조금만 더 연습해 보세요!</b><br>아래 다시 풀기 버튼을 눌러 핵심 개념을 완벽히 마스터하세요.`;
+    msg.style.color = "#f87171";
+  }
+}
+
+function restartQuiz() {
+  initQuiz();
+}
+</script>
+</body>
+</html>

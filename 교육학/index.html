@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🔔 2026 서울지역 직업계고 안전골든벨 (STEP 연계 50문항 마스터)</title>
+  <style>
+    :root {
+      --bg-color: #070b14;
+      --card-bg: #131d31;
+      --panel-bg: #0b1324;
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --gold-glow: rgba(245, 158, 11, 0.4);
+      --blue: #3b82f6;
+      --green: #10b981;
+      --red: #ef4444;
+      --purple: #8b5cf6;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body {
+      background: radial-gradient(circle at top, #1e293b 0%, var(--bg-color) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .main-wrapper {
+      width: 100%;
+      max-width: 1080px;
+      position: relative;
+      z-index: 10;
+    }
+    .app-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 880px) {
+      .app-layout { grid-template-columns: 1fr; }
+    }
+    .quiz-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 20px rgba(59, 130, 246, 0.1);
+      border: 1px solid #1e293b;
+      position: relative;
+    }
+    .scorecard-panel {
+      background: var(--panel-bg);
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid #1e293b;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .top-controls {
+      position: absolute;
+      top: 20px;
+      right: 22px;
+      display: flex;
+      gap: 8px;
+    }
+    .ctrl-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: var(--gold);
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .ctrl-btn:hover { background: #334155; transform: translateY(-1px); }
+    .header {
+      text-align: center;
+      margin-bottom: 18px;
+      margin-top: 6px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .badge-admin { background: rgba(139, 92, 246, 0.25); color: #c4b5fd; border: 1px solid #8b5cf6; }
+    .badge-user { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid #3b82f6; }
+    .badge-stage1 { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+    .badge-stage2 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .badge-stage3 { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    .title {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--gold-light);
+      text-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    /* Live Cloud Sync Indicator */
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #34d399;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    /* Event Info Box */
+    .event-info-card {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid #2563eb;
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: left;
+      color: #bfdbfe;
+    }
+    .event-info-card b { color: #fbbf24; }
+
+    /* Deadline Banner */
+    .deadline-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Tension Heartbeat Timer Bar */
+    .timer-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .timer-label {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--gold);
+      min-width: 85px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .heart-icon {
+      display: inline-block;
+      animation: heartbeat 1s infinite;
+      color: #ef4444;
+    }
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      15% { transform: scale(1.35); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.2); }
+      60% { transform: scale(1); }
+    }
+    .timer-bar-wrap {
+      flex: 1;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .timer-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), #ea580c);
+      width: 100%;
+      transition: width 1s linear, background 0.3s;
+    }
+    .timer-bar.danger {
+      background: linear-gradient(90deg, #ef4444, #b91c1c);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.9);
+    }
+    
+    /* Login Box */
+    .login-box {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .login-icon { font-size: 50px; margin-bottom: 8px; animation: ring 2s infinite ease-in-out; }
+    @keyframes ring {
+      0%, 100% { transform: rotate(0); }
+      10%, 30% { transform: rotate(-12deg); }
+      20%, 40% { transform: rotate(12deg); }
+    }
+    .login-desc { color: var(--text-dim); font-size: 15px; margin-bottom: 12px; line-height: 1.5; }
+    
+    .whitelist-info-badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid #3b82f6;
+      color: #93c5fd;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .form-group { text-align: left; margin-bottom: 14px; }
+    .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+    .login-input {
+      width: 100%;
+      background: #090d16;
+      border: 2px solid #334155;
+      color: var(--text);
+      padding: 13px 16px;
+      font-size: 15px;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-input:focus { border-color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+    .start-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #070b14;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: 8px;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s;
+    }
+    .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6); }
+
+    /* Leaderboard Box */
+    .ranking-box {
+      margin-top: 24px;
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+    }
+    .ranking-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .rank-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #131d31;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      border: 1px solid #1e293b;
+      transition: transform 0.2s;
+    }
+    .rank-item:hover { transform: translateX(4px); }
+    .rank-pos {
+      font-weight: 900;
+      min-width: 32px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .rank-1 { color: #fbbf24; border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.15); }
+    .rank-2 { color: #e2e8f0; border-color: rgba(226, 232, 240, 0.4); }
+    .rank-3 { color: #f97316; border-color: rgba(249, 115, 22, 0.4); }
+    .rank-user { font-weight: 700; flex: 1; margin-left: 8px; }
+    .rank-score { font-weight: 900; color: var(--gold-light); }
+    .rank-score-zero { color: #64748b; font-weight: 700; }
+
+    /* Question Box */
+    .question-box {
+      background: #090d16;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 18px;
+      border: 1px solid #1e293b;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .q-number { font-size: 14px; font-weight: 800; color: var(--gold); margin-bottom: 6px; }
+    .q-text { font-size: 17px; line-height: 1.55; font-weight: 700; word-break: keep-all; }
+    
+    /* Choice Buttons */
+    .btn-grid { display: grid; gap: 12px; margin-bottom: 16px; }
+    .ox-grid { grid-template-columns: 1fr 1fr; }
+    .choice-btn {
+      background: #1e293b;
+      color: var(--text);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .choice-btn:hover { background: #334155; transform: translateY(-2px); }
+    .ox-btn { text-align: center; font-size: 32px; font-weight: 900; padding: 18px; }
+    .btn-o { color: #34d399; border-color: rgba(52, 211, 153, 0.4); }
+    .btn-x { color: #f87171; border-color: rgba(248, 113, 113, 0.4); }
+    
+    /* Short Answer */
+    .input-group { display: flex; gap: 8px; margin-bottom: 16px; }
+    .text-input {
+      flex: 1;
+      background: #090d16;
+      border: 2px solid #334155;
+      color: var(--text);
+      padding: 14px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      outline: none;
+    }
+    .text-input:focus { border-color: var(--gold); }
+    .submit-btn {
+      background: var(--gold);
+      color: #070b14;
+      border: none;
+      border-radius: 12px;
+      padding: 0 22px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Feedback */
+    .feedback-box {
+      display: none;
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .feedback-correct { background: rgba(16, 185, 129, 0.2); border: 2px solid #10b981; color: #34d399; }
+    .feedback-wrong { background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; color: #f87171; }
+    .explanation { margin-top: 6px; color: var(--text-dim); font-size: 13px; }
+    .next-btn {
+      display: none;
+      width: 100%;
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+    .next-btn:hover { background: #2563eb; }
+
+    /* Scorecard Panel */
+    .panel-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .score-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      text-align: center;
+      background: #090d16;
+      padding: 10px 6px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      border: 1px solid #1e293b;
+    }
+    .summary-item .num { font-size: 18px; font-weight: 900; }
+    .summary-item .lbl { font-size: 11px; color: var(--text-dim); }
+    .color-correct { color: #34d399; }
+    .color-wrong { color: #f87171; }
+    .color-total { color: var(--gold-light); }
+
+    .stage-section { margin-bottom: 10px; }
+    .stage-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .omr-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+    }
+    .omr-cell {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      padding: 3px 0;
+      text-align: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-dim);
+      transition: all 0.2s;
+    }
+    .omr-cell.current {
+      border-color: var(--gold);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold-light);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+    }
+    .omr-cell.correct { border-color: #10b981; background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .omr-cell.wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+    /* Result Screen */
+    .result-screen {
+      display: none;
+      text-align: center;
+      padding: 10px 0;
+    }
+    .user-result-badge { font-size: 16px; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
+    .rank-alert-banner {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold-light);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #070b14;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 14px;
+      font-size: 28px;
+      font-weight: 900;
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+    }
+    .score-circle span { font-size: 12px; font-weight: 700; }
+    
+    .result-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .action-btn {
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-wrong-only { background: #ef4444; color: white; }
+    .btn-cert { background: var(--green); color: #070b14; }
+    .btn-all-restart { background: var(--gold); color: #070b14; grid-column: span 2; }
+
+    /* Certificate Box */
+    .certificate-card {
+      display: none;
+      background: #ffffff;
+      color: #1e293b;
+      border-radius: 18px;
+      padding: 26px;
+      margin: 18px 0;
+      border: 6px double #d97706;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .cert-title { font-size: 24px; font-weight: 900; color: #b45309; margin-bottom: 6px; letter-spacing: 1px; }
+    .cert-subtitle { font-size: 13px; color: #64748b; font-weight: 700; margin-bottom: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .cert-body { font-size: 15px; line-height: 1.65; color: #334155; margin-bottom: 18px; text-align: left; }
+    .cert-seal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 13px;
+      font-weight: 700;
+      color: #64748b;
+    }
+    .seal-stamp {
+      width: 54px;
+      height: 54px;
+      border: 3px solid #dc2626;
+      border-radius: 50%;
+      color: #dc2626;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 900;
+      font-size: 13px;
+      transform: rotate(-10deg);
+    }
+
+    /* Lock Screen (After 22:00) */
+    .closed-screen {
+      display: none;
+      text-align: center;
+      padding: 30px 10px;
+    }
+    .closed-icon { font-size: 56px; margin-bottom: 12px; }
+    .closed-title { font-size: 24px; font-weight: 900; color: #ef4444; margin-bottom: 8px; }
+    .closed-desc { font-size: 15px; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; }
+
+    /* Admin Panel */
+    .admin-panel { display: none; }
+    .admin-header {
+      background: #090d16;
+      border: 1px solid #8b5cf6;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .admin-title { font-size: 19px; font-weight: 800; color: #c4b5fd; }
+    .admin-tab-nav { display: flex; gap: 8px; margin-bottom: 12px; }
+    .admin-tab-btn {
+      flex: 1;
+      background: #1e293b;
+      color: var(--text);
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .admin-tab-btn.active { background: var(--purple); color: white; }
+    .admin-sub-view { display: none; }
+    .admin-sub-view.active { display: block; }
+    .answer-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 16px;
+    }
+    .answer-item {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .answer-item b { color: var(--gold); }
+    .answer-item .ans-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid #10b981;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    .student-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #090d16;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .student-table th, .student-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #1e293b;
+      text-align: center;
+    }
+    .student-table th { background: #131d31; color: var(--gold); font-weight: 700; }
+    .admin-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .admin-btn { flex: 1; padding: 11px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; font-size: 13px; }
+    .btn-refresh { background: #3b82f6; color: white; }
+    .btn-export { background: var(--green); color: #070b14; }
+    .btn-clear { background: #ef4444; color: white; }
+    .btn-logout { background: #334155; color: white; }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body onclick="unlockAudioOnce()">
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="main-wrapper">
+  
+  <!-- 0. Login Screen with Cloud Sync Status -->
+  <div id="login-area" class="quiz-card login-box">
+    <div class="login-icon">🔔</div>
+    <h2 class="title" style="margin-bottom: 2px;">서울지역 직업계고 안전골든벨</h2>
+    <div class="sync-status"><span class="sync-dot"></span> 원격 클라우드 실시간 자동 집계 연결됨 (STEP 50문항 완성본)</div><br>
+    
+    <!-- Official Event Guide Banner -->
+    <div class="event-info-card">
+      🏛️ <b>대회 일시:</b> 8/31(월) 14:00~16:30 (접수 13:40)<br>
+      📍 <b>장소:</b> 서울여성플라자 1층 국제회의장 (피움서울, 동작구 대방동)<br>
+      🏆 <b>포상:</b> 고용노동부 서울청장상, 안전보건공단 서울광역본부장상<br>
+      👥 <b>인솔:</b> 안정아T, 임진석T, 서준우T, 조유정T (5·6교시 인정조퇴)
+    </div>
+
+    <div class="whitelist-info-badge">⚡ 로봇전기과 출전 대표 선수 전용</div>
+    
+    <!-- Deadline Counter Banner -->
+    <div class="deadline-banner" id="deadline-banner-text">
+      ⏳ 응시 마감: 오늘 밤 10:00 정각 (남은 시간: 계산 중...)
+    </div>
+
+    <p class="login-desc">배정된 학번과 이름을 입력하고 STEP 연계 50문항 골든벨에 도전하세요!</p>
+
+    <div class="form-group">
+      <label class="form-label" for="user-id">📌 학번 (예: 2503)</label>
+      <input type="text" id="user-id" class="login-input" placeholder="학번을 입력하세요 (예: 2503)" maxlength="10" autofocus>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="user-name">👤 이름 (예: 김찬영)</label>
+      <input type="text" id="user-name" class="login-input" placeholder="이름을 입력하세요 (예: 김찬영)" maxlength="20" onkeypress="if(event.keyCode==13) startQuiz()">
+    </div>
+
+    <button class="start-btn" onclick="startQuiz()">🏆 긴장감 100% 골든벨 시작하기 (STEP 50문항) ➔</button>
+
+    <!-- Top 5 Leaderboard -->
+    <div class="ranking-box">
+      <div class="ranking-title">
+        <span>🏆 실시간 명예의 전당 (1위 ~ 5위)</span>
+        <span style="font-size:12px; color:var(--text-dim);">로봇전기과 대표 순위</span>
+      </div>
+      <div class="rank-list" id="login-ranking-list"></div>
+    </div>
+  </div>
+
+  <!-- Closed / Locked Screen (After 22:00) -->
+  <div id="closed-area" class="quiz-card closed-screen">
+    <div class="closed-icon">⛔</div>
+    <div class="closed-title">골든벨 응시가 마감되었습니다!</div>
+    <div class="closed-desc">
+      2026 서울지역 직업계고 안전골든벨 연습이<br>
+      <b>오늘 밤 10:00 정각</b>을 기해 종료되었습니다.<br>
+      내일 8/31(월) 서울여성플라자 본선에서 꼭 1등 하세요!
+    </div>
+    
+    <div class="ranking-box" style="margin-bottom: 20px;">
+      <div class="ranking-title">
+        <span>👑 최종 명예의 전당 (최종 랭킹)</span>
+      </div>
+      <div class="rank-list" id="closed-ranking-list"></div>
+    </div>
+
+    <div style="border-top: 1px solid #1e293b; padding-top: 16px;">
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:8px;">선생님(관리자)이신가요?</p>
+      <button class="ctrl-btn" style="margin:0 auto; padding:8px 16px;" onclick="showAdminFromClosed()">👑 관리자 모드 로그인</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard Screen -->
+  <div id="admin-area" class="quiz-card admin-panel">
+    <div class="admin-header">
+      <div class="badge badge-admin">👑 최고 관리자 모드 (인증됨)</div>
+      <div class="admin-title">안전골든벨 마스터 관리 대시보드 (총 50문항)</div>
+      <div style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">관리자 계정: 2500 (변귀섭 선생님)</div>
+      <div class="sync-status" style="justify-content:center; margin-top:6px;"><span class="sync-dot"></span> 원격 6명 학생 성적 실시간 동기화 ON</div>
+    </div>
+
+    <div class="admin-tab-nav">
+      <button id="tab-btn-ans" class="admin-tab-btn active" onclick="switchAdminTab('ans')">📋 50문항 정답 족보</button>
+      <button id="tab-btn-stat" class="admin-tab-btn" onclick="switchAdminTab('stat')">📊 학생 응시 기록 현황 (원격 실시간)</button>
+    </div>
+
+    <div id="admin-view-ans" class="admin-sub-view active">
+      <div class="answer-list" id="admin-answers-list"></div>
+    </div>
+
+    <div id="admin-view-stat" class="admin-sub-view">
+      <div style="max-height:360px; overflow-y:auto; margin-bottom:12px;">
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>순위 (학번)</th>
+              <th>이름</th>
+              <th>점수</th>
+              <th>오답수</th>
+              <th>응시일시</th>
+            </tr>
+          </thead>
+          <tbody id="student-score-tbody"></tbody>
+        </table>
+      </div>
+      <div class="admin-actions">
+        <button class="admin-btn btn-refresh" onclick="fetchCloudScoresAndRender()">🔄 최신 성적 새로고침</button>
+        <button class="admin-btn btn-export" onclick="exportToCSV()">📥 엑셀(CSV) 다운로드</button>
+        <button class="admin-btn btn-clear" onclick="clearStudentRecords()">🗑️ 0점으로 전체 초기화</button>
+      </div>
+    </div>
+
+    <div class="admin-actions" style="margin-top: 16px; border-top:1px solid #1e293b; padding-top:14px;">
+      <button class="admin-btn btn-refresh" onclick="enterQuizAsAdmin()">▶ 퀴즈 직접 테스트하기 (50문항)</button>
+      <button class="admin-btn btn-logout" onclick="logoutAdmin()">🚪 관리자 로그아웃</button>
+    </div>
+  </div>
+
+  <!-- Main Quiz Area with Split Screen Layout -->
+  <div id="main-area" style="display: none;">
+    <div class="app-layout">
+      
+      <!-- Left: Quiz Card -->
+      <div class="quiz-card">
+        <div class="top-controls">
+          <button id="shuffle-btn" class="ctrl-btn" onclick="toggleShuffle()">🔀 셔플: OFF</button>
+          <button id="sound-btn" class="ctrl-btn" onclick="toggleSound()">🔊 사운드 테스트</button>
+        </div>
+        
+        <div class="header">
+          <div id="user-display-badge" class="badge badge-user" style="margin-right: 4px;">도전자: 오준혁 (2508)</div>
+          <div id="stage-badge" class="badge badge-stage1">1단계: 예선전 OX 퀴즈</div>
+          <div class="title" style="font-size: 19px; margin-top: 2px;">🔔 안전골든벨 실전 테스트 (50문항)</div>
+        </div>
+
+        <!-- 30s Heartbeat Countdown Timer -->
+        <div class="timer-container">
+          <div id="timer-text" class="timer-label">
+            <span class="heart-icon">💓</span>
+            <span id="timer-sec-text">30초</span>
+          </div>
+          <div class="timer-bar-wrap">
+            <div id="timer-bar" class="timer-bar"></div>
+          </div>
+        </div>
+
+        <div id="quiz-area">
+          <div class="question-box">
+            <div id="q-number" class="q-number">문제 1 / 50</div>
+            <div id="q-text" class="q-text">문제가 여기에 표시됩니다.</div>
+          </div>
+
+          <div id="answers-container"></div>
+
+          <div id="feedback-box" class="feedback-box">
+            <div id="feedback-title" style="font-weight:800; font-size:16px;"></div>
+            <div id="feedback-desc" class="explanation"></div>
+          </div>
+
+          <button id="next-btn" class="next-btn" onclick="nextQuestion()">다음 문제로 ➔</button>
+        </div>
+
+        <!-- Result Box & Certificate & Rank Badge -->
+        <div id="result-area" class="result-screen">
+          <h2 style="font-size: 22px; color: var(--gold-light); margin-bottom: 4px;">🎉 골든벨 도전 완료!</h2>
+          <div id="result-user-info" class="user-result-badge">2508 오준혁 도전자</div>
+          <div id="result-rank-badge" class="rank-alert-banner">👑 현재 랭킹 1위 달성!</div>
+          
+          <div class="score-circle">
+            <div id="final-score">100</div>
+            <span>/ 100점</span>
+          </div>
+
+          <div id="result-msg" style="font-size: 15px; font-weight: 600; margin-bottom: 14px; line-height: 1.5;"></div>
+
+          <!-- Certificate Card -->
+          <div id="cert-card" class="certificate-card">
+            <div class="cert-title">안 전 골 든 벨 수 료 증</div>
+            <div class="cert-subtitle">2026 서울지역 직업계고 산업안전보건 골든벨 (STEP 50문항 마스터)</div>
+            <div class="cert-body">
+              <b>소&nbsp;&nbsp;&nbsp;&nbsp;속:</b> 유한공업고등학교 로봇전기과<br>
+              <b>학&nbsp;&nbsp;&nbsp;&nbsp;번:</b> <span id="cert-user-id">2508</span><br>
+              <b>성&nbsp;&nbsp;&nbsp;&nbsp;명:</b> <span id="cert-user-name">오준혁</span><br>
+              <b>최종점수:</b> <span id="cert-score" style="color:#dc2626; font-weight:900;">100점</span><br><br>
+              위 학생은 2026 서울지역 직업계고 안전골든벨 교육과정(STEP 연계 50문항)을 성실히 이수하고 우수한 성적으로 수료하였음을 증명합니다.
+            </div>
+            <div class="cert-seal">
+              <span>발급일자: 2026. 08. 31.</span>
+              <span>한국산업안전보건공단 / 로봇전기과</span>
+              <div class="seal-stamp">안전<br>인증</div>
+            </div>
+          </div>
+          
+          <div class="result-btn-grid">
+            <button id="btn-wrong-retry" class="action-btn btn-wrong-only" onclick="startWrongOnlyQuiz()">❌ 오답만 다시 풀기</button>
+            <button class="action-btn btn-cert" onclick="downloadCertificate()">📜 인증서 이미지 저장</button>
+            <button class="action-btn btn-all-restart" onclick="restartQuiz()">🔄 처음부터 다시 풀기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Real-time Scorecard Panel & Top 5 Board -->
+      <div class="scorecard-panel">
+        <div class="panel-title">
+          <span>📊 실시간 OMR 성적표</span>
+          <span id="card-user-name" style="font-size:12px; color:var(--text-dim);">오준혁</span>
+        </div>
+
+        <div class="score-summary">
+          <div class="summary-item">
+            <div id="sum-correct" class="num color-correct">0</div>
+            <div class="lbl">정답 (⭕)</div>
+          </div>
+          <div class="summary-item">
+            <div id="sum-wrong" class="num color-wrong">0</div>
+            <div class="lbl">오답 (❌)</div>
+          </div>
+          <div class="summary-item">
+            <div id="sum-score" class="num color-total">0</div>
+            <div class="lbl">현재 점수</div>
+          </div>
+        </div>
+
+        <div class="stage-section">
+          <div class="stage-label">
+            <span>1️⃣ 예선전: OX 퀴즈</span>
+            <span>(1~15번)</span>
+          </div>
+          <div class="omr-grid" id="omr-stage1"></div>
+        </div>
+
+        <div class="stage-section">
+          <div class="stage-label">
+            <span>2️⃣ 본선전: 4지선다형</span>
+            <span>(16~30번)</span>
+          </div>
+          <div class="omr-grid" id="omr-stage2"></div>
+        </div>
+
+        <div class="stage-section">
+          <div class="stage-label">
+            <span>3️⃣ 결선전: 주관식 단답형</span>
+            <span>(31~50번)</span>
+          </div>
+          <div class="omr-grid" id="omr-stage3"></div>
+        </div>
+
+        <!-- Right Side Top 5 Mini Leaderboard -->
+        <div class="ranking-box" style="margin-top:14px; padding:12px;">
+          <div class="ranking-title" style="font-size:13px; margin-bottom:8px;">
+            <span>🏆 실시간 순위 TOP 5</span>
+          </div>
+          <div class="rank-list" id="sidebar-ranking-list" style="gap:6px;"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<canvas id="cert-canvas" width="700" height="480" style="display:none;"></canvas>
+
+<script>
+// 오늘 밤 10시 (22:00:00) 마감 타임스탬프 설정
+const today = new Date();
+const DEADLINE_TIME = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 22, 0, 0).getTime();
+
+// 로봇전기과 공식 6인 명단 (오준혁 65점 실시간 반영 상태)
+const OFFICIAL_ROBOT_STUDENTS = [
+  { id: "2508", name: "오준혁", score: 65, wrongCount: 7, date: "2026.8.29 12:13" },
+  { id: "2503", name: "김찬영", score: 0, wrongCount: 0, date: "대기 중" },
+  { id: "2054", name: "김해진", score: 0, wrongCount: 0, date: "대기 중" },
+  { id: "2506", name: "박하빈", score: 0, wrongCount: 0, date: "대기 중" },
+  { id: "2512", name: "장승우", score: 0, wrongCount: 0, date: "대기 중" },
+  { id: "2517", name: "허준수", score: 0, wrongCount: 0, date: "대기 중" }
+];
+
+const STORAGE_KEY = "goldbell_robot_cloud_sync_v5_50q";
+
+// 초고속 클라우드 REST API 객체 ID (실시간 연동)
+const CLOUD_OBJECT_ID = "ff8081819ff5b11001a04b858ccd58fa";
+const CLOUD_API_URL = `https://api.restful-api.dev/objects/${CLOUD_OBJECT_ID}`;
+
+function isPastDeadline() {
+  return Date.now() >= DEADLINE_TIME;
+}
+
+function updateDeadlineCounter() {
+  const banner = document.getElementById('deadline-banner-text');
+  if (!banner) return;
+
+  const now = Date.now();
+  const diff = DEADLINE_TIME - now;
+
+  if (diff <= 0) {
+    banner.innerHTML = "⛔ <b>오늘 밤 10시 마감되었습니다.</b> (내일 8/31 14:00 본선 파이팅!)";
+    banner.style.background = "rgba(239, 68, 68, 0.3)";
+    banner.style.color = "#f87171";
+    checkAndApplyLock();
+    return;
+  }
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+  banner.innerHTML = `⏳ <b>응시 마감: 오늘 밤 10:00</b> (남은 시간: ${hours}시간 ${mins}분 ${secs}초)`;
+}
+
+function checkAndApplyLock() {
+  if (isPastDeadline() && (!currentUser || !currentUser.isAdmin)) {
+    document.getElementById('login-area').style.display = 'none';
+    document.getElementById('main-area').style.display = 'none';
+    document.getElementById('closed-area').style.display = 'block';
+    renderClosedLeaderboard();
+  }
+}
+
+function renderClosedLeaderboard() {
+  let records = getRobotRecords();
+  records.sort((a, b) => b.score - a.score || a.wrongCount - b.wrongCount);
+  const list = document.getElementById('closed-ranking-list');
+  if (!list) return;
+  list.innerHTML = '';
+
+  records.slice(0, 5).forEach((item, index) => {
+    let rankBadge = (index === 0) ? "🥇 1위" : (index === 1 ? "🥈 2위" : (index === 2 ? "🥉 3위" : `🏅 ${index + 1}위`));
+    let rankClass = (index === 0) ? "rank-1" : (index === 1 ? "rank-2" : (index === 2 ? "rank-3" : ""));
+    const scoreDisplay = (item.score === 0) ? `<span class="rank-score-zero">0점 (미응시)</span>` : `<span class="rank-score">${item.score}점</span>`;
+    list.innerHTML += `
+      <div class="rank-item ${rankClass}">
+        <div class="rank-pos">${rankBadge}</div>
+        <div class="rank-user">${item.name} (${item.id})</div>
+        <div>${scoreDisplay}</div>
+      </div>
+    `;
+  });
+}
+
+function showAdminFromClosed() {
+  const pwd = prompt("관리자 암호를 입력하세요 (2500 변귀섭 선생님):");
+  if (pwd === "cntfed") {
+    currentUser.id = "2500";
+    currentUser.name = "변귀섭 관리자";
+    currentUser.isAdmin = true;
+    document.getElementById('closed-area').style.display = 'none';
+    showAdminDashboard();
+  } else if (pwd !== null) {
+    alert("암호가 일치하지 않습니다.");
+  }
+}
+
+function getRobotRecords() {
+  let records = localStorage.getItem(STORAGE_KEY);
+  if (!records) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(OFFICIAL_ROBOT_STUDENTS));
+    return JSON.parse(JSON.stringify(OFFICIAL_ROBOT_STUDENTS));
+  }
+  return JSON.parse(records);
+}
+
+// 클라우드 서버에서 실시간 성적 가져오기
+async function fetchCloudScoresAndRender() {
+  try {
+    const res = await fetch(CLOUD_API_URL, { cache: "no-store" });
+    if (res.ok) {
+      const jsonRes = await res.json();
+      if (jsonRes && jsonRes.data && typeof jsonRes.data === 'object') {
+        let localRecords = getRobotRecords();
+        OFFICIAL_ROBOT_STUDENTS.forEach(student => {
+          if (jsonRes.data[student.id]) {
+            const cItem = jsonRes.data[student.id];
+            const lIdx = localRecords.findIndex(r => r.id === student.id);
+            if (lIdx >= 0) {
+              if (cItem.score >= localRecords[lIdx].score) {
+                localRecords[lIdx].score = cItem.score;
+                localRecords[lIdx].wrongCount = cItem.wrongCount;
+                localRecords[lIdx].date = cItem.date;
+              }
+            }
+          }
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(localRecords));
+      }
+    }
+  } catch(err) {
+    console.log("Cloud sync note: offline fallback", err);
+  }
+  renderAllLeaderboards();
+  if (currentUser.isAdmin) renderStudentTable();
+}
+
+// 클라우드 서버로 성적 즉시 전송
+async function uploadScoreToCloud(id, name, score, wrongCount, dateStr) {
+  try {
+    let localRecords = getRobotRecords();
+    let cloudMap = {};
+    localRecords.forEach(r => {
+      cloudMap[r.id] = { id: r.id, name: r.name, score: r.score, wrongCount: r.wrongCount, date: r.date };
+    });
+    cloudMap[id] = { id, name, score, wrongCount, date: dateStr };
+
+    await fetch(CLOUD_API_URL, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: cloudMap })
+    });
+  } catch(err) {
+    console.log("Cloud upload error (fallback to local)", err);
+  }
+}
+
+// Web Audio Engine
+let audioCtx = null;
+let soundEnabled = true;
+let isShuffle = false;
+
+function ensureAudioReady() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) audioCtx = new AudioContextClass();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function unlockAudioOnce() { ensureAudioReady(); }
+
+function toggleSound() {
+  ensureAudioReady();
+  soundEnabled = !soundEnabled;
+  const btn = document.getElementById('sound-btn');
+  if (soundEnabled) {
+    btn.innerText = "🔊 사운드 ON";
+    btn.style.color = "var(--gold)";
+    playApplauseAndChime();
+  } else {
+    btn.innerText = "🔇 사운드 OFF";
+    btn.style.color = "var(--text-dim)";
+  }
+}
+
+function toggleShuffle() {
+  isShuffle = !isShuffle;
+  const btn = document.getElementById('shuffle-btn');
+  btn.innerText = isShuffle ? "🔀 셔플: ON" : "🔀 셔플: OFF";
+  btn.style.color = isShuffle ? "var(--green)" : "var(--gold)";
+}
+
+function playHeartbeatSound() {
+  if (!soundEnabled) return;
+  ensureAudioReady();
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(95, now);
+  osc.frequency.exponentialRampToValueAtTime(45, now + 0.15);
+  gain.gain.setValueAtTime(0.3, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + 0.16);
+}
+
+function playApplauseAndChime() {
+  if (!soundEnabled) return;
+  ensureAudioReady();
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const melody = [523.25, 659.25, 783.99, 1046.50];
+  melody.forEach((freq, i) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, now + (i * 0.08));
+    gain.gain.setValueAtTime(0, now + (i * 0.08));
+    gain.gain.linearRampToValueAtTime(0.4, now + (i * 0.08) + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.08) + 0.35);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now + (i * 0.08));
+    osc.stop(now + (i * 0.08) + 0.4);
+  });
+  for (let i = 0; i < 40; i++) {
+    const clapDelay = now + 0.1 + (Math.random() * 1.2);
+    const clapDuration = 0.04 + (Math.random() * 0.04);
+    const bufferSize = Math.floor(audioCtx.sampleRate * clapDuration);
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let j = 0; j < bufferSize; j++) data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (bufferSize * 0.3));
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1000 + Math.random() * 1500, clapDelay);
+    filter.Q.setValueAtTime(1.5, clapDelay);
+    const clapGain = audioCtx.createGain();
+    clapGain.gain.setValueAtTime(0.3 + Math.random() * 0.25, clapDelay);
+    clapGain.gain.exponentialRampToValueAtTime(0.001, clapDelay + clapDuration);
+    noise.connect(filter);
+    filter.connect(clapGain);
+    clapGain.connect(audioCtx.destination);
+    noise.start(clapDelay);
+    noise.stop(clapDelay + clapDuration);
+  }
+}
+
+function playWrongSound() {
+  if (!soundEnabled) return;
+  ensureAudioReady();
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  [2200, 3200, 4600, 5800].forEach((freq) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.3, now + 0.4);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  });
+}
+
+function playTickSound() {
+  if (!soundEnabled) return;
+  ensureAudioReady();
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.06);
+}
+
+function fireConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
+  const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#ec4899'];
+  for (let i = 0; i < 100; i++) {
+    particles.push({
+      x: canvas.width / 2, y: canvas.height / 2, r: Math.random() * 6 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 16, vy: (Math.random() - 0.7) * 18,
+      gravity: 0.4, opacity: 1
+    });
+  }
+  function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.opacity -= 0.015;
+      if (p.opacity > 0) {
+        alive = true; ctx.fillStyle = p.color; ctx.globalAlpha = p.opacity;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      }
+    });
+    if (alive) requestAnimationFrame(render);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  render();
+}
+
+// 🔔 국민평생직업능력개발 STEP 연계 50문항 마스터 골든벨 풀세트
+const rawQuizData = [
+  // 1단계: 예선전 OX 퀴즈 (1~15번, 총 15문항)
+  { id: 1, stage: 1, type: "ox", q: "소화기를 사용할 때는 바람을 마주 보고(맞바람) 뿌려야 한다?", answer: "X", exp: "소화기는 반드시 바람을 등지고 비로 쓸듯이 골고루 방사해야 합니다." },
+  { id: 2, stage: 1, type: "ox", q: "성인 심폐소생술(CPR) 시 인공호흡이 어렵거나 꺼려지면 가슴압박만 지속해도 된다?", answer: "O", exp: "인공호흡을 못 하더라도 119가 올 때까지 가슴압박만 지속(Hands-Only CPR)하는 것이 매우 효과적입니다." },
+  { id: 3, stage: 1, type: "ox", q: "회전하는 기계(밀링, 선반, 드릴 등)를 다룰 때는 손 보호를 위해 면장갑을 착용해야 한다?", answer: "X", exp: "장갑이 회전체에 말려 들어가는 '끼임(협착) 사고'가 발생하므로 회전체 작업 시 장갑 착용은 절대 금지(맨손 작업)입니다." },
+  { id: 4, stage: 1, type: "ox", q: "산업안전보건표지 중 '파란색 원형'은 특정 행동을 지시하는 지시표지(보호구 착용 등)이다?", answer: "O", exp: "파란색 원형은 보안경, 안전모, 안전화 등 '보호구 착용 지시표지'를 나타냅니다." },
+  { id: 5, stage: 1, type: "ox", q: "전기가 흐르고 있는 전기 화재(C급 화재) 진압 시 물을 뿌려서 진화한다?", answer: "X", exp: "물을 뿌리면 감전 위험이 있으므로, 분말 소화기(ABC 소화기)나 이산화탄소(CO2) 소화기를 써야 합니다." },
+  { id: 6, stage: 1, type: "ox", q: "산업용 로봇 작업 시 불시 작동 사고를 막기 위해 높이 1.8m 이상의 안전울(울타리) 또는 안전매트를 설치해야 한다?", answer: "O", exp: "산업용 로봇 가동 영역에는 방호울 또는 감응식 안전매트, 인터록 설치가 법적 의무입니다." },
+  { id: 7, stage: 1, type: "ox", q: "음식물이 목에 걸려 말을 할 수 있는 '부분 기도폐쇄' 환자에게 즉시 하임리히법(복부 밀쳐올리기)을 실시한다?", answer: "X", exp: "환자가 말을 하거나 기침을 할 수 있을 때는 스스로 기침을 유도해야 하며, 말을 전혀 못 하는 완전 기도폐쇄일 때만 하임리히법을 씁니다." },
+  { id: 8, stage: 1, type: "ox", q: "가연성 가스나 분진 폭발을 막기 위해 정전기를 대지로 안전하게 방출시키는 가장 기본적인 대책은 '접지(Earth)'이다?", answer: "O", exp: "도체에 쌓인 정전기 전하를 대지로 방출시키는 접지는 정전기 폭발을 막는 핵심 대책입니다." },
+  { id: 9, stage: 1, type: "ox", q: "소화기의 압력 게이지 바늘이 '빨간색(좌측)'을 가리키고 있다면 정상 압력 상태이다?", answer: "X", exp: "소화기 압력 게이지의 정상 범위는 '녹색(가운데)'입니다. 빨간색은 압력 저하 불량 상태입니다." },
+  { id: 10, stage: 1, type: "ox", q: "기계 정비·수리 중 불시 가동을 막기 위해 스위치를 자물쇠로 잠그고 경고판을 다는 것을 'LOTO'라 한다?", answer: "O", exp: "LOTO(Lockout/Tagout)는 기계 정비 중 끼임·감전 재해를 예방하는 필수 수칙입니다." },
+  { id: 11, stage: 1, type: "ox", q: "산업재해보상보험(산재보험)은 근로자의 과실이 일부 있더라도 업무상 재해라면 보상을 받을 수 있는 '무과실 책임주의'를 적용한다?", answer: "O", exp: "산재보험은 근로자의 과실 유무와 상관없이 업무상 재해에 대해 신속하고 공정하게 보상합니다." },
+  { id: 12, stage: 1, type: "ox", q: "현장실습생 및 18세 미만 연소근로자의 법정 1일 근로시간은 최대 7시간, 1주 35시간을 초과할 수 없다?", answer: "O", exp: "근로기준법상 18세 미만 청소년의 법정근로시간은 1일 7시간, 1주 35시간(합의 시 1일 1시간, 1주 5시간 연장 가능)입니다." },
+  { id: 13, stage: 1, type: "ox", q: "2m 이상의 고소작업 시 착용하는 안전대는 상체만 감싸는 '상체식 벨트'보다 전신을 지지하는 '그네식 안전대'가 훨씬 안전하다?", answer: "O", exp: "추락 시 충격을 전신에 분산시키고 흉부 압박을 막기 위해 전신 그네식 안전대를 착용해야 합니다." },
+  { id: 14, stage: 1, type: "ox", q: "밀폐공간 작업 시 산소 농도를 측정했을 때 16%가 나왔다면 정상 범위이므로 바로 들어가도 된다?", answer: "X", exp: "밀폐공간 적정 산소 농도는 18% 이상 23.5% 미만입니다. 16%는 산소결핍 위험 상태입니다." },
+  { id: 15, stage: 1, type: "ox", q: "반복적인 컴퓨터 작업이나 무거운 물건 운반으로 발생하는 근골격계질환을 예방하기 위해 작업 중간중간 스트레칭을 하는 것이 효과적이다?", answer: "O", exp: "정기적인 휴식과 스트레칭, 올바른 작업 자세는 근골격계 부담작업 질환을 예방하는 필수 수칙입니다." },
+
+  // 2단계: 본선전 4지선다형 (16~30번, 총 15문항)
+  { id: 16, stage: 2, type: "choice", q: "화학물질의 명칭, 유해성, 취급 주의사항, 응급조치 요령이 적힌 '화학물질 설명서'의 영문 약칭은?", choices: ["KOSHA", "ISO", "MSDS", "OSHA"], answer: 2, exp: "정답은 MSDS(물질안전보건자료, Material Safety Data Sheet)입니다." },
+  { id: 17, stage: 2, type: "choice", q: "화재의 종류 중 '주방(식용유 등) 화재'를 분류하는 등급 기호는?", choices: ["A급 화재", "B급 화재", "C급 화재", "K급 화재"], answer: 3, exp: "주방 화재는 Kitchen의 앞 글자를 딴 K급 화재입니다. (A급:일반, B급:유류, C급:전기)" },
+  { id: 18, stage: 2, type: "choice", q: "인간의 부주의 현상 중 '다른 생각이나 걱정에 정신이 팔려 현재 작업을 놓치는 현상'은?", choices: ["의식의 단절", "의식의 우회", "의식의 협착", "의식의 과잉"], answer: 1, exp: "다른 일에 마음이 쏠려 주의가 벗어나는 현상을 '의식의 우회'라고 합니다." },
+  { id: 19, stage: 2, type: "choice", q: "산업안전보건법상 밀폐공간의 '적정 산소농도 기준 범위'로 올바른 것은?", choices: ["10% ~ 15%", "15% ~ 20%", "18% 이상 ~ 23.5% 미만", "25% 이상"], answer: 2, exp: "밀폐공간의 적정 산소 농도는 18% 이상 23.5% 미만입니다. 18% 미만은 산소결핍증 위험이 있습니다." },
+  { id: 20, stage: 2, type: "choice", q: "높이 몇 미터 이상의 추락 위험 장소에서 작업 시 안전대(추락방지대)를 의무 착용해야 하는가?", choices: ["1m 이상", "2m 이상", "3m 이상", "4m 이상"], answer: 1, exp: "산업안전보건기준에 관한 규칙상 높이 2m 이상 고소작업 시 안전대 착용이 의무입니다." },
+  { id: 21, stage: 2, type: "choice", q: "인체 감전 사고를 방지하기 위해 설치하는 '누전차단기(ELB)'의 정격 감도전류와 동작 시간 기준은?", choices: ["15mA 이하, 0.1초 이내", "30mA 이하, 0.03초 이내", "50mA 이하, 0.05초 이내", "100mA 이하, 0.01초 이내"], answer: 1, exp: "감전 방지용 누전차단기는 30mA 이하 누설전류 시 0.03초 이내에 차단되어야 합니다." },
+  { id: 22, stage: 2, type: "choice", q: "여름철 고열 환경에서 체온 조절 중추가 마비되어 땀이 안 나고 체온이 40도 이상 치솟는 가장 위험한 온열질환은?", choices: ["열탈진(일사병)", "열경련", "열사병", "열실신"], answer: 2, exp: "체온 조절 기능이 망가져 땀이 안 나고 혼수에 빠지는 질환은 '열사병(Heat Stroke)'입니다." },
+  { id: 23, stage: 2, type: "choice", q: "맨홀·정화조 등 밀폐공간 질식 사고의 주원인으로, 달걀 썩는 냄새가 나는 유해가스는?", choices: ["메탄가스", "이산화탄소", "황화수소(H2S)", "일산화탄소"], answer: 2, exp: "유기물 부패로 발생하며 달걀 썩는 악취가 나는 유해가스는 '황화수소(H2S)'입니다." },
+  { id: 24, stage: 2, type: "choice", q: "탁상용 연삭기(그라인더) 숫돌 파손 비산을 막기 위한 '연삭기 덮개'의 상부 노출 각도 기준은?", choices: ["90도 이내", "120도 이내", "150도 이내", "180도 이내"], answer: 0, exp: "일반 탁상용 연삭기의 덮개 노출 각도는 90도(또는 125도) 이내여야 합니다." },
+  { id: 25, stage: 2, type: "choice", q: "사업장의 유해·위험 요인을 스스로 찾아내어 위험성을 측정하고 개선 대책을 세우는 안전보건 관리 기법은?", choices: ["작업환경측정", "위험성평가", "안전진단", "공정안전보고서"], answer: 1, exp: "사업장 자기규율 예방체계의 핵심은 '위험성평가(Risk Assessment)'입니다." },
+  { id: 26, stage: 2, type: "choice", q: "산업안전보건표지 중 '노란색 바탕의 삼각형 표지'가 의미하는 것은?", choices: ["금지표지", "경고표지", "지시표지", "안내표지"], answer: 1, exp: "노란색 삼각형은 감전경고, 고온경고, 낙하물경고 등 '경고표지'입니다." },
+  { id: 27, stage: 2, type: "choice", q: "기계의 위험점에 작업자의 신체가 닿지 않도록 손이 들어갈 수 없는 틈새 간격을 유지하는 방호 원리는?", choices: ["격리형 방호장치", "위치제한형 방호장치", "접근거부형 방호장치", "감응형 방호장치"], answer: 0, exp: "위험부위에 덮개나 울을 씌워 물리적으로 접근을 차단하는 것을 '격리형 방호장치'라고 합니다." },
+  { id: 28, stage: 2, type: "choice", q: "근로자가 근로계약을 체결할 때 반드시 서면으로 교부받아야 하는 법적 서류는?", choices: ["근로계약서", "주민등록등본", "이력서", "건강검진표"], answer: 0, exp: "근로기준법 제17조에 따라 임금, 근로시간, 휴일 등이 명시된 근로계약서를 서면 교부해야 합니다." },
+  { id: 29, stage: 2, type: "choice", q: "밀폐공간에 들어가기 전 반드시 취해야 할 3대 안전조치 순서로 올바른 것은?", choices: ["산소측정 ➔ 환기 ➔ 보호구착용", "환기 ➔ 산소측정 ➔ 보호구착용", "보호구착용 ➔ 입장 ➔ 환기", "입장 ➔ 산소측정 ➔ 환기"], answer: 0, exp: "밀폐공간은 유해가스 농도 측정 ➔ 지속적 환기 ➔ 송기마스크 등 보호구 착용 순으로 진행합니다." },
+  { id: 30, stage: 2, type: "choice", q: "지게차 작업 시 포크의 상승/하강 속도를 제어하고 유압 파질 시 낙하를 방지하는 방호장치는?", choices: ["헤드가드", "백레스트", "안전밸브(하강안전밸브)", "룸미러"], answer: 2, exp: "유압 파실 시 급격한 포크 낙하를 막아주는 장치는 '하강안전밸브'입니다." },
+
+  // 3단계: 결선전 주관식 단답형 (31~50번, 총 20문항)
+  { id: 31, stage: 3, type: "text", q: "1건의 대형사고(중대재해) 전에 29건의 경상해와 300건의 무상해 사고(아차사고)가 발생한다는 통계 법칙은?", answers: ["하인리히", "하인리히법칙", "하인리히 법칙"], exp: "정답은 '하인리히 법칙(1:29:300 법칙)'입니다." },
+  { id: 32, stage: 3, type: "text", q: "성인 심폐소생술(CPR) 시 '가슴압박'과 '인공호흡'의 공식 비율은? (예: OO : O)", answers: ["30:2", "30 : 2", "30대2", "30 대 2"], exp: "정답은 가슴압박 30회 : 인공호흡 2회인 '30:2'입니다." },
+  { id: 33, stage: 3, type: "text", q: "심정지 환자 발생 시 뇌손상을 막기 위한 응급처치 골든타임은 몇 분 이내인가? (숫자만 입력)", answers: ["4", "4분"], exp: "심정지 후 4분이 지나면 뇌세포 괴사가 시작되므로 골든타임은 4분입니다." },
+  { id: 34, stage: 3, type: "text", q: "성인 심폐소생술 시 1분당 가슴압박 권장 횟수는 몇 회에서 몇 회 사이인가? (예: 100~120)", answers: ["100~120", "100-120", "100~120회", "100-120회", "100에서120"], exp: "정답은 분당 '100~120회' 속도입니다." },
+  { id: 35, stage: 3, type: "text", q: "심정지 환자에게 전기 충격을 주어 심장 박동을 회복시키는 장비(자동심장충격기)의 영문 약어는?", answers: ["AED", "aed"], exp: "정답은 'AED(Automated External Defibrillator)'입니다." },
+  { id: 36, stage: 3, type: "text", q: "산업재해 발생의 급박한 위험이 있을 때, 근로자 스스로 작업을 중단하고 대피할 수 있는 권리는?", answers: ["작업중지권", "작업 중지권"], exp: "정답은 근로자의 정당한 권리인 '작업중지권'입니다." },
+  { id: 37, stage: 3, type: "text", q: "분진을 막는 것은 방진마스크이다. 유독가스나 유기용제 증기를 차단하기 위해 착용하는 마스크는?", answers: ["방독마스크", "방독 마스크"], exp: "정답은 '방독마스크'입니다." },
+  { id: 38, stage: 3, type: "text", q: "낙하·비래(A), 추락(B)뿐만 아니라 '전기 감전(E)'까지 방지할 수 있는 안전모의 기호 등급은? (알파벳 조합)", answers: ["ABE", "abe", "ABE형", "abe형"], exp: "전기 절연 성능을 가진 안전모 등급은 'ABE형'입니다." },
+  { id: 39, stage: 3, type: "text", q: "불이 났을 때 공기 중의 '산소를 차단'하여 불을 끄는 소화 원리를 무엇이라 하는가? (O O 소화)", answers: ["질식소화", "질식 소화"], exp: "산소 공급을 막아 불을 끄는 것을 '질식소화'라고 합니다." },
+  { id: 40, stage: 3, type: "text", q: "사업장에서 중대재해 발생 시 사업주 및 경영책임자의 안전의무 위반을 처벌하기 위해 제정된 법률은?", answers: ["중대재해처벌법", "중대재해 처벌법", "중대재해처벌 등에 관한 법률"], exp: "정답은 '중대재해처벌법'입니다." },
+  { id: 41, stage: 3, type: "text", q: "작업 시작 전 5~10분간 당일 위험요인과 안전수칙을 공유하는 '작업 전 안전점검회의'의 영문 약어 3글자는?", answers: ["TBM", "tbm"], exp: "정답은 'TBM(Tool Box Meeting)'입니다." },
+  { id: 42, stage: 3, type: "text", q: "기도폐쇄 환자 뒤에서 명치와 배꼽 중간을 안쪽 위로 강하게 밀쳐올려 이물질을 빼내는 응급처치법은?", answers: ["하임리히법", "하임리히", "하임리히 법"], exp: "정답은 '하임리히법(Heimlich Maneuver)'입니다." },
+  { id: 43, stage: 3, type: "text", q: "전기 기계·기구의 누설전류를 땅속으로 흘려보내 인체 감전을 방지하기 위해 연결하는 것은?", answers: ["접지", "접지선", "어스"], exp: "정답은 '접지(Ground/Earth)'입니다." },
+  { id: 44, stage: 3, type: "text", q: "안전모가 추락이나 충격 시 벗겨지지 않도록 턱 밑에 조여 매는 안전모 부속품의 명칭은?", answers: ["턱끈", "턱 끈"], exp: "정답은 '턱끈'입니다." },
+  { id: 45, stage: 3, type: "text", q: "불이 났을 때 물을 뿌려 온도를 발화점 이하로 낮추어 불을 끄는 소화 원리는? (O O 소화)", answers: ["냉각소화", "냉각 소화"], exp: "열을 빼앗아 불을 끄는 것을 '냉각소화'라고 합니다." },
+  { id: 46, stage: 3, type: "text", q: "2026년 기준 대한민국 최저임금법상 1시간당 최저시급(원) 금액은?", answers: ["10030", "10,030", "10030원", "10,030원"], exp: "2026년 최저임금 시급은 10,030원입니다." },
+  { id: 47, stage: 3, type: "text", q: "화학물질 유해성 분류 및 표지의 세계조화시스템을 뜻하는 영문 약어 3글자는?", answers: ["GHS", "ghs"], exp: "정답은 'GHS(Globally Harmonized System)'입니다." },
+  { id: 48, stage: 3, type: "text", q: "산업안전보건법상 사망자가 1명 이상 발생하거나 3개월 이상 요양자가 2명 이상 발생한 재해를 무엇이라 하는가?", answers: ["중대재해", "중대 재해"], exp: "정답은 '중대재해'입니다." },
+  { id: 49, stage: 3, type: "text", q: "프레스 기계 작업 시 위험 영역에 손이 들어가면 광선 차단 센서가 감지하여 기계를 급정지시키는 방호장치는? (O O O 식 방호장치)", answers: ["광전자식", "광전자식 방호장치", "광전자"], exp: "정답은 '광전자식 방호장치'입니다." },
+  { id: 50, stage: 3, type: "text", q: "밀폐공간 질식 사고 예방을 위해 착용하는 것으로, 외부의 신선한 공기를 호스를 통해 공급받는 마스크는?", answers: ["송기마스크", "송기 마스크", "공기호흡기"], exp: "정답은 '송기마스크(또는 공기호흡기)'입니다." }
+];
+
+let activeQuizList = [];
+let currentUser = { id: "", name: "", isAdmin: false };
+let currentIdx = 0;
+let score = 0;
+let answered = false;
+let userResults = [];
+let wrongQuestions = [];
+let timerInterval = null;
+let timeLeft = 30;
+
+function renderAllLeaderboards() {
+  let records = getRobotRecords();
+  records.sort((a, b) => b.score - a.score || a.wrongCount - b.wrongCount);
+
+  const loginList = document.getElementById('login-ranking-list');
+  const sideList = document.getElementById('sidebar-ranking-list');
+
+  if (loginList) loginList.innerHTML = '';
+  if (sideList) sideList.innerHTML = '';
+
+  const top5 = records.slice(0, 5);
+
+  top5.forEach((item, index) => {
+    let rankBadge = (index === 0) ? "🥇 1위" : (index === 1 ? "🥈 2위" : (index === 2 ? "🥉 3위" : `🏅 ${index + 1}위`));
+    let rankClass = (index === 0) ? "rank-1" : (index === 1 ? "rank-2" : (index === 2 ? "rank-3" : ""));
+
+    const scoreDisplay = (item.score === 0) 
+      ? `<span class="rank-score-zero">0점 (대기)</span>` 
+      : `<span class="rank-score">${item.score}점</span>`;
+
+    const itemHtml = `
+      <div class="rank-item ${rankClass}">
+        <div class="rank-pos">${rankBadge}</div>
+        <div class="rank-user">${item.name} (${item.id})</div>
+        <div>${scoreDisplay}</div>
+      </div>
+    `;
+
+    if (loginList) loginList.innerHTML += itemHtml;
+    if (sideList) sideList.innerHTML += itemHtml;
+  });
+}
+
+function startQuiz() {
+  ensureAudioReady();
+  const idInput = document.getElementById('user-id').value.trim();
+  const nameInput = document.getElementById('user-name').value.trim();
+
+  if (!idInput || !nameInput) {
+    alert("학번과 이름을 입력해주세요!");
+    return;
+  }
+
+  // 1. 관리자 인증 (24시간 접속 가능)
+  if (idInput === "2500" && nameInput === "cntfed") {
+    currentUser.id = "2500";
+    currentUser.name = "변귀섭 관리자";
+    currentUser.isAdmin = true;
+    showAdminDashboard();
+    return;
+  }
+
+  // 2. 밤 10시 마감 체크
+  if (isPastDeadline()) {
+    alert("⛔ 2026 안전골든벨 연습 응시가 오늘 밤 10시 정각에 마감되었습니다.");
+    checkAndApplyLock();
+    return;
+  }
+
+  // 3. 6인 화이트리스트 검증
+  const matchedStudent = OFFICIAL_ROBOT_STUDENTS.find(s => s.id === idInput && s.name === nameInput);
+
+  if (!matchedStudent) {
+    alert(`⚠️ 접속 권한이 없습니다!\n\n로봇전기과 대표 출전 선수(6명)의 학번과 이름을 정확히 입력해주세요.\n(출전 선수: 김찬영, 김해진, 박하빈, 오준혁, 장승우, 허준수)`);
+    return;
+  }
+
+  currentUser.id = matchedStudent.id;
+  currentUser.name = matchedStudent.name;
+  currentUser.isAdmin = false;
+
+  document.getElementById('login-area').style.display = 'none';
+  document.getElementById('main-area').style.display = 'block';
+  document.getElementById('user-display-badge').innerText = `도전자: ${currentUser.name} (${currentUser.id})`;
+  document.getElementById('card-user-name').innerText = `${currentUser.name} (${currentUser.id})`;
+
+  renderAllLeaderboards();
+  startFullQuiz();
+}
+
+function startFullQuiz() {
+  activeQuizList = JSON.parse(JSON.stringify(rawQuizData));
+  if (isShuffle) {
+    activeQuizList.sort(() => Math.random() - 0.5);
+  }
+  initQuiz();
+}
+
+function startWrongOnlyQuiz() {
+  if (wrongQuestions.length === 0) {
+    alert("틀린 문제가 없습니다! 만점입니다!");
+    return;
+  }
+  activeQuizList = JSON.parse(JSON.stringify(wrongQuestions));
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-area').style.display = 'none';
+  initQuiz();
+}
+
+function initQuiz() {
+  currentIdx = 0;
+  score = 0;
+  answered = false;
+  userResults = new Array(activeQuizList.length).fill(null);
+  wrongQuestions = [];
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-area').style.display = 'none';
+  document.getElementById('cert-card').style.display = 'none';
+  renderScorecardGrids();
+  updateScorecard();
+  loadQuestion();
+}
+
+function renderScorecardGrids() {
+  const g1 = document.getElementById('omr-stage1');
+  const g2 = document.getElementById('omr-stage2');
+  const g3 = document.getElementById('omr-stage3');
+  g1.innerHTML = ''; g2.innerHTML = ''; g3.innerHTML = '';
+
+  activeQuizList.forEach((q, idx) => {
+    const html = `<div id="omr-cell-${idx}" class="omr-cell">Q${idx+1}</div>`;
+    if (q.stage === 1) g1.innerHTML += html;
+    else if (q.stage === 2) g2.innerHTML += html;
+    else g3.innerHTML += html;
+  });
+}
+
+function updateScorecard() {
+  let correctCount = 0;
+  let wrongCount = 0;
+
+  userResults.forEach((res, idx) => {
+    const cell = document.getElementById(`omr-cell-${idx}`);
+    if (!cell) return;
+
+    if (idx === currentIdx && res === null) {
+      cell.className = "omr-cell current";
+      cell.innerText = `Q${idx+1} ⏳`;
+    } else if (res === true) {
+      correctCount++;
+      cell.className = "omr-cell correct";
+      cell.innerText = `Q${idx+1} ⭕`;
+    } else if (res === false) {
+      wrongCount++;
+      cell.className = "omr-cell wrong";
+      cell.innerText = `Q${idx+1} ❌`;
+    } else {
+      cell.className = "omr-cell";
+      cell.innerText = `Q${idx+1}`;
+    }
+  });
+
+  document.getElementById('sum-correct').innerText = correctCount;
+  document.getElementById('sum-wrong').innerText = wrongCount;
+  document.getElementById('sum-score').innerText = score;
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 30;
+  const bar = document.getElementById('timer-bar');
+  const txt = document.getElementById('timer-sec-text');
+  bar.className = 'timer-bar';
+  bar.style.width = '100%';
+  txt.innerText = `${timeLeft}초`;
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    txt.innerText = `${timeLeft}초`;
+    bar.style.width = `${(timeLeft / 30) * 100}%`;
+
+    if (timeLeft > 5) playHeartbeatSound();
+    if (timeLeft <= 5 && timeLeft > 0) {
+      bar.className = 'timer-bar danger';
+      playTickSound();
+    }
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function handleTimeout() {
+  if (answered) return;
+  checkAnswer("__TIMEOUT__");
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = activeQuizList[currentIdx];
+
+  const badge = document.getElementById('stage-badge');
+  if (q.stage === 1) {
+    badge.className = 'badge badge-stage1';
+    badge.innerText = '1단계: 예선전 (OX 퀴즈)';
+  } else if (q.stage === 2) {
+    badge.className = 'badge badge-stage2';
+    badge.innerText = '2단계: 본선전 (4지선다형)';
+  } else {
+    badge.className = 'badge badge-stage3';
+    badge.innerText = '3단계: 결선전 (주관식 단답형)';
+  }
+
+  document.getElementById('q-number').innerText = `문제 ${currentIdx + 1} / ${activeQuizList.length}`;
+  document.getElementById('q-text').innerText = q.q;
+
+  document.getElementById('feedback-box').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const container = document.getElementById('answers-container');
+  container.innerHTML = '';
+
+  if (q.type === 'ox') {
+    const grid = document.createElement('div');
+    grid.className = 'btn-grid ox-grid';
+    grid.innerHTML = `
+      <button class="choice-btn ox-btn btn-o" onclick="checkAnswer('O')">⭕ O</button>
+      <button class="choice-btn ox-btn btn-x" onclick="checkAnswer('X')">❌ X</button>
+    `;
+    container.appendChild(grid);
+  } else if (q.type === 'choice') {
+    const grid = document.createElement('div');
+    grid.className = 'btn-grid';
+    q.choices.forEach((choice, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<b>${idx + 1}.</b> ${choice}`;
+      btn.onclick = () => checkAnswer(idx);
+      grid.appendChild(btn);
+    });
+    container.appendChild(grid);
+  } else if (q.type === 'text') {
+    const group = document.createElement('div');
+    group.className = 'input-group';
+    group.innerHTML = `
+      <input type="text" id="text-ans" class="text-input" placeholder="정답을 입력하세요 (예: TBM, 하임리히법)" autofocus onkeypress="if(event.keyCode==13) submitTextAnswer()">
+      <button class="submit-btn" onclick="submitTextAnswer()">정답 제출</button>
+    `;
+    container.appendChild(group);
+    setTimeout(() => document.getElementById('text-ans').focus(), 100);
+  }
+
+  updateScorecard();
+  startTimer();
+}
+
+function submitTextAnswer() {
+  if (answered) return;
+  const input = document.getElementById('text-ans');
+  const val = input.value.trim();
+  if (!val) {
+    alert('정답을 입력해주세요!');
+    return;
+  }
+  checkAnswer(val);
+}
+
+function checkAnswer(userAns) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+  const q = activeQuizList[currentIdx];
+  let isCorrect = false;
+
+  if (userAns === "__TIMEOUT__") {
+    isCorrect = false;
+  } else if (q.type === 'ox') {
+    isCorrect = (userAns === q.answer);
+  } else if (q.type === 'choice') {
+    isCorrect = (userAns === q.answer);
+  } else if (q.type === 'text') {
+    const cleanUser = userAns.replace(/\s+/g, '').toLowerCase();
+    isCorrect = q.answers.some(a => a.replace(/\s+/g, '').toLowerCase() === cleanUser);
+  }
+
+  userResults[currentIdx] = isCorrect;
+
+  const feedbackBox = document.getElementById('feedback-box');
+  const feedbackTitle = document.getElementById('feedback-title');
+  const feedbackDesc = document.getElementById('feedback-desc');
+
+  const pointsPerQuestion = 2; // 50문항 * 2점 = 100점 만점!
+
+  if (isCorrect) {
+    score += pointsPerQuestion;
+    playApplauseAndChime();
+    fireConfetti();
+    feedbackBox.className = 'feedback-box feedback-correct';
+    feedbackTitle.innerHTML = '🎉 정답입니다! 짝짝짝짝~ 딩동댕! 👏🔔';
+  } else {
+    wrongQuestions.push(q);
+    playWrongSound();
+    feedbackBox.className = 'feedback-box feedback-wrong';
+    feedbackTitle.innerHTML = (userAns === "__TIMEOUT__") 
+      ? `⏱️ 시간 초과! 땡 (접시 와장창!) 💥`
+      : `❌ 아쉽습니다! 땡 (접시 와장창!) 💥`;
+  }
+
+  feedbackDesc.innerHTML = `<b>[정답 해설]</b> ${q.exp}`;
+  feedbackBox.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'block';
+
+  updateScorecard();
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx < activeQuizList.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('result-area').style.display = 'block';
+  
+  if (score > 100) score = 100;
+
+  document.getElementById('result-user-info').innerText = currentUser.isAdmin 
+    ? `👑 관리자: 변귀섭 (2500)`
+    : `도전자: ${currentUser.name} (${currentUser.id})`;
+    
+  document.getElementById('final-score').innerText = score;
+  const msg = document.getElementById('result-msg');
+  
+  if (score >= 90) {
+    playApplauseAndChime();
+    fireConfetti();
+    msg.innerHTML = `🏆 <b>축하합니다, ${currentUser.name}!</b><br>STEP 50문항 마스터 골든벨을 울렸습니다! 8/31 본선 노동부장관상 1등 확정!`;
+    msg.style.color = "#34d399";
+  } else if (score >= 70) {
+    playApplauseAndChime();
+    msg.innerHTML = `👏 <b>우수한 성적입니다, ${currentUser.name}!</b><br>수료증이 발급되었습니다! 아래 버튼으로 저장하세요.`;
+    msg.style.color = "#fbbf24";
+  } else {
+    msg.innerHTML = `💪 <b>${currentUser.name}, 조금만 더 연습해 보세요!</b><br>아래 '오답만 다시 풀기'를 눌러 1위에 도전하세요.`;
+    msg.style.color = "#f87171";
+  }
+
+  if (score >= 60) {
+    const cert = document.getElementById('cert-card');
+    cert.style.display = 'block';
+    document.getElementById('cert-user-id').innerText = currentUser.id;
+    document.getElementById('cert-user-name').innerText = currentUser.name;
+    document.getElementById('cert-score').innerText = `${score}점`;
+  }
+
+  if (!currentUser.isAdmin) {
+    saveStudentRecord(currentUser.id, currentUser.name, score, wrongQuestions.length);
+  }
+
+  updateScorecard();
+}
+
+function restartQuiz() {
+  startFullQuiz();
+}
+
+function saveStudentRecord(id, name, finalScore, wrongCount) {
+  let records = getRobotRecords();
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+  
+  const existingIdx = records.findIndex(r => r.id === id && r.name === name);
+  if (existingIdx >= 0) {
+    if (finalScore >= records[existingIdx].score) {
+      records[existingIdx].score = finalScore;
+      records[existingIdx].wrongCount = wrongCount;
+      records[existingIdx].date = dateStr;
+    }
+  } else {
+    records.push({ id, name, score: finalScore, wrongCount, date: dateStr });
+  }
+
+  // 1. 로컬 저장
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  renderAllLeaderboards();
+
+  // 2. 원격 클라우드 DB 즉시 전송
+  uploadScoreToCloud(id, name, finalScore, wrongCount, dateStr);
+
+  records.sort((a, b) => b.score - a.score || a.wrongCount - b.wrongCount);
+  const myRank = records.findIndex(r => r.id === id && r.name === name) + 1;
+  const rankBadge = document.getElementById('result-rank-badge');
+  if (myRank <= 3) {
+    rankBadge.innerHTML = `👑 대단합니다! 전체 [${myRank}위] 명예의 전당 입성! 🎉`;
+    rankBadge.style.color = "#fbbf24";
+  } else {
+    rankBadge.innerHTML = `🏅 현재 전체 [${myRank}위] 입니다! 1위에 도전해보세요!`;
+    rankBadge.style.color = "#60a5fa";
+  }
+}
+
+function showAdminDashboard() {
+  document.getElementById('login-area').style.display = 'none';
+  document.getElementById('admin-area').style.display = 'block';
+
+  const list = document.getElementById('admin-answers-list');
+  list.innerHTML = '';
+  rawQuizData.forEach((q, idx) => {
+    const item = document.createElement('div');
+    item.className = 'answer-item';
+    let correctStr = (q.type === 'ox') ? q.answer : (q.type === 'choice' ? `${q.answer + 1}번 (${q.choices[q.answer]})` : q.answers[0]);
+    item.innerHTML = `
+      <div><b>Q${idx + 1}.</b> ${q.q}</div>
+      <div class="ans-badge">정답: ${correctStr}</div>
+      <div style="color:#94a3b8; font-size:12px; margin-top:4px;">해설: ${q.exp}</div>
+    `;
+    list.appendChild(item);
+  });
+
+  fetchCloudScoresAndRender();
+}
+
+function switchAdminTab(tab) {
+  document.getElementById('tab-btn-ans').className = (tab === 'ans') ? 'admin-tab-btn active' : 'admin-tab-btn';
+  document.getElementById('tab-btn-stat').className = (tab === 'stat') ? 'admin-tab-btn active' : 'admin-tab-btn';
+  document.getElementById('admin-view-ans').className = (tab === 'ans') ? 'admin-sub-view active' : 'admin-sub-view';
+  document.getElementById('admin-view-stat').className = (tab === 'stat') ? 'admin-sub-view active' : 'admin-sub-view';
+  if (tab === 'stat') fetchCloudScoresAndRender();
+}
+
+function renderStudentTable() {
+  const tbody = document.getElementById('student-score-tbody');
+  let records = getRobotRecords();
+  records.sort((a, b) => b.score - a.score || a.wrongCount - b.wrongCount);
+  tbody.innerHTML = '';
+
+  records.forEach((r, idx) => {
+    let rankText = `${idx + 1}위`;
+    if (idx === 0) rankText = "🥇 1위";
+    else if (idx === 1) rankText = "🥈 2위";
+    else if (idx === 2) rankText = "🥉 3위";
+
+    tbody.innerHTML += `
+      <tr>
+        <td><b>${rankText}</b> (${r.id})</td>
+        <td>${r.name}</td>
+        <td style="color:${r.score >= 80 ? '#34d399' : (r.score > 0 ? '#fbbf24' : '#94a3b8')}; font-weight:800;">${r.score}점</td>
+        <td style="color:#f87171;">${r.wrongCount}개</td>
+        <td style="color:#94a3b8; font-size:11px;">${r.date}</td>
+      </tr>
+    `;
+  });
+}
+
+function exportToCSV() {
+  let records = getRobotRecords();
+  records.sort((a, b) => b.score - a.score || a.wrongCount - b.wrongCount);
+
+  let csvContent = "\uFEFF순위,학번,이름,점수,오답수,응시일시\n";
+  records.forEach((r, idx) => {
+    csvContent += `"${idx + 1}위","${r.id}","${r.name}",${r.score},${r.wrongCount},"${r.date}"\n`;
+  });
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", `안전골든벨_로봇전기과_STEP50문항_성적표_${new Date().toISOString().slice(0,10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+async function clearStudentRecords() {
+  if (confirm("정말로 모든 로봇전기과 학생들의 점수를 0점으로 초기화하시겠습니까?")) {
+    const zeroList = OFFICIAL_ROBOT_STUDENTS.map(s => ({ ...s, score: 0, wrongCount: 0, date: "대기 중" }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(zeroList));
+    renderAllLeaderboards();
+    renderStudentTable();
+  }
+}
+
+function enterQuizAsAdmin() {
+  document.getElementById('admin-area').style.display = 'none';
+  document.getElementById('main-area').style.display = 'block';
+  document.getElementById('user-display-badge').className = 'badge badge-admin';
+  document.getElementById('user-display-badge').innerText = `👑 관리자: 변귀섭 (2500)`;
+  document.getElementById('card-user-name').innerText = `변귀섭 관리자`;
+  renderAllLeaderboards();
+  startFullQuiz();
+}
+
+function logoutAdmin() {
+  currentUser = { id: "", name: "", isAdmin: false };
+  document.getElementById('user-id').value = '';
+  document.getElementById('user-name').value = '';
+  document.getElementById('admin-area').style.display = 'none';
+  document.getElementById('main-area').style.display = 'none';
+  if (isPastDeadline()) {
+    document.getElementById('closed-area').style.display = 'block';
+    renderClosedLeaderboard();
+  } else {
+    document.getElementById('login-area').style.display = 'block';
+    renderAllLeaderboards();
+  }
+}
+
+function downloadCertificate() {
+  const canvas = document.getElementById('cert-canvas');
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.lineWidth = 10;
+  ctx.strokeStyle = '#d97706';
+  ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#f59e0b';
+  ctx.strokeRect(25, 25, canvas.width - 50, canvas.height - 50);
+
+  ctx.fillStyle = '#b45309';
+  ctx.font = 'bold 30px Pretendard, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('안 전 골 든 벨 수 료 증', canvas.width / 2, 80);
+
+  ctx.fillStyle = '#64748b';
+  ctx.font = 'bold 15px Pretendard, sans-serif';
+  ctx.fillText('2026 서울지역 직업계고 산업안전보건 골든벨 (STEP 50문항)', canvas.width / 2, 115);
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#1e293b';
+  ctx.font = 'bold 17px Pretendard, sans-serif';
+  ctx.fillText(`소    속 :  유한공업고등학교 로봇전기과`, 70, 175);
+  ctx.fillText(`학    번 :  ${currentUser.id}`, 70, 208);
+  ctx.fillText(`성    명 :  ${currentUser.name}`, 70, 241);
+  ctx.fillText(`최종점수 :  ${score}점`, 70, 274);
+
+  ctx.font = '15px Pretendard, sans-serif';
+  ctx.fillStyle = '#334155';
+  ctx.fillText('위 학생은 2026 서울지역 직업계고 안전골든벨 교육과정을', 70, 330);
+  ctx.fillText('성실히 이수하고 우수한 성적으로 수료하였음을 증명합니다.', 70, 360);
+
+  ctx.font = '14px Pretendard, sans-serif';
+  ctx.fillStyle = '#64748b';
+  ctx.fillText('발급일자: 2026. 08. 31.', 70, 425);
+  ctx.textAlign = 'right';
+  ctx.fillText('한국산업안전보건공단 / 로봇전기과', canvas.width - 70, 425);
+
+  ctx.save();
+  ctx.translate(canvas.width - 130, 350);
+  ctx.rotate(-10 * Math.PI / 180);
+  ctx.strokeStyle = '#dc2626';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(0, 0, 32, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = '#dc2626';
+  ctx.font = 'bold 13px Pretendard, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('안 전', 0, -4);
+  ctx.fillText('인 증', 0, 15);
+  ctx.restore();
+
+  const link = document.createElement('a');
+  link.download = `안전골든벨_수료증_${currentUser.id}_${currentUser.name}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateDeadlineCounter();
+  setInterval(updateDeadlineCounter, 1000);
+  checkAndApplyLock();
+  fetchCloudScoresAndRender();
+  setInterval(fetchCloudScoresAndRender, 5000);
+});
+</script>
+</body>
+</html>

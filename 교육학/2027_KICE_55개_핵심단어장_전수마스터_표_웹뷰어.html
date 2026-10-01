@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2027 KICE 55개 핵심단어장 전수 마스터 표 (학교 PC/모바일 뷰어)</title>
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --border-color: #cbd5e1;
+      --accent-yellow: #facc15;
+      --accent-yellow-dark: #b45309;
+      --accent-blue: #0284c7;
+      --accent-emerald: #059669;
+      --table-header-bg: #1e293b;
+      --table-header-text: #f8fafc;
+      --row-hover: #f1f5f9;
+      --row-alt: #f8fafc;
+    }
+
+    body.dark-mode {
+      --bg-body: #090d16;
+      --bg-surface: #151f32;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border-color: #334155;
+      --accent-yellow: #facc15;
+      --accent-yellow-dark: #fef08a;
+      --accent-blue: #38bdf8;
+      --accent-emerald: #34d399;
+      --table-header-bg: #0f172a;
+      --table-header-text: #facc15;
+      --row-hover: #1e293b;
+      --row-alt: #0d1524;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, "Malgun Gothic", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      padding: 20px;
+      line-height: 1.6;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 span {
+      color: var(--accent-yellow-dark);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-blue);
+      color: #fff !important;
+      border-color: var(--accent-blue);
+    }
+
+    .btn-primary:hover {
+      background-color: #0369a1;
+    }
+
+    /* Controls Bar */
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-surface);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background-color: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    /* Table Styles */
+    .table-wrapper {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--table-header-bg);
+      color: var(--table-header-text);
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--row-alt);
+    }
+
+    tr:hover {
+      background-color: var(--row-hover);
+    }
+
+    .col-num {
+      width: 60px;
+      text-align: center;
+      font-weight: 800;
+      color: var(--accent-blue);
+    }
+
+    .col-day {
+      width: 70px;
+      text-align: center;
+    }
+
+    .badge-day {
+      background-color: #e2e8f0;
+      color: #334155;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    body.dark-mode .badge-day {
+      background-color: #334155;
+      color: #cbd5e1;
+    }
+
+    .col-term {
+      width: 260px;
+      font-weight: 800;
+      color: var(--accent-yellow-dark);
+      font-size: 15px;
+    }
+
+    .col-trigger {
+      width: 320px;
+      color: #92400e;
+      background-color: rgba(254, 240, 138, 0.2);
+      border-left: 3px solid var(--accent-yellow);
+      padding: 10px 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+    }
+
+    body.dark-mode .col-trigger {
+      color: #fef08a;
+      background-color: rgba(250, 204, 21, 0.08);
+    }
+
+    .col-mechanism {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Print Styles */
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+
+    @media print {
+      body {
+        background-color: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      thead {
+        display: table-header-group;
+      }
+
+      header, .controls, .btn-group, .filter-bar {
+        display: none !important;
+      }
+
+      .table-wrapper {
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      th {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #000 !important;
+      }
+
+      td {
+        border: 1px solid #cbd5e1 !important;
+        color: #000 !important;
+      }
+
+      .col-trigger {
+        background-color: #fef9c3 !important;
+        color: #854d0e !important;
+        border-left: 3px solid #facc15 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Header -->
+    <header>
+      <div class="header-top">
+        <h1>🟡 2027 KICE <span>55개 핵심단어장</span> 전수 마스터 표</h1>
+        <div class="btn-group">
+          <button class="btn" onclick="toggleDarkMode()">🌓 다크/라이트 모드</button>
+          <button class="btn btn-primary" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 키워드, 학자명, 지문 힌트 실시간 검색 (예: 틱, 숀 셰이, 공황, 탈숙고, 스킬벡)...">
+        <button class="filter-btn active" onclick="filterCategory('all')">전체 55개</button>
+        <button class="filter-btn" onclick="filterCategory('교육학')">🏛️ 교육학 20</button>
+        <button class="filter-btn" onclick="filterCategory('전공상담')">🛋️ 전공상담 35</button>
+      </div>
+    </header>
+
+    <!-- Table Wrapper -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-num">번호</th>
+            <th class="col-day">Day</th>
+            <th class="col-term">KICE 공인 정식 표제어</th>
+            <th>지문 속 방아쇠 힌트 (Trigger)</th>
+            <th>1초 만점 작동 기제 및 해설</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Dynamically Injected Rows -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    const data = [
+      // 교육학 20선
+      { id: 1, day: "Day 1", category: "교육학", title: "스킬벡 상황 분석 (Situation Analysis)", trigger: "지역사회 다문화/학부모 요구(외적) ➕ 학생/교사/시설(내적) 종합 진단", mechanism: "학교의 특수성을 고려한 학교중심 교육과정(SBCD) 제1단계로서 현장 적합성 확보" },
+      { id: 2, day: "Day 1", category: "교육학", title: "타바 귀납적 모형 (학습자 요구 진단)", trigger: "국가의 일방적 하향식 거부, 교사가 교실에서 학생 결손 진단부터 시작", mechanism: "교사가 단원을 개발하여 전체로 확장하는 상향식(귀납적) 현장 적합성 극대화" },
+      { id: 3, day: "Day 1", category: "교육학", title: "백워드 설계 모형 (Backward Design)", trigger: "평가 계획을 수업설계보다 먼저 수립, '영속적 이해(Big Idea)' 강조", mechanism: "GRASPS 실제적 수행과제를 통한 전이력 및 핵심 개념의 심층 이해" },
+      { id: 4, day: "Day 1", category: "교육학", title: "아이즈너 표현적 결과 & 영교육과정", trigger: "사전에 정해지지 않은 창의적 산출물 ➕ 학교가 의도적으로 배제한 지식", mechanism: "교사의 교육적 감식안과 교육비평을 통한 질적 평가 및 전인적 교육과정 회복" },
+      { id: 5, day: "Day 1", category: "교육학", title: "메지로우 변혁적 학습 이론", trigger: "무의식적 편견과 왜곡된 전제를 해체하기 위한 딜레마 제시 및 비판적 반성", mechanism: "자신의 관점틀(Frame of Reference)을 성찰하여 인지적 관점 전환 유도" },
+
+      { id: 6, day: "Day 2", category: "교육학", title: "조나센 CLEs 비계설정 및 점진적 철회", trigger: "AI 코스웨어 맞춤형 힌트 제공 후 학생 역량 향상 시 지원을 점차 줄임", mechanism: "모델링, 코칭, 스캐폴딩 제공 후 점진적 철회(Fading)로 자기주도학습 유도" },
+      { id: 7, day: "Day 2", category: "교육학", title: "켈러 ARCS 모형 (자신감 C 전략)", trigger: "난이도를 단계화하여 작은 성공 경험 누적 ➔ 학습 통제감 부여", mechanism: "주의(A), 관련성(R), 자신감(C), 만족감(S)의 4대 동기 유발 및 유지 전략" },
+      { id: 8, day: "Day 2", category: "교육학", title: "렌줄리 3고리 모형 & 심화학습 3단계", trigger: "평균 이상의 일반지능 ➕ 창의성 ➕ 과제집착력의 상호작용", mechanism: "1단계(일반탐색) ➔ 2단계(집단훈련) ➔ 3단계(실제 문제 개별/소집단 심화연구)" },
+      { id: 9, day: "Day 2", category: "교육학", title: "비고츠키 근접발달영역(ZPD) & 역동적 평가", trigger: "정적 총괄평가 거부, 교사-학생 상호작용 및 힌트를 주며 잠재력 평가", mechanism: "실제적 발달수준과 잠재적 발달수준 사이의 ZPD를 측정하는 역동적 평가" },
+      { id: 10, day: "Day 2", category: "교육학", title: "형성평가 & 효과적 피드백", trigger: "수업 도중 학생의 학습 결손을 진단하고 교수·학습 개선 정보 제공", mechanism: "단순 정오답 제시를 넘어 다음 단계의 구체적 학습 개선 경로 안내" },
+
+      { id: 11, day: "Day 3", category: "교육학", title: "성장참조평가 & 능력참조평가", trigger: "초기 능력 대비 얼마나 발전했는지(성장) / 자신의 능력 발휘 정도(능력)", mechanism: "개별화 교육에 적합하나, 이미 우수한 학생의 학습동기 저하 한계점 존재" },
+      { id: 12, day: "Day 3", category: "교육학", title: "다차원 수행평가 루브릭 (Rubric)", trigger: "수행 수준별 도달 기준과 성취 특성을 명시한 다차원 채점 기준표", mechanism: "관찰 가능한 행동 용어로 명확히 기술하여 채점자 간 신뢰도 확보" },
+      { id: 13, day: "Day 3", category: "교육학", title: "메이거 3요소 (조건/수락기준/도착점행동)", trigger: "수업목표 진술 시 '조건, 수락기준(준거), 도착점 행동' 명시", mechanism: "수업목표와 평가문항 간의 일치도(내용타당도)를 극대화함" },
+      { id: 14, day: "Day 3", category: "교육학", title: "겟젤스-구바 사회체계 모형", trigger: "학교 조직의 규범적(제도·역할) 차원과 개인적(인성·욕구) 차원의 갈등", mechanism: "조직의 목표와 개인의 인성 욕구가 조화를 이루는 역동적 상호작용" },
+      { id: 15, day: "Day 3", category: "교육학", title: "세르지오바니 도덕적 리더십 & 서번트", trigger: "교장의 지위 권력 탈피, 도덕적 가치와 사명감으로 교사를 섬김", mechanism: "교사를 전문인으로 존중하고 자율성을 부여하여 학교의 도덕적 공동체화" },
+
+      { id: 16, day: "Day 4", category: "교육학", title: "분산적 리더십 (Distributed Leadership)", trigger: "교장 1인의 독점이 아닌 교원·행정가 간 지도성 분담 및 상호작용", mechanism: "학교 구성원들의 전문성을 네트워크로 연결하여 학교 혁신 역량 극대화" },
+      { id: 17, day: "Day 4", category: "교육학", title: "전문적 학습공동체(PLC) & 이완결합 극복", trigger: "교실에 고립된 교사 문화를 극복하기 위한 공동 수업설계 및 수업나눔", mechanism: "협력적 전문성을 통해 수업 개선을 이루고 학교를 학습조직화함" },
+      { id: 18, day: "Day 4", category: "교육학", title: "호이-타터 참여적 의사결정 모형", trigger: "교사의 관련성(관심)과 전문성을 진단하여 수용영역 밖일 때 권한 위임", mechanism: "관련성과 전문성이 모두 높은 영역에서는 교사에게 실질적 의사결정 위임" },
+      { id: 19, day: "Day 4", category: "교육학", title: "드윅 성장 마인드셋 & 귀인 이론", trigger: "지능은 노력으로 변화 가능하다는 신념 ➕ 실패를 '노력 부족'에 귀인", mechanism: "실패를 배움의 과정으로 인식하여 과제 도전성과 회복탄력성 극대화" },
+      { id: 20, day: "Day 4", category: "교육학", title: "교권 보호 제도 & 학교 안전망", trigger: "악성 민원 대응 및 교원의 정당한 교육활동 보호를 위한 지원", mechanism: "학교 교권보호위원회 엄정 가동 및 교원 연구시간·안전한 교육환경 보장" },
+
+      // 전공상담 35선
+      { id: 21, day: "Day 5", category: "전공상담", title: "설리반 나 아닌 나 (Not-me) & 참여적 관찰자", trigger: "극심한 공포/해리로 추방된 기괴한 자아상 ➕ 따뜻한 개입과 객관적 분석", mechanism: "좋은 나, 나쁜 나, 나 아닌 나(Not-me) 분화 & 상담자의 참여적 관찰자 태도" },
+      { id: 22, day: "Day 5", category: "전공상담", title: "머레이 욕구-압력 이론 (TAT)", trigger: "개인 내적 동기(욕구)와 환경적 제약(압력)의 상호작용으로 주제 형성", mechanism: "주제통각검사(TAT) 그림을 통해 억압된 성취·친애·권력 욕구 투사 분석" },
+      { id: 23, day: "Day 5", category: "전공상담", title: "조하리의 창 4대 영역 (개방/맹목/은폐/미지)", trigger: "자기개방(피드백 요청)을 통해 개방 영역을 넓히고 맹목·은폐 영역 축소", mechanism: "효율적인 대인관계 소통을 위해 '개방 영역(Open area)'을 극대화함" },
+      { id: 24, day: "Day 5", category: "전공상담", title: "융 분석심리학 (페르소나 & 그림자)", trigger: "사회적 가면(페르소나)의 순기능 ➕ 가면 동일시 부작용 ➕ 무의식 그림자", mechanism: "어두운 측면인 그림자(Shadow)를 의식화하여 개성화(자아실현) 달성" },
+      { id: 25, day: "Day 5", category: "전공상담", title: "수퍼바이저 3대 역할 (교사/상담자/컨설턴트)", trigger: "수련생 수준에 따라 교수(교사), 상담자(불안 탐색), 동등한 자문 수행", mechanism: "버나드(Bernard) 차별 모델에 따른 맞춤형 수퍼비전 역할 전환" },
+
+      { id: 26, day: "Day 6", category: "전공상담", title: "TCI 성격 척도 (자율성 SD & 연대감 CO)", trigger: "자기주도적 목표 선택과 책임(자율성) ➕ 타인 존엄성 수용과 협력(연대감)", mechanism: "타고난 기질을 넘어 성격 성숙도와 사회적 적응력을 판별하는 핵심 지표" },
+      { id: 27, day: "Day 6", category: "전공상담", title: "웩슬러 일반능력지수 (GAI vs FSIQ)", trigger: "불안/우울로 WMI·PSI가 급락하여 FSIQ가 왜곡될 때 순수 잠재력 대체", mechanism: "언어이해(VCI), 시공간(VSI), 유동추론(FRI) 3대 지표로만 산출하는 일반능력지수" },
+      { id: 28, day: "Day 6", category: "전공상담", title: "로샤 외향형(EB) & D점수 스트레스 과부하", trigger: "M < WSumC (외부 정서 대처) ➕ D < 0 (es 급증으로 통제력 상실 위기)", mechanism: "경험균형(EB) 외향형 성격 ➕ 자원 부족으로 인한 '스트레스 과부하' 상태 판정" },
+      { id: 29, day: "Day 6", category: "전공상담", title: "강박장애 (자아이질) vs 성격장애 (자아동질) & ERP", trigger: "고통/벗어나길 원함(자아이질) vs 완벽주의가 옳다고 확신(자아동질) & 손씻기 차단", mechanism: "침투사고 노출 후 강박행동을 방지하여 불안을 자연 소거(Extinction)시킴" },
+      { id: 30, day: "Day 6", category: "전공상담", title: "신체증상장애 vs 질병불안장애 감별", trigger: "실제 극심한 신체 통증에 몰두 vs 신체 증상 없이 '암 걸렸다'며 병원 순회", mechanism: "실제 신체 고통 호소가 존재하는가(신체증상) vs 증상 없이 질병 공포인가(질병불안)" },
+
+      { id: 31, day: "Day 7", category: "전공상담", title: "공황장애 (파국적 오해석/내수용성) vs 광장공포증", trigger: "심장박동 보고 '죽는다' 파국 해석 ➕ 빨대 고의 유발 ➕ 탈출/도움 불가 회피", mechanism: "파국적 오해석 교정 ➕ 내수용성 노출 둔감화 ➕ 광장공포증(탈출/도움 곤란) 감별" },
+      { id: 32, day: "Day 7", category: "전공상담", title: "경계선 성격장애 vs 의존성 성격장애 감별", trigger: "버림받는 두려움에 분노/자해 vs 버림받는 두려움에 무조건 굴종/순종", mechanism: "감정 기복과 분노 표출(경계선) vs 수동적 복종과 돌봄 갈구(의존성) 감별" },
+      { id: 33, day: "Day 7", category: "전공상담", title: "해리성 기억상실 vs 해리성 정체성 장애", trigger: "외상 사건 관련 중요 정보만 선택적 망각 vs 2개 이상의 뚜렷한 다중 인격", mechanism: "심리적 외상 충격으로 인한 단순 기억 소실 vs 다중 정체성 분열 감별" },
+      { id: 34, day: "Day 7", category: "전공상담", title: "외상 착지 기법 (Grounding) & 적응장애", trigger: "플래시백 패닉 시 오감(5-4-3-2-1) 현실 복귀 ➕ 스트레스 후 3개월 발병/6개월 종료", mechanism: "오감 자극 '지금-여기' 착지 기법 ➕ 적응장애 공식 진단 기간(3개월/6개월)" },
+      { id: 35, day: "Day 7", category: "전공상담", title: "사회적(실용적) 의사소통장애 vs 자폐스펙트럼", trigger: "대화 주고받기/반어법 오해 등 화용론 결함 vs 상동증(반복 행동 RRB) 동반", mechanism: "상동 행동(RRB) 유무로 사회적(실용적) 의사소통장애와 자폐스펙트럼장애 감별" },
+
+      { id: 36, day: "Day 8", category: "전공상담", title: "뚜렛장애 vs 지속성(만성) 틱장애 & HRT", trigger: "음성+운동 동시 1년 이상(뚜렛) vs 한 가지만 1년 이상 ➕ 전조충동/반대근육 수축", mechanism: "뚜렛장애 감별 ➕ 전조충동 자각 후 경쟁반응을 수행하는 습관반전훈련(HRT)" },
+      { id: 37, day: "Day 8", category: "전공상담", title: "적대적 반항장애 (ODD) vs 품행장애 (CD) & DRO", trigger: "단순 권위 반항 vs 타인 신체/재산 침해 비행 ➕ 문제행동 안 했을 때 보상", mechanism: "규범 저항(ODD) vs 법률 위반(CD) 감별 ➕ 무반응 차별강화인 다른 행동 차별강화(DRO)" },
+      { id: 38, day: "Day 8", category: "전공상담", title: "프랑클 탈숙고 (Dereflection) 3단계 기제", trigger: "발표 떨림 등 증상에 쏠린 과잉주의 차단 ➔ 연설의 의미와 가치로 주의 전환", mechanism: "과잉주의 차단 ➔ 유의미한 가치로 전환 ➔ 예기불안 악순환 해소의 3단 기제" },
+      { id: 39, day: "Day 8", category: "전공상담", title: "헤일리 역설적 지시 (증상 처방)", trigger: "싸우는 부부에게 '매일 밤 15분씩 일부러 더 격렬하게 싸워라' 지시", mechanism: "저항을 우회하여 증상을 고의로 반복하게 함으로써 스스로 통제 가능함을 체득" },
+      { id: 40, day: "Day 8", category: "전공상담", title: "보웬 자기분화 (0~100점) & 탈삼각화", trigger: "사고와 감정 분리 수준 ➕ 부부 싸움에 자녀 끌어들이는 삼각구조 해체", mechanism: "원가족 융합 탈피 ➕ 상담자의 철저한 '정서적 중립성'을 통한 탈삼각화" },
+
+      { id: 41, day: "Day 9", category: "전공상담", title: "미누친 명확한/경직된/혼란된 경계선 & 실연화", trigger: "유리된 가족(경직) / 밀착된 가족(혼란) ➕ 갈등 장면을 상담실에서 재연", mechanism: "명확한 경계선 확립 ➕ 상담실에서 실제 상호작용을 재연하는 실연화(Enactment)" },
+      { id: 42, day: "Day 9", category: "전공상담", title: "해결중심 방문형 내담자 & 기적 질문", trigger: "억지로 끌려와 '문제 없어요' 불평 ➕ '자는 사이 기적이 일어나 해결된다면?'", mechanism: "불평 수용으로 신뢰 형성 ➔ 기적 질문을 통해 해결된 미래 상상 및 희망 유발" },
+      { id: 43, day: "Day 9", category: "전공상담", title: "사티어 일치형 (자기/타인/상황) & 가족조각", trigger: "내면 감정, 상대방, 현실 상황 3요소 온전히 존중 ➕ 자세와 공간을 조각상 배치", mechanism: "회유/비난/초이성/산만 극복 ➔ 가족조각을 통한 무의식적 의사소통 역동 시각화" },
+      { id: 44, day: "Day 9", category: "전공상담", title: "REBT 타인 당위성 & 실증적 논박 & 수치심 공격", trigger: "'친구는 친절해야만 해' ➕ '그 증거가 어디 있나?' ➕ 짝짝이 양말 신고 걷기", mechanism: "타인 당위성 해체 ➔ 사실/증거 질문(실증적 논박) ➔ 수치심 공격 행동 연습" },
+      { id: 45, day: "Day 9", category: "전공상담", title: "아론 벡 이분법/재앙화 & 하향 화살표 기법", trigger: "'100점 아니면 실패다' ➕ '만약 그 생각이 사실이라면 무엇을 의미합니까?'", mechanism: "자동적 사고 뒤에 깊이 뿌리박힌 핵심 신념(Core Beliefs)을 파헤치는 하향 화살표" },
+
+      { id: 46, day: "Day 10", category: "전공상담", title: "게슈탈트 반전 (Retroflection) & 빈의자 기법", trigger: "분노를 타인에게 못 내고 자신에게 돌려 자해 ➕ 두 의자에 앉아 양극 대화", mechanism: "타인에게 향할 에너지 자신에게 회귀(반전) ➔ 빈의자 기법을 통한 내면 양극성 통합" },
+      { id: 47, day: "Day 10", category: "전공상담", title: "Sue 다문화 역량 3차원 & 미세공격", trigger: "상담자의 인식(태도), 지식, 기술 3차원 ➕ 일상 속 은밀한 차별 언행(미세공격)", mechanism: "다문화 내담자의 문화적 배경 존중 및 미세공격(Microaggression) 자각과 개입" },
+      { id: 48, day: "Day 10", category: "전공상담", title: "수퍼 생애공간 9역할 4무대 (역할 통합) & CMI", trigger: "4대 무대 9가지 다중 역할 갈등 조율 ➕ 타인에 의존 않고 주체적 진로 선택", mechanism: "역할 통합(Role Integration) 능력 ➕ CMI 태도 척도 중 '독립성(Independence)'" },
+      { id: 49, day: "Day 10", category: "전공상담", title: "홀랜드 계측성 (Calculus / 육각형 모델)", trigger: "RIASEC 육각형에서 인접한 유형은 유사성 높고, 대각선 반대는 유사성 낮음", mechanism: "육각형 거리에 따라 성격-환경 간 유사성 반비례 관계를 설명하는 계측성" },
+      { id: 50, day: "Day 10", category: "전공상담", title: "해리스 4대 생활자세 (I+U+ 자기긍정-타인긍정)", trigger: "'나도 옳고 너도 옳다'는 가장 성숙하고 생산적인 개방적 생활자세", mechanism: "I-U+(자기부정 타인긍정), I+U-(자기긍정 타인부정), I-U-(자기부정 타인부정) 극복" },
+
+      { id: 51, day: "Day 11", category: "전공상담", title: "크룸볼츠 계획된 우연 5대 기술 & SCCT", trigger: "우연을 기회로 바꾸는 5대 기술(호인융낙위) ➕ 자기효능감/결과기대/개인목표", mechanism: "호기심/인내심/융통성/낙관성/위험감수 ➕ SCCT 반두라 3대 핵심 변인 통합" },
+      { id: 52, day: "Day 11", category: "전공상담", title: "MMPI SUI 척도 T $\ge$ 78 & 3대 상위차원 (H-O)", trigger: "SUI T $\ge$ 78 자살 실행 임박 ➕ EID(정서고통), THD(현실검증력 손상), BXD(비행)", mechanism: "학부모 통지 및 병원 긴급연계 ➕ 정서부전, 사고부전(망상/환각), 행동화부전 판독" },
+      { id: 53, day: "Day 11", category: "전공상담", title: "숀 셰이 (Shawn Shea) CASE 자살 사정 4단계", trigger: "최근 48시간 ➔ 지난 2달 ➔ 과거 평생 ➔ 상담실 지금-여기 시계열 사정", mechanism: "⏱️ 【제·최·과·즉】 (제시 사건 ➔ 최근 사건 ➔ 과거 사건 ➔ 즉각 사건)" },
+      { id: 54, day: "Day 11", category: "전공상담", title: "길리랜드 위기개입 6단계 (정안지 대계참)", trigger: "3단계 공감/수용 전달(지지 제공) ➕ 6단계 안전계획서 서약(참여 유도)", mechanism: "🦀 【정안지 대계참】 (문제정의 ➔ 안전확보 ➔ 지지제공 ➔ 대안탐색 ➔ 계획수립 ➔ 참여유도)" },
+      { id: 55, day: "Day 11", category: "전공상담", title: "학폭법 17조 6호(출석정지)/보복가중 & 타라소프", trigger: "가해학생 6호 출석정지 ➕ 보복 시 한 단계 이상 가중 ➕ 살해 위협 의무", mechanism: "학교폭력예방법 가중 처분 ➕ 타라소프 2대 의무 (경고할 의무 ➕ 보호/신고할 의무)" }
+    ];
+
+    function renderTable(items) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="col-num">${item.id}</td>
+          <td class="col-day"><span class="badge-day">${item.day}</span></td>
+          <td class="col-term">🟡 ${item.title}</td>
+          <td class="col-trigger">${item.trigger}</td>
+          <td class="col-mechanism">${item.mechanism}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (cat === 'all') {
+        renderTable(data);
+      } else {
+        const filtered = data.filter(item => item.category === cat);
+        renderTable(filtered);
+      }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = data.filter(item => 
+        item.title.toLowerCase().includes(q) ||
+        item.trigger.toLowerCase().includes(q) ||
+        item.mechanism.toLowerCase().includes(q) ||
+        item.day.toLowerCase().includes(q)
+      );
+      renderTable(filtered);
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    // Initial Load
+    renderTable(data);
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+import os
+import re
+
+target_path = r'G:\내 드라이브\ANTI GRAVITY\전문상담임용고시\kice-300-wordbook\kice_55_core_compressed.html'
+
+with open(target_path, 'r', encoding='utf-8') as f:
+    html = f.read()
+
+# 1. Add CSS to respect line breaks (\n) natively via pre-wrap
+prewrap_css = """
+    /* ENABLE NEWLINES */
+    .answer-text, .card-q, .td-ans, .td-q, .kice-textarea { 
+      white-space: pre-wrap !important; 
+    }
+"""
+if "/* ENABLE NEWLINES */" not in html:
+    html = html.replace('</style>', prewrap_css + '\n  </style>')
+
+# 2. Add an item pre-processor during initialization to automatically insert \n after Korean sentence endings
+init_logic = """
+      // AUTO-FORMAT SENTENCE BREAKS
+      items.forEach(item => {
+        item.q = item.q.replace(/([가-힣](?:다|임|함|요)\.)\s+/g, '$1\\n');
+        item.ans = item.ans.replace(/([가-힣](?:다|임|함|요)\.)\s+/g, '$1\\n');
+      });
+"""
+if "AUTO-FORMAT SENTENCE BREAKS" not in html:
+    html = html.replace('setTimeout(() => { originalItems = [...items]; }, 500);', init_logic + '\n      setTimeout(() => { originalItems = [...items]; }, 500);')
+
+# 3. Update the Auto-Grader inside toggleFlip() to split by any whitespace but preserve it
+old_autograder = r"const words = officialAnswer\.split\(' '\);\s*let highlightedAns = '';\s*words\.forEach\(word => \{[\s\S]*?\}\);"
+
+new_autograder = """const tokens = officialAnswer.split(/(\\s+)/);
+          let highlightedAns = '';
+          tokens.forEach(word => {
+            if (word.trim() === '') {
+              highlightedAns += word; // preserve spaces and newlines
+              return;
+            }
+            const cleanWord = word.replace(/[.,!?()]/g, '');
+            if (cleanWord.length > 1 && userAnswer.includes(cleanWord)) {
+              highlightedAns += `<span style="color:#4ade80; font-weight:800;">${word}</span>`;
+            } else if (cleanWord.length <= 1) {
+              highlightedAns += `${word}`;
+            } else {
+              highlightedAns += `<span style="color:#f87171; text-decoration:underline;">${word}</span>`;
+            }
+          });"""
+
+html = re.sub(old_autograder, new_autograder, html)
+
+with open(target_path, 'w', encoding='utf-8') as f:
+    f.write(html)
+    
+print("Line break logic implemented.")

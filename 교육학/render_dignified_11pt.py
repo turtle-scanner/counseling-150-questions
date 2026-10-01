@@ -1,0 +1,146 @@
+import os, subprocess, shutil
+from pypdf import PdfReader
+
+edge_path = r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
+if not os.path.exists(edge_path):
+    edge_path = r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'
+
+base_dir = r'g:\내 드라이브\ANTI GRAVITY\시험준비(패턴)\교육학'
+desktop = r'C:\Users\LENOVO\Desktop'
+html_path = os.path.join(base_dir, '★[학교장앞_이의신청]_임용계약_해지_예정_통보에_대한_이의제기_및_효력정지_요구서_변귀섭.html')
+pdf_tmp = os.path.join(base_dir, 'tmp_dignified_11pt.pdf')
+
+def build_dignified_html(body_pt, line_ht, top_bot):
+    return f"""<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>임용계약 해지 예정 통보에 대한 정식 이의신청서 (품격완성본)</title>
+<style>
+  @page {{ size: A4 portrait; margin: {top_bot}mm 12mm {top_bot}mm 12mm; }}
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  body {{
+    font-family: 'Batang', '바탕', 'Malgun Gothic', serif;
+    color: #111; background: #fff;
+    font-size: {body_pt}pt; line-height: {line_ht};
+  }}
+  .title-area {{
+    text-align: center; border-bottom: 2px solid #0f172a;
+    padding-bottom: 3px; margin-bottom: 5px;
+  }}
+  .title-main {{
+    font-size: 16.5pt; font-weight: 900; letter-spacing: 1.5px;
+    font-family: 'Malgun Gothic', sans-serif; color: #0f172a;
+  }}
+  .title-sub {{
+    font-size: 9.6pt; font-weight: 700; color: #334155; margin-top: 1px;
+    font-family: 'Malgun Gothic', sans-serif;
+  }}
+  .table-box {{
+    width: 100%; border-collapse: collapse; margin-bottom: 5px;
+    font-size: 9.8pt; font-family: 'Malgun Gothic', sans-serif;
+  }}
+  .table-box th, .table-box td {{
+    border: 1px solid #334155; padding: 2px 6px; text-align: left;
+  }}
+  .table-box th {{
+    background: #f8fafc; font-weight: 800; width: 17%; text-align: center; color: #0f172a;
+  }}
+  .sec-head {{
+    font-family: 'Malgun Gothic', sans-serif; background: #0f172a;
+    color: #fff; font-size: 10.8pt; font-weight: 800;
+    padding: 1.5px 7px; margin: 3.5px 0 1.5px 0; border-radius: 2px;
+  }}
+  .p-text {{
+    text-align: justify; margin-bottom: 2px; text-indent: 6px;
+  }}
+  .highlight-dignity {{
+    border: 1.5px solid #0f172a; background: #f8fafc;
+    padding: 4px 9px; margin: 3px 0; font-family: 'Malgun Gothic', sans-serif;
+    font-size: 9.8pt; line-height: 1.30;
+  }}
+  .sign-area {{
+    margin-top: 4px; text-align: center; font-family: 'Malgun Gothic', sans-serif;
+    font-weight: 800; font-size: 10.8pt; line-height: 1.35;
+    border-top: 1.5px solid #0f172a; padding-top: 3px;
+  }}
+</style>
+</head>
+<body>
+
+<div class="title-area">
+  <div class="title-main">임용계약 해지 예정 통보에 대한 정식 이의신청서</div>
+  <div class="title-sub">(공무상 재해 요양권 보장 및 계약해지 처분 집행유예 요구)</div>
+</div>
+
+<table class="table-box">
+  <tr>
+    <th>수 &nbsp; 신</th>
+    <td><strong>유한공업고등학교장 (참조: 교감, 행정실장)</strong></td>
+    <th>발 &nbsp; 신</th>
+    <td><strong>교사 변귀섭 (전기과 / 2학년 5반 담임)</strong></td>
+  </tr>
+  <tr>
+    <th>통보 문서</th>
+    <td colspan="3"><strong>임용계약 해지 예정 통보서 (2026. 9. 29. 유한공업고등학교장 직인 발송)</strong></td>
+  </tr>
+  <tr>
+    <th>해지 예정일</th>
+    <td><strong>2026년 11월 5일자</strong></td>
+    <th>산재 접수번호</th>
+    <td><strong>근로복지공단 제2060-2026-4028537호 (2026. 9. 28. 접수)</strong></td>
+  </tr>
+</table>
+
+<div class="sec-head">1. 이의신청의 취지 : 공무상 재해에 따른 치료권 보장 및 처분의 부당성</div>
+<div class="p-text">
+  본인은 지난 10년간 성실히 교단을 지켜온 교원으로서, 2026학년도 2학년 교육여행(수학여행) 총괄 안전 인솔이라는 학교의 막중한 공무를 수행하던 중 발생한 불의의 사고로 현재 입원 치료를 이어가고 있습니다. 귀교가 2026년 9월 29일 자로 발송한 『임용계약 해지 예정 통보서』는 <strong>공무 수행 중 부상을 입고 치료 중인 교원에 대한 보호 의무와 법률상 강행규정에 명백히 위배</strong>되는바, 교육자로서의 긍지와 법률상 권리에 입각하여 정식 이의를 제기하며 본 처분의 집행을 즉각 유예할 것을 요구합니다.
+</div>
+
+<div class="sec-head">2. 이의신청의 정당한 법률적·교육적 사유</div>
+<div class="p-text">
+  <strong>가. 근로기준법 제23조 제2항에 따른 업무상 재해 요양 기간 중 해고 절대 금지 :</strong><br>
+  근로기준법 제23조 제2항은 <em>“사용자는 근로자가 업무상 부상 또는 질병의 요양을 위하여 휴업한 기간과 그 후 30일 동안은 해고하지 못한다”</em>고 규정하고 있습니다. 본인의 질병(F32.9, F43.2, F43.0, F41.0 및 사지 마비)은 교육여행 인솔 공무 중 발생한 명백한 ‘업무상 질병’인바, 법률상 요양 기간 중의 일방적 계약해지는 절대 무효입니다.
+</div>
+<div class="p-text">
+  <strong>나. 귀교 스스로 통보서 제7항에 명시한 ‘산재 승인사항에 따른 처분 변경’의 준수 :</strong><br>
+  귀교 또한 통보서 제7항에 <em>“아울러 선생님께서 근로복지공단에 최초요양급여신청(2026.9.28.) 승인사항에 따라 계약해지 부분이 달라질 수 있는 점도 함께 알려드립니다”</em>라고 명시하였습니다. 따라서 공단의 공식적인 산재 요양 승인 결정이 확정될 때까지 본 계약해지 절차는 신의성실의 원칙상 당연히 중단·유예되어야 마땅합니다.
+</div>
+<div class="p-text">
+  <strong>다. 공무 수행 중 부상 교원에 대한 교육적 신의칙 및 불리한 처우 금지 원칙 :</strong><br>
+  학교의 공식 인솔 업무를 헌신적으로 수행하다 상해를 입고 병상에 있는 교원에게, 보호와 치료 지원은커녕 사전 협의 없이 학급 담임 직무를 박탈하고 계약해지 통보서(등기번호: 11440-0504-3990)를 발송한 것은 교육기관으로서의 도의에 반할 뿐만 아니라 근로기준법 제76조의3(불리한 처우 금지)을 위반한 심히 부당한 처분입니다.
+</div>
+
+<div class="highlight-dignity">
+  <strong>■ 교육자로서의 정당한 요구사항 및 향후 절차 고지 :</strong><br>
+  1. 귀교는 통보서 제7항의 취지 및 노동관계법령에 따라, 근로복지공단의 산재 요양 승인 결정 시까지 <strong>2026년 11월 5일 자 임용계약 해지 처분의 집행을 즉각 '유예(효력 정지)' 처리</strong>해 주시기 바랍니다.<br>
+  2. 만약 정당한 사유 없이 11월 5일 자 계약해지를 강행할 경우, 본인은 교육자로서의 명예와 생존권을 수호하기 위하여 <strong>서울지방노동위원회 부당해고 구제신청 및 고용노동청, 서울특별시교육청 등 관계 감독기관을 통한 모든 법적 권리구제 절차를 정정당당하게 진행</strong>할 것임을 엄중히 고지합니다.
+</div>
+
+<div class="sign-area">
+  2026년 &nbsp;&nbsp;&nbsp; 10월 &nbsp;&nbsp;&nbsp; 01일 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 이의신청인 (교사) : &nbsp;&nbsp; <strong>변 &nbsp; 귀 &nbsp; 섭</strong> &nbsp;&nbsp; (서명 또는 인)<br>
+  <span style="font-size:12.5pt; font-weight:900; letter-spacing:1px; display:inline-block; margin-top:2px;">유한공업고등학교장 귀하</span>
+</div>
+
+</body>
+</html>
+"""
+
+# Let's test with body 11.0pt, line-height 1.29, margins 6mm
+for b_sz in [11.0, 10.8, 10.5]:
+    c = build_dignified_html(b_sz, 1.28, 6.0)
+    with open(html_path, 'w', encoding='utf-8') as f:
+        f.write(c)
+    udir = 'C:/Users/LENOVO/AppData/Local/Temp/edge_tmp_dignity'
+    subprocess.run([
+        edge_path, '--headless', '--disable-gpu', f'--user-data-dir={udir}',
+        '--no-pdf-header-footer', f'--print-to-pdf={pdf_tmp}', html_path
+    ], check=True)
+    pages = len(PdfReader(pdf_tmp).pages)
+    print(f'Dignified font {b_sz}pt -> pages: {pages}')
+    if pages == 1:
+        print(f'Perfect dignified fit at {b_sz}pt!')
+        dst_desktop = os.path.join(desktop, '★[학교장앞_이의신청서_A4한장완성본]_임용계약_해지_예정_통보에_대한_이의제기_및_효력정지_요구서_변귀섭.pdf')
+        shutil.copyfile(pdf_tmp, dst_desktop)
+        print('Copied to desktop successfully!')
+        break
