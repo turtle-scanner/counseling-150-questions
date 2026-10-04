@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>교육학 논술 50제 - 핵심 출제 포인트</title>
+<style>
+  * { box-sizing: border-box; }
+  body, html {
+    background: #121212;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+    font-size: 16px;
+    height: 100%;
+    overflow: hidden; 
+  }
+  .header-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 60px; background: #1e1e1e;
+    padding: 0 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; z-index: 1000;
+  }
+  .header-left { display: flex; align-items: center; gap: 0.5rem; }
+  .header-right { display: flex; align-items: center; gap: 1rem; }
+  
+  .mode-btn { background: #333; color: #fff; border: 1px solid #555; padding: 0.5rem 0.8rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; text-decoration:none; }
+  .mode-btn.active { background: #facc15; color: #000; border-color: #facc15; }
+  .subject-btn { background: #f87171; color: #fff; border: none; padding: 0.5rem 0.8rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; text-decoration:none; }
+  
+  .content { position: absolute; top: 60px; bottom: 0; left: 0; right: 0; overflow-y: auto; padding: 1rem; max-width: 900px; margin: 0 auto; transition: transform 0.3s ease-out; }
+  
+  .question-box { background: #1e1e1e; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem; min-height: calc(100vh - 100px); display: flex; flex-direction: column; }
+  h2.q-title { font-size: 1.3rem; margin-top: 0; color: #facc15; border-bottom: 1px dashed #444; padding-bottom: 0.5rem; }
+  .label { color: #60a5fa; font-weight: bold; margin-top: 1rem; display: inline-block; }
+  .text-content { white-space: pre-wrap; word-break: break-word; background: #000; padding: 1rem; border-radius: 4px; margin-top: 0.5rem; border: 1px solid #333; flex-grow: 1; font-size: 1.1rem; }
+  .answer-text { color: #facc15; font-weight: bold; }
+  
+  .hidden-answer { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #444; }
+  .show-answer-btn { background: #2563eb; color: #fff; border: none; padding: 0.8rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 1rem; width: 100%; font-size:1.1rem; }
+  
+  .test-textarea { width: 100%; height: 120px; background: #000; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 1rem; font-family: inherit; font-size: 1rem; margin-top: 0.5rem; resize: vertical; }
+  .test-textarea:focus { outline: 2px solid #60a5fa; }
+  .test-controls { display: flex; justify-content: space-between; margin-top: 1rem; padding-bottom: 1rem; }
+  .nav-btn { background: #4b5563; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .check-btn { background: #059669; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+  
+  #timer { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #f87171; }
+  .swipe-hint { text-align: center; color: #888; font-size: 0.9rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<div class="header-bar">
+  <div class="header-left">
+    <button class="mode-btn active" id="btnTestMode" onclick="setMode('test')">1문제씩</button>
+    <button class="mode-btn" id="btnStudyMode" onclick="setMode('study')">전체보기</button>
+    <a href="index.html" class="subject-btn">◀ 전공 200제</a>
+  </div>
+  <div class="header-right">
+    <div style="font-size:0.9rem; display:flex; align-items:center;">
+      <span style="display:none; sm:display:inline;">글씨:</span> 
+      <input type="range" id="fontSizeRange" min="12" max="32" value="16" style="width: 60px;" />
+    </div>
+    <div id="timerContainer">남은시간: <span id="timer">60:00</span></div>
+  </div>
+</div>
+
+<div class="content" id="app"></div>
+
+<script>
+  const ITEMS = [{"id": 1, "cat": "교육과정", "sub": "타일러", "title": "01. 타일러(Tyler)의 합리적 교육과정 개발 모형", "passage": "[교육학 논술 출제 포인트]\n타일러가 제시한 교육과정 개발의 4가지 근본 질문(단계)을 순서대로 제시하고, 이 모형의 장점과 단점을 각각 1가지씩 서술하시오.", "answer": "1. 단계: 교육목표 설정 → 학습경험 선정 → 학습경험 조직 → 평가\n2. 장점: 어떤 교과나 수준에서도 적용할 수 있는 광범위한 유용성을 지닌다. / 목표 중심이므로 평가가 명확하다.\n3. 단점: 목표로 명시되지 않은 잠재적 교육과정이나 부수적 결과를 평가하기 어렵다.", "explanation": "타일러 모형은 교육과정 설계의 기본 틀(목표-선정-조직-평가)을 확립한 가장 고전적이고 처방적인 연역적 모형이다."}, {"id": 2, "cat": "교육과정", "sub": "워커", "title": "02. 워커(Walker)의 실제적 교육과정 개발 모형(숙의 모형)", "passage": "[교육학 논술 출제 포인트]\n워커가 주장한 교육과정 개발의 3단계를 명칭과 함께 간략히 설명하시오.", "answer": "1. 토대 다지기(강령, Platform): 참여자들이 자신의 신념, 가치, 교육관을 표출하여 공감대를 형성하는 단계.\n2. 숙의(Deliberation): 다양한 대안을 검토하고 토론하여 최선의 대안을 합의해 나가는 단계.\n3. 설계(Design): 숙의를 통해 합의된 내용을 바탕으로 실제 교육과정 프로그램을 제작하는 단계.", "explanation": "타일러의 모형이 교육과정이 '어떻게 만들어져야 하는가'를 처방했다면, 워커는 실제 현장에서 '어떻게 만들어지는가'를 묘사한 자연주의적 모형이다."}, {"id": 3, "cat": "교육과정", "sub": "백워드", "title": "03. 위긴스와 맥타이(Wiggins & McTighe)의 백워드(Backward) 설계 모형", "passage": "[교육학 논술 출제 포인트]\n백워드 설계 모형의 개발 절차 3단계를 쓰고, 이 모형이 강조하는 '이해(Understanding)'의 특징을 설명하시오.", "answer": "1. 절차: 바라는 결과 확인(목표 설정) → 수용 가능한 증거 결정(평가 계획) → 학습경험 및 교수 내용 계획.\n2. 이해: 영속적 이해(Enduring Understanding)를 목표로 하며, 학생이 배운 내용을 새로운 상황에 '설명, 해석, 적용, 관점, 공감, 자기지식'의 6가지 측면으로 전이할 수 있는 능력을 말한다.", "explanation": "목표 설정 직후에 '평가 계획'을 세우는 역방향 설계를 통해, 목표-평가-수업의 강력한 일치를 이끌어낸다."}, {"id": 4, "cat": "교육과정", "sub": "잠재적/영", "title": "04. 잠재적 교육과정과 영 교육과정", "passage": "[교육학 논술 출제 포인트]\n아이즈너(Eisner)가 제안한 영(Null) 교육과정의 개념을 쓰고, 잭슨(Jackson)의 잠재적(Hidden) 교육과정과의 차이점을 서술하시오.", "answer": "1. 영 교육과정: 학교가 의도적으로 가르치지 않거나 배제하여 학생들이 배울 기회를 잃게 된 교육 내용.\n2. 차이점: 잠재적 교육과정은 학교가 의도하지 않았으나 학교생활을 통해 학생들이 '은연중에 겪게 되는(배우게 되는)' 경험인 반면, 영 교육과정은 학교가 '의도적으로 가르치지 않은' 내용이다.", "explanation": "아이즈너는 학교가 무엇을 가르치지 않는가(영 교육과정)를 비판적으로 평가해야 한다고 주장했다."}, {"id": 5, "cat": "교육과정", "sub": "아이즈너", "title": "05. 아이즈너(Eisner)의 예술적 교육과정 모형", "passage": "[교육학 논술 출제 포인트]\n아이즈너가 타일러의 행동 목표를 비판하며 새롭게 제시한 2가지 목표 유형(문제해결 목표, 표현적 결과)의 개념을 서술하시오.", "answer": "1. 문제해결 목표: 어떤 문제를 해결해야 하는 조건은 주어지지만, 그 해결책은 학생마다 다양하게 나올 수 있는 목표.\n2. 표현적 결과(표현적 목표): 사전에 목표를 정하지 않고 어떤 활동(예: 박물관 견학)을 하는 과정이나 그 후에 얻게 되는 교육적 결과물.", "explanation": "아이즈너는 교육을 공장 생산라인이 아닌 예술적 과정으로 보고, 교사의 '교육적 감식안'과 '교육비평'을 강조했다."}, {"id": 6, "cat": "교육과정", "sub": "경험중심", "title": "06. 경험중심 교육과정과 학문중심 교육과정", "passage": "[교육학 논술 출제 포인트]\n존 듀이(Dewey)에 기반한 경험중심 교육과정의 단점을 보완하기 위해 등장한 학문중심 교육과정(브루너)의 핵심 개념인 '지식의 구조'와 '나선형 교육과정'을 설명하시오.", "answer": "1. 지식의 구조: 각 학문의 기저를 이루는 핵심적인 기본 개념과 원리들의 상호 관련성.\n2. 나선형 교육과정: 학생의 발달 단계에 맞춰 '지식의 구조'를 초등학교부터 고등학교까지 그 폭과 깊이를 심화시켜 반복적으로 나선형처럼 가르치는 방식.", "explanation": "학문중심 교육과정은 학생 스스로 지식의 구조를 발견하도록 하는 '발견학습'을 중시한다."}, {"id": 7, "cat": "교육평가", "sub": "평가유형", "title": "07. 진단평가, 형성평가, 총괄평가", "passage": "[교육학 논술 출제 포인트]\n수업 진행 과정 중에 스크리븐(Scriven)이 강조한 '형성평가'를 실시하는 목적 3가지를 교사와 학생 측면에서 서술하시오.", "answer": "1. 학생의 학습 진행 상황과 오류(오개념) 점검 및 교정적 피드백 제공.\n2. 학습 동기 유발 및 학습 곤란의 원인 진단.\n3. 교사의 교수 방법 및 수업 전략 개선을 위한 정보 수집.", "explanation": "형성평가는 점수 매기기가 목적이 아니라, 학습을 '형성(Forming)'해 나가는 조력적 역할이 핵심이다."}, {"id": 8, "cat": "교육평가", "sub": "참조준거", "title": "08. 규준참조평가와 준거참조평가", "passage": "[교육학 논술 출제 포인트]\n상대평가(규준참조평가)가 가진 교육적 한계를 지적하고, 절대평가(준거참조평가)가 학습동기에 미치는 긍정적 영향을 서술하시오.", "answer": "1. 상대평가의 한계: 학생들 간의 지나친 경쟁을 유발하며, 진정한 교육 목표 달성 여부(무엇을 알고 모르는지)를 파악하기 어렵다.\n2. 절대평가의 긍정적 영향: 정해진 성취기준(준거)만 달성하면 모두가 높은 평가를 받을 수 있으므로 협동학습이 촉진되고, 실패를 노력 부족으로 귀인하게 하여 과제집착력(내재적 동기)을 높인다.", "explanation": "현행 2022 개정 교육과정과 고교학점제는 철저한 준거참조평가(성취평가제)를 지향하고 있다."}, {"id": 9, "cat": "교육평가", "sub": "수행평가", "title": "09. 수행평가의 특징 및 루브릭(Rubric)", "passage": "[교육학 논술 출제 포인트]\n수행평가의 특징을 2가지 제시하고, 수행평가 채점 시 객관성과 신뢰도를 높이기 위해 사용하는 '루브릭(채점기준표)'의 유용성을 서술하시오.", "answer": "1. 수행평가의 특징: 실제적 과제를 수행하는 과정과 결과를 모두 평가한다. / 학생이 스스로 정답을 구성하고 창조해 내는 구성적 반응을 요구한다.\n2. 루브릭의 유용성: 채점 기준이 명확하여 교사의 주관적 편견을 막고 채점자 간 신뢰도를 높인다. / 학생에게 미리 제공할 경우 목표 도달을 위한 자기주도학습의 지침서 역할을 한다.", "explanation": "수행평가는 과정 중심 평가의 핵심적인 형태이다."}, {"id": 10, "cat": "교육평가", "sub": "평가도구", "title": "10. 타당도의 종류: 내용, 안면, 구인, 준거", "passage": "[교육학 논술 출제 포인트]\n교사가 출제한 중간고사 시험지가 수업 시간에 가르친 교육과정 목표와 내용을 충실히 대표하고 있는지를 평가하는 타당도의 명칭을 쓰고 그 확보 방안을 서술하시오.", "answer": "1. 명칭: 내용타당도 (Content Validity)\n2. 확보 방안: 이원목적분류표(내용과 행동으로 구성된 이원분류표)를 작성하여, 가르친 내용과 평가 문항이 정확히 일치하는지 교과 전문가(교사 동료)에게 검토를 받는다.", "explanation": "학교 현장에서 성취평가제를 제대로 운영하기 위해 가장 중요한 것이 평가 도구의 내용타당도이다."}, {"id": 11, "cat": "교육심리", "sub": "피아제", "title": "11. 피아제(Piaget)의 인지발달이론: 조절과 불평형", "passage": "[교육학 논술 출제 포인트]\n학생이 새로운 지식을 접했을 때 일어나는 인지적 갈등 상태(불평형)의 교육적 의미를 쓰고, 교사가 학생의 '조절(Accommodation)'을 촉진하기 위한 교수 전략을 제시하시오.", "answer": "1. 불평형의 의미: 기존의 인지 도식으로는 새로운 정보를 이해할 수 없어 당황하는 상태로, 인지 발달(학습)이 일어나는 필수적인 원동력이 된다.\n2. 교수 전략: 학생의 현재 수준보다 약간 어려운 과제나 기존 신념과 모순되는 자료(인지적 갈등 유발 발문)를 제시하여 스스로 도식을 수정(조절)하도록 유도한다.", "explanation": "피아제는 학습이 발달을 이끄는 것이 아니라, 발달(평형화 과정)이 학습의 전제 조건이라고 보았다."}, {"id": 12, "cat": "교육심리", "sub": "비고츠키", "title": "12. 비고츠키(Vygotsky)와 스캐폴딩(비계설정)", "passage": "[교육학 논술 출제 포인트]\n비고츠키의 인지발달이론에 근거하여 교사가 제공해야 할 '스캐폴딩(비계설정)'의 개념을 쓰고, 효과적인 비계설정의 원칙(또는 방법) 2가지를 서술하시오.", "answer": "1. 스캐폴딩의 개념: 아동이 혼자서는 해결할 수 없는 근접발달영역(ZPD) 내의 과제를 해결할 수 있도록 교사나 유능한 또래가 제공하는 일시적이고 적절한 지원 체계.\n2. 원칙(방법): 모델링(시범 보이기), 소리내어 생각하기, 질문과 힌트 제공. / 아동의 능력이 향상됨에 따라 지원을 점진적으로 줄여나가야(Fading) 한다.", "explanation": "비고츠키는 피아제와 달리 학습(사회적 상호작용)이 발달을 주도한다고 보았다."}, {"id": 13, "cat": "교육심리", "sub": "학습동기", "title": "13. 데시(Deci)의 자기결정성 이론(SDT)", "passage": "[교육학 논술 출제 포인트]\n학생의 내재적 동기를 높이기 위해 교사가 충족시켜 주어야 할 3가지 기본 심리적 욕구(자율성, 유능성, 관계성)를 학교 현장에 적용하는 구체적 방안을 각각 1가지씩 서술하시오.", "answer": "1. 자율성의 욕구: 학습 목표나 과제 선택권을 학생에게 부여하여 스스로 결정하게 한다.\n2. 유능성의 욕구: 학생 수준에 맞는 도전적 과제를 제시하고, 결과보다는 과정에 대한 구체적이고 긍정적인 정보적 피드백을 제공한다.\n3. 관계성의 욕구: 무조건적인 존중과 수용적인 학급 분위기를 조성하고 협동학습을 장려한다.", "explanation": "외적 보상(상벌)을 통제적 방식으로 사용하면 오히려 자율성을 해쳐 내재적 동기가 감소한다."}, {"id": 14, "cat": "교육심리", "sub": "학습동기", "title": "14. 와이너(Weiner)의 귀인이론과 학습된 무기력", "passage": "[교육학 논술 출제 포인트]\n학습된 무기력에 빠진 학생들의 전형적인 귀인 성향을 원인의 소재, 안정성, 통제 가능성 차원에서 설명하고, 이를 극복하기 위한 교사의 귀인 재훈련 전략을 서술하시오.", "answer": "1. 무기력 학생의 귀인: 실패의 원인을 '나의 능력 부족(내적, 안정적, 통제 불가능)'으로 귀인한다.\n2. 귀인 재훈련 전략: 실패를 능력 부족이 아니라 '노력 부족이나 부적절한 학습 전략(내적, 불안정적, 통제 가능)' 때문으로 귀인하도록 훈련시키고, 작은 성공 경험을 통해 자기효능감을 회복시킨다.", "explanation": "귀인은 결과에 대한 원인을 무엇으로 돌리느냐에 따라 다음 행동의 동기를 결정한다."}, {"id": 15, "cat": "교육심리", "sub": "지능", "title": "15. 가드너(Gardner)의 다중지능이론과 스턴버그(Sternberg)", "passage": "[교육학 논술 출제 포인트]\n가드너의 다중지능이론이 기존 전통적 지능이론(IQ)을 비판하며 내세운 핵심 주장 2가지를 쓰고, 이것이 교육과정에 시사하는 바를 서술하시오.", "answer": "1. 핵심 주장: 지능은 단일한 능력이 아니라 서로 독립적인 여러 영역(언어, 논리수학, 대인관계 등)으로 나뉜다. / 지능은 고정된 것이 아니라 교육과 환경에 의해 발달할 수 있다.\n2. 교육적 시사점: 학생마다 강점 지능이 다르므로, 획일적인 강의식 수업을 탈피하여 다양한 교수-학습 방법(프로젝트, 예술 융합 등)과 다면적 평가를 제공해야 한다.", "explanation": "스턴버그의 삼원지능이론(분석적, 창의적, 실용적 지능)과 함께 현대 지능 이론의 양대 산맥이다."}, {"id": 16, "cat": "교육방법", "sub": "교수설계", "title": "16. 딕과 캐리(Dick & Carey)의 체제적 교수설계 모형", "passage": "[교육학 논술 출제 포인트]\n딕과 캐리 모형에서 가장 먼저 수행해야 하는 1단계(요구 분석)의 개념을 쓰고, '형성평가' 단계에서 수행하는 활동을 서술하시오.", "answer": "1. 요구 분석(Needs Analysis): 현재 학생들의 상태와 기대하는 바람직한 상태 간의 격차(요구)를 파악하여 최종 교수 목표를 도출하는 과정.\n2. 형성평가 활동: 개발된 교수 프로그램 초안을 실제 교실에 적용하기 전에 1:1 평가, 소집단 평가, 현장 평가를 실시하여 프로그램의 문제점을 찾아 수정 및 보완한다.", "explanation": "체제적 교수설계는 수업을 구성하는 요소(목표, 내용, 방법, 평가)가 상호작용하는 체제로 보고 체계적으로 설계하는 접근이다."}, {"id": 17, "cat": "교육방법", "sub": "교수설계", "title": "17. 가네(Gagne)의 9가지 수업사태", "passage": "[교육학 논술 출제 포인트]\n가네의 수업사태 중 도입부에 해당하는 첫 3단계(주의 획득, 목표 제시, 선수학습 회상)가 학생의 정보처리(인지적) 과정 중 어떤 것과 대응되는지 각각 연결하여 서술하시오.", "answer": "1. 주의 획득 ➔ 주의 집중 (감각등록기에서 작업기억으로 정보 이동 준비)\n2. 학습 목표 제시 ➔ 기대 (동기화 및 학습 결과에 대한 기대 형성)\n3. 선수학습 회상 자극 ➔ 장기기억에서 작업기억으로 관련 지식 인출(작업기억 활성화)", "explanation": "가네는 정보처리이론을 기반으로 학습자의 내부 인지 과정을 돕기 위한 교사의 외부 교수 활동 9단계를 처방하였다."}, {"id": 18, "cat": "교육방법", "sub": "교수설계", "title": "18. 메릴(Merrill)의 내용요소 제시이론(CDT)", "passage": "[교육학 논술 출제 포인트]\n메릴의 이론에서 수행-내용 행렬표의 내용 차원 4가지(사실, 개념, 절차, 원리) 중 '절차'와 '원리'의 차이점을 설명하시오.", "answer": "1. 절차(Procedure): 어떤 목적을 달성하기 위해 순서대로 밟아야 하는 단계나 방법(예: 수학 문제 푸는 순서).\n2. 원리(Principle): 어떤 현상을 설명하거나 결과를 예측할 수 있게 하는 인과관계나 법칙(예: 수요와 공급의 법칙).", "explanation": "메릴은 미시적 교수설계 이론으로, 단일 아이디어를 가르칠 때 내용의 특성에 따라 제시 방법(설명, 질문 등)을 달리해야 한다고 보았다."}, {"id": 19, "cat": "교육방법", "sub": "학습자중심", "title": "19. 문제중심학습(PBL)과 프로젝트 학습(PBL)", "passage": "[교육학 논술 출제 포인트]\n문제중심학습(Problem-Based Learning)에서 교사가 제시해야 하는 '문제(Problem)'의 특성 3가지를 서술하시오.", "answer": "1. 비구조화된 문제: 정답이 하나로 정해져 있지 않고 해결 방법이 다양한 문제.\n2. 실제적(Authentic) 문제: 현실 세계에서 실제로 발생할 수 있는 복잡하고 현실적인 맥락을 가진 문제.\n3. 학습자 주도적 문제: 학습자가 스스로 문제 해결 계획을 세우고 탐구할 수 있는 문제.", "explanation": "의대 교육에서 출발한 PBL은 지식의 암기가 아닌 자기주도적 문제해결력과 협동학습 능력을 기르는 구성주의 교수법이다."}, {"id": 20, "cat": "교육방법", "sub": "학습자중심", "title": "20. 조나센(Jonassen)의 구성주의 학습환경 설계 모형(CLEs)", "passage": "[교육학 논술 출제 포인트]\n조나센 모형에서 학습 활동을 지원하는 3가지 인지적 활동(탐색, 명료화, 반추) 중 '명료화(Articulation)'와 '반추(Reflection)'의 개념을 서술하시오.", "answer": "1. 명료화: 학습자가 자신이 이해한 내용이나 문제 해결 과정을 자신의 언어로 명확하게 표현하고 발표하는 활동.\n2. 반추: 학습 과정 전체를 되돌아보며 자신이 무엇을 어떻게 배웠는지 점검하고 스스로 평가하는 메타인지적 활동.", "explanation": "조나센은 학습자가 문제 해결의 주체가 되어 의미를 구성할 수 있도록 지원하는 학습 환경 설계를 강조했다."}, {"id": 21, "cat": "교육방법", "sub": "협동학습", "title": "21. 직소(Jigsaw) 모형과 STAD 모형", "passage": "[교육학 논술 출제 포인트]\n전통적 소집단 학습의 문제점인 무임승차 효과를 방지하기 위해 협동학습이 갖추어야 할 기본 원리 2가지(긍정적 상호의존성, 개별 책무성)를 설명하시오.", "answer": "1. 긍정적 상호의존성: '우리는 하나다'라는 인식으로, 동료의 성공이 나의 성공에 필수적이라고 느끼는 상태. (공동 보상, 과제 분담으로 형성)\n2. 개별 책무성: 집단의 성공을 위해 학습자 각자가 자신의 몫을 다해야 하는 책임감. (개인 점수를 집단 점수에 반영하거나 과제를 분할하여 부여함)", "explanation": "STAD는 집단보상과 개별책무성(향상점수)을 결합했고, Jigsaw는 과제 분담을 통해 상호의존성을 극대화했다."}, {"id": 22, "cat": "교육행정", "sub": "지도성", "title": "22. 번즈(Burns)와 배스(Bass)의 변혁적 지도성", "passage": "[교육학 논술 출제 포인트]\n학교 현장에서 교장이 발휘해야 할 '변혁적 지도성(Transformational Leadership)'의 핵심 요소 4가지를 명칭만 제시하시오.", "answer": "1. 이상적인 영향력 (카리스마, 신뢰와 존경의 대상)\n2. 영감적 동기유발 (비전 제시)\n3. 지적 자극 (기존 관행을 새로운 시각으로 보도록 촉구)\n4. 개별적 배려 (구성원 개인의 욕구와 성장에 관심)", "explanation": "변혁적 지도성은 부하의 욕구를 고차원적인 것으로 끌어올려 조직의 목표와 일치시키고 헌신을 이끌어내는 현대적 리더십이다."}, {"id": 23, "cat": "교육행정", "sub": "조직문화", "title": "23. 관료제 조직과 전문적 관료제", "passage": "[교육학 논술 출제 포인트]\n학교 조직은 관료제적 특성과 전문적 특성을 모두 가지는 '전문적 관료제'이다. 학교가 가지는 관료제적 특성 2가지와 전문적 특성 2가지를 서술하시오.", "answer": "1. 관료제적 특성: 교장-교감-부장-교사로 이어지는 '계층제', 엄격한 '규칙과 규정' 준수 요구, 분업화.\n2. 전문적 특성: 교실 내 수업과 평가에서의 '자율성' 보장, 고도의 학력과 연수를 거친 '전문가 집단', 상급자보다 동료 전문가의 통제를 더 중시.", "explanation": "학교는 이 두 가지 속성이 혼재되어 있어 행정 통제와 교사의 자율성 간에 갈등이 발생하기 쉽다."}, {"id": 24, "cat": "교육행정", "sub": "조직풍토", "title": "24. 할핀과 크로프트(Halpin & Croft)의 학교조직풍토", "passage": "[교육학 논술 출제 포인트]\n교장의 행동(추진성, 배려성 등)과 교사의 행동(사기, 친밀성 등)을 바탕으로 분류한 6가지 풍토 중 가장 긍정적인 '개방적 풍토'와 가장 부정적인 '폐쇄적 풍토'의 특징을 교장과 교사의 측면에서 비교하시오.", "answer": "1. 개방적 풍토: 교장은 통제하지 않고 교사를 배려하며 솔선수범하고, 교사는 사기가 높고 친밀하며 업무에 헌신한다.\n2. 폐쇄적 풍토: 교장은 일방적으로 지시하고 형식적이며 배려가 없고, 교사는 사기가 바닥이고 파벌을 형성하여 업무를 기피한다.", "explanation": "학교장의 리더십과 교사의 협력적 분위기가 학교 조직의 성과를 좌우한다는 점을 보여준다."}, {"id": 25, "cat": "교육행정", "sub": "장학", "title": "25. 임상장학과 동료장학", "passage": "[교육학 논술 출제 포인트]\n교사의 수업 전문성 향상을 위한 장학 중, 교장이나 장학사가 아닌 동료 교사들끼리 협력하는 '동료장학'의 장점을 3가지 서술하시오.", "answer": "1. 교사들의 자율성과 협동심을 길러주어 학교의 개방적 풍토 조성에 기여한다.\n2. 위계적이지 않아 평가에 대한 불안감이 적고 자유로운 의견 교환이 가능하다.\n3. 학교 현장의 실제적인 문제 해결과 수업 개선에 즉각적으로 도움을 줄 수 있다.", "explanation": "최근 전문적 학습공동체(PLC)의 확산과 함께 동료장학과 자기장학의 중요성이 매우 커지고 있다."}, {"id": 26, "cat": "교육행정", "sub": "동기이론", "title": "26. 허즈버그(Herzberg)의 동기-위생이론", "passage": "[교육학 논술 출제 포인트]\n허즈버그 이론에 따르면 직무 만족을 주는 요인과 불만족을 주는 요인이 서로 독립적이다. 직무 만족을 높이는 '동기요인'과 불만족을 없애는 '위생요인'의 개념을 쓰고, 각각의 예시를 1가지씩 서술하시오.", "answer": "1. 동기요인: 직무 그 자체에서 오는 것으로 성취감, 인정, 책임감, 승진 등이 있으며, 충족되면 만족을 주지만 충족되지 않아도 불만이 생기지는 않는다.\n2. 위생요인: 직무 환경과 관련된 것으로 급여, 작업조건, 대인관계 등이 있으며, 충족되면 불만이 사라질 뿐 적극적인 직무 만족(동기)으로 이어지지는 않는다.", "explanation": "교사의 직무 동기를 높이려면 급여(위생) 인상뿐만 아니라 수업 자율성과 성취감(동기)을 높여주어야 한다 직무풍요화(Job Enrichment) 전략이 필요하다."}, {"id": 27, "cat": "교육행정", "sub": "교육기획", "title": "27. 영기준 예산제도(ZBB)", "passage": "[교육학 논술 출제 포인트]\n학교 예산 편성 시 전년도 예산을 기준으로 삼지 않고, 모든 사업을 '영(Zero)'의 상태에서 새롭게 타당성을 검토하여 예산을 편성하는 제도의 명칭을 쓰고, 이 제도의 장점 1가지를 서술하시오.", "answer": "1. 명칭: 영기준 예산제도 (Zero-Based Budgeting, ZBB)\n2. 장점: 낭비적이고 관행적인 지출을 줄일 수 있으며, 교장이나 관리자의 독단이 아닌 전 교직원이 사업 평가에 참여하므로 민주적이고 창의적인 예산 편성이 가능하다.", "explanation": "급변하는 교육 환경에서 한정된 재원을 가장 우선순위가 높은 교육 사업에 효율적으로 배분하기 위해 단위학교 책임경영제에서 강조된다."}, {"id": 28, "cat": "교육사회", "sub": "기능론과 갈등론", "title": "28. 학교 교육에 대한 기능론과 갈등론의 관점", "passage": "[교육학 논술 출제 포인트]\n학교의 사회적 역할에 대해 파슨스(Parsons)의 '기능론'적 관점과 보울스(Bowles)와 긴티스(Gintis)의 '갈등론'적 관점을 비교하여 서술하시오.", "answer": "1. 기능론: 학교는 사회 유지와 발전에 필요한 가치와 규범을 내면화(사회화)하고, 학생의 능력과 성취에 따라 공정하게 인재를 분류하여 적재적소에 배치(선발 및 배치)하는 긍정적 기관이다.\n2. 갈등론: 학교는 자본주의 체제를 유지하기 위해 지배계급의 이데올로기를 주입하며, 불평등한 사회 구조와 계급을 재생산하는 억압적 기관이다.", "explanation": "임용고시에서는 갈등론의 비판을 바탕으로 교육 불평등 현상을 설명하는 문제가 자주 출제된다."}, {"id": 29, "cat": "교육사회", "sub": "부르디외", "title": "29. 부르디외(Bourdieu)의 문화자본", "passage": "[교육학 논술 출제 포인트]\n부르디외가 제시한 문화자본의 3가지 형태(체화된 상태, 객관화된 상태, 제도화된 상태) 중 '체화된(아비투스적) 문화자본'의 개념을 서술하고, 이것이 교육 불평등에 미치는 영향을 설명하시오.", "answer": "1. 체화된(아비투스적) 문화자본: 어릴 때부터 가정환경을 통해 자연스럽게 몸에 배어 내면화된 취향, 가치관, 심미적 태도, 행동 방식 등을 말한다.\n2. 영향: 학교는 지배계급의 문화(아비투스)를 표준으로 삼기 때문에, 이를 지닌 상류층 학생은 학업 성취가 높고, 하류층 학생은 자연스럽게 도태되어 계급이 재생산된다.", "explanation": "상류층의 문화 자본이 학교를 통해 은밀하게 성취와 학력으로 변환되는 과정을 상징적 폭력이라고 불렀다."}, {"id": 30, "cat": "교육사회", "sub": "학력상승", "title": "30. 콜린스(Collins)의 지위경쟁이론", "passage": "[교육학 논술 출제 포인트]\n한국 사회의 급격한 학력 상승(대학 진학률 증가) 현상을 설명하는 '지위경쟁이론'의 핵심 주장을 쓰고, 이로 인해 발생하는 부작용인 '학력 인플레이션' 현상을 설명하시오.", "answer": "1. 핵심 주장: 학력은 업무 수행 능력의 지표가 아니라, 더 높은 사회적 지위와 권력을 획득하기 위한 수단(졸업장 병)일 뿐이며, 지위 획득 경쟁 때문에 학력이 계속 상승한다.\n2. 학력 인플레이션: 직업이 요구하는 기술 수준에 비해 취업자들의 학력이 과도하게 높아져, 졸업장의 가치가 떨어지고 교육이 낭비되는 현상이다.", "explanation": "기능론적 관점인 '기술기능이론'과 대비되는 설명 방식으로, 학벌 위주의 한국 사회를 잘 설명한다."}, {"id": 31, "cat": "교육사회", "sub": "평등관", "title": "31. 교육평등의 4가지 관점", "passage": "[교육학 논술 출제 포인트]\n농어촌 학생 특별전형이나 기회균형선발 등은 취약 계층에게 교육 조건을 넘어서 최종적인 학업 성취 수준까지 보상해 주려는 교육평등관에 근거한다. 이 교육평등관의 명칭과 개념을 서술하시오.", "answer": "1. 명칭: 결과적 평등 (보상적 평등)\n2. 개념: 단지 취학 기회나 학교 조건을 동일하게 해주는 것(기회의 평등, 조건의 평등)으로는 가정환경으로 인한 불평등을 해소할 수 없으므로, 모든 학생이 일정 수준 이상의 학업 성취(결과)를 얻을 수 있도록 취약 계층에게 더 많은 자원과 배려를 보상해야 한다는 관점이다.", "explanation": "허용적 평등 → 보장적 평등 → 조건적 평등 → 결과적 평등의 순으로 발전해 왔다."}, {"id": 32, "cat": "교육철학", "sub": "지식관", "title": "32. 객관주의와 구성주의 지식관", "passage": "[교육학 논술 출제 포인트]\n전통적인 객관주의 지식관과 대비되는 구성주의 지식관의 특징을 '지식의 성격'과 '학습자의 역할' 측면에서 서술하시오.", "answer": "1. 지식의 성격: 지식은 외부에 절대적이고 객관적으로 존재하는 것이 아니라, 개인의 경험과 사회적 상호작용을 통해 주관적이고 상대적으로 구성되는 것이다.\n2. 학습자의 역할: 수동적인 정보 수용자가 아니라, 자신의 경험을 바탕으로 지식의 의미를 능동적으로 창조하고 구성하는 능동적 주체이다.", "explanation": "현대 교육과정과 학생 참여형 수업의 이론적 토대가 되는 가장 중요한 철학적 패러다임이다."}, {"id": 33, "cat": "교육철학", "sub": "진보주의", "title": "33. 듀이(Dewey)의 진보주의 교육철학", "passage": "[교육학 논술 출제 포인트]\n듀이가 강조한 '경험을 통한 학습(Learning by doing)'의 의미를 쓰고, 전통적 주입식 교육을 비판하며 주장한 학교의 역할(사회 축소물)을 설명하시오.", "answer": "1. 경험을 통한 학습: 교육은 미래 생활을 위한 준비가 아니라 '삶 그 자체'이므로, 아동이 실제적인 활동과 경험을 통해 문제를 해결하며 배우게 해야 한다.\n2. 학교의 역할: 학교는 사회와 분리된 상아탑이 아니라 민주주의 사회의 축소판이어야 하며, 아동은 학교라는 공동체 안에서 협동과 민주적 생활 양식을 실천하며 성장해야 한다.", "explanation": "아동 중심 교육, 경험 중심 교육과정, 프로젝트 학습의 사상적 뿌리가 되었다."}, {"id": 34, "cat": "교육철학", "sub": "실존주의", "title": "34. 실존주의 교육철학과 부버(Buber)", "passage": "[교육학 논술 출제 포인트]\n실존주의가 비판하는 현대 교육의 문제점을 지적하고, 마르틴 부버(Buber)가 진정한 인성 교육을 위해 제안한 '나와 너(I-Thou)'의 관계를 서술하시오.", "answer": "1. 비판점: 현대 교육이 인간을 체제에 순응하는 기계 부속품처럼 수단화(비인간화)하고 주체성을 상실하게 만들었다.\n2. 나와 너의 관계: 교사와 학생의 관계는 지식을 주입하는 수단적 관계(나와 그것)가 아니라, 서로의 인격을 전인적으로 존중하고 조건 없이 수용하는 만남(Encounter)을 통한 실존적 대화의 관계여야 한다.", "explanation": "상담에서 로저스의 인간중심 접근이나 얄롬의 실존주의 상담과 철학적 맥락을 같이 한다."}, {"id": 35, "cat": "교육공학", "sub": "교수매체", "title": "35. 데일(Dale)의 경험의 원추", "passage": "[교육학 논술 출제 포인트]\n데일의 경험의 원추(Cone of Experience) 모형에서 하단부, 중단부, 상단부로 갈수록 학습 경험이 어떻게 변화하는지 '구체성-추상성'의 개념을 사용하여 설명하시오.", "answer": "원추의 맨 하단은 '행동적 경험(직접적 목적적 경험 등)'으로 가장 구체적이고 감각적이며, 중단부는 '시청각적 경험(견학, 전시 등)'으로 관찰을 통한 대리 경험을 제공하고, 상단부로 갈수록 '상징적 경험(시각 기호, 언어 기호)'으로 점차 추상성이 높아진다.", "explanation": "발달 단계가 낮은 학습자나 새로운 개념을 배울 때는 하단의 구체적 경험에서 시작하여 점차 상단의 추상적 기호로 나아가는 것이 효과적이다."}, {"id": 36, "cat": "교육공학", "sub": "ASSURE", "title": "36. 하이니히(Heinich)의 ASSURE 모형", "passage": "[교육학 논술 출제 포인트]\n교사가 매체를 활용한 수업을 설계할 때 따르는 ASSURE 모형의 절차 중 A(학습자 분석)와 R(학습자 참여 요구) 단계에서 수행해야 할 핵심 활동을 서술하시오.", "answer": "1. A(Analyze Learners, 학습자 분석): 학습자의 일반적 특성(연령, 학년), 출발점 능력(선수지식), 학습 양식 등을 파악하여 수업 설계의 기초로 삼는다.\n2. R(Require Learner Participation, 학습자 참여 요구): 능동적 학습을 위해 퀴즈, 토론, 실습 등 학습자가 매체를 활용하여 상호작용하고 반응할 수 있는 활동을 마련하고 피드백을 제공한다.", "explanation": "매체 중심 수업 설계의 대표적이고 실용적인 모형이다."}, {"id": 37, "cat": "교육공학", "sub": "블렌디드", "title": "37. 플립 러닝(Flipped Learning)과 블렌디드 러닝", "passage": "[교육학 논술 출제 포인트]\n전통적 교실 수업을 뒤집은 '플립 러닝(역진행 수업)'의 개념을 설명하고, 이것이 구성주의 학습 환경에 적합한 이유(수업 중 활동의 변화)를 서술하시오.", "answer": "1. 플립 러닝의 개념: 학생이 가정에서 교사가 제공한 디딤 영상(강의 영상)을 통해 기본 개념을 미리 개별적으로 학습하고, 교실 수업에서는 교사와 동료와 함께 심화 과제나 토론, 문제 해결 활동을 수행하는 방식이다.\n2. 구성주의에 적합한 이유: 교실에서 교사의 일방적 지식 전달 시간이 줄어들고, 대신 교사는 조력자가 되어 학생 주도의 능동적 탐구, 협동학습, 고차원적 문제 해결 활동을 할 수 있는 시간이 확보되기 때문이다.", "explanation": "에듀테크의 발달과 코로나19 이후 원격/등교 블렌디드 러닝이 강조되면서 중요성이 커졌다."}, {"id": 38, "cat": "교육사회", "sub": "다문화", "title": "38. 다문화 교육과 뱅크스(Banks)", "passage": "[교육학 논술 출제 포인트]\n뱅크스가 제시한 다문화 교육과정 통합의 4단계(기여, 부가, 변혁, 사회적 행동) 중 '변혁적 접근'의 개념을 쓰고, 단순한 '부가적 접근'과의 차이점을 서술하시오.", "answer": "1. 변혁적 접근: 교육과정의 기본 구조 자체를 변경하여, 주류 집단뿐만 아니라 다양한 문화 집단의 관점에서 개념이나 사건을 바라보고 이해하도록 하는 방식이다.\n2. 차이점: 부가적 접근은 기존 교육과정 구조는 그대로 둔 채 특정한 날(다문화 주간 등)에만 다문화 내용을 추가하는 피상적 접근인 반면, 변혁적 접근은 교육과정 체질을 근본적으로 바꾸어 관점의 다원화를 꾀한다.", "explanation": "한국 사회의 다문화 가정 비율이 급증함에 따라 동화주의(용광로)가 아닌 다문화주의(샐러드 볼) 교육이 절실하다."}, {"id": 39, "cat": "교육과정", "sub": "자유학기제", "title": "39. 2022 개정 교육과정: 진로연계교육과 고교학점제", "passage": "[교육학 논술 출제 포인트]\n2022 개정 교육과정에서 도입된 '초-중-고 학교급 전환기 진로연계교육(자유학기제 연계)'의 목적을 1가지 쓰고, 고교학점제가 추구하는 교육적 가치(학습자 측면)를 서술하시오.", "answer": "1. 진로연계교육 목적: 상급 학교로 진학하기 전(초6, 중3, 고3 2학기)에 학교급 간 단절을 극복하고, 진로 탐색 활동과 학업 설계를 지원하여 학교생활 적응을 돕는다.\n2. 고교학점제 가치: 학생이 자신의 진로와 적성에 따라 획일적인 시간표가 아닌 원하는 과목을 스스로 선택하고 학점을 이수하게 함으로써, 자기주도적 진로 개척 역량과 학습 선택권을 보장한다.", "explanation": "최근 교육 현장의 가장 거대한 정책적 변화이므로 논술의 배경(서론/결론)으로 단골 출제된다."}, {"id": 40, "cat": "교육평가", "sub": "문항분석", "title": "40. 고전검사이론: 문항난이도와 문항변별도", "passage": "[교육학 논술 출제 포인트]\n문항분석에서 '문항난이도(P)'와 '문항변별도(DI)'의 개념을 각각 서술하고, 문항변별도가 마이너스(-)로 나왔을 때 교사가 취해야 할 조치를 쓰시오.", "answer": "1. 문항난이도: 전체 응답자 중 문항의 정답을 맞힌 학생의 비율. (높을수록 쉬운 문항)\n2. 문항변별도: 문항이 능력 상위 집단과 하위 집단을 구별해 내는 정도.\n3. 변별도 마이너스 조치: 하위 집단이 상위 집단보다 정답을 더 많이 맞힌 비정상적인 문항(오류 문항)이므로, 즉시 해당 문항을 검토하여 삭제하거나 대폭 수정해야 한다.", "explanation": "상대평가에서는 변별도가 매우 중요하지만, 성취평가제(절대평가)에서는 변별도보다 목표 달성 여부(난이도)가 더 중요하다."}, {"id": 41, "cat": "교육방법", "sub": "구성주의", "title": "41. 상황학습이론 (인지적 도제이론)", "passage": "[교육학 논술 출제 포인트]\n레브와 벵거(Lave & Wenger)의 상황학습이론에 기반한 '인지적 도제이론(Cognitive Apprenticeship)'의 6단계 중 처음 3단계(모델링, 코칭, 스캐폴딩)의 역할을 서술하시오.", "answer": "1. 모델링: 전문가(교사)가 과제를 수행하며 인지적 사고 과정을 밖으로 소리 내어 보여주는 단계.\n2. 코칭: 학습자가 과제를 수행할 때 전문가가 관찰하며 피드백과 격려를 제공하는 단계.\n3. 스캐폴딩: 학습자가 어려움을 겪을 때만 일시적으로 지원을 제공하고, 능력이 향상되면 점차 지원을 거두어들이는 단계(Fading).", "explanation": "실제 상황(맥락) 속에서 전문가의 인지적 과정을 관찰하고 참여함으로써 지식을 습득하는 구성주의 교수법이다."}, {"id": 42, "cat": "교육행정", "sub": "의사결정", "title": "42. 교육 행정의 의사결정 모형", "passage": "[교육학 논술 출제 포인트]\n합리적 모형의 한계를 보완하기 위해 사이먼(Simon)이 제안한 '만족 모형(Satisficing Model)'과 린드블롬(Lindblom)이 제안한 '점증 모형(Incremental Model)'의 의사결정 방식을 비교하여 서술하시오.", "answer": "1. 만족 모형: 인간의 이성적 한계(제한된 합리성)를 인정하고, 완벽한 최적의 대안이 아니라 현실적으로 '만족할 만한 수준'의 대안을 선택한다.\n2. 점증 모형: 기존의 정책과 목표를 바탕으로, 현재 상태에서 약간씩 점진적으로 개선되거나 수정된 대안을 선택하여 갈등을 최소화하고 안정성을 추구한다.", "explanation": "실제 교육 행정 현장에서는 이상적인 합리 모형보다 만족 모형이나 점증 모형, 혹은 쓰레기통 모형이 더 현실적으로 나타난다."}, {"id": 43, "cat": "교육행정", "sub": "학교경영", "title": "43. 단위학교 책임경영제 (SBM)", "passage": "[교육학 논술 출제 포인트]\n중앙이나 교육청에 집중되어 있던 권한을 단위학교로 이양하는 단위학교 책임경영제의 도입 목적을 1가지 쓰고, 이를 실현하기 위해 설치된 의사결정 기구의 명칭을 쓰시오.", "answer": "1. 도입 목적: 학교 현장의 실정과 학생 및 학부모의 요구에 맞는 자율적이고 창의적인 교육과정을 운영하여 교육의 효율성을 높이기 위함이다.\n2. 의사결정 기구: 학교운영위원회 (교원, 학부모, 지역사회 인사로 구성)", "explanation": "자율성을 부여하는 대신, 교육 결과에 대한 책무성(Accountability)도 함께 묻는 것이 핵심이다."}, {"id": 44, "cat": "교육심리", "sub": "정보처리", "title": "44. 정보처리이론의 유의미 부호화 전략", "passage": "[교육학 논술 출제 포인트]\n정보처리이론에서 작업기억의 정보를 장기기억으로 효과적으로 저장하기 위한 '유의미 부호화(Encoding)' 전략 중 정교화(Elaboration)와 조직화(Organization)의 개념을 비교하시오.", "answer": "1. 정교화: 새로운 정보를 학습자가 이미 알고 있는 기존의 사전지식과 연결하여 의미를 부여하고 살을 붙이는 전략 (예: 예시 들기, 유추).\n2. 조직화: 흩어져 있는 새로운 정보들 사이에 위계나 관계를 만들어 의미 있는 덩어리(청킹)나 구조로 묶는 전략 (예: 개념도 작성, 개요 짜기).", "explanation": "기계적 암기(유지 시연)는 단기기억 유지에는 유용하나 장기기억 저장에는 효과적이지 않다."}, {"id": 45, "cat": "교육평가", "sub": "객관도", "title": "45. 객관도(채점자 신뢰도)", "passage": "[교육학 논술 출제 포인트]\n논술형 평가에서 종종 문제되는 '객관도(채점자 간 신뢰도)'가 낮아지는 이유를 채점자의 후광효과(Halo Effect) 측면에서 설명하고, 객관도를 높이는 방안 2가지를 서술하시오.", "answer": "1. 후광효과에 의한 저하: 채점자가 학생의 글씨체, 평소 품행, 이전 성적 등 평가 문항과 무관한 외부적 특성에 호감을 가져 후하게 채점하는 등 인지적 편향이 개입되기 때문이다.\n2. 향상 방안: 사전에 명확한 채점 기준(루브릭)을 마련한다. / 학생의 인적 사항(이름, 학번)을 가리고 채점한다. / 학생 단위가 아니라 '문항 단위'로 채점한다.", "explanation": "논술형, 서술형, 수행평가 등 주관식 채점 방식이 확대되면서 평가의 공정성과 직결된 중요한 개념이다."}, {"id": 46, "cat": "교육과정", "sub": "스킬벡", "title": "46. 스킬벡(Skilbeck)의 학교 중심 교육과정 개발 모형", "passage": "[교육학 논술 출제 포인트]\n스킬벡이 제안한 학교 기반 교육과정 개발(SBCD) 모형의 가장 첫 번째 단계인 '상황분석' 단계에서 교사가 분석해야 할 내적 요인과 외적 요인을 각각 1가지씩 서술하시오.", "answer": "1. 내적 요인: 학생의 적성/능력/요구, 교사의 역량과 가치관, 학교 시설 및 환경.\n2. 외적 요인: 지역사회의 가치와 기대, 학부모의 요구, 국가의 교육 정책의 변화, 사회적 이데올로기.", "explanation": "타일러가 목표 설정부터 시작한 것과 달리, 스킬벡은 학교가 처한 구체적 상황을 먼저 분석하는 개방적, 역동적 모형을 제시했다."}, {"id": 47, "cat": "교육사회", "sub": "재생산이론", "title": "47. 애플(Apple)의 문화적 헤게모니", "passage": "[교육학 논술 출제 포인트]\n애플의 비판적 교육과정 사회학에서, 지배계급이 학교 교육과정을 통해 자신들의 세계관과 가치를 피지배계급이 너무나 자연스럽고 당연한 것으로 무비판적으로 받아들이게 만드는 통제 방식을 나타내는 용어를 쓰시오.", "answer": "문화적 헤게모니 (Cultural Hegemony)", "explanation": "애플은 학교에서 가르치는 '공식적 지식'이 결코 중립적이지 않으며, 자본주의 지배 체제를 유지하기 위한 이데올로기가 스며들어 있다고 비판했다."}, {"id": 48, "cat": "교육행정", "sub": "장학", "title": "48. 컨설팅 장학", "passage": "[교육학 논술 출제 포인트]\n교사가 스스로 자신의 수업 문제나 학교 경영 문제에 대해 해당 분야의 전문가(수석교사, 대학교수 등)에게 자발적으로 의뢰하여 도움을 받는 '컨설팅 장학'의 기본 원리 중 자발성의 원리와 독립성의 원리를 설명하시오.", "answer": "1. 자발성의 원리: 상급자의 지시가 아니라 교사(의뢰인) 스스로 필요성을 느껴 자발적으로 요청할 때만 성립한다.\n2. 독립성의 원리: 컨설턴트와 의뢰인은 평가자와 피평가자의 수직적 관계가 아니라, 컨설팅 과정에서만 맺어지는 독립적이고 평등한 조력 관계이다.", "explanation": "기존의 하향식, 지시적, 평가적 성격의 장학에 대한 반성으로 등장한 수평적 조력 활동이다."}, {"id": 49, "cat": "교육심리", "sub": "정의적 발달", "title": "49. 셀만(Selman)의 사회적 조망수용이론", "passage": "[교육학 논술 출제 포인트]\n아동이 타인의 입장, 생각, 감정을 이해하는 능력인 '조망수용능력' 발달 단계 중, 자신과 타인의 입장을 넘어서서 제3자(관찰자)의 입장에서 상황을 객관적으로 이해할 수 있게 되는 3단계의 명칭은 무엇인가?", "answer": "제3자적 조망수용 (상호적 조망수용, Mutual role taking, 약 10~12세)", "explanation": "조망수용능력은 또래 관계, 도덕성 발달, 갈등 해결의 핵심적인 인지적 기초가 된다."}, {"id": 50, "cat": "교육과정", "sub": "파이나", "title": "50. 파이나(Pinar)의 재개념주의 (쿠레레, Currere)", "passage": "[교육학 논술 출제 포인트]\n파이나가 교육과정(Curriculum)의 어원인 쿠레레(Currere)를 '명사'에서 '동사'로 회복시켜야 한다고 주장하며 제안한 방법론으로, 개인의 교육적 생생한 경험을 소급(회상)-전진(미래 상상)-분석-종합하는 4단계 방법의 명칭을 쓰시오.", "answer": "쿠레레 방법론 (또는 자서전적 방법)", "explanation": "교육과정은 외부에서 주어진 지식의 집합이 아니라, 학습자 개인이 살아가며 겪는 내면적 경험과 의미 형성 과정(동사적 의미)이어야 한다고 보았다."}];
+  let currentMode = 'test';
+  let currentQuestionIndex = 0;
+  
+  let timerInterval;
+  let timeRemaining = 60 * 60; // Edu exam is 60 mins
+
+  let touchstartX = 0;
+  let touchendX = 0;
+  
+  const range = document.getElementById('fontSizeRange');
+  range.addEventListener('input', () => { document.documentElement.style.fontSize = range.value + 'px'; });
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    timeRemaining = 60 * 60;
+    updateTimerDisplay();
+    document.getElementById('timerContainer').style.display = 'block';
+    timerInterval = setInterval(() => {
+      timeRemaining--;
+      updateTimerDisplay();
+      if(timeRemaining <= 0) { clearInterval(timerInterval); alert("시험 시간이 종료되었습니다!"); }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    let m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+    let s = (timeRemaining % 60).toString().padStart(2, '0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    document.getElementById('timerContainer').style.display = 'none';
+  }
+
+  function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('btnStudyMode').className = 'mode-btn' + (mode === 'study' ? ' active' : '');
+    document.getElementById('btnTestMode').className = 'mode-btn' + (mode === 'test' ? ' active' : '');
+    
+    if(mode === 'test') { currentQuestionIndex = 0; startTimer(); renderTestMode(); }
+    else { stopTimer(); renderStudyMode(); }
+  }
+
+  function toggleAnswer(id) {
+    const el = document.getElementById('ans-' + id);
+    const btn = document.getElementById('btn-' + id);
+    if(el.style.display === 'block') {
+      el.style.display = 'none';
+      btn.textContent = "정답 및 해설 보기";
+      btn.style.background = "#2563eb";
+    } else {
+      el.style.display = 'block';
+      btn.textContent = "정답 숨기기";
+      btn.style.background = "#4b5563";
+    }
+  }
+
+  function renderStudyMode() {
+    const app = document.getElementById('app');
+    document.body.style.overflow = 'auto'; 
+    app.style.overflowY = 'visible';
+    let html = '';
+    ITEMS.forEach((item, idx) => {
+      html += `
+        <div class="question-box" style="min-height: auto;">
+          <h2 class="q-title">문항 ${item.id} (${item.cat}) - ${item.sub}</h2>
+          <div class="label">논술 주제:</div> <div class="text-content" style="font-size:1rem;">${item.title}</div>
+          <div class="label">논제:</div> <div class="text-content" style="font-size:1rem;">${item.passage}</div>
+          
+          <button class="show-answer-btn" id="btn-${item.id}" onclick="toggleAnswer('${item.id}')">정답 및 해설 보기</button>
+          
+          <div class="hidden-answer" id="ans-${item.id}">
+            <div class="label">모범 답안:</div> <div class="text-content answer-text" style="font-size:1rem;">${item.answer}</div>
+            <div class="label">출제 포인트(해설):</div> <div class="text-content" style="font-size:1rem;">${item.explanation}</div>
+          </div>
+        </div>
+      `;
+    });
+    app.innerHTML = html;
+  }
+
+  function renderTestMode() {
+    const app = document.getElementById('app');
+    document.body.style.overflow = 'hidden'; 
+    app.style.overflowY = 'auto';
+    app.scrollTop = 0; 
+    
+    const item = ITEMS[currentQuestionIndex];
+    
+    app.innerHTML = `
+      <div class="question-box">
+        <h2 class="q-title">[교육학 논술 핵심] 문항 ${item.id} / 50</h2>
+        <div style="color:#aaa; margin-bottom:1rem;">영역: ${item.cat} - ${item.sub}</div>
+        
+        <div class="text-content">
+          <strong style="color:#60a5fa">[${item.title}]</strong><br/><br/>
+          ${item.passage}
+        </div>
+        
+        <div style="margin-top: 1rem;">
+          <div class="label">논술 답안 작성 (서론-본론-결론 구조로 연습):</div>
+          <textarea class="test-textarea" id="testInput" placeholder="여기에 논술형 답안 핵심 키워드나 문장을 작성해 보세요..."></textarea>
+        </div>
+
+        <div class="test-controls">
+          <button class="nav-btn" onclick="prevQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>◀ 이전</button>
+          <button class="check-btn" onclick="checkTestAnswer()">정답 확인</button>
+          <button class="nav-btn" onclick="nextQuestion()" ${currentQuestionIndex === ITEMS.length - 1 ? 'disabled' : ''}>다음 ▶</button>
+        </div>
+        
+        <div class="swipe-hint">💡 화면 스와이프 또는 키보드 [스페이스바], [좌/우 화살표]로 넘길 수 있습니다.</div>
+
+        <div class="hidden-answer" id="testResult" style="background:#1a1a1a; padding:1.5rem; border-radius:8px; border: 1px solid #facc15; margin-top:2rem;">
+            <div class="label" style="color:#facc15; font-size:1.2rem;">[모범 답안 키워드]</div> 
+            <div class="text-content answer-text" style="font-size:1.2rem;">${item.answer}</div>
+            <div class="label">출제 포인트(해설):</div> 
+            <div class="text-content">${item.explanation}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function checkTestAnswer() {
+    const res = document.getElementById('testResult');
+    res.style.display = 'block';
+    res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function prevQuestion() {
+    if(currentQuestionIndex > 0) {
+      slideAnimation('right');
+      currentQuestionIndex--;
+      setTimeout(renderTestMode, 150);
+    }
+  }
+
+  function nextQuestion() {
+    if(currentQuestionIndex < ITEMS.length - 1) {
+      slideAnimation('left');
+      currentQuestionIndex++;
+      setTimeout(renderTestMode, 150);
+    }
+  }
+  
+  function slideAnimation(direction) {
+      const app = document.getElementById('app');
+      app.style.transform = direction === 'left' ? 'translateX(-100%)' : 'translateX(100%)';
+      app.style.opacity = '0';
+      setTimeout(() => {
+          app.style.transition = 'none';
+          app.style.transform = direction === 'left' ? 'translateX(100%)' : 'translateX(-100%)';
+          setTimeout(() => {
+              app.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+              app.style.transform = 'translateX(0)';
+              app.style.opacity = '1';
+          }, 50);
+      }, 150);
+  }
+
+  document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
+  document.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; handleGesture(); }, {passive: true});
+
+  function handleGesture() {
+    if (currentMode !== 'test') return;
+    if (document.activeElement.tagName.toLowerCase() === 'textarea') return;
+    if (touchendX < touchstartX - 50) nextQuestion();
+    if (touchendX > touchstartX + 50) prevQuestion();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (currentMode !== 'test') return;
+    if (document.activeElement.tagName.toLowerCase() === 'textarea' || document.activeElement.tagName.toLowerCase() === 'input') return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextQuestion(); } 
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prevQuestion(); }
+  });
+
+  setMode('test');
+</script>
+</body>
+</html>

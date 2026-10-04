@@ -1,0 +1,77 @@
+import re
+
+target_path = r'G:\내 드라이브\ANTI GRAVITY\전문상담임용고시\kice-300-wordbook\kice_55_core_compressed.html'
+
+with open(target_path, 'r', encoding='utf-8') as f:
+    html = f.read()
+
+# Replace font-family rules that use Batang / serif
+old_font_rule = r"""      /* FONT UPGRADES */
+      body, .app-header, .table-container, .card-q, .answer-text {
+        font-family: "Batang", "바탕", "KoPub Batang", "Nanum Myeongjo", serif !important;
+      }
+      .kice-textarea, #search-input, .btn-control {
+        font-family: "Malgun Gothic", "맑은 고딕", sans-serif !important;
+      }"""
+
+new_font_rule = """      /* FONT UPGRADES: 100% MALGUN GOTHIC FOR CRISP READABILITY */
+      *, html, body, .app-header, .table-container, table, th, td, .td-kw, .td-q, .td-ans, .card-q, .answer-text, .kice-textarea, #search-input, .btn-control, .pill-btn, .answer-kw, .card-badge, .trap-box {
+        font-family: "Malgun Gothic", "맑은 고딕", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+      
+      /* TABLE HIGH-CONTRAST MALGUN GOTHIC ENHANCEMENTS */
+      .table-container table th {
+        font-family: "Malgun Gothic", "맑은 고딕", sans-serif !important;
+        font-weight: 800 !important;
+        color: #fbbf24 !important;
+        background: #0f172a !important;
+        border-bottom: 2px solid #334155 !important;
+      }
+      .table-container table td {
+        font-family: "Malgun Gothic", "맑은 고딕", sans-serif !important;
+        line-height: 1.65 !important;
+        font-size: 1.05rem !important;
+        vertical-align: top !important;
+      }
+      .td-kw {
+        color: #38bdf8 !important;
+        font-weight: 800 !important;
+        font-size: 1.15rem !important;
+        line-height: 1.4 !important;
+        display: block !important;
+        margin-top: 4px !important;
+      }
+      .td-q {
+        color: #f1f5f9 !important;
+        font-size: 1.05rem !important;
+        line-height: 1.65 !important;
+        font-weight: 500 !important;
+      }
+      .td-ans {
+        color: #fef08a !important;
+        font-size: 1.05rem !important;
+        line-height: 1.7 !important;
+        font-weight: 600 !important;
+        background: #111827 !important;
+        padding: 10px !important;
+        border-radius: 6px !important;
+        border-left: 3px solid #facc15 !important;
+      }"""
+
+if 'font-family: "Batang"' in html:
+    html = html.replace(old_font_rule, new_font_rule)
+else:
+    # If not exact match, replace any Batang occurrence in CSS
+    html = re.sub(
+        r'body, \.app-header, \.table-container, \.card-q, \.answer-text\s*\{\s*font-family:[^}]*\}',
+        new_font_rule.strip(),
+        html
+    )
+
+with open(target_path, 'w', encoding='utf-8') as f:
+    f.write(html)
+
+print("Switched all typography to Malgun Gothic!")
