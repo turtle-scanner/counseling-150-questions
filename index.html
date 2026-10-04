@@ -6,39 +6,41 @@
 <title>150문제 기출문제 뷰어</title>
 <style>
   body {
-    background: #ffffff;
-    color: #000000;
+    background: #121212;
+    color: #ffffff;
     margin: 0;
     padding: 1rem;
     font-family: 'Noto Sans KR', sans-serif;
-    line-height: 1.5;
+    line-height: 1.6;
     font-size: 16px;
   }
-  h1 {font-size: 1.5rem; margin-bottom: 0.5rem;}
-  .question {margin-top: 1.5rem; border-bottom: 1px solid #ddd; padding-bottom: 1rem;}
-  .question h2 {font-size: 1.2rem; margin: 0.5rem 0;}
-  .question pre {white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', sans-serif;}
+  h1 {font-size: 1.5rem; margin-bottom: 0.5rem; color: #facc15;}
+  .question {margin-top: 2rem; border-bottom: 1px solid #333; padding-bottom: 1.5rem;}
+  .question h2 {font-size: 1.3rem; margin: 0.5rem 0; color: #facc15;}
+  .question pre {white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', sans-serif; margin: 0.5rem 0 1.5rem 0;}
   .font-control {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background: #f5f5f5;
-    padding: 0.5rem 1rem;
+    background: #1e1e1e;
+    padding: 0.8rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #333;
     z-index: 1000;
   }
-  .content {margin-top: 3rem;}
+  .content {margin-top: 4rem;}
+  .label {color: #60a5fa; font-weight: bold; margin-top: 1rem; display: inline-block;}
+  .answer-text {color: #facc15; font-weight: bold;}
 </style>
 </head>
 <body>
 <div class="font-control">
-  <label for="fontSizeRange">글씨 크기:</label>
-  <input type="range" id="fontSizeRange" min="12" max="24" value="16" />
-  <span id="fontSizeValue">16px</span>
+  <label for="fontSizeRange" style="font-weight:bold;">글씨 크기:</label>
+  <input type="range" id="fontSizeRange" min="12" max="32" value="16" />
+  <span id="fontSizeValue" style="font-weight:bold;">16px</span>
 </div>
 <div class="content" id="questionsContainer"></div>
 <script>
@@ -58,11 +60,11 @@
     div.className = 'question';
     div.innerHTML = `
       <h2>문항 ${item.id} (${item.cat}) - ${item.sub}</h2>
-      <strong>제목:</strong> ${item.title || item.case_title}<br/>
-      <strong>지문:</strong> <pre>${item.passage || item.case_text}</pre>
-      <strong>문제:</strong> <pre>${item.q || ''}</pre>
-      <strong>답변:</strong> <pre>${item.answer || item.a}</pre>
-      <strong>해설:</strong> <pre>${item.explanation || item.desc}</pre>
+      <span class="label">제목:</span> ${item.title || item.case_title}<br/>
+      <span class="label">지문:</span> <pre>${item.passage || item.case_text}</pre>
+      ${item.q ? `<span class="label">문제:</span> <pre>${item.q}</pre>` : ''}
+      <span class="label">답변:</span> <pre class="answer-text">${item.answer || item.a}</pre>
+      <span class="label">해설:</span> <pre>${item.explanation || item.desc}</pre>
     `;
     container.appendChild(div);
   });
