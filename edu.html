@@ -46,14 +46,24 @@
   .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
   .check-btn { background: #059669; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
   
-  #timer { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #f87171; }
-  .swipe-hint { text-align: center; color: #888; font-size: 0.9rem; margin-top: 1rem; }
+  .flash-box {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 </style>
 </head>
 <body>
 <div class="header-bar">
   <div class="header-left">
-    <button class="mode-btn active" id="btnTestMode" onclick="setMode('test')">1문제씩</button>
+    <button class="mode-btn active" id="btnTestMode" onclick="setMode('test')">실전(쓰기)</button>
+    <button class="mode-btn" id="btnFlashMode" onclick="setMode('flash')">암기(한눈에)</button>
     <button class="mode-btn" id="btnStudyMode" onclick="setMode('study')">전체보기</button>
     <a href="index.html" class="subject-btn">◀ 전공 200제</a>
   </div>
@@ -109,8 +119,10 @@
     currentMode = mode;
     document.getElementById('btnStudyMode').className = 'mode-btn' + (mode === 'study' ? ' active' : '');
     document.getElementById('btnTestMode').className = 'mode-btn' + (mode === 'test' ? ' active' : '');
+    document.getElementById('btnFlashMode').className = 'mode-btn' + (mode === 'flash' ? ' active' : '');
     
     if(mode === 'test') { currentQuestionIndex = 0; startTimer(); renderTestMode(); }
+    else if(mode === 'flash') { currentQuestionIndex = 0; stopTimer(); renderFlashMode(); }
     else { stopTimer(); renderStudyMode(); }
   }
 
@@ -150,6 +162,35 @@
       `;
     });
     app.innerHTML = html;
+  }
+
+  function renderFlashMode() {
+    const app = document.getElementById('app');
+    document.body.style.overflow = 'hidden'; 
+    app.style.overflowY = 'auto';
+    app.scrollTop = 0; 
+    
+    const item = ITEMS[currentQuestionIndex];
+    
+    app.innerHTML = `
+      <div class="flash-box">
+        <div>
+            <h2 class="q-title" style="font-size:1.1rem; margin-bottom:0.5rem;">[암기 모드] 문항 ${item.id} / ${ITEMS.length} - ${item.cat}</h2>
+            
+            <div class="text-content" style="font-size:1rem; border-color:#60a5fa; padding:0.8rem;">
+              <strong style="color:#60a5fa">[${item.title}]</strong><br/><br/>
+              ${item.passage}
+            </div>
+        </div>
+        
+        <div class="text-content" style="font-size:1rem; border-color:#facc15; background:#1a1a1a; padding:0.8rem; margin-top:0.5rem; flex-grow:1; display:flex; flex-direction:column;">
+            <div style="color:#facc15; font-size:1.1rem; font-weight:bold; margin-bottom:0.5rem;">[모범 답안] ${item.answer}</div>
+            <div style="color:#ddd;">${item.explanation}</div>
+        </div>
+        
+        <div class="swipe-hint" style="margin-top:0.5rem; padding-bottom:0.5rem;">💡 화면을 좌우로 넘겨(스와이프) 다음 문제로 이동하세요.</div>
+      </div>
+    `;
   }
 
   function renderTestMode() {
@@ -203,7 +244,8 @@
     if(currentQuestionIndex > 0) {
       slideAnimation('right');
       currentQuestionIndex--;
-      setTimeout(renderTestMode, 150);
+      if (currentMode === 'test') setTimeout(renderTestMode, 150);
+      else if (currentMode === 'flash') setTimeout(renderFlashMode, 150);
     }
   }
 
@@ -211,7 +253,8 @@
     if(currentQuestionIndex < ITEMS.length - 1) {
       slideAnimation('left');
       currentQuestionIndex++;
-      setTimeout(renderTestMode, 150);
+      if (currentMode === 'test') setTimeout(renderTestMode, 150);
+      else if (currentMode === 'flash') setTimeout(renderFlashMode, 150);
     }
   }
   
@@ -234,20 +277,20 @@
   document.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; handleGesture(); }, {passive: true});
 
   function handleGesture() {
-    if (currentMode !== 'test') return;
+    if (currentMode !== 'test' && currentMode !== 'flash') return;
     if (document.activeElement.tagName.toLowerCase() === 'textarea') return;
     if (touchendX < touchstartX - 50) nextQuestion();
     if (touchendX > touchstartX + 50) prevQuestion();
   }
 
   document.addEventListener('keydown', e => {
-    if (currentMode !== 'test') return;
+    if (currentMode !== 'test' && currentMode !== 'flash') return;
     if (document.activeElement.tagName.toLowerCase() === 'textarea' || document.activeElement.tagName.toLowerCase() === 'input') return;
     if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextQuestion(); } 
     else if (e.key === 'ArrowLeft') { e.preventDefault(); prevQuestion(); }
   });
 
-  setMode('test');
+  setMode('flash');
 </script>
 </body>
 </html>
