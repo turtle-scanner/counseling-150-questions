@@ -92,10 +92,24 @@
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 0;
-    min-height: calc(100vh - 80px);
+    height: calc(100vh - 80px); /* 딱 한 화면에 맞춤 */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
+  }
+  .flash-top {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 50%;
+  }
+  .flash-bottom {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-grow: 1;
+    margin-top: 0.5rem;
   }
 </style>
 </head>
@@ -230,22 +244,24 @@
     
     app.innerHTML = `
       <div class="flash-box">
-        <div>
-            <h2 class="q-title" style="font-size:1.1rem; margin-bottom:0.5rem;">[암기 모드] 문항 ${item.id} / ${ITEMS.length} - ${item.cat}</h2>
+        <div class="flash-top">
+            <h2 class="q-title" style="font-size:1.1rem; margin-bottom:0.5rem; flex-shrink:0;">[암기 모드] 문항 ${item.id} / ${ITEMS.length} - ${item.cat}</h2>
             
-            <div class="text-content" style="font-size:1rem; border-color:#60a5fa; padding:0.8rem;">
+            <div class="text-content" style="font-size:1rem; border-color:#60a5fa; padding:0.8rem; flex-grow:1; overflow-y:auto;">
               <strong style="color:#60a5fa">[${item.title || item.case_title}]</strong><br/><br/>
               ${item.passage || item.case_text}<br/>
               ${item.q ? `<br/><strong style="color:#facc15">${item.q}</strong>` : ''}
             </div>
         </div>
         
-        <div class="text-content" style="font-size:1rem; border-color:#facc15; background:#1a1a1a; padding:0.8rem; margin-top:0.5rem; flex-grow:1; display:flex; flex-direction:column;">
-            <div style="color:#facc15; font-size:1.1rem; font-weight:bold; margin-bottom:0.5rem;">[정답] ${item.answer || item.a}</div>
-            <div style="color:#ddd;">${item.explanation || item.desc}</div>
+        <div class="flash-bottom">
+            <div class="text-content" style="font-size:1rem; border-color:#facc15; background:#1a1a1a; padding:0.8rem; margin-top:0; height:100%; display:flex; flex-direction:column; overflow-y:auto;">
+                <div style="color:#facc15; font-size:1.1rem; font-weight:bold; margin-bottom:0.5rem; flex-shrink:0;">[정답] ${item.answer || item.a}</div>
+                <div style="color:#ddd;">${item.explanation || item.desc}</div>
+            </div>
         </div>
         
-        <div class="swipe-hint" style="margin-top:0.5rem; padding-bottom:0.5rem;">💡 화면을 좌우로 넘겨(스와이프) 다음 문제로 이동하세요.</div>
+        <div class="swipe-hint" style="margin-top:0.5rem; padding-bottom:0.2rem; flex-shrink:0;">💡 화면을 좌우로 넘겨(스와이프) 다음 문제로 이동하세요.</div>
       </div>
     `;
   }
