@@ -393,13 +393,17 @@ body.blind-mode .kw-tag.revealed {
   white-space: pre-wrap;
 }
 .exam-instructions {
-  background: rgba(245, 158, 11, 0.05);
+  background: rgba(245, 158, 11, 0.06);
   border: 1px solid rgba(245, 158, 11, 0.3);
+  border-left: 4px solid var(--gold);
   border-radius: 8px;
   padding: 14px 18px;
   margin: 16px 0;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   color: #fde68a;
+  white-space: pre-wrap;
+  line-height: 1.9;
+  letter-spacing: -0.2px;
 }
 .exam-instructions ul {
   margin-left: 20px;
@@ -952,7 +956,14 @@ function renderExamQuestions(type) {
 
     let instHtml = '';
     if (q.instructions && q.instructions.trim()) {
-      instHtml = '<div class="exam-instructions">' + q.instructions + '</div>';
+      const parts = q.instructions.split('○').map(p => p.trim()).filter(Boolean);
+      let contentHtml = '<strong style="color:var(--gold); display:block; margin-bottom:8px;">&lt;작성 방법&gt;</strong>';
+      parts.forEach(p => {
+        if (!p.includes('<작성 방법>')) {
+          contentHtml += '<div style="margin-bottom:8px; line-height:1.7;">○ ' + p + '</div>';
+        }
+      });
+      instHtml = '<div class="exam-instructions">' + contentHtml + '</div>';
     }
 
     card.innerHTML = 
