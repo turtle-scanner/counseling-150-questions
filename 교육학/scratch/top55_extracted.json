@@ -1,0 +1,552 @@
+[
+  {
+    "id": "P002",
+    "domain": "Ⅰ. 교육과정 영역 (P001 ~ P012)",
+    "type": "pedagogy",
+    "question": "타바의 교육과정 개발 모형이 타일러 모형과 구별되는 가장 핵심적인 특징 2가지를 서술하시오.",
+    "keyword": "교사 중심, 귀납적 모형, 단원 개발",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 교사 중심의 개발 / 귀납적 모형<br>현장 교사가 직접 단원을 개발하여 정리·검증해 나가는 귀납적이고 처방적인 교사 중심 모형이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 교사 중심의 개발 / 귀납적 모형 현장 교사가 직접 단원을 개발하여 정리·검증해 나가는 귀납적이고 처방적인 교사 중심 모형이다."
+  },
+  {
+    "id": "P003",
+    "domain": "Ⅰ. 교육과정 영역 (P001 ~ P012)",
+    "type": "pedagogy",
+    "question": "워커의 자연주의적 교육과정 숙의 모형의 3단계 명칭과 개념을 서술하시오.",
+    "keyword": "토대 ➔ 숙의 ➔ 설계",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 토대 단계 ➔ 숙의 단계 ➔ 설계 단계<br>참여자의 신념/가치를 바탕으로 최적의 대안을 토론·합의하여 교육과정을 완성하는 서술적 모형이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 토대 단계 ➔ 숙의 단계 ➔ 설계 단계 참여자의 신념/가치를 바탕으로 최적의 대안을 토론·합의하여 교육과정을 완성하는 서술적 모형이다."
+  },
+  {
+    "id": "P004",
+    "domain": "Ⅰ. 교육과정 영역 (P001 ~ P012)",
+    "type": "pedagogy",
+    "question": "아이즈너의 예술적 교육과정 모형에서 학교에서 공식적으로 가르치지 않아 제외된 교육과정의 명칭과 개념을 서술하시오.",
+    "keyword": "공식 교육과정 배제, 의도적 기회 상실",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 영 교육과정<br>학교에서 공식적으로 가르치지 않고 의도적으로 배제되어 학생들이 배울 기회를 상실한 내용이나 가치이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 영 교육과정 학교에서 공식적으로 가르치지 않고 의도적으로 배제되어 학생들이 배울 기회를 상실한 내용이나 가치이다."
+  },
+  {
+    "id": "P007",
+    "domain": "Ⅰ. 교육과정 영역 (P001 ~ P012)",
+    "type": "pedagogy",
+    "question": "파이나의 실재론적 재개념주의에서 제시한 자서전적 방법 4단계를 순서대로 제시하시오.",
+    "keyword": "소환 ➔ 전진 ➔ 분석 ➔ 종합",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 회상 ➔ 전진 ➔ 분석 ➔ 종합<br>과거 경험을 회상하고 미래를 전망한 뒤, 이를 분석하고 현재 의미로 종합하여 개인의 생애사적 주체성을 재구성한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 회상 ➔ 전진 ➔ 분석 ➔ 종합 과거 경험을 회상하고 미래를 전망한 뒤, 이를 분석하고 현재 의미로 종합하여 개인의 생애사적 주체성을 재구성한다."
+  },
+  {
+    "id": "P008",
+    "domain": "Ⅰ. 교육과정 영역 (P001 ~ P012)",
+    "type": "pedagogy",
+    "question": "위긴스와 맥타이의 백워드 교육과정 설계 모형의 3단계를 순서대로 제시하시오.",
+    "keyword": "목표 ➔ 평가계획 ➔ 학습경험",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 바라는 결과 확인 ➔ 수용 가능한 증거 결정 ➔ 학습경험 및 수업 계획<br>학습 목표 설정 직후 평가 계획을 먼저 수립함으로써 목표-평가-수업 간의 일치도를 극대화한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 바라는 결과 확인 ➔ 수용 가능한 증거 결정 ➔ 학습경험 및 수업 계획 학습 목표 설정 직후 평가 계획을 먼저 수립함으로써 목표-평가-수업 간의 일치도를 극대화한다."
+  },
+  {
+    "id": "P010",
+    "domain": "Ⅰ. 교육과정 영역 (P001 ~ P012)",
+    "type": "pedagogy",
+    "question": "브루너의 학문중심 교육과정에서 핵심이 되는 지식의 구조 개념과 이점 2가지를 서술하시오.",
+    "keyword": "학문의 기본 개념/원리, 전이력, 장기기억",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 지식의 구조<br>각 학문의 바탕을 이루는 기본적 핵심 개념과 원리로, 이해를 돕고 장기 파지와 새로운 상황으로의 전이를 촉진한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 지식의 구조 각 학문의 바탕을 이루는 기본적 핵심 개념과 원리로, 이해를 돕고 장기 파지와 새로운 상황으로의 전이를 촉진한다."
+  },
+  {
+    "id": "P011",
+    "domain": "Ⅰ. 교육과정 영역 (P001 ~ P012)",
+    "type": "pedagogy",
+    "question": "브루너의 표현 방식 3가지와 나선형 교육과정의 개념을 서술하시오.",
+    "keyword": "표현 3단계, 동일 개념의 연속적 심화",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 나선형 교육과정<br>학문의 기본 원리를 발달 단계에 맞게 폭과 깊이를 점차 확대·심화하여 가르치는 구조이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 나선형 교육과정 학문의 기본 원리를 발달 단계에 맞게 폭과 깊이를 점차 확대·심화하여 가르치는 구조이다."
+  },
+  {
+    "id": "P014",
+    "domain": "Ⅱ. 교육방법 & 교육공학 영역 (P013 ~ P025)",
+    "type": "pedagogy",
+    "question": "스웰러의 인지부하이론에서 교수 설계 시 작업기억의 한계를 극복하기 위해 통제·감소시켜야 하는 인지부하의 명칭과 방안을 서술하시오.",
+    "keyword": "내재적/외재적/본질적 인지부하, 외재적 부하 최소화",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 외재적 인지부하 최소화<br>불필요한 교수 방식이나 산만한 자료로 발생하는 외재적 인지부하를 최소화하고 스키마 형성을 돕는 본질적 부하를 촉진해야 한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 외재적 인지부하 최소화 불필요한 교수 방식이나 산만한 자료로 발생하는 외재적 인지부하를 최소화하고 스키마 형성을 돕는 본질적 부하를 촉진해야 한다."
+  },
+  {
+    "id": "P016",
+    "domain": "Ⅱ. 교육방법 & 교육공학 영역 (P013 ~ P025)",
+    "type": "pedagogy",
+    "question": "인지적 도제 이론의 6대 교수 절차 중 초반 3단계 명칭과 개념을 서술하시오.",
+    "keyword": "모델링 ➔ 코칭 ➔ 비계설정",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 시범 ➔ 코칭 ➔ 비계설정<br>전문가의 시범을 관찰하고, 직접 수행하며 힌트/조력을 받다가, 점차 조력을 줄여 스스로 수행하게 하는 절차이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 시범 ➔ 코칭 ➔ 비계설정 전문가의 시범을 관찰하고, 직접 수행하며 힌트/조력을 받다가, 점차 조력을 줄여 스스로 수행하게 하는 절차이다."
+  },
+  {
+    "id": "P017",
+    "domain": "Ⅱ. 교육방법 & 교육공학 영역 (P013 ~ P025)",
+    "type": "pedagogy",
+    "question": "플립드 러닝의 수업 전-수업 중 진행 방식의 차이점을 서술하시오.",
+    "keyword": "수업 전 vs 수업 중",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 수업 전 온라인 사전학습 / 수업 중 협동 탐구 및 심화 토론<br>지식 전수는 수업 전 영상/자료로 개별 이수하고, 교실 수업 중에는 토론·문제해결·프로젝트 등 상호작용 활동을 수행한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 수업 전 온라인 사전학습 / 수업 중 협동 탐구 및 심화 토론 지식 전수는 수업 전 영상/자료로 개별 이수하고, 교실 수업 중에는 토론·문제해결·프로젝트 등 상호작용 활동을 수행한다."
+  },
+  {
+    "id": "P018",
+    "domain": "Ⅱ. 교육방법 & 교육공학 영역 (P013 ~ P025)",
+    "type": "pedagogy",
+    "question": "메지로우의 변혁적 학습 이론에서 학습이 일어나는 핵심 메커니즘을 서술하시오.",
+    "keyword": "비판적 성찰, 관점 전환, 전제 의문",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 비판적 성찰을 통한 관점의 전환<br>자신이 지닌 기존의 무비판적 전제나 신념에 의문을 제기하고 비판적으로 성찰하여 더욱 포용적인 의미틀로 전환한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 비판적 성찰을 통한 관점의 전환 자신이 지닌 기존의 무비판적 전제나 신념에 의문을 제기하고 비판적으로 성찰하여 더욱 포용적인 의미틀로 전환한다."
+  },
+  {
+    "id": "P019",
+    "domain": "Ⅱ. 교육방법 & 교육공학 영역 (P013 ~ P025)",
+    "type": "pedagogy",
+    "question": "비고츠키 근접발달영역 (ZPD)을 교수학습에 적용한 대표적 개입 기법인 비계설정의 3가지 유의점을 서술하시오.",
+    "keyword": "한시적 조력, 점진적 축소, 과제 난이도 조정",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 한시적 조력 제공 / 점진적 조력 축소 / 학습자 자기주도성 신장<br>초기에는 충분한 도움을 주되, 학습자의 능력이 향상됨에 따라 조력을 점차 거두어 스스로 해결하도록 해야 한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 한시적 조력 제공 / 점진적 조력 축소 / 학습자 자기주도성 신장 초기에는 충분한 도움을 주되, 학습자의 능력이 향상됨에 따라 조력을 점차 거두어 스스로 해결하도록 해야 한다."
+  },
+  {
+    "id": "P020",
+    "domain": "Ⅱ. 교육방법 & 교육공학 영역 (P013 ~ P025)",
+    "type": "pedagogy",
+    "question": "협동학습에서 상급 학생만 일을 다 하고 하급 학생은 무임승차하는 링겔만 효과를 방지하는 방안을 서술하시오.",
+    "keyword": "개별 책무성 부여, 집단 보상 결합",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 개별 책무성 강화<br>모둠 점수뿐만 아니라 개인별 점수나 역할을 명확히 분담시켜 무임승차를 방지하고 참여도를 높인다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 개별 책무성 강화 모둠 점수뿐만 아니라 개인별 점수나 역할을 명확히 분담시켜 무임승차를 방지하고 참여도를 높인다."
+  },
+  {
+    "id": "P024",
+    "domain": "Ⅱ. 교육방법 & 교육공학 영역 (P013 ~ P025)",
+    "type": "pedagogy",
+    "question": "렌줄리의 삼부 심화학습 모형에서 제시하는 3가지 단계의 명칭을 서술하시오.",
+    "keyword": "일반 탐구 ➔ 그룹 훈련 ➔ 실질 문제 연구",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: Ⅰ단계 ➔ Ⅱ단계 ➔ Ⅲ단계<br>흥미 유발 탐구에서 시작하여 사고 기법 훈련을 거쳐 실제 문제를 스스로 해결하는 보충·심화 학습 절차이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: Ⅰ단계 ➔ Ⅱ단계 ➔ Ⅲ단계 흥미 유발 탐구에서 시작하여 사고 기법 훈련을 거쳐 실제 문제를 스스로 해결하는 보충·심화 학습 절차이다."
+  },
+  {
+    "id": "P028",
+    "domain": "Ⅲ. 교육평가 & 연구 영역 (P026 ~ P037)",
+    "type": "pedagogy",
+    "question": "성장참조평가의 개념과 평가 수행 시 유의점 1가지를 서술하시오.",
+    "keyword": "초기 대비 향상도 측정, 성적 부풀리기 주의",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 성장참조평가 / 사전 능력 대비 향상 정도 평가<br>수업 초기 측정값과 최종 측정값의 차이를 평가하나, 학생이 사전에 일부러 낮은 점수를 받는 미화를 주의해야 한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 성장참조평가 / 사전 능력 대비 향상 정도 평가 수업 초기 측정값과 최종 측정값의 차이를 평가하나, 학생이 사전에 일부러 낮은 점수를 받는 미화를 주의해야 한다."
+  },
+  {
+    "id": "P030",
+    "domain": "Ⅲ. 교육평가 & 연구 영역 (P026 ~ P037)",
+    "type": "pedagogy",
+    "question": "비고츠키의 ZPD 이론에 근거하여 평가와 교수를 통합하고 학생의 잠재적 발달 가능성을 측정하는 평가 명칭을 쓰시오.",
+    "keyword": "평가-교수 통합, 역동적 상호작용, ZPD 측정",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 역동적 평가<br>평가자와 학생 간의 역동적 상호작용을 통해 현재 발달 수준뿐만 아니라 잠재적 발달 가능성을 사정한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 역동적 평가 평가자와 학생 간의 역동적 상호작용을 통해 현재 발달 수준뿐만 아니라 잠재적 발달 가능성을 사정한다."
+  },
+  {
+    "id": "P031",
+    "domain": "Ⅲ. 교육평가 & 연구 영역 (P026 ~ P037)",
+    "type": "pedagogy",
+    "question": "수행평가에서 학생의 수행 과정 및 결과물을 다면적으로 채점하기 위해 사용하는 세부 기준표 명칭을 쓰시오.",
+    "keyword": "채점 기준표, 다면적 평가지표, 루브릭",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 루브릭<br>학생의 수행 수준과 성취 성과를 객관적이고 다면적으로 평가하기 위해 등급별 세부 평가 기준을 명시한 표이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 루브릭 학생의 수행 수준과 성취 성과를 객관적이고 다면적으로 평가하기 위해 등급별 세부 평가 기준을 명시한 표이다."
+  },
+  {
+    "id": "P036",
+    "domain": "Ⅲ. 교육평가 & 연구 영역 (P026 ~ P037)",
+    "type": "pedagogy",
+    "question": "스카리벤의 평가 모형에서 평가자가 프로그램의 사전 목표에 구속되지 않고 실제 나타난 모든 결과를 평가하는 명칭을 쓰시오.",
+    "keyword": "목표에 비구속, 의도치 않은 결과 평가",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 목표비구속 평가<br>의도된 사전 목표 달성 여부뿐만 아니라 프로그램으로 인해 나타난 부작용 및 의도하지 않은 실제 효과까지 평가한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 목표비구속 평가 의도된 사전 목표 달성 여부뿐만 아니라 프로그램으로 인해 나타난 부작용 및 의도하지 않은 실제 효과까지 평가한다."
+  },
+  {
+    "id": "P039",
+    "domain": "Ⅳ. 교육행정 & 교육경영 영역 (P038 ~ P050)",
+    "type": "pedagogy",
+    "question": "겟젤스와 구바의 사회체계 모형에서 인간 행동을 결정하는 2가지 차원의 명칭을 쓰시오.",
+    "keyword": "규범적 차원 vs 개인적 차원",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 규범적 차원 / 개인적 차원<br>조직의 요구와 개인의 요구가 상호작용하여 사회적 행동이 결정된다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 규범적 차원 / 개인적 차원 조직의 요구와 개인의 요구가 상호작용하여 사회적 행동이 결정된다."
+  },
+  {
+    "id": "P040",
+    "domain": "Ⅳ. 교육행정 & 교육경영 영역 (P038 ~ P050)",
+    "type": "pedagogy",
+    "question": "세르지오바니가 주장한 5가지 리더십 유형 중 조직의 도덕적 가치와 도덕적 권위에 기초한 리더십 명칭을 쓰시오.",
+    "keyword": "도덕적 권위, 추종자 정체성, 도덕적 리더십",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 도덕적 리더십<br>리더의 도덕적 품성과 가치에 기초하여 구성원들의 자율성과 도덕적 의무감을 자극하고 성공적인 성과를 유도한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 도덕적 리더십 리더의 도덕적 품성과 가치에 기초하여 구성원들의 자율성과 도덕적 의무감을 자극하고 성공적인 성과를 유도한다."
+  },
+  {
+    "id": "Q001",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "프로이트의 정신분석에서 불안을 유발하는 충동이나 고통스러운 기억을 무의식 속으로 눌러 가두는 가장 기본적 방어기제의 명칭과 개념을 서술하시오.",
+    "keyword": "무의식 누름, 기본 방어기제, 충동 차단",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 억압<br>불안을 유발하는 고통스러운 충동이나 상처받은 기억을 무의식 속으로 눌러 가두는 가장 기본적이고 대표적인 방어기제이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 억압 불안을 유발하는 고통스러운 충동이나 상처받은 기억을 무의식 속으로 눌러 가두는 가장 기본적이고 대표적인 방어기제이다."
+  },
+  {
+    "id": "Q002",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "무의식 속 수치스러운 적대감을 숨기기 위해 겉으로 과도하게 친절하고 가식적인 행동을 보이는 방어기제의 명칭과 원리를 서술하시오.",
+    "keyword": "용납 불가 충동, 반대 행동, 과도 표출",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 반동형성<br>무의식적 적대감이나 용납하기 어려운 충동과 반대되는 행동을 과도하고 가식적으로 표현하는 방어기제이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 반동형성 무의식적 적대감이나 용납하기 어려운 충동과 반대되는 행동을 과도하고 가식적으로 표현하는 방어기제이다."
+  },
+  {
+    "id": "Q003",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "내담자가 자신의 수치스러운 분노를 인정하지 않고 \"선생님이 나를 미워해서 분노한 것\"이라고 남 탓하는 방어기제의 명칭과 개념을 서술하시오.",
+    "keyword": "자신의 수치심, 타인 전가, 남 탓",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 투사<br>자신의 무의식적 부정적 충동이나 왜곡된 감정을 인정하지 않고 타인의 것으로 덮어씌워 남 탓하는 방어기제이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 투사 자신의 무의식적 부정적 충동이나 왜곡된 감정을 인정하지 않고 타인의 것으로 덮어씌워 남 탓하는 방어기제이다."
+  },
+  {
+    "id": "Q004",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "통찰 이후 무의식적 갈등을 반복·정교화·확대하여 실제 삶에 적응시키는 지속적 상담 절차의 명칭과 개념을 서술하시오.",
+    "keyword": "통찰의 반복, 현실 적용, 정교화/확대",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 훈습<br>상담 과정에서 얻은 통찰을 바탕으로 무의식적 갈등을 반복·정교화·확대하여 실제 삶에 적응시키는 지속적 절차이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 훈습 상담 과정에서 얻은 통찰을 바탕으로 무의식적 갈등을 반복·정교화·확대하여 실제 삶에 적응시키는 지속적 절차이다."
+  },
+  {
+    "id": "Q005",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "아들러 개인심리학에서 개인이 자신·타인·세상을 이해하는 고유한 주관적 신념 체계로 열등감 극복의 바탕이 되는 개념의 명칭을 서술하시오.",
+    "keyword": "주관적 신념, 열등감 극복 틀, 개별 논리",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 사적논리<br>개인이 자신·타인·세상을 이해하는 고유한 주관적 신념 체계로, 열등감 극복의 인지적 바탕이 된다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 사적논리 개인이 자신·타인·세상을 이해하는 고유한 주관적 신념 체계로, 열등감 극복의 인지적 바탕이 된다."
+  },
+  {
+    "id": "Q006",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "어린 시절 열등감을 극복하는 과정에서 4~5세 경 형성되는 개인 고유의 인지적 지도 및 행동 양식의 명칭과 4가지 유형을 서술하시오.",
+    "keyword": "4~5세 형성, 인지적 지도, 4대 유형",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 생활양식<br>어린 시절 열등감을 극복하는 과정에서 형성된 행동 양식으로, 사회유용형, 지배형, 기생형, 회피형 4가지로 분류된다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 생활양식 어린 시절 열등감을 극복하는 과정에서 형성된 행동 양식으로, 사회유용형, 지배형, 기생형, 회피형 4가지로 분류된다."
+  },
+  {
+    "id": "Q008",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "융 분석심리학에서 의식과 무의식을 균형 있게 통합하여 전체 정신의 중심인 '자기'를 완현해 나가는 치료 목표의 명칭을 서술하시오.",
+    "keyword": "의식-무의식 통합, 자기 실현, 치료목표",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 개성화<br>의식과 무의식을 균형 있게 통합하여 전체 정신의 중심인 자기를 완전히 실현해 나가는 치료의 최종 목표이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 개성화 의식과 무의식을 균형 있게 통합하여 전체 정신의 중심인 자기를 완전히 실현해 나가는 치료의 최종 목표이다."
+  },
+  {
+    "id": "Q009",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "융의 이론에서 자아가 인정하기 싫은 어두운 무의식이지만 생명력과 창의성이 숨어 있는 긍정적 보물창고의 명칭과 긍정적 역할을 서술하시오.",
+    "keyword": "억압된 무의식, 창의성 보물창고, 생명력",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 그림자<br>자아가 인정하기 싫은 어두운 무의식이지만, 동시에 인간의 생명력과 창의성이 숨어 있는 긍정적 보물창고이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 그림자 자아가 인정하기 싫은 어두운 무의식이지만, 동시에 인간의 생명력과 창의성이 숨어 있는 긍정적 보물창고이다."
+  },
+  {
+    "id": "Q010",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "사회적 역할과 타인의 기대에 부응하기 위해 착용하는 가면으로, 지나친 동일시 시 부작용을 일으키는 개념 명칭과 부작용을 서술하시오.",
+    "keyword": "사회적 가면, 외적 인격, 과도 동일시",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 페르소나<br>사회적 역할과 타인의 기대에 부응하기 위해 착용하는 가면으로, 지나친 동일시 시 진정한 자아를 상실하는 부작용이 생긴다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 페르소나 사회적 역할과 타인의 기대에 부응하기 위해 착용하는 가면으로, 지나친 동일시 시 진정한 자아를 상실하는 부작용이 생긴다."
+  },
+  {
+    "id": "Q012",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "머레이 이론에서 객관적 환경 현실을 의미하는 압력과, 개인이 주관적으로 지각하고 해석한 압력의 명칭을 각각 쓰시오.",
+    "keyword": "객관적 환경 vs 주관적 지각",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 알파 압력 / 베타 압력<br>알파 압력은 외부 환경의 객관적 현실을 의미하며, 베타 압력은 개인이 주관적으로 지각하고 해석한 환경을 의미한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 알파 압력 / 베타 압력 알파 압력은 외부 환경의 객관적 현실을 의미하며, 베타 압력은 개인이 주관적으로 지각하고 해석한 환경을 의미한다."
+  },
+  {
+    "id": "Q023",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "다브롭스키의 적극적 비통합 이론에서 영재 아동이 보이는 강렬한 지적 탐구열과 끊임없는 질문 폭주 현상을 뜻하는 과흥분성 명칭을 쓰시오.",
+    "keyword": "영재 아동, 지적 호기심 폭발, 탐구",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 지적 과흥분성<br>영재 아동이 보이는 강렬한 지적 호기심과 질문 폭주 현상으로, 상징적 인지 구조와 깊이 있는 지적 탐구열을 특징으로 한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 지적 과흥분성 영재 아동이 보이는 강렬한 지적 호기심과 질문 폭주 현상으로, 상징적 인지 구조와 깊이 있는 지적 탐구열을 특징으로 한다."
+  },
+  {
+    "id": "Q024",
+    "domain": "Ⅰ. 성격심리학 & 인간발달 (001 ~ 025)",
+    "type": "counseling",
+    "question": "높은 정신적 에너지가 빠른 말과 신체적 과잉행동으로 표출되어 ADHD로 오진되기 쉬운 다브롭스키의 과흥분성 명칭을 쓰시오.",
+    "keyword": "신체 에너지 표출, 과잉행동 오진 주의",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 정신운동적 과흥분성<br>높은 정신적 에너지가 신체적 활동성 및 빠른 말로 표출되는 특성으로, ADHD 과잉행동과 엄격히 감별해야 한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 정신운동적 과흥분성 높은 정신적 에너지가 신체적 활동성 및 빠른 말로 표출되는 특성으로, ADHD 과잉행동과 엄격히 감별해야 한다."
+  },
+  {
+    "id": "Q026",
+    "domain": "Ⅱ. 이상심리학 & DSM-5-TR 진단 (026 ~ 055)",
+    "type": "counseling",
+    "question": "주 3회 이상의 심한 분노 발작을 보이며, 발작이 없는 평상시에도 만성적으로 성마른 기분을 유지하는 아동 장애 명칭을 쓰시오.",
+    "keyword": "주 3회 분노 발작, 만성 성마른 기분, 1년",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 파괴적 기분조절장애 (DMDD)<br>발작과 발작 사이 평상시에도 만성적으로 성마르고 화가 난 기분을 1년 이상 유지가 핵심 감별 기준이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 파괴적 기분조절장애 (DMDD) 발작과 발작 사이 평상시에도 만성적으로 성마르고 화가 난 기분을 1년 이상 유지가 핵심 감별 기준이다."
+  },
+  {
+    "id": "Q027",
+    "domain": "Ⅱ. 이상심리학 & DSM-5-TR 진단 (026 ~ 055)",
+    "type": "counseling",
+    "question": "권위자에 대한 거부적·적대적 행동을 보이나, DMDD와 달리 평상시 만성적인 성마른 기분 유지는 나타나지 않는 장애 명칭을 쓰시오.",
+    "keyword": "권위자 거부·적대, 만성 성마름 없음, 6개월",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 적대적 반항장애 (ODD)<br>거부적·적대적·반항적 행동이 6개월 이상 지속되나, 발작 사이 평상시 만성적인 성마른 기분 유지는 나타나지 않는다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 적대적 반항장애 (ODD) 거부적·적대적·반항적 행동이 6개월 이상 지속되나, 발작 사이 평상시 만성적인 성마른 기분 유지는 나타나지 않는다."
+  },
+  {
+    "id": "Q028",
+    "domain": "Ⅱ. 이상심리학 & DSM-5-TR 진단 (026 ~ 055)",
+    "type": "counseling",
+    "question": "우울 기분이나 의욕 상실이 최소 2주 이상 지속되며 자살 위기 동반 시 즉각 사정해야 하는 장애 명칭과 자살 위기 사정법을 서술하시오.",
+    "keyword": "2주 이상, 우울 기분/의욕 상실, 자살 위기",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 주요우울장애 (MDD)<br>최소 2주 이상 우울 기분이나 흥미·즐거움의 현저한 상실이 지속되며, 자살 위기 감지 시 직접적 질문으로 사정해야 한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 주요우울장애 (MDD) 최소 2주 이상 우울 기분이나 흥미·즐거움의 현저한 상실이 지속되며, 자살 위기 감지 시 직접적 질문으로 사정해야 한다."
+  },
+  {
+    "id": "Q030",
+    "domain": "Ⅱ. 이상심리학 & DSM-5-TR 진단 (026 ~ 055)",
+    "type": "counseling",
+    "question": "극심한 학대·방임 이력으로 인해 정서적으로 위축되고 성인 보호자에게 위안을 최소한으로 구하는 아동 애착장애의 정식 명칭을 쓰시오.",
+    "keyword": "정서적 위축, 성인 보살핌 최소 요구, 방임",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 반응성 애착장애 (RAD)<br>병원성 보살핌 이력으로 인해 성인 보호자에게 정서적으로 위축되고 위안을 최소한으로 구하는 장애이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 반응성 애착장애 (RAD) 병원성 보살핌 이력으로 인해 성인 보호자에게 정서적으로 위축되고 위안을 최소한으로 구하는 장애이다."
+  },
+  {
+    "id": "Q031",
+    "domain": "Ⅱ. 이상심리학 & DSM-5-TR 진단 (026 ~ 055)",
+    "type": "counseling",
+    "question": "애착 형성 결여로 인해 낯선 성인에게 주저함 없이 접근하고 과도한 친밀감을 표출하는 아동 장애의 정식 명칭을 서술하시오.",
+    "keyword": "낯선 성인 과도 친밀, 주저함 없음, 애착결여",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 탈억제성 사회관여 장애 (DSED)<br>낯선 성인에게 주저함 없이 접근하고 과도한 친밀감을 표출하며 애착 대상에 대한 선택적 애착이 결여된 장애이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 탈억제성 사회관여 장애 (DSED) 낯선 성인에게 주저함 없이 접근하고 과도한 친밀감을 표출하며 애착 대상에 대한 선택적 애착이 결여된 장애이다."
+  },
+  {
+    "id": "Q056",
+    "domain": "Ⅲ. 심리검사 & 사정 (056 ~ 080)",
+    "type": "counseling",
+    "question": "K-WISC-V 지표 중 축적된 결정성 지능과 언어적 개념 형성 능력을 평가하며 공통성과 어휘가 포함되는 지표 명칭을 쓰시오.",
+    "keyword": "결정성 지능, 언어적 개념 형성, 공통성/어휘",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 언어이해 지표 (VCI)<br>축적된 언어 지식과 언어적 개념 형성 능력을 평가하며, 공통성·어휘 소검사가 기본 소검사로 포함된다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 언어이해 지표 (VCI) 축적된 언어 지식과 언어적 개념 형성 능력을 평가하며, 공통성·어휘 소검사가 기본 소검사로 포함된다."
+  },
+  {
+    "id": "Q057",
+    "domain": "Ⅲ. 심리검사 & 사정 (056 ~ 080)",
+    "type": "counseling",
+    "question": "K-WISC-V 지표 중 토막짜기와 시각퍼즐 소검사로 구성되며 시각적 세부 인지 및 공간 처리 능력을 평가하는 지표 명칭을 쓰시오.",
+    "keyword": "시공간 지표(VSI), 토막짜기, 시각퍼즐",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 시공간 지표 (VSI)<br>시각적 자극의 구성 및 공간적 관계 분석 능력을 평가하며, 토막짜기와 퍼즐(시각퍼즐) 2가지 핵심 소검사로 구성된다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 시공간 지표 (VSI) 시각적 자극의 구성 및 공간적 관계 분석 능력을 평가하며, 토막짜기와 퍼즐(시각퍼즐) 2가지 핵심 소검사로 구성된다."
+  },
+  {
+    "id": "Q058",
+    "domain": "Ⅲ. 심리검사 & 사정 (056 ~ 080)",
+    "type": "counseling",
+    "question": "K-WISC-V 지표 중 비구어적 자극의 귀납적·연역적 규칙 추론 능력을 평가하며 행렬추론과 무게비교 소검사를 쓰는 지표 명칭을 쓰시오.",
+    "keyword": "유동추론 지표(FRI), 행렬추론, 무게비교",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 유동추론 지표 (FRI)<br>비구어적 자극 간의 규칙과 원리를 귀납적·연역적으로 추론하는 능력으로, 행렬추론과 무게비교 2대 핵심 소검사로 구성된다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 유동추론 지표 (FRI) 비구어적 자극 간의 규칙과 원리를 귀납적·연역적으로 추론하는 능력으로, 행렬추론과 무게비교 2대 핵심 소검사로 구성된다."
+  },
+  {
+    "id": "Q081",
+    "domain": "Ⅳ. 상담이론 & 주요 기법 (081 ~ 110)",
+    "type": "counseling",
+    "question": "REBT에서 \"나는 반드시 성취해야만 가치가 있다\"는 신념 유형의 명칭과 이를 해체하기 위한 C-D-E 절차를 서술하시오.",
+    "keyword": "완벽성 성취 압박, 1등 당위 신념, 논박 (D)",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 자신에 대한 당위성<br>\"나는 반드시 성취해야만 가치가 있다\"는 비합리적 당위적 신념으로, 소크라테스식 논박 (D)을 통해 해체해야 한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 자신에 대한 당위성 \"나는 반드시 성취해야만 가치가 있다\"는 비합리적 당위적 신념으로, 소크라테스식 논박 (D)을 통해 해체해야 한다."
+  },
+  {
+    "id": "Q082",
+    "domain": "Ⅳ. 상담이론 & 주요 기법 (081 ~ 110)",
+    "type": "counseling",
+    "question": "REBT에서 내담자의 비합리적 신념을 반박할 때 사용되는 논박의 3가지 유형의 개념을 서술하시오.",
+    "keyword": "실용적, 논리적, 실증적 논박",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 실용적 논박, 논리적 논박, 실증적 논박<br>신념의 유용성을 묻는 실용적 논박, 논리적 모순을 짚는 논리적 논박, 현실 증거를 확인하는 실증적 논박을 적용한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 실용적 논박, 논리적 논박, 실증적 논박 신념의 유용성을 묻는 실용적 논박, 논리적 모순을 짚는 논리적 논박, 현실 증거를 확인하는 실증적 논박을 적용한다."
+  },
+  {
+    "id": "Q095",
+    "domain": "Ⅳ. 상담이론 & 주요 기법 (081 ~ 110)",
+    "type": "counseling",
+    "question": "자신이 수용하기 힘든 부정적 욕구나 감정을 타인의 것으로 덮어씌워 남 탓하는 게슈탈트 접촉경계 혼란 명칭을 쓰시오.",
+    "keyword": "자신의 욕구/감정 인정 거부, 남 탓",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 투사<br>자신이 수용하기 힘든 부정적 욕구가 감정을 자신의 것으로 자각하지 못하고 타인에게 덮어씌워 남 탓하는 혼란이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 투사 자신이 수용하기 힘든 부정적 욕구가 감정을 자신의 것으로 자각하지 못하고 타인에게 덮어씌워 남 탓하는 혼란이다."
+  },
+  {
+    "id": "Q096",
+    "domain": "Ⅳ. 상담이론 & 주요 기법 (081 ~ 110)",
+    "type": "counseling",
+    "question": "타인에게 표현해야 할 분노나 욕구를 자신에게 돌려 자해 행동이나 과도한 자책을 시도하는 접촉경계 혼란 명칭을 쓰시오.",
+    "keyword": "타인 향한 분노 ➔ 자신 전가, 자해",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 반전<br>타인에게 표현하고 싶은 분노나 욕구를 자신에게 돌려 자책하거나 자해 행동을 시도하는 접촉경계 혼란이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 반전 타인에게 표현하고 싶은 분노나 욕구를 자신에게 돌려 자책하거나 자해 행동을 시도하는 접촉경계 혼란이다."
+  },
+  {
+    "id": "Q097",
+    "domain": "Ⅳ. 상담이론 & 주요 기법 (081 ~ 110)",
+    "type": "counseling",
+    "question": "자신과 타인 간의 경계선이 완전히 붕괴되어 갈등을 피하기 위해 과도하게 밀착되고 종속된 상태의 접촉경계 혼란 명칭을 쓰시오.",
+    "keyword": "타인과 경계 상실, 독립성 결여",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 융합<br>자신과 타인 간의 경계가 사라져 경계선이 붕괴되고, 서갈등을 피하기 위해 완전히 종속되거나 밀착된 상태이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 융합 자신과 타인 간의 경계가 사라져 경계선이 붕괴되고, 서갈등을 피하기 위해 완전히 종속되거나 밀착된 상태이다."
+  },
+  {
+    "id": "Q099",
+    "domain": "Ⅳ. 상담이론 & 주요 기법 (081 ~ 110)",
+    "type": "counseling",
+    "question": "감정적 접촉의 고통을 피하기 위해 농담을 하거나 대화 주제를 갑자기 딴 데로 돌려 회피하는 접촉경계 혼란 명칭을 쓰시오.",
+    "keyword": "감정 회피, 조크/주제 전환, 감정 지연",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 편향<br>감정적 접촉의 고통을 피하기 위해 둔감화된 조크를 하거나 대화 주제를 갑자기 딴 데로 돌려 회피하는 기법이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 편향 감정적 접촉의 고통을 피하기 위해 둔감화된 조크를 하거나 대화 주제를 갑자기 딴 데로 돌려 회피하는 기법이다."
+  },
+  {
+    "id": "Q100",
+    "domain": "Ⅳ. 상담이론 & 주요 기법 (081 ~ 110)",
+    "type": "counseling",
+    "question": "맞은편 빈 의자에 미해결 과제 대상이 앉아있다고 가상하고 대화하게 하여 감정을 자각시키는 게슈탈트 기법을 쓰시오.",
+    "keyword": "내면 미해결 과제 대상 가상 대화",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 빈의자 기법<br>맞은편 빈 의자에 미해결 과제 대상이 앉아있다고 가상하고 대화하게 하여 내면 감정을 자각시킨다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 빈의자 기법 맞은편 빈 의자에 미해결 과제 대상이 앉아있다고 가상하고 대화하게 하여 내면 감정을 자각시킨다."
+  },
+  {
+    "id": "Q111",
+    "domain": "Ⅴ. 가족치료 & 집단상담 (111 ~ 130)",
+    "type": "counseling",
+    "question": "보원의 다세대가족치료에서 감정의 융합에 휘말리지 않고 감정과 사고를 분리하여 이성적 사고를 내리는 개념의 명칭을 쓰시오.",
+    "keyword": "사고와 감정의 분리, 이성적 판단",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 자기분화<br>감정의 융합에 휘말리지 않고 감정과 사고를 분리하여 이성적·논리적으로 사고하고 행동할 수 있는 능력이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 자기분화 감정의 융합에 휘말리지 않고 감정과 사고를 분리하여 이성적·논리적으로 사고하고 행동할 수 있는 능력이다."
+  },
+  {
+    "id": "Q113",
+    "domain": "Ⅴ. 가족치료 & 집단상담 (111 ~ 130)",
+    "type": "counseling",
+    "question": "부부 간 갈등 불안을 해소하기 위해 3자인 자녀를 편으로 끌어들여 3자 역동 관계를 만드는 보원의 개념을 서술하시오.",
+    "keyword": "부부 갈등 불안, 자녀 3자로 끌어듦",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 삼각관계<br>부부 간 양자 갈등의 불안을 해소하고 안정감을 얻기 위해 3자인 자녀를 편으로 끌어들여 3자 관계를 형성하는 역동이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 삼각관계 부부 간 양자 갈등의 불안을 해소하고 안정감을 얻기 위해 3자인 자녀를 편으로 끌어들여 3자 관계를 형성하는 역동이다."
+  },
+  {
+    "id": "Q115",
+    "domain": "Ⅴ. 가족치료 & 집단상담 (111 ~ 130)",
+    "type": "counseling",
+    "question": "미누친의 구조적 가족치료에서 가족 간 자율성과 사생활이 침해되고 경계선이 불분명하여 재설정이 필요한 상태를 쓰시오.",
+    "keyword": "사생활 침해, 위계구조 붕괴, 경계 불분명",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 밀착된 경계선<br>가족 구성원 간 자율성과 사생활이 침해되고 정서적으로 과도하게 개입되어 명확한 경계선 재설정이 필요한 상태이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 밀착된 경계선 가족 구성원 간 자율성과 사생활이 침해되고 정서적으로 과도하게 개입되어 명확한 경계선 재설정이 필요한 상태이다."
+  },
+  {
+    "id": "Q117",
+    "domain": "Ⅴ. 가족치료 & 집단상담 (111 ~ 130)",
+    "type": "counseling",
+    "question": "미누친의 구조적 가족치료에서 3자 한 사람을 공격하기 위해 결탁하는 역기능적 구조와, 긍정적 협력 관계의 명칭을 각각 쓰시오.",
+    "keyword": "연합 vs 동맹",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 연합 / 동맹<br>연합은 한 사람을 공격하기 위해 2인이 결탁하는 역기능적 구조이며, 동맹은 공동 목표를 위해 협력하는 기능적 유대이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 연합 / 동맹 연합은 한 사람을 공격하기 위해 2인이 결탁하는 역기능적 구조이며, 동맹은 공동 목표를 위해 협력하는 기능적 유대이다."
+  },
+  {
+    "id": "Q131",
+    "domain": "Ⅵ. 진로상담 & 학교 현장 법령/윤리 (131 ~ 150)",
+    "type": "counseling",
+    "question": "고트프레드슨의 진로 제한-타협 이론에서 진로 포기 및 제한이 이루어지는 4가지 발달 단계를 순서대로 쓰시오.",
+    "keyword": "크기힘 ➔ 성역할 ➔ 사회적가치 ➔ 내적고유",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 크기와 힘 지향기 ➔ 성역할 지향기 ➔ 사회적 가치 지향기 ➔ 내적 고유 자아 지향기<br>1단계 크기와 힘, 2단계 성역할, 3단계 사회적 가치, 4단계 내적 고유 자아 지향기이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 크기와 힘 지향기 ➔ 성역할 지향기 ➔ 사회적 가치 지향기 ➔ 내적 고유 자아 지향기 1단계 크기와 힘, 2단계 성역할, 3단계 사회적 가치, 4단계 내적 고유 자아 지향기이다."
+  },
+  {
+    "id": "Q133",
+    "domain": "Ⅵ. 진로상담 & 학교 현장 법령/윤리 (131 ~ 150)",
+    "type": "counseling",
+    "question": "SCCT 모델에서 진로 목표를 구체적 행동으로 실행하려는 직전 시점에 작용하는 외부 환경적 장벽 변인명을 쓰시오.",
+    "keyword": "목표 실행 직전 장벽/지원, 부모 반대",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 진입맥락 변인<br>진로 목표를 구체적 행동으로 실행하려는 직전 시점에 작용하는 외부 환경적 장벽이나 지원 변인이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 진입맥락 변인 진로 목표를 구체적 행동으로 실행하려는 직전 시점에 작용하는 외부 환경적 장벽이나 지원 변인이다."
+  },
+  {
+    "id": "Q145",
+    "domain": "Ⅵ. 진로상담 & 학교 현장 법령/윤리 (131 ~ 150)",
+    "type": "counseling",
+    "question": "학교폭력예방법상 가해학생에게 내리는 제1호 조치 처분의 법률상 공식 공칭 명칭을 작성하시오.",
+    "keyword": "피해학생에 대한 서면사과",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 피해학생에 대한 서면사과<br>가해학생에게 내리는 제1호 조치의 법률상 공식 공칭 명칭은 '피해학생에 대한 서면사과'이다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 피해학생에 대한 서면사과 가해학생에게 내리는 제1호 조치의 법률상 공식 공칭 명칭은 '피해학생에 대한 서면사과'이다."
+  },
+  {
+    "id": "Q150",
+    "domain": "Ⅵ. 진로상담 & 학교 현장 법령/윤리 (131 ~ 150)",
+    "type": "counseling",
+    "question": "교권보호 4법에 따라 정당한 생활지도권을 보호하고 교권 침해 시 개관되는 전담 기구의 명칭을 작성하시오.",
+    "keyword": "교원 지위 향상, 교육 활동 침해 대처",
+    "answer": "<mark style=\"background-color: #fff59d; color: #000; padding: 4px 6px; border-radius: 4px; display: inline-block;\">정답: 지역교권보호위원회<br>교원의 정당한 교육활동과 생활지도권을 법적으로 보장하고, 침해 행위 발생 시 지역교권보호위원회를 개최하여 보호 조치한다.</mark>",
+    "isTopPick": true,
+    "clean_ans": "정답: 지역교권보호위원회 교원의 정당한 교육활동과 생활지도권을 법적으로 보장하고, 침해 행위 발생 시 지역교권보호위원회를 개최하여 보호 조치한다."
+  }
+]
