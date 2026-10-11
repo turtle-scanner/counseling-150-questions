@@ -7,6 +7,8 @@ const topicsData = [
   {
     domain: "교육과정",
     num: 1,
+    priority: "1순위",
+    priorityLabel: "🔥 1순위 압도적 적중",
     title: "위긴스 & 맥타이 백워드 설계 모형 2.0 (Wiggins & McTighe)",
     concept: "2022 개정 깊이 있는 학습을 위한 영속적 이해(Big Idea)와 평가 중심 단원 설계",
     sub_questions: [
@@ -32,6 +34,8 @@ const topicsData = [
   {
     domain: "교육과정",
     num: 2,
+    priority: "3순위",
+    priorityLabel: "📌 3순위 기본 방어",
     title: "타바(Taba) 교사 중심 귀납적 교육과정 개발 모형",
     concept: "교사의 교육과정 문해력 증진 및 현장 요구에 기초한 단원 개발(아래로부터의 상향식 접근)",
     sub_questions: [
@@ -57,6 +61,8 @@ const topicsData = [
     {
     domain: "교육과정",
     num: 3,
+    priority: "2순위",
+    priorityLabel: "⭐ 2순위 유력 복병",
     title: "아이즈너(Eisner) 예술적 교육과정 개발 모형",
     concept: "행동목표 비판, 교육적 상상력, 참 평가, 교육적 감식안과 교육비평을 통한 질적 개선",
     sub_questions: [
@@ -82,6 +88,8 @@ const topicsData = [
   {
     domain: "교육과정",
     num: 4,
+    priority: "3순위",
+    priorityLabel: "📌 3순위 기본 방어",
     title: "파이나(Pinar) 실존적 재개념주의 쿠레레(Currere) 모형",
     concept: "교육과정의 어원적 의미 회복과 개인의 실존적 자아 성찰(자서전적 방법 4단계)",
     sub_questions: [
@@ -109,6 +117,8 @@ const topicsData = [
   {
     domain: "교육방법",
     num: 5,
+    priority: "1순위",
+    priorityLabel: "🔥 1순위 압도적 적중",
     title: "플립드 러닝(Flipped Learning, 역진행 수업) 3단계",
     concept: "교실 공간을 지식 전달에서 학생 중심 협력 탐구 및 즉각적 피드백의 장으로 혁신",
     sub_questions: [
@@ -134,6 +144,8 @@ const topicsData = [
   {
     domain: "교육방법",
     num: 6,
+    priority: "3순위",
+    priorityLabel: "📌 3순위 기본 방어",
     title: "스웰러(Sweller) 인지부하 이론",
     concept: "작동기억의 인지적 한계를 극복하고 장기기억 스키마 형성을 극대화하는 교수 설계",
     sub_questions: [
@@ -159,6 +171,8 @@ const topicsData = [
   {
     domain: "교육방법",
     num: 7,
+    priority: "2순위",
+    priorityLabel: "⭐ 2순위 유력 복병",
     title: "콜린스(Collins) 인지적 도제 교수법",
     concept: "전문가의 고차원적 사고 전략과 문제해결 과정을 가시화하여 학습자에게 전수",
     sub_questions: [
@@ -184,6 +198,8 @@ const topicsData = [
   {
     domain: "교육방법",
     num: 8,
+    priority: "3순위",
+    priorityLabel: "📌 3순위 기본 방어",
     title: "메지로우(Mezirow) 변혁적 학습 이론",
     concept: "기존의 무비판적 전제와 신념을 성찰하고 더 포용적인 관점의 프레임으로 전환",
     sub_questions: [
@@ -211,6 +227,8 @@ const topicsData = [
   {
     domain: "교육평가",
     num: 9,
+    priority: "1순위",
+    priorityLabel: "🔥 1순위 압도적 적중",
     title: "비고츠키(Vygotsky) ZPD 기반 역동적 평가",
     concept: "결과 중심 정적 평가를 탈피하여 학습자의 잠재력 측정 및 평가와 교수의 유기적 통합",
     sub_questions: [
@@ -236,6 +254,8 @@ const topicsData = [
   {
     domain: "교육평가",
     num: 10,
+    priority: "1순위",
+    priorityLabel: "🔥 1순위 연계 루브릭",
     title: "루브릭(Rubric, 수행평가 다차원 채점기준표)",
     concept: "과정중심 수행평가의 채점 객관성과 신뢰도를 확보하고 학생의 자기조절학습 지원",
     sub_questions: [
@@ -261,6 +281,8 @@ const topicsData = [
     {
     domain: "교육평가",
     num: 11,
+    priority: "2순위",
+    priorityLabel: "⭐ 2순위 유력 복병",
     title: "2022 개정 성취평가제 및 형성평가 피드백 전략",
     concept: "서열화 경쟁 탈피, 국가 성취기준 도달도 평가 및 즉각적 교정 피드백으로 맞춤형 성장 지원",
     sub_questions: [
@@ -286,6 +308,8 @@ const topicsData = [
   {
     domain: "교육평가",
     num: 12,
+    priority: "3순위",
+    priorityLabel: "📌 3순위 기본 방어",
     title: "스크리븐(Scriven) 탈목표 평가 모형",
     concept: "의도된 목표에 구속되지 않고 교육 프로그램이 낳은 실제적 부수 효과를 종합 판정",
     sub_questions: [
@@ -313,6 +337,8 @@ const topicsData = [
   {
     domain: "교육행정",
     num: 13,
+    priority: "1순위",
+    priorityLabel: "🔥 1순위 압도적 적중",
     title: "세르지오바니(Sergiovanni) 도덕적 리더십",
     concept: "관료적 권위와 보상 체계를 탈피하여 전문적 책무성과 도덕적 의무감으로 학교 경영",
     sub_questions: [
@@ -338,6 +364,8 @@ const topicsData = [
   {
     domain: "교육행정",
     num: 14,
+    priority: "3순위",
+    priorityLabel: "📌 3순위 기본 방어",
     title: "겟젤스-구바(Getzels & Guba) 사회체계 모형",
     concept: "학교 조직의 제도적 규범과 교사 개인의 심리적 욕구 간의 갈등 조정 및 행동 이해",
     sub_questions: [
@@ -363,6 +391,8 @@ const topicsData = [
   {
     domain: "교육행정",
     num: 15,
+    priority: "2순위",
+    priorityLabel: "⭐ 2순위 유력 복병",
     title: "교내 자율장학 혁신: 임상장학 & 동료장학",
     concept: "교사의 실제 수업 개선을 위한 일대일 집중 지원(임상) 및 수평적 협력 장학(동료)",
     sub_questions: [
@@ -388,6 +418,8 @@ const topicsData = [
   {
     domain: "교육행정",
     num: 16,
+    priority: "3순위",
+    priorityLabel: "📌 3순위 기본 방어",
     title: "호이 & 타터(Hoy & Tarter) 참여적 의사결정 모형",
     concept: "학교 의사결정의 수용 영역을 분석하여 교사의 적합한 참여 유형과 권한 위임 결정",
     sub_questions: [
@@ -678,6 +710,31 @@ body {
   font-weight: 700;
 }
 
+
+/* Priority Badge */
+.priority-badge {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: -0.2px;
+}
+.priority-1순위 {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.priority-2순위 {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+.priority-3순위 {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
 /* Keyword Tags */
 .kw-tags {
   display: flex;
@@ -901,7 +958,8 @@ body.blind-mode .kw-tag:hover {
 </header>
 
 <nav class="filter-nav">
-  <button class="tab-btn active" onclick="filterDomain('all')">전체 16대 주제 보기</button>
+  <button class="tab-btn active" onclick="filterDomain('top')">🔥 2027 1-2순위 초정예 집중 뷰</button>
+  <button class="tab-btn" onclick="filterDomain('all')">전체 16대 주제 보기</button>
   <button class="tab-btn" onclick="filterDomain('교육과정')">Ⅰ. 교육과정 (4선)</button>
   <button class="tab-btn" onclick="filterDomain('교육방법')">Ⅱ. 교육방법 (4선)</button>
   <button class="tab-btn" onclick="filterDomain('교육평가')">Ⅲ. 교육평가 (4선)</button>
@@ -921,9 +979,12 @@ function renderTopics(filter) {
   const domains = ['교육과정', '교육방법', '교육평가', '교육행정'];
 
   domains.forEach(d => {
-    if (filter !== 'all' && filter !== d) return;
-
-    const domainTopics = topics.filter(t => t.domain === d);
+    let domainTopics = topics.filter(t => t.domain === d);
+    if (filter === 'top') {
+      domainTopics = domainTopics.filter(t => t.priority === '1순위' || t.priority === '2순위');
+    } else if (filter !== 'all' && filter !== d) {
+      return;
+    }
     if (domainTopics.length === 0) return;
 
     const section = document.createElement('section');
@@ -952,7 +1013,10 @@ function renderTopics(filter) {
         '<div class="topic-card">' +
           '<div class="card-top">' +
             '<div>' +
-              '<div class="card-num">TOPIC ' + String(t.num).padStart(2, '0') + '</div>' +
+              '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">' +
+                '<span class="card-num">TOPIC ' + String(t.num).padStart(2, '0') + '</span>' +
+                '<span class="priority-badge priority-' + t.priority + '">' + t.priorityLabel + '</span>' +
+              '</div>' +
               '<div class="card-title-text">' + t.title + '</div>' +
             '</div>' +
             '<span class="domain-badge">' + t.domain + '</span>' +
@@ -991,7 +1055,7 @@ function renderTopics(filter) {
 function filterDomain(domain) {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.remove('active');
-    if (btn.innerText.includes(domain) || (domain === 'all' && btn.innerText.includes('전체'))) {
+    if ((domain === 'top' && btn.innerText.includes('초정예')) || (domain === 'all' && btn.innerText.includes('전체')) || btn.innerText.includes(domain)) {
       btn.classList.add('active');
     }
   });
@@ -1012,7 +1076,7 @@ function toggleBlindMode() {
 
 // Initial render
 window.addEventListener('DOMContentLoaded', () => {
-  renderTopics('all');
+  renderTopics('top');
 });
 </script>
 </body>
