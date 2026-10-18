@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027 전문상담 임용 핵심키워드 55제 (다크모드 타이핑 마스터)</title>
+<style>
+  :root {
+    --bg-main: #0b0f17;
+    --bg-card: #151c28;
+    --bg-card-hover: #1c2536;
+    --bg-input: #0d131d;
+    --border-color: #2a3548;
+    --text-primary: #f0f6fc;
+    --text-secondary: #94a3b8;
+    --accent-cyan: #38bdf8;
+    --accent-gold: #fbbf24;
+    --accent-green: #34d399;
+    --accent-purple: #c084fc;
+    --accent-rose: #fb7185;
+    --font-Scale: 1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Pretendard', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.65;
+    padding-bottom: 80px;
+    font-size: calc(16px * var(--font-Scale));
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11, 15, 23, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 18px 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  }
+
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .badge-target {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+
+  .controls-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-util {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+  }
+
+  .btn-util:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    background: var(--bg-card);
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    height: 12px;
+    background: #090d14;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid #222c3c;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-weight: 700;
+    color: var(--accent-green);
+    font-size: 0.95rem;
+    min-width: 150px;
+    text-align: right;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-btn {
+    background: #111722;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover {
+    color: var(--text-primary);
+    border-color: #475569;
+  }
+
+  .filter-btn.active {
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+  }
+
+  .search-input {
+    margin-left: auto;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    min-width: 240px;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+  }
+
+  main {
+    max-width: 1280px;
+    margin: 24px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 22px 24px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .card.done {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.05), var(--bg-card));
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .num-badge {
+    background: #1e293b;
+    color: var(--accent-gold);
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 4px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(251, 191, 36, 0.35);
+  }
+
+  .cat-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(56, 189, 248, 0.12);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+  }
+
+  .cat-badge.pedagogy {
+    background: rgba(192, 132, 252, 0.12);
+    color: var(--accent-purple);
+    border-color: rgba(192, 132, 252, 0.3);
+  }
+
+  .card-title {
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .check-btn {
+    background: #1e293b;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+
+  .check-btn.checked {
+    background: rgba(52, 211, 153, 0.18);
+    color: var(--accent-green);
+    border-color: var(--accent-green);
+  }
+
+  .keywords-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .kw-pill {
+    background: #0f1623;
+    color: var(--accent-gold);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    padding: 4px 11px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .lines-container {
+    background: #0d121b;
+    border: 1px solid #243044;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+  }
+
+  .line-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px dashed #1e293b;
+  }
+
+  .line-item:last-child {
+    border-bottom: none;
+  }
+
+  .line-label {
+    color: var(--accent-cyan);
+    font-weight: 700;
+    font-size: 0.88rem;
+    min-width: 82px;
+    flex-shrink: 0;
+  }
+
+  .line-text {
+    color: #f8fafc;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .typing-toggle-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-practice {
+    background: rgba(56, 189, 248, 0.12);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+
+  .btn-practice:hover {
+    background: rgba(56, 189, 248, 0.22);
+  }
+
+  .typing-area {
+    display: none;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .typing-area.open {
+    display: block;
+  }
+
+  .typing-row {
+    margin-bottom: 10px;
+  }
+
+  .typing-target {
+    font-size: 0.95rem;
+    color: var(--accent-gold);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .typing-input {
+    width: 100%;
+    background: #080b11;
+    color: #ffffff;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  .typing-input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+  }
+
+  .typing-input.match {
+    border-color: var(--accent-green);
+    background: rgba(16, 185, 129, 0.08);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="title-row">
+      <h1>
+        <span>🌙 2027 전문상담 핵심키워드 55제 다크모드 마스터북</span>
+        <span class="badge-target">인천 공립 최종합격 (E10-26-0403190)</span>
+      </h1>
+      <div class="controls-right">
+        <button class="btn-util" onclick="changeFontScale(0.1)">🔍 글자 크게 (+)</button>
+        <button class="btn-util" onclick="changeFontScale(-0.1)">🔎 글자 작게 (-)</button>
+        <button class="btn-util" onclick="toggleAllTyping()">⌨️ 전체 타이핑창 열기/닫기</button>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <span style="font-weight:700; color:var(--accent-cyan);">📊 55제 마스터 진도율</span>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">0 / 55 완료 (0%)</div>
+    </div>
+
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="setFilter('ALL', this)">전체 55제</button>
+      <button class="filter-btn" onclick="setFilter(' 교육학', this)">1교시 교육학 (20제)</button>
+      <button class="filter-btn" onclick="setFilter('DSM-5-TR', this)">DSM-5-TR 감별 (10제)</button>
+      <button class="filter-btn" onclick="setFilter('심리검사', this)">심리검사 (3제)</button>
+      <button class="filter-btn" onclick="setFilter('가족치료', this)">가족치료 (5제)</button>
+      <button class="filter-btn" onclick="setFilter('상담이론', this)">상담이론·성격 (9제)</button>
+      <button class="filter-btn" onclick="setFilter('진로·다문화·위기·집단', this)">진로·다문화·위기·집단 (8제)</button>
+      <button class="filter-btn" onclick="setFilter('UNDONE', this)">🔥 미완료 문항만</button>
+      <input type="text" class="search-input" id="searchInput" placeholder="키워드·학자명·장애명 즉시 검색..." oninput="renderCards()">
+    </div>
+  </div>
+</header>
+
+<main id="cardContainer"></main>
+
+<script>
+const ITEMS_55 = [
+  // [1교시 교육학 20제: 01~20]
+  {
+    id: 1, group: " 교육학", cat: "1교시 교육과정",
+    title: "타바(Taba)의 귀납적 교육과정 개발 모형",
+    keywords: ["연역적 모형 비판", "현장 교사 주체", "시험 단원 선행 설계", "교실 검증 후 일반화"],
+    lines: [
+      "타일러의 연역적 모형을 비판하고 교사가 개발의 주체가 되어야 한다고 본다.",
+      "구체적인 교수학습 단원을 먼저 설계하여 실험한 뒤 일반화하는 귀납적 절차다.",
+      "요구 진단과 목표 설정 및 내용 선정 조직을 거쳐 시험 단원을 개발해 검증한다.",
+      "검증된 단원을 개정 및 통합하고 교육과정 구조를 정착시켜 학교 현장에 확산한다."
+    ]
+  },
+  {
+    id: 2, group: " 교육학", cat: "1교시 교육과정",
+    title: "스킬벡(Skilbeck)의 학교중심 교육과정 개발 모형(SBCD)",
+    keywords: ["상황분석 출발", "내적·외적 요인 진단", "5단계 비선형적 운영", "학교 자율성 제고"],
+    lines: [
+      "학교의 내외적 상황을 분석하여 학교 실정에 맞는 교육과정을 자율 개발한다.",
+      "첫 단계인 상황분석은 학생과 교사 등 내적 요인과 지역사회 외적 요인을 본다.",
+      "상황분석 결과를 바탕으로 목표 설정과 프로그램 구축 및 실행 단계로 나아간다.",
+      "모니터링과 피드백 및 평가와 재구성까지 모든 절차를 비선형적으로 운영한다."
+    ]
+  },
+  {
+    id: 3, group: " 교육학", cat: "1교시 교육과정",
+    title: "파이나(Pinar)의 실존적 재개념주의 쿠레레(Currere) 4단계",
+    keywords: ["자서전적 성찰", "회귀(과거)", "전진(미래)", "분석(현재) 및 종합(통합)"],
+    lines: [
+      "회귀 단계는 과거의 교육적 경험을 떠올리며 현재의 나에게 미친 영향을 성찰한다.",
+      "전진 단계는 아직 오지 않은 미래의 삶과 자기 모습을 상상하며 비전을 그려본다.",
+      "분석 단계는 과거와 미래에 비추어 현재 자신의 실존적 삶의 의미를 객관화한다.",
+      "종합 단계는 과거와 미래 및 현재를 하나로 통합하여 주체적인 내면 변화를 이룬다."
+    ]
+  },
+  {
+    id: 4, group: " 교육학", cat: "1교시 교육과정",
+    title: "아이즈너(Eisner)의 영 교육과정 + 잭슨의 잠재적 교육과정",
+    keywords: ["영 교육과정(공식 배제·기회 상실)", "예술·정서 보완", "잠재적 교육과정(은연중 내면화)", "민주적 풍토"],
+    lines: [
+      "영 교육과정은 학교에서 공식적으로 가르치지 않아 학생이 배울 기회를 잃는 것이다.",
+      "입시 위주 주지교과 편중으로 배제된 예술과 정서 및 비판적 사고 영역을 보완한다.",
+      "잠재적 교육과정은 학교의 물리적 환경과 문화 속에서 은연중에 내면화되는 경험이다.",
+      "교사는 바람직한 인성 모범을 보이고 민주적 학급 풍토를 조성하여 긍정화해야 한다."
+    ]
+  },
+  {
+    id: 5, group: " 교육학", cat: "1교시 교육과정 (작년 기출 대조)",
+    title: "워커(Walker)의 자연주의적 숙의 모형 3단계",
+    keywords: ["처방적 모형 탈피", "강령(신념·가치·전제)", "숙의(대안 탐색·타협)", "교육과정 설계"],
+    lines: [
+      "처방적 모형을 탈피하여 실제 현장에서 교육과정이 개발되는 과정을 그대로 기술한다.",
+      "첫 단계인 강령에서는 개발 참여자들이 지닌 교육적 신념과 암묵적 전제를 확인한다.",
+      "둘째 단계인 숙의에서는 다양한 대안을 탐색하고 논쟁과 타협을 거쳐 합의를 도출한다.",
+      "마지막 단계인 교육과정 설계에서는 합의된 사항을 바탕으로 교수 자료를 확정한다."
+    ]
+  },
+  {
+    id: 6, group: " 교육학", cat: "1교시 교육방법·공학",
+    title: "플립드 러닝(Flipped Learning, 거꾸로 학습) 수업 전·중·후 3단계",
+    keywords: ["수업 전(디딤영상 사전학습)", "수업 중(협력적 문제해결·개별 비계)", "수업 후(성찰·내면화)"],
+    lines: [
+      "플립드 러닝은 온라인 사전학습과 교실 내 학생 중심 활동을 결합한 수업 모형이다.",
+      "수업 전에는 학생이 집에서 디딤영상을 시청하며 기초 개념을 자기주도 학습한다.",
+      "수업 중에는 교사의 개별 비계설정 속에 모둠 토의와 협력적 문제해결을 수행한다.",
+      "수업 후에는 배운 내용을 성찰하고 심화 과제를 수행하며 학습을 내면화한다."
+    ]
+  },
+  {
+    id: 7, group: " 교육학", cat: "1교시 교육방법",
+    title: "메지로우(Mezirow)의 변혁적 학습 이론",
+    keywords: ["혼란스러운 딜레마", "비판적 성찰", "의미관점·준거체계 전환", "실천적 행동"],
+    lines: [
+      "변혁적 학습은 기존 방식으로 해결되지 않는 혼란스러운 딜레마 경험에서 출발한다.",
+      "학습자는 자신이 당연하게 여겨 왔던 기존 가정과 선입견을 깊이 비판적 성찰한다.",
+      "타인과의 합리적 담화를 통해 새로운 대안적 관점과 역할의 타당성을 탐색한다.",
+      "고정관념에서 벗어나 세상을 바라보는 의미관점과 준거체계를 근본적으로 전환한다."
+    ]
+  },
+  {
+    id: 8, group: " 교육학", cat: "1교시 교육방법",
+    title: "렌줄리(Renzulli)의 심화학습 3단계 모형",
+    keywords: ["1단계 일반 탐색 활동", "2단계 집단훈련 활동", "3단계 실제 문제 개별·소집단 연구"],
+    lines: [
+      "일 단계 일반 탐색 활동은 다양한 주제를 접하며 학생의 흥미 분야를 탐색하게 한다.",
+      "이 단계 집단훈련 활동은 창의적 사고와 문제해결에 필요한 고급 연구기능을 기른다.",
+      "삼 단계 개별 및 소집단 연구는 학생이 실제 연구자가 되어 실생활 문제를 해결한다.",
+      "이를 통해 영재성과 잠재력을 계발하고 산출물을 도출하여 자기주도성을 신장한다."
+    ]
+  },
+  {
+    id: 9, group: " 교육학", cat: "1교시 교육방법·평가",
+    title: "메이거(Mager)의 명세적 수업목표 + 분석적·총체적 루브릭",
+    keywords: ["조건·도착점 행동·준거", "루브릭(채점기준표)", "분석적 루브릭(세부 피드백)", "총체적 루브릭(단일 점수)"],
+    lines: [
+      "메이거의 수업목표는 조건과 관찰 가능한 도착점 행동 및 도달 준거로 진술한다.",
+      "루브릭은 수행평가의 평가 준거와 수준별 수행 특성을 구체적으로 명시한 표이다.",
+      "분석적 루브릭은 세부 요소별로 점수를 부여하여 구체적인 강약점 피드백을 준다.",
+      "총체적 루브릭은 수행 결과물 전체에 단일 점수를 부여하여 신속하게 채점한다."
+    ]
+  },
+  {
+    id: 10, group: " 교육학", cat: "1교시 교육공학",
+    title: "정착수업(Anchored Instruction) 및 구성주의 상황학습 이론",
+    keywords: ["비활성 지식 극복", "거시적 맥락(닻) 제시", "실제적 과제 해결", "학습 전이 촉진"],
+    lines: [
+      "상황학습은 지식이 사용되는 실제적 맥락 안에서 학습이 이루어져야 한다고 본다.",
+      "정착수업은 실생활의 복잡한 문제가 담긴 거시적 상황인 닻을 영상으로 제시한다.",
+      "학생들은 이야기 속 주인공이 되어 다양한 관점에서 하위 문제들을 협력해 푼다.",
+      "단순 암기인 비활성 지식을 극복하고 실제 상황으로의 학습 전이력을 극대화한다."
+    ]
+  },
+  {
+    id: 11, group: " 교육학", cat: "1교시 교육공학 (작년 기출 대조)",
+    title: "라이겔루스(Reigeluth)의 정교화 이론 7대 전략",
+    keywords: ["정수(Epitome) 선행 제시", "단순에서 복잡 계열화", "비유(Analogy)", "요약자·종합자"],
+    lines: [
+      "교수 내용의 가장 핵심적이고 대표적인 기본 구조인 정수를 맨 먼저 제시한다.",
+      "이후 단순하고 근본적인 내용에서 점차 복잡하고 세부적인 내용으로 정교화한다.",
+      "친숙한 사전 지식과 연결하는 비유 전략을 활용하여 어려운 개념 이해를 돕는다.",
+      "요약자와 종합자 및 인지전략 활성자를 제공하여 학습자의 유의미 학습을 촉진한다."
+    ]
+  },
+  {
+    id: 12, group: " 교육학", cat: "1교시 교육평가",
+    title: "비고츠키(Vygotsky)의 근접발달영역(ZPD) 기반 역동적 평가",
+    keywords: ["실제적 발달수준 vs 잠재적 발달수준", "평가와 교수의 통합", "사전검사-비계설정-사후검사"],
+    lines: [
+      "역동적 평가는 비고츠키의 근접발달영역 개념에 기초하여 잠재적 능력을 평가한다.",
+      "혼자 해결하는 실제적 발달수준을 넘어 도움을 받아 도달할 잠재적 발달수준을 본다.",
+      "평가 과정에서 교사가 힌트와 비계를 제공하며 평가와 교수를 유기적으로 통합한다.",
+      "사전검사와 교수 개입 및 사후검사를 통해 학생의 학습 잠재력과 변화량을 진단한다."
+    ]
+  },
+  {
+    id: 13, group: " 교육학", cat: "1교시 교육평가",
+    title: "과정중심 수행평가 및 채점자 간·채점자 내 신뢰도 제고 방안",
+    keywords: ["과정과 결과 통합 평가", "루브릭 사전 공개", "채점자 사전 연수(모의 채점)", "복수 채점"],
+    lines: [
+      "과정중심 수행평가는 학습 결과물뿐 아니라 문제해결 과정과 태도를 종합 평가한다.",
+      "채점 신뢰도를 높이기 위해 구체적인 평가 준거가 담긴 루브릭을 사전 개발한다.",
+      "채점자 사전 연수와 모의 채점을 실시하여 평가 기준 해석의 일관성을 확보한다.",
+      "동일 답안을 두 명 이상의 교사가 교차 채점하여 채점자 간 신뢰도를 향상시킨다."
+    ]
+  },
+  {
+    id: 14, group: " 교육학", cat: "1교시 교육평가·심리",
+    title: "메타인지(상위인지) 지식과 자기조절학습 전략",
+    keywords: ["선언적·절차적·조건적 지식", "계획-점검(모니터링)-조절", "자기조절학습"],
+    lines: [
+      "메타인지는 자신의 인지 과정을 스스로 인식하고 통제하는 상위 차원의 인지능력이다.",
+      "메타인지적 지식은 전략을 아는 선언적 지식과 활용법 및 조건적 지식으로 나뉜다.",
+      "메타인지적 조절은 학습 목표를 계획하고 이해도를 점검하며 전략을 수정하는 과정이다.",
+      "교사는 생각 소리내어 말하기 시범을 통해 학생의 자기조절학습 역량을 길러준다."
+    ]
+  },
+  {
+    id: 15, group: " 교육학", cat: "1교시 교육평가 (작년 기출 대조)",
+    title: "성장참조평가 vs 능력참조평가 vs 준거참조평가",
+    keywords: ["성장참조(과거 대비 향상도)", "능력참조(잠재력 대비 최선)", "준거참조(성취기준 도달)"],
+    lines: [
+      "성장참조평가는 학생의 과거 초기 성취 수준에 비추어 현재 향상된 정도를 평가한다.",
+      "능력참조평가는 학생이 지닌 잠재적 능력에 비추어 얼마나 최선을 다했는지 평가한다.",
+      "준거참조평가는 사전에 설정된 객관적 교육목표와 성취기준 도달 여부를 판정한다.",
+      "학습 부진 학생에게 성장참조평가를 적용하면 학습 동기와 자아효능감을 높여준다."
+    ]
+  },
+  {
+    id: 16, group: " 교육학", cat: "1교시 교육행정",
+    title: "겟젤스와 구바(Getzels & Guba)의 사회체계 모형",
+    keywords: ["제도적 차원(역할·역할기대)", "개인적 차원(인성·욕구성향)", "거래적 리더십", "효과성과 능률성"],
+    lines: [
+      "사회체계 모형은 조직 행동을 제도적 차원과 개인적 차원의 상호작용으로 설명한다.",
+      "제도적 차원은 학교가 부여한 지위인 역할과 행동 규범인 역할기대로 구성된다.",
+      "개인적 차원은 교사 고유의 성향인 인성과 내면에서 추구하는 욕구성향으로 구성된다.",
+      "교장은 두 차원의 갈등을 거래적 리더십으로 조율하여 효과성과 능률성을 높인다."
+    ]
+  },
+  {
+    id: 17, group: " 교육학", cat: "1교시 교육행정",
+    title: "세르지오바니(Sergiovanni)의 도덕적·문화적 리더십",
+    keywords: ["공유된 가치와 신념", "도덕적 의무감", "내적 동기 유발", "전문적 학습공동체 구현"],
+    lines: [
+      "세르지오바니의 도덕적 리더십은 공유된 가치와 도덕적 의무감으로 헌신을 이끈다.",
+      "외재적 보상이나 강제 규정 대신 내적 동기를 일깨워 자율적 책무성을 높여준다.",
+      "문화적 리더십을 통해 학교의 전통과 상징 및 교육적 비전을 구성원과 공유한다.",
+      "이를 통해 학교를 관료적 조직에서 서로 배움이 일어나는 도덕적 공동체로 만든다."
+    ]
+  },
+  {
+    id: 18, group: " 교육학", cat: "1교시 교육행정",
+    title: "호이와 미스켈(Hoy & Miskel)의 학교 조직풍토 4유형",
+    keywords: ["교장 개방성 × 교사 개방성", "개방 풍토", "자율 풍토 vs 통제 풍토", "폐쇄 풍토"],
+    lines: [
+      "개방 풍토는 교장의 지원적 리더십과 교사의 헌신이 결합되어 사기와 협력이 높다.",
+      "자율 풍토는 교사에게 높은 자율성이 부여되어 교사 집단의 내적 만족도가 높다.",
+      "통제 풍토는 교장의 지시와 문서 업무는 많고 교사 간 인간적 교류는 부족한 상태다.",
+      "폐쇄 풍토는 교장의 비민주적 통제와 교사의 무관심으로 사기와 성과가 모두 낮다."
+    ]
+  },
+  {
+    id: 19, group: " 교육학", cat: "1교시 교육행정",
+    title: "오우치(Ouchi)의 Z이론 및 센게(Senge)의 학습조직 5대 규율",
+    keywords: ["장기 고용·민주적 합의·전인적 관심", "시스템 사고", "정신모형·공유비전·팀 학습"],
+    lines: [
+      "오우치의 제트이론은 구성원에 대한 신뢰와 친밀감 및 민주적 합의 문화를 강조한다.",
+      "센게의 학습조직은 구성원들이 끊임없이 학습 역량을 확장하는 유기적 조직이다.",
+      "자아완성과 정신모형 성찰 및 공유비전 구축과 팀 학습을 통합하는 시스템 사고다.",
+      "학교를 학습조직으로 운영하면 환경 변화에 능동 대처하고 집단 지성을 발휘한다."
+    ]
+  },
+  {
+    id: 20, group: " 교육학", cat: "1교시 교육행정 (작년 기출 대조)",
+    title: "학교 중심 교원 전문성 개발: 전문적 학습공동체와 수업컨설팅",
+    keywords: ["수업 공개와 공동 성찰", "협력적 학교 문화", "수평적 수업컨설팅", "동반 성장"],
+    lines: [
+      "전문적 학습공동체는 교사들이 수업을 함께 연구하고 성찰하는 협력적 모임이다.",
+      "수업컨설팅은 의뢰 교사와 컨설턴트가 수평적 관계에서 수업 문제를 해결한다.",
+      "고립된 교실 문화를 극복하고 동료 교사 간 신뢰와 집단적 교사 효능감을 높인다.",
+      "행·재정적 지원과 연구 시간 확보를 통해 학교 중심의 자율적 성장을 활성화한다."
+    ]
+  },
+
+  // [2·3교시 전문상담 35제: 21~55]
+  {
+    id: 21, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "강박장애(OCD) vs 강박성 성격장애(OCPD) 감별",
+    keywords: ["자아 이질적(Ego-dystonic)", "강박사고·강박행동", "자아 동조적(Ego-syntonic)", "완벽주의·통제"],
+    lines: [
+      "강박장애는 침투적 생각인 강박사고와 불안을 중화하려는 강박행동이 모두 나타난다.",
+      "반면 강박성 성격장애는 진정한 강박사고나 반복적 의례 없이 완벽주의에 집착한다.",
+      "강박장애는 증상을 비합리적인 것으로 여겨 고통스러워하는 자아 이질적 특성이다.",
+      "반면 강박성 성격장애는 자신의 엄격한 규칙과 통제를 옳다고 여기는 자아 동조적이다."
+    ]
+  },
+  {
+    id: 22, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "공황장애(클라크의 파국적 오해석) vs 광장공포증 감별",
+    keywords: ["예기치 못한 공황발작", "신체감각의 파국적 오해석", "광장공포증(탈출 곤란 장소 회피)", "신체감각 노출"],
+    lines: [
+      "공황장애는 특별한 단서 없이 반복되는 예기치 못한 공황발작과 예기불안을 보인다.",
+      "클라크에 의하면 사소한 신체감각을 죽음 등 파국적 재앙으로 오해석하여 발생한다.",
+      "광장공포증은 공황 증상 시 탈출이 어렵거나 도움을 못 받을 두가지 이상 장소를 피한다.",
+      "치료는 의도적으로 심박수 등 신체감각을 유발해 안전함을 깨닫는 내수용성 노출이다."
+    ]
+  },
+  {
+    id: 23, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "신체증상장애 vs 질병불안장애 감별 진단",
+    keywords: ["신체증상 유무 차이", "증상 심각성 과도한 몰두", "중병 이환 공포", "돌봄추구형 vs 돌봄회피형"],
+    lines: [
+      "신체증상장애는 고통스러운 실제 신체증상이 존재하며 그 심각성에 과도하게 몰두한다.",
+      "반면 질병불안장애는 신체증상이 없거나 경미함에도 중병에 걸렸다는 공포에 사로잡힌다.",
+      "의학적 정상 소견에도 안심하지 못하고 건강에 대한 높은 불안이 최소 육개월 지속된다.",
+      "질병불안장애는 병원을 자주 찾는 돌봄추구형과 진료를 극력 피하는 돌봄회피형으로 나뉜다."
+    ]
+  },
+  {
+    id: 24, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "경계선 성격장애 vs 의존성 성격장애 감별 진단",
+    keywords: ["유기 불안 공통", "경계선(공허감·분노 폭발·극단적 이상화와 평가절하)", "의존성(순종·매달림)"],
+    lines: [
+      "경계선 성격장애는 버림받지 않으려고 필사적으로 노력하며 만성적 공허감을 보인다.",
+      "상대를 극단적으로 이상화했다가 평가절하하며 유기 위협 시 강렬한 분노를 터뜨린다.",
+      "반면 의존성 성격장애는 보살핌을 받으려는 과도한 욕구로 인해 수동적으로 순종한다.",
+      "유기 위협 시 분노 대신 유순하게 매달리며 혼자 남겨졌을 때 대처할 다른 대상을 찾는다."
+    ]
+  },
+  {
+    id: 25, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "조현성 성격장애 vs 회피성 성격장애 감별 진단",
+    keywords: ["사회적 고립 공통", "조현성(친밀감 무관심·정서적 냉담)", "회피성(친밀감 갈망·거절 공포)"],
+    lines: [
+      "조현성 성격장애는 친밀한 관계에 근본적인 욕구가 없어 자발적으로 고립을 택한다.",
+      "타인의 칭찬이나 비판에 무관심하며 정서적 냉담성과 단조로운 정동을 보인다.",
+      "반면 회피성 성격장애는 내면적으로 타인과의 친밀한 관계를 간절히 원하고 갈망한다.",
+      "그러나 부정적 평가와 거절 및 비판에 대한 극심한 두려움 때문에 대인관계를 회피한다."
+    ]
+  },
+  {
+    id: 26, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "해리성 기억상실(국소적·선택적) vs 해리성 정체성 장애",
+    keywords: ["자서전적 정보 회상 불가", "국소적 vs 선택적 기억상실", "해리성 둔주", "둘 이상의 분리된 성격"],
+    lines: [
+      "해리성 기억상실은 충격적 외상 후 중요한 자서전적 정보를 회상하지 못하는 장애다.",
+      "특정 기간 전체를 잊는 국소적 기억상실과 일부만 잊는 선택적 기억상실로 나뉜다.",
+      "해리성 정체성 장애는 둘 이상의 분리된 성격 상태가 번갈아 행동을 통제한다.",
+      "일상적 사건과 개인 정보 및 외상 사건을 회상할 때 반복적인 기억 공백이 나타난다."
+    ]
+  },
+  {
+    id: 27, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "외상후 스트레스 장애(PTSD) 4대 핵심 증상군 및 지속 기간",
+    keywords: ["침습 증상", "회피 증상", "인지와 기분의 부정적 변화", "각성과 반응성의 현저한 변화 (1개월 이상)"],
+    lines: [
+      "첫째, 침습 증상으로 사건에 대한 고통스러운 기억이나 악몽 및 플래시백이 반복된다.",
+      "둘째, 회피 증상으로 사건을 떠올리게 하는 내외적 단서나 관련 상황을 극력 피한다.",
+      "셋째, 인지와 기분의 부정적 변화로 자신에 대한 왜곡된 비난과 공포가 지속된다.",
+      "넷째, 각성과 반응성의 현저한 변화로 수면 장애와 과각성 및 과민 반응이 나타난다."
+    ]
+  },
+  {
+    id: 28, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "반응성 애착장애(RAD) vs 탈억제 사회관여 장애(DSED) + 과정 인정",
+    keywords: ["극단적 방임·불충분한 돌봄", "반응성 애착(위안 추구 억제)", "탈억제 사회관여(낯선 성인 무경계)", "과정 인정"],
+    lines: [
+      "두 장애 모두 생애 초기의 극단적인 방임과 불충분한 돌봄을 공통 원인으로 한다.",
+      "반응성 애착장애는 정서적으로 위축되어 고통 시에도 위안을 구하지 않고 억제한다.",
+      "탈억제 사회관여 장애는 낯선 성인에게도 주저 없이 다가가고 경계 없이 따라나선다.",
+      "놀이치료자는 결과 칭찬 대신 노력의 과정을 인정하여 내적 통제소재를 길러준다."
+    ]
+  },
+  {
+    id: 29, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "적대적 반항장애(ODD) vs 품행장애 vs 파괴적 기분조절부전장애",
+    keywords: ["적대적 반항(분노·논쟁·보복성)", "품행장애(권리·사회규범 침해)", "파괴적 기분조절부전장애(만성 과민성)"],
+    lines: [
+      "적대적 반항장애는 분노와 과민한 기분 및 권위 인물에게 논쟁적이고 반항적이다.",
+      "타인의 기본 권리나 주요 사회규범을 심각하게 침해하는 품행장애 행동은 없다.",
+      "품행장애는 사람과 동물에 대한 공격성 및 재산 파괴와 사기 등 규범을 침해한다.",
+      "파괴적 기분조절부전장애는 심한 분노 폭발과 평상시 만성적인 과민한 기분을 보인다."
+    ]
+  },
+  {
+    id: 30, group: "DSM-5-TR", cat: "DSM-5-TR 감별진단",
+    title: "자폐스펙트럼장애(ASD) vs 사회적(실용적) 의사소통장애 및 ADHD",
+    keywords: ["사회적 의사소통 및 상호작용 결함", "제한적·반복적 행동 유무", "주의력결핍 및 과잉행동-충동성"],
+    lines: [
+      "자폐스펙트럼장애는 사회적 상호작용 결함과 제한되고 반복적인 행동 패턴을 보인다.",
+      "사회적 의사소통장애는 맥락에 맞는 화용론적 언어 사용에 지속적 어려움을 겪는다.",
+      "단 자폐스펙트럼장애와 달리 제한되고 반복적인 행동이나 상동증적 관심은 없다.",
+      "주의력결핍 과잉행동장애는 열두 살 이전에 두 가지 이상의 환경에서 증상이 나타난다."
+    ]
+  },
+  {
+    id: 31, group: "심리검사", cat: "심리검사 (MMPI-2-RF)",
+    title: "MMPI-2-RF 상위차원(EID·THD·BXD) 및 고위험 자살척도(SUI)",
+    keywords: ["정서적/내재화(EID)", "사고 역기능(THD)", "행동적/외현화(BXD)", "자살/죽음 사고(SUI)"],
+    lines: [
+      "상위차원 척도는 정서적 내재화와 사고 역기능 및 행동적 외현화 세 차원으로 구성된다.",
+      "사고 역기능 척도는 피해망상과 환각 등 비현실적이고 와해된 사고 문제를 측정한다.",
+      "행동적 외현화 척도는 충동 조절 실패와 공격성 및 반사회적 행동화 경향을 측정한다.",
+      "자살 사고 척도가 상승하면 즉각적인 자살 위험성을 최우선으로 평가하고 개입한다."
+    ]
+  },
+  {
+    id: 32, group: "심리검사", cat: "심리검사 (MMPI-2-RF)",
+    title: "MMPI-2-RF 재구성임상척도 (RCd·RC1·RC3) 및 타당도 척도",
+    keywords: ["의기소침(RCd)", "신체증상 호소(RC1)", "냉소적 태도(RC3)", "무선반응(VRIN-r)·고정반응(TRIN-r)"],
+    lines: [
+      "의기소침 척도는 기존 임상척도에서 공통된 전반적 정서 불편감과 무기력을 측정한다.",
+      "신체증상 호소 척도는 스트레스 상황에서 위장 장애와 두통 등 신체화 집착을 본다.",
+      "냉소적 태도 척도는 타인이 이기적이고 믿을 수 없다는 뿌리 깊은 불신을 측정한다.",
+      "무선반응 일관성과 고정반응 일관성 척도로 수검자의 불성실한 응답 태도를 판별한다."
+    ]
+  },
+  {
+    id: 33, group: "심리검사", cat: "심리검사 (웩슬러 지능검사)",
+    title: "웩슬러 지능검사(K-WAIS-IV / K-WISC-V) 일반능력지수(GAI)와 인지효능지수(CPI)",
+    keywords: ["언어이해·지각추론·작업기억·처리속도", "일반능력지수(GAI)", "인지효능지수(CPI)", "과정점수(산수·숫자·순서화)"],
+    lines: [
+      "작업기억과 처리속도는 수검자의 피로나 불안 및 주의력 저하에 민감하게 영향받는다.",
+      "수행 속도가 저하될 때 언어이해와 지각추론만으로 산출한 일반능력지수를 확인한다.",
+      "일반능력지수와 인지효능지수의 차이가 크면 정서적 문제로 잠재력이 억제된 것이다.",
+      "산수와 숫자 및 순서화 소검사의 과정점수로 시간제한 배제 시 실제 능력을 파악한다."
+    ]
+  },
+  {
+    id: 34, group: "가족치료", cat: "가족상담 및 치료",
+    title: "보웬(Bowen)의 다세대 가족치료: 삼각관계·탈삼각화 및 다세대 전수",
+    keywords: ["자아분화(사고와 정서 분리)", "삼각관계", "탈삼각화(정서적 중립·지적 소통)", "다세대 전수 과정"],
+    lines: [
+      "부부가 불안을 낮추려 자녀를 끌어들여 삼각관계를 형성해 자녀에게 증상이 발현된다.",
+      "가족투사과정이 여러 세대에 걸쳐 반복되면서 자녀 세대의 자아분화 수준이 낮아진다.",
+      "상담자는 부부 갈등에 편들지 않고 정서적 중립을 유지하는 탈삼각화를 시도한다.",
+      "사고와 감정을 분리하는 자아분화를 높여 부부가 자녀를 빼고 직접 소통하게 돕는다."
+    ]
+  },
+  {
+    id: 35, group: "가족치료", cat: "가족상담 및 치료",
+    title: "미누친(Minuchin)의 구조적 가족치료: 경계선 3유형 및 재구조화",
+    keywords: ["밀착된 경계선(자율성 침해)", "경직된 경계선(소외)", "명확한 경계선", "부모화 및 우회연합 해체"],
+    lines: [
+      "밀착된 경계선은 가족 간 거리감이 지나치게 가까워 자녀의 자율성과 분화를 저해한다.",
+      "경직된 경계선은 가족 구성원 간 소통이 단절되어 정서적 지지와 소속감이 결여된다.",
+      "명확한 경계선은 세대 간 위계가 분명하고 상호 지지를 주고받는 건강한 경계선이다.",
+      "상담자는 경계선 만들기를 통해 밀착된 모자 관계를 분리하고 부부 체계를 강화한다."
+    ]
+  },
+  {
+    id: 36, group: "가족치료", cat: "가족상담 및 치료",
+    title: "사티어(Satir)의 경험적 가족치료: 역기능적 의사소통과 일치형",
+    keywords: ["자기·타인·상황 3요소", "회유형(자기 무시)", "초이성형(자기·타인 무시)", "산만형 ➔ 일치형(모두 존중)"],
+    lines: [
+      "회유형은 타인과 상황만 존중하고 자기를 무시하며 무조건 상대의 비위를 맞춘다.",
+      "초이성형은 자기와 타인의 감정을 모두 배제하고 오직 객관적 상황과 논리만 따진다.",
+      "산만형은 자기와 타인 및 상황을 모두 무시하며 엉뚱한 언행으로 주의를 돌린다.",
+      "일치형은 자기와 타인 및 상황을 모두 존중하며 내면의 감정을 진솔하게 표현한다."
+    ]
+  },
+  {
+    id: 37, group: "가족치료", cat: "가족상담 및 치료",
+    title: "헤일리(Haley)의 전략적 가족치료(역설적 지시) 및 밀란(Milan) 모델",
+    keywords: ["역설적 지시(증상 처방)", "가족 저항 타파", "순환적 질문", "긍정적 의미 부여"],
+    lines: [
+      "역설적 지시는 문제 행동을 오히려 의도적으로 수행하게 처방하여 저항을 무너뜨린다.",
+      "내담자 가족이 지시에 순종하든 반항하든 증상에 대한 자발적 통제력을 회복하게 된다.",
+      "긍정적 의미 부여는 문제 행동이 가족의 화합을 지키려는 선한 의도라고 재명명한다.",
+      "순환적 질문은 가족 구성원 간 관계의 차이와 상호작용 고리를 스스로 깨닫게 돕는다."
+    ]
+  },
+  {
+    id: 38, group: "가족치료", cat: "가족상담 및 치료",
+    title: "이야기치료(외재화·독특한 결과) 및 해결중심 단기치료(예외·기적질문)",
+    keywords: ["문제의 외재화", "독특한 결과(반대사건)", "불평형·방문형·고객형", "예외질문·기적질문"],
+    lines: [
+      "문제의 외재화는 문제에 이름을 붙여 사람과 문제를 분리하고 자책감을 줄여준다.",
+      "독특한 결과는 문제에 지배당하지 않고 성공적으로 대처했던 예외적 순간을 찾는다.",
+      "예외질문은 문제가 발생하지 않았던 때를 탐색하여 내담자의 강점과 자원을 일깨운다.",
+      "기적질문은 문제가 해결된 미래 모습을 구체화하여 현실적인 해결 목표를 세우게 한다."
+    ]
+  },
+  {
+    id: 39, group: "상담이론", cat: "상담이론 (실존주의 의미치료)",
+    title: "프랑클(Frankl)의 의미치료: 역설적 의도 vs 탈숙고(Dereflection)",
+    keywords: ["예기불안 타파(역설적 의도)", "유머러스한 직면", "과잉숙고·과잉주의 전환", "탈숙고(Dereflection)"],
+    lines: [
+      "역설적 의도는 두려워하는 증상을 오히려 더 심하게 나타내라고 권유하는 기법이다.",
+      "이를 통해 증상을 유발하고 악화시키는 예기불안의 악순환 고리를 유머로 차단한다.",
+      "탈숙고(Dereflection)는 증상에 쏟는 과도한 집착인 과잉숙고에서 벗어나게 돕는다.",
+      "주의의 초점을 자기 자신에게서 삶이 요구하는 긍정적 의미와 가치로 전환시킨다."
+    ]
+  },
+  {
+    id: 40, group: "상담이론", cat: "상담이론 (인지행동치료)",
+    title: "엘리스(Ellis)의 합리적 정서행동치료(REBT): 당위적 신념과 3대 논박",
+    keywords: ["당위적 신념", "논리적 논박(모순)", "실증적 논박(객관적 증거)", "실용적 논박(유용성)"],
+    lines: [
+      "논리적 논박은 내담자 신념의 전제와 결론 간의 모순과 비논리적 비약을 지적한다.",
+      "실증적 논박은 내담자의 비합리적 신념을 입증할 객관적 현실 증거가 있는지 묻는다.",
+      "실용적 논박은 신념을 고수하는 것이 목표 달성과 정서 안정에 유용한지 따진다.",
+      "이를 통해 당위적 신념을 논박하여 유연하고 합리적인 선호 신념으로 변화시킨다."
+    ]
+  },
+  {
+    id: 41, group: "상담이론", cat: "상담이론 (인지행동치료)",
+    title: "아론 벡(Beck)의 인지치료: 인지적 오류(재앙화·개인화·이분법) 및 협동적 경험주의",
+    keywords: ["자동적 사고", "재앙화(파국적 단정)", "개인화(무관한 사건 자기 탓)", "소크라테스식 대화"],
+    lines: [
+      "재앙화는 긍정적 가능성을 배제하고 미래에 최악의 파국적 결과만 일어날 것이라 믿는다.",
+      "개인화는 자신과 무관한 외부 사건의 원인을 근거 없이 자기 탓으로 돌리는 오류다.",
+      "이분법적 사고는 중간 지대 없이 모든 경험을 완전한 성공 아니면 실패로만 나눈다.",
+      "상담자는 소크라테스식 질문으로 내담자 스스로 생각의 타당성을 검증하게 돕는다."
+    ]
+  },
+  {
+    id: 42, group: "상담이론", cat: "상담이론 (제3세대 인지행동치료)",
+    title: "헤이즈(Hayes)의 수용전념치료(ACT): 인지적 탈융합과 심리적 유연성",
+    keywords: ["경험 회피 극복", "인지적 탈융합(언어적 사건 조망)", "심리적 유연성", "가치 기반 전념 행동"],
+    lines: [
+      "인지적 탈융합은 부정적 생각과 자아의 동일시에서 벗어나 생각을 분리해 조망한다.",
+      "생각을 객관적 사실이 아니라 머릿속을 스쳐 지나가는 언어적 사건으로 바라본다.",
+      "심리적 유연성은 고통 회피를 멈추고 현재 이 순간의 내적 경험에 온전히 접촉한다.",
+      "자신이 추구하는 핵심 가치에 부합하는 전념 행동을 주도적으로 선택하고 실천한다."
+    ]
+  },
+  {
+    id: 43, group: "상담이론", cat: "상담이론 (제3세대 인지행동치료)",
+    title: "리네한(Linehan)의 변증법적 행동치료(DBT): 타당화 수준과 4대 모듈",
+    keywords: ["수용과 변화의 변증법적 통합", "타당화(현재 상황 맥락·과거 생애 맥락)", "마음챙김·고통감내·정서조절·대인관계 효율성"],
+    lines: [
+      "변증법적 행동치료는 내담자에 대한 있는 그대로의 수용과 변화 기술을 통합한다.",
+      "타당화는 내담자의 감정과 행동이 과거 생애사나 현재 상황에 비추어 타당함을 인정한다.",
+      "마음챙김과 고통감내 기술을 통해 위기 상황에서도 충동적 자해 없이 견디게 돕는다.",
+      "정서조절 기술과 대인관계 효율성 훈련을 통해 자기존중을 지키며 요구를 표현한다."
+    ]
+  },
+  {
+    id: 44, group: "상담이론", cat: "상담이론 (게슈탈트 치료)",
+    title: "펄스(Perls)의 게슈탈트 치료: 접촉경계혼란 (융합·반전·내사·투사·편향·자의식)",
+    keywords: ["융합(경계 상실)", "반전(타인 대신 자기 공격)", "내사(무비판적 수용)", "지금-여기 알아차림"],
+    lines: [
+      "융합은 자신과 타인의 경계가 모호하여 자신의 독립적인 욕구와 감정을 자각하지 못한다.",
+      "반전은 타인에게 표출하고 싶은 분노나 공격성을 자기 자신에게 되돌려 자책한다.",
+      "내사는 타인의 가치관이나 당위적 기준을 비판 없이 삼켜 자신의 것처럼 여긴다.",
+      "상담자는 빈 의자 기법 등을 통해 지금 여기에서 억압된 미해결 과제를 자각시킨다."
+    ]
+  },
+  {
+    id: 45, group: "상담이론", cat: "상담이론 (성격·대인관계)",
+    title: "설리반(Sullivan)의 3대 자아상 + 머레이(Murray)의 욕구-압력 이론",
+    keywords: ["좋은 나·나쁜 나·나 아닌 나", "알파 압력(객관적 환경)", "베타 압력(주관적 지각)", "행동 주제(Thema)"],
+    lines: [
+      "좋은 나는 양육자에게 칭찬과 보상을 받아 불안이 없고 안정감을 느끼는 자아상이다.",
+      "나쁜 나는 비난으로 불안을 유발하며 나 아닌 나는 극심한 불안으로 해리된다.",
+      "알파 압력은 환경의 객관적 실제 특성이고 베타 압력은 주관적으로 지각된 압력이다.",
+      "내적 욕구와 주관적인 베타 압력이 상호작용하여 개인 고유의 행동 주제를 형성한다."
+    ]
+  },
+  {
+    id: 46, group: "상담이론", cat: "상담이론 (분석심리학·교류분석)",
+    title: "해리스(Harris)의 4대 생활자세 + 융(Jung)의 페르소나 순기능 및 동일시 부작용",
+    keywords: ["자기부정-타인긍정 ➔ 자기긍정-타인긍정", "페르소나 순기능(사회적응)", "과잉 동일시(진정한 자기 상실)"],
+    lines: [
+      "자기부정 타인긍정은 타인보다 자신을 열등하게 여기며 우울과 위축을 보인다.",
+      "상담을 통해 자신과 타인을 모두 존중하는 자기긍정 타인긍정 자세로 나아간다.",
+      "페르소나의 순기능은 사회적 요구에 맞춰 역할을 수행하며 원만한 사회적응을 돕는다.",
+      "반면 페르소나에 과잉 동일시되면 진정한 자기를 상실하고 내면의 소외감을 겪는다."
+    ]
+  },
+  {
+    id: 47, group: "상담이론", cat: "상담이론 (대상관계·자기심리학)",
+    title: "대상관계이론: 말러(분리개별화 재접근기), 위니콧(중간대상), 코헛(자기대상·변형적 내사)",
+    keywords: ["재접근기(독립과 의존 양가감정)", "충분히 좋은 어머니·중간대상", "거울 자기대상·이상화 자기대상", "최적의 좌절"],
+    lines: [
+      "말러의 재접근기에는 자율성 욕구와 분리불안이 충돌하며 어머니에게 양가감정을 보인다.",
+      "위니콧의 중간대상은 유아가 어머니와 분리될 때 불안을 달래주는 과도기적 대상이다.",
+      "코헛은 유아의 과대자기를 공감해 주는 거울 자기대상과 이상화 자기대상을 강조했다.",
+      "상담자의 공감적 반영과 최적의 좌절을 통해 내담자는 건강한 심리 구조를 내면화한다."
+    ]
+  },
+  {
+    id: 48, group: "진로·다문화·위기·집단", cat: "진로상담 이론",
+    title: "홀랜드(Holland) 육각형 모형 2차 개념 4가지 (일관성·계측성·변별성·일치성)",
+    keywords: ["일관성(첫 두 코드 인접성)", "계측성(기하학적 거리와 유사성 반비례)", "변별성(최고·최저 점수 차)", "일치성(환경 부합)"],
+    lines: [
+      "일관성은 코드 첫 두 글자가 육각형 상에서 서로 인접하여 내적 조화가 높음이다.",
+      "계측성은 육각형 상의 기하학적 거리와 성격 유형 간 심리적 유사성이 반비례함이다.",
+      "변별성은 최고점과 최저점의 점수 차이가 커서 흥미가 선명하게 분화됨을 뜻한다.",
+      "일치성은 개인의 성격 유형과 종사하는 직업 환경의 유형이 완벽히 부합함을 뜻한다."
+    ]
+  },
+  {
+    id: 49, group: "진로·다문화·위기·집단", cat: "진로상담 이론",
+    title: "사비카스(Savickas)의 구성주의 생애설계상담: CSI 면담과 진로적응성 4C",
+    keywords: ["역할모델·잡지·좌우명·초기기억", "생애주제 구성", "관심(계획성)·통제(주도성)·호기심(탐색)·자신감(효능감)"],
+    lines: [
+      "사비카스는 역할모델과 선호 잡지 및 좌우명과 초기기억을 통해 생애주제를 찾는다.",
+      "진로 관심을 높여 미래 진로를 준비하고 낙관적인 태도와 계획성을 갖추도록 돕는다.",
+      "진로 통제와 호기심을 발휘하여 내담자가 자기주도적인 진로 탐색을 하도록 돕는다.",
+      "진로 자신감을 신장하여 직면한 진로 장벽을 극복하고 진로 적응유연성을 높인다."
+    ]
+  },
+  {
+    id: 50, group: "진로·다문화·위기·집단", cat: "진로상담 이론",
+    title: "갓프레드슨(Gottfredson)의 제한 4단계와 타협 발생 시 포기 순서",
+    keywords: ["힘과 크기-성역할-사회적 가치-내적 고유자아", "사회적 공간(수용 가능한 대안 영역)", "타협 시 흥미➔지위➔성역할 포기"],
+    lines: [
+      "제한 과정은 힘과 크기, 성역할, 사회적 가치, 내적 고유자아 지향의 사단계를 거친다.",
+      "성장하며 부적합한 직업 대안들을 점진적으로 배제하여 수용 가능한 영역을 남긴다.",
+      "현실적 장벽으로 원하는 직업을 갖지 못할 때 기준을 낮추는 타협 과정이 일어난다.",
+      "타협 발생 시 성역할을 끝까지 지키고 흥미와 사회적 지위 순으로 먼저 포기한다."
+    ]
+  },
+  {
+    id: 51, group: "진로·다문화·위기·집단", cat: "진로상담 이론",
+    title: "수퍼(Super)의 확립기 하위 3단계(시도-안정-발전) 및 발달적 진로평가(C-DAC)",
+    keywords: ["시도-안정-발전 단계", "생애역할 중요성 평가", "진로성숙도(태도·능력) 평가", "직업흥미와 가치 통합"],
+    lines: [
+      "수퍼의 확립기는 선택한 분야에 자리 잡는 시도로 시도와 안정 및 발전 단계를 거친다.",
+      "발달적 진로평가는 먼저 내담자의 생애역할 중요성을 확인하여 일의 비중을 파악한다.",
+      "이어서 계획성과 탐색 태도 및 의사결정 능력 등 진로성숙도 수준을 진단한다.",
+      "진로성숙도가 확인된 후 직업흥미와 가치를 평가하여 자아개념을 구현하도록 돕는다."
+    ]
+  },
+  {
+    id: 52, group: "진로·다문화·위기·집단", cat: "다문화 상담",
+    title: "슈(Sue)의 다문화 미세공격 3유형(미세폭행·미세모욕·미세무효화) 및 문화적 역량",
+    keywords: ["미세폭행(노골적 차별)", "미세모욕(정체성 폄훼)", "미세무효화(심리적 경험 부인)", "자각·지식·기술 3차원"],
+    lines: [
+      "미세폭행은 소수자를 향한 명백하고 노골적인 언어적 비언어적 차별과 공격 행동이다.",
+      "미세모욕은 소수자의 정체성을 은연중에 폄훼하거나 무시하는 미묘한 모욕 행동이다.",
+      "미세무효화는 소수자의 심리적 경험과 현실을 무시하고 부인하는 소외 행동이다.",
+      "상담자는 자신의 무의식적 편견을 자각하고 문화적 지식과 기술을 갖추어 개입한다."
+    ]
+  },
+  {
+    id: 53, group: "진로·다문화·위기·집단", cat: "위기상담 및 자살예방",
+    title: "숀 셰이(Shawn Shea)의 CASE 모델 4대 시간대 탐색 (역연대기적 순서)",
+    keywords: ["제시사건(현재 48시간)", "최근 사건(지난 2개월)", "과거 사건(2개월 이전)", "즉각적 사건(면담 중)"],
+    lines: [
+      "첫째, 제시사건으로 최근 사십팔 시간 이내의 자살 시도와 구체적 정황을 탐색한다.",
+      "둘째, 최근 사건으로 지난 두 달 동안 나타난 자살 사고의 빈도와 계획을 파악한다.",
+      "셋째, 과거 사건으로 두 달 이전의 가장 심각했던 과거 자살 시도력을 확인한다.",
+      "넷째, 즉각적 사건으로 현재 면담 중의 자살 의도와 미래 안전계획을 평가한다."
+    ]
+  },
+  {
+    id: 54, group: "진로·다문화·위기·집단", cat: "수퍼비전 및 자문",
+    title: "버나드(Bernard)의 수퍼비전 차별모형 3대 역할 + 조하리의 창",
+    keywords: ["교사 역할(지식·기법 교육)", "상담자 역할(역전이·내면 탐색)", "자문자 역할(수평적 대안 논의)", "눈먼 창 축소➔열린 창 확대"],
+    lines: [
+      "교사 역할은 초심 상담자에게 구체적인 상담 지식과 기법을 직접 가르치고 평가한다.",
+      "상담자 역할은 수련생의 역전이와 미해결 감정 및 내면적 불안을 탐색하고 다룬다.",
+      "자문자 역할은 수련생을 동료로 존중하며 개입 대안을 수평적으로 함께 탐색한다.",
+      "조하리의 창에서 피드백을 수용하여 눈먼 창을 줄이고 열린 창을 넓혀 성장한다."
+    ]
+  },
+  {
+    id: 55, group: "진로·다문화·위기·집단", cat: "위기개입 및 학교폭력예방법",
+    title: "길리랜드(Gilliland)의 위기개입 6단계·안전계획서 + 학폭법 제16조·제17조",
+    keywords: ["경청 3단계(문제정의·안전확보·지지)", "활동 3단계(대안탐색·계획수립·다짐)", "안전계획서", "학폭법 16조(피해자)·17조(가해자)"],
+    lines: [
+      "위기개입은 문제 정의와 안전 확보 및 정서적 지지를 제공하는 경청 단계를 거친다.",
+      "이후 대안 탐색과 행동 계획 수립 및 실천 다짐을 받는 활동 단계로 나아간다.",
+      "안전계획서에는 위기 경고 신호와 치명적 수단 제거 및 긴급 연락처를 명시한다.",
+      "학폭법 제16조는 피해학생 심리상담과 일시보호, 제17조는 가해학생 접촉금지다."
+    ]
+  }
+];
+
+let currentFilter = 'ALL';
+let fontScale = 1.0;
+let allTypingOpen = false;
+let doneState = JSON.parse(localStorage.getItem('kice2027_done55') || '{}');
+
+function saveDone(id) {
+  doneState[id] = !doneState[id];
+  localStorage.setItem('kice2027_done55', JSON.stringify(doneState));
+  renderCards();
+}
+
+function updateProgress() {
+  const count = Object.values(doneState).filter(Boolean).length;
+  const pct = Math.round((count / 55) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${count} / 55 완료 (${pct}%)`;
+}
+
+function setFilter(filterVal, btn) {
+  currentFilter = filterVal;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function changeFontScale(delta) {
+  fontScale = Math.min(1.4, Math.max(0.85, fontScale + delta));
+  document.documentElement.style.setProperty('--font-Scale', fontScale);
+}
+
+function toggleTyping(id) {
+  const el = document.getElementById('typing-' + id);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleAllTyping() {
+  allTypingOpen = !allTypingOpen;
+  document.querySelectorAll('.typing-area').forEach(el => {
+    if (allTypingOpen) el.classList.add('open');
+    else el.classList.remove('open');
+  });
+}
+
+function checkInputMatch(inputEl, targetStr, id) {
+  const val = inputEl.value.trim();
+  if (val === targetStr.trim()) {
+    inputEl.classList.add('match');
+  } else {
+    inputEl.classList.remove('match');
+  }
+}
+
+function renderCards() {
+  updateProgress();
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const container = document.getElementById('cardContainer');
+  container.innerHTML = '';
+
+  const filtered = ITEMS_55.filter(item => {
+    if (currentFilter === 'UNDONE' && doneState[item.id]) return false;
+    if (currentFilter !== 'ALL' && currentFilter !== 'UNDONE' && item.group !== currentFilter) return false;
+    if (query) {
+      const hay = (item.title + ' ' + item.keywords.join(' ') + ' ' + item.lines.join(' ')).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  });
+
+  filtered.forEach(item => {
+    const isDone = !!doneState[item.id];
+    const isPedagogy = item.id <= 20;
+    const numStr = String(item.id).padStart(2, '0');
+
+    const card = document.createElement('div');
+    card.className = 'card' + (isDone ? ' done' : '');
+
+    const kwHtml = item.keywords.map(k => `<span class="kw-pill">🔑 ${k}</span>`).join('');
+    const linesHtml = item.lines.map((ln, idx) => `
+      <div class="line-item">
+        <span class="line-label">${idx + 1}줄 (${ln.length}자)</span>
+        <span class="line-text">${ln}</span>
+      </div>
+    `).join('');
+
+    const typingRowsHtml = item.lines.map((ln, idx) => `
+      <div class="typing-row">
+        <div class="typing-target">${idx + 1}줄: ${ln}</div>
+        <input type="text" class="typing-input" placeholder="${idx + 1}줄 문장을 그대로 타이핑해 보세요..." oninput="checkInputMatch(this, '${ln.replace(/'/g, "\\'")}', ${item.id})">
+      </div>
+    `).join('');
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="num-badge">#${numStr}</span>
+          <span class="cat-badge ${isPedagogy ? 'pedagogy' : ''}">${item.cat}</span>
+          <span class="card-title">${item.title}</span>
+        </div>
+        <button class="check-btn ${isDone ? 'checked' : ''}" onclick="saveDone(${item.id})">
+          ${isDone ? '✅ 암기·타이핑 완료' : '⬜ 완료 체크'}
+        </button>
+      </div>
+      <div class="keywords-box">${kwHtml}</div>
+      <div class="lines-container">${linesHtml}</div>
+      <div class="typing-toggle-bar">
+        <button class="btn-practice" onclick="toggleTyping(${item.id})">⌨️ 이 문항 4줄 타이핑 연습창 열기/닫기</button>
+      </div>
+      <div class="typing-area ${allTypingOpen ? 'open' : ''}" id="typing-${item.id}">
+        ${typingRowsHtml}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+renderCards();
+</script>
+</body>
+</html>
