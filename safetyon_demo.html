@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주식회사 세이프티온 - 스마트 디지털 룸미러(CMS) 편도 5차선 자율 회피정차 & 긴급통화 시뮬레이터</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+  body {
+    background-color: #020617;
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* 룸미러 외형 베젤 프레임 (가로 와이드 24:9 비율) */
+  #mirror-frame {
+    position: relative;
+    width: 96vw;
+    max-width: 1540px;
+    height: 52vh;
+    max-height: 540px;
+    min-height: 390px;
+    background: #000;
+    border-radius: 28px;
+    border: 8px solid #1e293b;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 45px rgba(14, 165, 233, 0.25), inset 0 2px 4px rgba(255,255,255,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* 모드별 테두리 애니메이션 */
+  #mirror-frame.evade-mode {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 75px rgba(245, 158, 11, 0.95), inset 0 0 25px rgba(245, 158, 11, 0.5) !important;
+  }
+  #mirror-frame.emergency-mode {
+    border-color: #ef4444 !important;
+    animation: frame-alarm-pulse 0.5s infinite alternate !important;
+    box-shadow: 0 0 85px rgba(239, 68, 68, 0.95), inset 0 0 30px rgba(239, 68, 68, 0.6) !important;
+  }
+  #mirror-frame.calling-mode {
+    border-color: #38bdf8 !important;
+    animation: frame-call-pulse 0.8s infinite alternate !important;
+    box-shadow: 0 0 85px rgba(56, 189, 248, 0.95), inset 0 0 30px rgba(56, 189, 248, 0.6) !important;
+  }
+
+  @keyframes frame-alarm-pulse {
+    0% { border-color: #7f1d1d; box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+    100% { border-color: #ef4444; box-shadow: 0 0 95px rgba(239, 68, 68, 1); }
+  }
+  @keyframes frame-call-pulse {
+    0% { border-color: #0369a1; box-shadow: 0 0 30px rgba(56, 189, 248, 0.4); }
+    100% { border-color: #38bdf8; box-shadow: 0 0 95px rgba(56, 189, 248, 1); }
+  }
+
+  /* 상단 OBD-II 차량진단 HUD 정보 바 */
+  #hud-top-bar {
+    height: 46px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.82));
+    border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+  }
+
+  .hud-item { display: flex; align-items: center; gap: 8px; }
+  .hud-badge { padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+  .badge-green { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #22c55e; }
+  .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+  .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+  .badge-blue { background: rgba(14, 165, 233, 0.2); color: #38bdf8; border: 1px solid #0ea5e9; }
+
+  /* 3분할 룸미러 메인 뷰포트 */
+  #viewport-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: #020617;
+  }
+
+  .split-pane { position: relative; height: 100%; overflow: hidden; }
+  #left-pane { width: 30%; border-right: 2px solid rgba(56, 189, 248, 0.4); background: #080c18; }
+  #center-pane { width: 40%; background: #090e1d; }
+  #right-pane { width: 30%; border-left: 2px solid rgba(56, 189, 248, 0.4); background: #080c18; }
+
+  canvas { width: 100%; height: 100%; display: block; }
+
+  .pane-label {
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    background: rgba(0, 0, 0, 0.72);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    border: 1px solid rgba(255,255,255,0.15);
+    z-index: 10;
+  }
+
+  /* 사각지대 오버레이 태그 */
+  #bsd-left-overlay, #bsd-right-bus-overlay, #bsd-right-car-overlay {
+    position: absolute;
+    display: none;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 20;
+  }
+  #bsd-left-overlay {
+    border: 3px solid #ef4444; background: rgba(239, 68, 68, 0.25); animation: alert-blink 0.3s infinite alternate;
+  }
+  #bsd-right-bus-overlay {
+    border: 3px solid #f59e0b; background: rgba(245, 158, 11, 0.25); animation: alert-blink 0.35s infinite alternate;
+  }
+  #bsd-right-car-overlay {
+    border: 3px solid #f59e0b; background: rgba(245, 158, 11, 0.25); animation: alert-blink 0.4s infinite alternate;
+  }
+
+  .alert-tag {
+    position: absolute; top: -24px; left: -2px; font-size: 11px; font-weight: 900; padding: 2px 6px; border-radius: 4px; white-space: nowrap; color: #fff;
+  }
+  .tag-red { background: #ef4444; }
+  .tag-yellow { background: #f59e0b; color: #000; }
+
+  @keyframes alert-blink {
+    from { opacity: 0.35; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1.02); }
+  }
+
+  /* 비상 감속 안내 배너 */
+  #emergency-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 86%;
+    max-width: 980px;
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.96), rgba(127, 29, 29, 0.98));
+    border: 3px solid #f87171;
+    border-radius: 20px;
+    padding: 22px 30px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(239, 68, 68, 0.85);
+    z-index: 100;
+    display: none;
+    animation: banner-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes banner-pop {
+    0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  #emergency-banner h2 { font-size: 23px; font-weight: 900; color: #ffffff; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  #emergency-banner p { font-size: 13.5px; color: #fecaca; line-height: 1.55; font-weight: 600; }
+
+  /* 🌟 [NEW] 119 소방청 & 버스회사 & 가족 3자 긴급통화/메시지 화면 */
+  #call-dispatch-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 94%;
+    max-width: 1140px;
+    z-index: 120;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    animation: banner-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .call-header {
+    background: linear-gradient(135deg, #1d4ed8, #0284c7);
+    padding: 10px 22px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 900;
+    font-size: 17px;
+    box-shadow: 0 4px 25px rgba(2, 132, 199, 0.6);
+    border: 2px solid #38bdf8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .call-cards-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .call-card {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 14px;
+    padding: 14px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+  }
+
+  .card-119 { border-color: #ef4444; background: linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(69, 10, 10, 0.96)); }
+  .card-company { border-color: #38bdf8; background: linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(12, 74, 110, 0.96)); }
+  .card-family { border-color: #22c55e; background: linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(6, 78, 59, 0.96)); }
+
+  .call-title { font-size: 14px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; }
+  .call-status-badge { font-size: 11px; padding: 2px 7px; border-radius: 5px; font-weight: 800; }
+
+  .call-live-box {
+    background: rgba(0, 0, 0, 0.45);
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
+
+  /* 통화 연결 중 음성 파형 애니메이션 */
+  .voice-waveform {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    height: 14px;
+    margin-left: 6px;
+  }
+  .waveform-bar {
+    width: 3px;
+    background: #4ade80;
+    border-radius: 2px;
+    animation: wave-bounce 0.8s infinite ease-in-out alternate;
+  }
+  .waveform-bar:nth-child(2) { animation-delay: 0.2s; height: 12px; }
+  .waveform-bar:nth-child(3) { animation-delay: 0.4s; height: 14px; }
+  .waveform-bar:nth-child(4) { animation-delay: 0.1s; height: 8px; }
+
+  @keyframes wave-bounce {
+    0% { height: 3px; }
+    100% { height: 14px; }
+  }
+
+  /* 하단 컨트롤 및 상태 설명 바 */
+  #control-bar {
+    width: 96vw;
+    max-width: 1540px;
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: rgba(15, 23, 42, 0.85);
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .btn {
+    background: #0284c7; color: white; border: none; padding: 9px 15px; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: #0369a1; transform: translateY(-1px); }
+  .btn-danger { background: #dc2626; }
+  .btn-danger:hover { background: #b91c1c; }
+  .btn-success { background: #15803d; }
+  .btn-success:hover { background: #166534; }
+  .btn-outline { background: transparent; border: 1px solid #64748b; color: #cbd5e1; }
+  .btn-outline:hover { background: rgba(255,255,255,0.08); }
+
+  #timeline-indicator { font-size: 13.5px; color: #38bdf8; font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <!-- 룸미러 메인 베젤 -->
+  <div id="mirror-frame">
+    <!-- 상단 OBD-II 차량진단 HUD 바 -->
+    <div id="hud-top-bar">
+      <div class="hud-item">
+        <span style="color:#38bdf8; font-weight:900;">SafetyON™ CMS</span>
+        <span class="hud-badge badge-blue">LTE-M LIVE</span>
+      </div>
+      <div class="hud-item">
+        <span>현재 주행차선:</span>
+        <span id="lane-indicator" class="hud-badge badge-blue">편도 5차선 중 [3차선]</span>
+      </div>
+      <div class="hud-item">
+        <span>속도:</span>
+        <span id="speed-display" style="font-size:18px; font-weight:900; color:#38bdf8; min-width:65px;">85 km/h</span>
+      </div>
+      <div class="hud-item">
+        <span>배터리:</span>
+        <span id="voltage-display" class="hud-badge badge-green">14.2V (충전 정상)</span>
+      </div>
+      <div class="hud-item">
+        <span>DTC 진단:</span>
+        <span id="dtc-display" class="hud-badge badge-green">정상 (No Fault)</span>
+      </div>
+      <div class="hud-item">
+        <span id="system-mode-tag" class="hud-badge badge-blue">평상시 ADAS 모드</span>
+      </div>
+    </div>
+
+    <!-- 3분할 카메라 뷰포트 -->
+    <div id="viewport-container">
+      <!-- 1. 좌측 사이드미러 카메라 뷰 (1·2차선 감시, 1차선 오토바이 쏜살 질주) -->
+      <div id="left-pane" class="split-pane">
+        <div class="pane-label">◀ 좌측 사이드 (1·2차선 오토바이 감시)</div>
+        <canvas id="canvas-left"></canvas>
+        <div id="bsd-left-overlay">
+          <div class="alert-tag tag-red">⚠️ 1차선 고속 오토바이 질주!</div>
+        </div>
+      </div>
+
+      <!-- 2. 중앙 광각 후방 룸미러 뷰 (3차선 후방 와이드 & 차선 이동 궤적) -->
+      <div id="center-pane" class="split-pane">
+        <div id="center-label" class="pane-label">■ 중앙 후방 뷰 (현재 3차선 주행 중)</div>
+        <canvas id="canvas-center"></canvas>
+      </div>
+
+      <!-- 3. 우측 사이드미러 카메라 뷰 (4·5차선 버스/승용차 감시 ➔ 갓길 스위칭) -->
+      <div id="right-pane" class="split-pane">
+        <div id="right-label" class="pane-label">우측 사이드 (4·5차선 버스/승용차) ▶</div>
+        <canvas id="canvas-right"></canvas>
+        <div id="bsd-right-bus-overlay">
+          <div class="alert-tag tag-yellow">⚠️ 4차선 버스 접근!</div>
+        </div>
+        <div id="bsd-right-car-overlay">
+          <div class="alert-tag tag-yellow">⚠️ 5차선 승용차 접근!</div>
+        </div>
+      </div>
+
+      <!-- 비상 실신 감지 팝업 배너 -->
+      <div id="emergency-banner">
+        <h2 id="banner-title">🚨 [비상 실신 감지] 4차선 버스 & 5차선 승용차 충돌 회피 중! 🚨</h2>
+        <p id="banner-desc">
+          UWB 심정지 감지 ➔ 우측 차량 충돌 방지를 위해 <strong>핸들 꺾지 않고 3차선에서 1차 직선 감속 (85➔45km/h)</strong><br>
+          <span id="banner-sub" style="color:#fde047; font-size:13px;">※ 4차선 버스와 5차선 승용차가 먼저 지나가도록 안전하게 양보합니다.</span>
+        </p>
+      </div>
+
+      <!-- 🌟 [NEW] 119 소방청 + 버스회사 관제 + 가족 3자 긴급통화/메시지 화면 -->
+      <div id="call-dispatch-container">
+        <div class="call-header">
+          <span>📡 [세이프티온 e-Call] 갓길 안전 정차 완료 ➔ 3자 핫라인 긴급통화 & 안심메시지 발신 중!</span>
+          <span style="font-size:12px; background:rgba(0,0,0,0.3); padding:3px 8px; border-radius:6px;">GPS: 경인고속도로 서울 14.2km</span>
+        </div>
+        <div class="call-cards-row">
+          <!-- 1. 119 소방청 긴급 통화 & 출동 -->
+          <div class="call-card card-119">
+            <div class="call-title" style="color:#f87171;">
+              <span>🚑 119 소방청 상황실</span>
+              <span class="call-status-badge badge-red">통화 연결 중 (00:08)</span>
+            </div>
+            <div class="call-live-box">
+              <div style="display:flex; align-items:center; color:#4ade80; font-weight:800; margin-bottom:4px;">
+                📞 119 음성 핫라인 자동 연결됨
+                <div class="voice-waveform">
+                  <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+                </div>
+              </div>
+              • <strong>[음성 ARS 자동 통보]</strong>: "세이프티온 긴급구조입니다. 인천70아1234 시내버스 기사 심정지 발생, 경인고속도로 14.2km 갓길에 안전 정차되었습니다. 119 구급차 출동 바랍니다."<br>
+              • <strong>119 지령실 접수 및 관할 119센터 출동 완료 🟢</strong>
+            </div>
+          </div>
+
+          <!-- 2. 버스회사 상황실 통화 & 원격 조치 -->
+          <div class="call-card card-company">
+            <div class="call-title" style="color:#38bdf8;">
+              <span>🏢 버스회사 배차실 & 공제조합</span>
+              <span class="call-status-badge badge-blue">상황실 직통 통화 중</span>
+            </div>
+            <div class="call-live-box">
+              <div style="display:flex; align-items:center; color:#38bdf8; font-weight:800; margin-bottom:4px;">
+                📞 본사 배차실 핫라인 통화
+                <div class="voice-waveform">
+                  <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+                </div>
+              </div>
+              • <strong>[FMS 긴급 관제]</strong>: 52번 노선버스 갓길 정차 확인.<br>
+              • <strong>[원격 조치 완료]</strong>: 승객 25명 비상 탈출을 위해 <strong>『앞·뒤 승객 출입문 자동 잠금 해제』</strong> 및 비상등 점멸.<br>
+              • 후속 대체 버스 현장 급파 완료 🟢
+            </div>
+          </div>
+
+          <!-- 3. 가족(보호자) 안심 전화 & 카톡 알림 -->
+          <div class="call-card card-family">
+            <div class="call-title" style="color:#4ade80;">
+              <span>👨‍👩‍👧 가족(보호자) 안심콜 & 문자</span>
+              <span class="call-status-badge badge-green">문자 발송 & 통화 발신</span>
+            </div>
+            <div class="call-live-box">
+              <div style="display:flex; align-items:center; color:#4ade80; font-weight:800; margin-bottom:4px;">
+                📱 보호자 휴대폰 자동 전화 발신 중...
+                <div class="voice-waveform">
+                  <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+                </div>
+              </div>
+              • <strong>[안심 알림톡]</strong>: "아버님(변*섭) 버스에서 이상 징후 감지 후 안전하게 갓길 정차되었습니다. 119 구급대가 출동 중입니다."<br>
+              • <u>[실시간 지도 위치 및 병원 이송 확인 링크 클릭]</u>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단 컨트롤 바 -->
+  <div id="control-bar">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <span id="timeline-indicator">⏳ 편도 5차선 회피·정차·3자통보 시나리오 실행 중 (00초 / 45초)</span>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-outline" id="btn-audio-toggle">🔊 사운드 켜기</button>
+      <button class="btn" id="btn-step1">🌞 1. 3차선 순항 (1차선 바이크/4·5차선 차량)</button>
+      <button class="btn btn-danger" id="btn-step2">⚠️ 2. 실신 감지 ➔ 4·5차선 차량 회피 감속</button>
+      <button class="btn btn-success" id="btn-step3">🟢 3. 4·5차선 통과 후 갓길 3단 정차</button>
+      <button class="btn" style="background:#2563eb;" id="btn-step4">📞 4. 119·회사·가족 3자 전화/문자 발신</button>
+      <button class="btn btn-outline" id="btn-fullscreen">⛶ 전체화면</button>
+    </div>
+  </div>
+
+<script>
+  const canvasLeft = document.getElementById('canvas-left');
+  const canvasCenter = document.getElementById('canvas-center');
+  const canvasRight = document.getElementById('canvas-right');
+  const ctxLeft = canvasLeft.getContext('2d');
+  const ctxCenter = canvasCenter.getContext('2d');
+  const ctxRight = canvasRight.getContext('2d');
+
+  function resizeCanvas() {
+    [canvasLeft, canvasCenter, canvasRight].forEach(c => {
+      c.width = c.parentElement.clientWidth;
+      c.height = c.parentElement.clientHeight;
+    });
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  // Web Audio 오디오 제너레이터
+  let audioCtx = null;
+  let audioEnabled = false;
+
+  function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    audioEnabled = true;
+    document.getElementById('btn-audio-toggle').textContent = "🔊 사운드 활성화됨";
+    document.getElementById('btn-audio-toggle').classList.replace('btn-outline', 'btn');
+  }
+
+  function playTone(freq = 880, duration = 0.12, type = 'sine') {
+    if (!audioEnabled || !audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  // 전화 발신 연결음 (뚜--- 뚜---)
+  function playDialTone() {
+    if (!audioEnabled || !audioCtx) return;
+    playTone(440, 0.4);
+    setTimeout(() => playTone(480, 0.4), 80);
+  }
+
+  // 성공 딩동 차임벨
+  function playSuccessChime() {
+    if (!audioEnabled || !audioCtx) return;
+    playTone(523.25, 0.15);
+    setTimeout(() => playTone(659.25, 0.2), 140);
+    setTimeout(() => playTone(783.99, 0.4), 300);
+  }
+
+  // 마스터 상태 관리 (총 45초 풀 시나리오)
+  let currentSecond = 0;
+  let scenarioState = 'NORMAL'; // 'NORMAL', 'EVADE_WAIT', 'PULLOVER_3STAGE', 'CALL_DISPATCH'
+  let currentSpeed = 85;
+  let targetSpeed = 85;
+  let roadOffset = 0;
+  let laneShiftProgress = 0; // 0 = 3차선, 1 = 4차선, 2 = 5차선, 3 = 갓길
+
+  const frameEl = document.getElementById('mirror-frame');
+  const speedEl = document.getElementById('speed-display');
+  const voltageEl = document.getElementById('voltage-display');
+  const dtcEl = document.getElementById('dtc-display');
+  const modeTagEl = document.getElementById('system-mode-tag');
+  const laneIndicator = document.getElementById('lane-indicator');
+  const emergencyBanner = document.getElementById('emergency-banner');
+  const bannerTitle = document.getElementById('banner-title');
+  const bannerDesc = document.getElementById('banner-desc');
+  const callDispatchContainer = document.getElementById('call-dispatch-container');
+  const bsdLeft = document.getElementById('bsd-left-overlay');
+  const bsdRightBus = document.getElementById('bsd-right-bus-overlay');
+  const bsdRightCar = document.getElementById('bsd-right-car-overlay');
+  const centerLabel = document.getElementById('center-label');
+  const rightLabel = document.getElementById('right-label');
+  const timelineEl = document.getElementById('timeline-indicator');
+
+  // 1초 타이머 루프 (총 45초 시나리오)
+  setInterval(() => {
+    currentSecond = (currentSecond + 1) % 46;
+    timelineEl.textContent = `⏳ 편도 5차선 회피·정차·3자통보 시나리오 실행 중 (${String(currentSecond).padStart(2, '0')}초 / 45초)`;
+
+    // ========================================================
+    // 1단계 : [0초 ~ 14초] 5차선 중 3차선 순항 모드
+    // ========================================================
+    if (currentSecond < 15) {
+      if (scenarioState !== 'NORMAL') setNormalMode();
+
+      // [3초 ~ 9초] 1차선 오토바이 쏜살 질주 감지
+      if (currentSecond >= 3 && currentSecond <= 9) {
+        bsdLeft.style.display = 'block';
+        playTone(980, 0.1);
+      } else {
+        bsdLeft.style.display = 'none';
+      }
+
+      // [7초 ~ 14초] 우측 4차선 버스 및 5차선 승용차 접근 감지
+      if (currentSecond >= 7 && currentSecond <= 14) {
+        bsdRightBus.style.display = 'block';
+        bsdRightCar.style.display = 'block';
+        playTone(740, 0.12);
+      } else {
+        bsdRightBus.style.display = 'none';
+        bsdRightCar.style.display = 'none';
+      }
+    }
+    // ========================================================
+    // 2단계 : [15초 ~ 22초] 기사 실신 감지!
+    // 🚨 4차선 버스 & 5차선 승용차 충돌 회피 (3차선에서 1차 직선 감속: 85➔45km/h)
+    // ========================================================
+    else if (currentSecond >= 15 && currentSecond < 23) {
+      if (scenarioState !== 'EVADE_WAIT') setEvadeWaitMode();
+      playTone(620, 0.25);
+    }
+    // ========================================================
+    // 3단계 : [23초 ~ 32초] 4·5차선 차량 앞질러 통과 완료!
+    // 🟢 3차선 ➔ 4차선 ➔ 5차선 ➔ 갓길로 다단 감속 조향 진입 (45➔20➔0km/h)
+    // ========================================================
+    else if (currentSecond >= 23 && currentSecond < 33) {
+      if (scenarioState !== 'PULLOVER_3STAGE') setPullOver3StageMode();
+      if (currentSecond % 2 === 0) playTone(520, 0.35);
+    }
+    // ========================================================
+    // 4단계 : [33초 ~ 45초] 갓길 완전 정차 & 119·회사·가족 3자 통화/메시지 발신!
+    // ========================================================
+    else {
+      if (scenarioState !== 'CALL_DISPATCH') setCallDispatchMode();
+      if (currentSecond === 34 || currentSecond === 38 || currentSecond === 42) {
+        playDialTone(); // 전화 발신 연결음
+      }
+    }
+  }, 1000);
+
+  // 1. 평상시 모드
+  function setNormalMode() {
+    scenarioState = 'NORMAL';
+    targetSpeed = 85;
+    laneShiftProgress = 0; // 3차선
+    frameEl.className = "";
+    emergencyBanner.style.display = 'none';
+    callDispatchContainer.style.display = 'none';
+    laneIndicator.textContent = "편도 5차선 중 [3차선]";
+    laneIndicator.className = "hud-badge badge-blue";
+    modeTagEl.textContent = "평상시 ADAS 모드";
+    modeTagEl.className = "hud-badge badge-blue";
+    voltageEl.textContent = "14.2V (충전 정상)";
+    voltageEl.className = "hud-badge badge-green";
+    dtcEl.textContent = "정상 (No Fault)";
+    dtcEl.className = "hud-badge badge-green";
+    centerLabel.textContent = "■ 중앙 후방 뷰 (현재 3차선 주행 중)";
+    rightLabel.textContent = "우측 사이드 (4·5차선 버스/승용차) ▶";
+    rightLabel.style.color = "#94a3b8";
+  }
+
+  // 2. 우측 4·5차선 차량 충돌 회피 대기 모드 (직선 1차 감속)
+  function setEvadeWaitMode() {
+    scenarioState = 'EVADE_WAIT';
+    targetSpeed = 45;
+    laneShiftProgress = 0; // 3차선 유지
+    frameEl.className = "evade-mode";
+    emergencyBanner.style.display = 'block';
+    callDispatchContainer.style.display = 'none';
+    bannerTitle.innerHTML = "🚨 [비상 실신 감지] 4차선 버스 & 5차선 승용차 회피 대기! 🚨";
+    bannerDesc.innerHTML = "우측 차선 차량 충돌 위험 감지 ➔ <strong>3차선 유지한 채 1차 직선 감속 (85➔45km/h)</strong><br><span style='color:#fde047; font-size:13px;'>※ 4차선 버스와 5차선 승용차가 먼저 안전하게 지나가도록 양보합니다.</span>";
+    laneIndicator.textContent = "3차선 직선 감속 유지 (충돌 회피)";
+    laneIndicator.className = "hud-badge badge-yellow";
+    modeTagEl.textContent = "⚠️ 우측 차량 통과 대기 (1차 감속)";
+    modeTagEl.className = "hud-badge badge-yellow";
+    voltageEl.textContent = "12.8V (엔진 컷오프)";
+    voltageEl.className = "hud-badge badge-red";
+    dtcEl.textContent = "EVADING RIGHT TRAFFIC";
+    dtcEl.className = "hud-badge badge-yellow";
+    rightLabel.textContent = "⚠️ 4·5차선 차량 통과 대기 중 ▶";
+    rightLabel.style.color = "#f59e0b";
+  }
+
+  // 3. 우측 차량 통과 후 3차선➔4차선➔5차선➔갓길 다단 정차 모드
+  function setPullOver3StageMode() {
+    scenarioState = 'PULLOVER_3STAGE';
+    targetSpeed = 0;
+    bsdRightBus.style.display = 'none';
+    bsdRightCar.style.display = 'none';
+    frameEl.className = "emergency-mode";
+    emergencyBanner.style.display = 'block';
+    callDispatchContainer.style.display = 'none';
+    bannerTitle.innerHTML = "🟢 [우측 차선 클리어] 3차선 ➔ 4·5차선 ➔ 갓길 자율 정차 중! 🟢";
+    bannerDesc.innerHTML = "4·5차선 차량 통과 완료 ➔ <strong>4차선과 5차선을 부드럽게 사선으로 통과하여 갓길 진입</strong><br>0.10G~0.45G 공압 3단 다단 감속으로 갓길 가드레일 옆에 스무스하게 완전 정차!<br><span style='color:#4ade80; font-size:12.5px;'>※ 비상등 자동 점멸 & 승객 충격 방지 제어 가동</span>";
+    modeTagEl.textContent = "🚨 갓길 자율 다단 감속 정차 중";
+    modeTagEl.className = "hud-badge badge-red";
+    rightLabel.textContent = "🟢 갓길 실선 & 가드레일 추적 중 ▶";
+    rightLabel.style.color = "#4ade80";
+  }
+
+  // 4. 갓길 정차 완료 & 119·버스회사·가족 3자 통화/메시지 모드
+  function setCallDispatchMode() {
+    scenarioState = 'CALL_DISPATCH';
+    targetSpeed = 0;
+    laneShiftProgress = 3; // 갓길 완전 정착
+    frameEl.className = "calling-mode";
+    emergencyBanner.style.display = 'none';
+    callDispatchContainer.style.display = 'flex';
+    laneIndicator.textContent = "안전 갓길 완전 정차 완료 (0 km/h)";
+    laneIndicator.className = "hud-badge badge-green";
+    modeTagEl.textContent = "📡 119·회사·가족 3자 핫라인 연결";
+    modeTagEl.className = "hud-badge badge-blue";
+    dtcEl.textContent = "3-WAY e-CALL ACTIVE";
+    dtcEl.className = "hud-badge badge-green";
+    centerLabel.textContent = "■ 갓길 정차 완료 (비상등 점멸 중)";
+    playSuccessChime();
+  }
+
+  // 60FPS 애니메이션 렌더링
+  function animate() {
+    // 속도 보간
+    if (currentSpeed > targetSpeed) {
+      currentSpeed -= (currentSpeed - targetSpeed) * 0.045;
+      if (currentSpeed < 1) currentSpeed = 0;
+    } else if (currentSpeed < targetSpeed) {
+      currentSpeed += (targetSpeed - currentSpeed) * 0.05;
+    }
+    speedEl.textContent = `${Math.round(currentSpeed)} km/h`;
+
+    roadOffset = (roadOffset + currentSpeed * 0.15) % 100;
+
+    // 차선 횡방향 이동 보간 (3차선 -> 4차선 -> 5차선 -> 갓길)
+    if (scenarioState === 'PULLOVER_3STAGE' || scenarioState === 'CALL_DISPATCH') {
+      if (laneShiftProgress < 3) {
+        laneShiftProgress += 0.018;
+      }
+      if (laneShiftProgress < 1) {
+        laneIndicator.textContent = "3차선 ➔ 4차선 이동 중...";
+      } else if (laneShiftProgress < 2) {
+        laneIndicator.textContent = "4차선 ➔ 5차선 이동 중...";
+      } else {
+        laneIndicator.textContent = "5차선 ➔ 갓길 정차 진입 중...";
+      }
+    }
+
+    renderLeftView();
+    renderCenterView();
+    renderRightView();
+
+    requestAnimationFrame(animate);
+  }
+
+  // 1. 좌측 사이드 카메라 (1·2차선 뷰, 1차선 오토바이 쏜살 질주)
+  function renderLeftView() {
+    const w = canvasLeft.width;
+    const h = canvasLeft.height;
+    ctxLeft.fillStyle = "#080c18";
+    ctxLeft.fillRect(0, 0, w, h);
+
+    // 원근 차선 (1·2차선 점선)
+    ctxLeft.strokeStyle = "rgba(255, 255, 255, 0.4)";
+    ctxLeft.lineWidth = 3;
+    ctxLeft.setLineDash([20, 20]);
+    ctxLeft.lineDashOffset = -roadOffset;
+
+    ctxLeft.beginPath();
+    ctxLeft.moveTo(w * 0.7, 0);
+    ctxLeft.lineTo(w * 0.9, h);
+    ctxLeft.stroke();
+
+    ctxLeft.beginPath();
+    ctxLeft.moveTo(w * 0.2, 0);
+    ctxLeft.lineTo(0, h * 0.8);
+    ctxLeft.stroke();
+    ctxLeft.setLineDash([]);
+
+    // 1차선 고속 오토바이 (3초~9초 쏜살같이 질주)
+    if (currentSecond >= 3 && currentSecond <= 9) {
+      const bikeX = w * 0.38;
+      const bikeY = h * 0.52;
+
+      // 헤드라이트 빔
+      const grad = ctxLeft.createRadialGradient(bikeX, bikeY, 5, bikeX, bikeY, 45);
+      grad.addColorStop(0, "rgba(254, 240, 138, 0.95)");
+      grad.addColorStop(1, "rgba(254, 240, 138, 0)");
+      ctxLeft.fillStyle = grad;
+      ctxLeft.beginPath();
+      ctxLeft.arc(bikeX, bikeY, 45, 0, Math.PI * 2);
+      ctxLeft.fill();
+
+      // 바이크 몸체
+      ctxLeft.fillStyle = "#ea580c";
+      ctxLeft.fillRect(bikeX - 9, bikeY - 22, 18, 44);
+      ctxLeft.fillStyle = "#ffffff";
+      ctxLeft.fillRect(bikeX - 5, bikeY - 14, 10, 14);
+
+      bsdLeft.style.left = (bikeX - 35) + "px";
+      bsdLeft.style.top = (bikeY - 50) + "px";
+      bsdLeft.style.width = "72px";
+      bsdLeft.style.height = "90px";
+    }
+  }
+
+  // 2. 중앙 후방 광각 룸미러 (3차선 후방 뷰 ➔ 4·5차선 횡단 궤적)
+  function renderCenterView() {
+    const w = canvasCenter.width;
+    const h = canvasCenter.height;
+    ctxCenter.fillStyle = "#060913";
+    ctxCenter.fillRect(0, 0, w, h);
+
+    // 차선 변경에 따른 원근 중심점 이동 (laneShiftProgress: 0->3)
+    const shiftX = laneShiftProgress * 65;
+    const centerX = (w / 2) - shiftX;
+
+    // 아스팔트 노면
+    ctxCenter.fillStyle = "#0f172a";
+    ctxCenter.beginPath();
+    ctxCenter.moveTo(centerX - 140, 0);
+    ctxCenter.lineTo(centerX + 140, 0);
+    ctxCenter.lineTo(centerX + 390, h);
+    ctxCenter.lineTo(centerX - 390, h);
+    ctxCenter.fill();
+
+    // 점선 차선들
+    ctxCenter.strokeStyle = "rgba(255, 255, 255, 0.5)";
+    ctxCenter.lineWidth = 4;
+    ctxCenter.setLineDash([25, 25]);
+    ctxCenter.lineDashOffset = -roadOffset;
+
+    ctxCenter.beginPath();
+    ctxCenter.moveTo(centerX - 50, 0);
+    ctxCenter.lineTo(centerX - 140, h);
+    ctxCenter.stroke();
+
+    ctxCenter.beginPath();
+    ctxCenter.moveTo(centerX + 50, 0);
+    ctxCenter.lineTo(centerX + 140, h);
+    ctxCenter.stroke();
+    ctxCenter.setLineDash([]);
+
+    // 후방 멀리서 따라오는 차량
+    const carY = h * 0.48;
+    const carX = centerX + 10;
+    ctxCenter.fillStyle = "#334155";
+    ctxCenter.fillRect(carX - 25, carY - 15, 50, 30);
+    ctxCenter.fillStyle = "#ef4444";
+    ctxCenter.fillRect(carX - 22, carY + 8, 10, 5);
+    ctxCenter.fillRect(carX + 12, carY + 8, 10, 5);
+  }
+
+  // 3. 우측 사이드 카메라 (4차선 버스 & 5차선 승용차 ➔ 갓길 가드레일)
+  function renderRightView() {
+    const w = canvasRight.width;
+    const h = canvasRight.height;
+    ctxRight.fillStyle = "#080c18";
+    ctxRight.fillRect(0, 0, w, h);
+
+    const shift = laneShiftProgress * 60;
+
+    // 갓길 흰색 실선
+    const isShoulder = (laneShiftProgress >= 2.5);
+    ctxRight.strokeStyle = isShoulder ? "#4ade80" : "#f8fafc";
+    ctxRight.lineWidth = isShoulder ? 5 : 3;
+    ctxRight.beginPath();
+    ctxRight.moveTo(w * 0.35 - shift, 0);
+    ctxRight.lineTo(w * 0.8 - shift, h);
+    ctxRight.stroke();
+
+    // 갓길 가드레일
+    ctxRight.strokeStyle = isShoulder ? "#f59e0b" : "#475569";
+    ctxRight.lineWidth = 4;
+    ctxRight.beginPath();
+    ctxRight.moveTo(w * 0.55 - shift, 0);
+    ctxRight.lineTo(w * 1.25 - shift, h);
+    ctxRight.stroke();
+
+    // 🚌 4차선 녹색 버스 & 🚗 5차선 은색 승용차 (7초~23초)
+    if (currentSecond >= 7 && currentSecond < 24) {
+      let trafficY;
+      if (currentSecond < 15) {
+        trafficY = h * 0.52; // 나란히 달림
+      } else {
+        // 우리가 45km/h로 줄이므로 두 차량이 앞으로 슝 앞질러 감!
+        const prog = (currentSecond - 15) / 8;
+        trafficY = (h * 0.52) - (prog * (h * 0.7));
+      }
+
+      // 4차선 버스 (우측 안쪽)
+      const busX = w * 0.35;
+      ctxRight.fillStyle = "#16a34a";
+      ctxRight.fillRect(busX - 22, trafficY - 45, 44, 90);
+      ctxRight.fillStyle = "#0f172a";
+      ctxRight.fillRect(busX - 18, trafficY - 40, 36, 20); // 버스 창문
+
+      bsdRightBus.style.left = (busX - 30) + "px";
+      bsdRightBus.style.top = (trafficY - 60) + "px";
+      bsdRightBus.style.width = "65px";
+      bsdRightBus.style.height = "110px";
+
+      // 5차선 승용차 (우측 바깥쪽)
+      const carX = w * 0.65;
+      ctxRight.fillStyle = "#94a3b8";
+      ctxRight.fillRect(carX - 18, trafficY - 20, 36, 55);
+      ctxRight.fillStyle = "#0f172a";
+      ctxRight.fillRect(carX - 14, trafficY - 10, 28, 22); // 승용차 창문
+
+      bsdRightCar.style.left = (carX - 25) + "px";
+      bsdRightCar.style.top = (trafficY - 35) + "px";
+      bsdRightCar.style.width = "55px";
+      bsdRightCar.style.height = "75px";
+    }
+
+    // 갓길 안전 정차 트래킹 안내선
+    if (laneShiftProgress >= 2.0) {
+      ctxRight.strokeStyle = "rgba(34, 197, 94, 0.9)";
+      ctxRight.lineWidth = 3;
+      ctxRight.setLineDash([8, 8]);
+      ctxRight.beginPath();
+      ctxRight.moveTo(w * 0.45 - shift, 0);
+      ctxRight.lineTo(w * 0.95 - shift, h);
+      ctxRight.stroke();
+      ctxRight.setLineDash([]);
+
+      ctxRight.fillStyle = "#4ade80";
+      ctxRight.font = "bold 12px sans-serif";
+      ctxRight.fillText("🟢 4·5차선 차량 회피 완료 ➔ 갓길 정차 성공", 15, h - 20);
+    }
+  }
+
+  // 버튼 리스너
+  document.getElementById('btn-audio-toggle').addEventListener('click', initAudio);
+  document.getElementById('btn-step1').addEventListener('click', () => { currentSecond = 0; setNormalMode(); });
+  document.getElementById('btn-step2').addEventListener('click', () => { currentSecond = 15; setEvadeWaitMode(); });
+  document.getElementById('btn-step3').addEventListener('click', () => { currentSecond = 23; setPullOver3StageMode(); });
+  document.getElementById('btn-step4').addEventListener('click', () => { currentSecond = 33; setCallDispatchMode(); });
+  document.getElementById('btn-fullscreen').addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  });
+
+  animate();
+</script>
+</body>
+</html>
