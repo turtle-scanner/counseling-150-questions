@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음안정 수면 사운드 테라피</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse-gentle {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.04); opacity: 1; }
+    }
+    .animate-gentle {
+      animation: pulse-gentle 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans select-none">
+
+  <div class="max-w-md w-full bg-slate-900/90 backdrop-blur border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+    <!-- 배경 은은한 빛 효과 -->
+    <div id="ambientGlow" class="absolute -top-24 -left-24 w-64 h-64 bg-amber-700/20 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
+    <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- 헤더 -->
+    <div class="text-center relative z-10 mb-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-indigo-300 font-medium mb-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        인천힐병원 604호 안식 모드
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
+        <span>🌙</span> 마음안정 사운드 테라피
+      </h1>
+      <p class="text-xs text-slate-400 mt-1">병원 소음을 부드럽게 지우고 깊은 이완과 숙면을 돕습니다</p>
+    </div>
+
+    <!-- 메인 재생/정지 버튼 -->
+    <div class="flex flex-col items-center justify-center my-6 relative z-10">
+      <button id="togglePlayBtn" class="w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 hover:from-indigo-500 hover:to-violet-400 shadow-lg shadow-indigo-600/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none">
+        <div id="playIcon" class="text-3xl text-white ml-1">▶</div>
+        <div id="pauseIcon" class="text-3xl text-white hidden">⏸</div>
+      </button>
+      <div id="statusText" class="text-sm font-semibold text-slate-300 mt-3 tracking-wide">재생 버튼을 눌러주세요</div>
+      <div id="timerDisplay" class="text-xs text-indigo-400 font-mono mt-1 hidden">남은 시간: <span id="timeRemaining">--:--</span></div>
+    </div>
+
+    <!-- 사운드 모드 선택 3버튼 -->
+    <div class="relative z-10 mb-5">
+      <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">소리 종류 선택</label>
+      <div class="grid grid-cols-3 gap-2">
+        <!-- 브라운 노이즈 -->
+        <button onclick="setNoiseMode('brown')" id="btn-brown" class="sound-mode-btn active p-3 rounded-2xl bg-indigo-600/30 border border-indigo-500/50 text-left transition-all hover:bg-slate-800">
+          <div class="text-lg mb-1">🌧️</div>
+          <div class="text-xs font-bold text-white">브라운 노이즈</div>
+          <div class="text-[11px] text-indigo-300 mt-0.5">깊은 빗소리·ADHD</div>
+        </button>
+
+        <!-- 핑크 노이즈 -->
+        <button onclick="setNoiseMode('pink')" id="btn-pink" class="sound-mode-btn p-3 rounded-2xl bg-slate-800/60 border border-slate-700/60 text-left transition-all hover:bg-slate-800">
+          <div class="text-lg mb-1">🌊</div>
+          <div class="text-xs font-bold text-slate-200">핑크 노이즈</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">포근한 파도·이완</div>
+        </button>
+
+        <!-- 화이트 노이즈 -->
+        <button onclick="setNoiseMode('white')" id="btn-white" class="sound-mode-btn p-3 rounded-2xl bg-slate-800/60 border border-slate-700/60 text-left transition-all hover:bg-slate-800">
+          <div class="text-lg mb-1">🍃</div>
+          <div class="text-xs font-bold text-slate-200">화이트 노이즈</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">소음 완전 차단</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 볼륨 조절 슬라이더 -->
+    <div class="relative z-10 mb-5 bg-slate-800/50 p-4 rounded-2xl border border-slate-800">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+          <span>🔊</span> 볼륨 조절
+        </span>
+        <span id="volumeValue" class="text-xs font-mono font-bold text-indigo-300">50%</span>
+      </div>
+      <input id="volumeSlider" type="range" min="0" max="100" value="50" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+    </div>
+
+    <!-- 수면 예약 타이머 -->
+    <div class="relative z-10 mb-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">자동 종료 타이머</span>
+      </div>
+      <div class="grid grid-cols-4 gap-1.5">
+        <button onclick="setTimer(15)" class="timer-btn py-2 rounded-xl bg-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-700 transition">15분</button>
+        <button onclick="setTimer(30)" class="timer-btn py-2 rounded-xl bg-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-700 transition">30분</button>
+        <button onclick="setTimer(60)" class="timer-btn py-2 rounded-xl bg-slate-800 text-xs font-medium text-slate-300 hover:bg-slate-700 transition">60분</button>
+        <button onclick="setTimer(0)" class="timer-btn active py-2 rounded-xl bg-indigo-600/40 border border-indigo-500/60 text-xs font-semibold text-white hover:bg-indigo-600/60 transition">연속</button>
+      </div>
+    </div>
+
+    <!-- 하단 심리 안정 팁 -->
+    <div class="relative z-10 mt-6 pt-4 border-t border-slate-800 text-center">
+      <p class="text-[12px] text-slate-400 leading-relaxed">
+        💡 <strong>팁 :</strong> 이어폰을 꽂고 <strong class="text-indigo-300">브라운 노이즈</strong>를 약 40~50% 볼륨으로 맞춰두시면, 병동 밖 돌발 소음이 포근하게 가려집니다.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let audioCtx = null;
+    let currentSource = null;
+    let gainNode = null;
+    let filterNode = null;
+    let isPlaying = false;
+    let currentMode = 'brown';
+    let timerMinutes = 0;
+    let timerInterval = null;
+    let remainingSeconds = 0;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+        gainNode = audioCtx.createGain();
+        filterNode = audioCtx.createBiquadFilter();
+
+        filterNode.type = 'lowpass';
+        filterNode.frequency.setValueAtTime(650, audioCtx.currentTime);
+
+        filterNode.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        setVolume(document.getElementById('volumeSlider').value);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function generateNoiseBuffer(mode) {
+      const sampleRate = audioCtx.sampleRate;
+      const length = sampleRate * 10;
+      const buffer = audioCtx.createBuffer(2, length, sampleRate);
+      const crossfade = sampleRate * 1;
+
+      for (let ch = 0; ch < 2; ch++) {
+        const channelData = buffer.getChannelData(ch);
+        const raw = new Float32Array(length);
+
+        if (mode === 'brown') {
+          let lastOut = 0.0;
+          for (let i = 0; i < length; i++) {
+            const white = Math.random() * 2 - 1;
+            lastOut = (lastOut + (0.025 * white)) / 1.025;
+            raw[i] = lastOut * 3.8;
+          }
+        } else if (mode === 'pink') {
+          let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+          for (let i = 0; i < length; i++) {
+            const white = Math.random() * 2 - 1;
+            b0 = 0.99886 * b0 + white * 0.0555179;
+            b1 = 0.99332 * b1 + white * 0.0750759;
+            b2 = 0.96900 * b2 + white * 0.1538520;
+            b3 = 0.86650 * b3 + white * 0.3104856;
+            b4 = 0.55000 * b4 + white * 0.5329522;
+            b5 = -0.7616 * b5 - white * 0.0168980;
+            raw[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.18;
+            b6 = white * 0.115926;
+          }
+        } else {
+          for (let i = 0; i < length; i++) {
+            raw[i] = (Math.random() * 2 - 1) * 0.22;
+          }
+        }
+
+        for (let i = 0; i < length; i++) {
+          if (i < crossfade) {
+            const ratio = i / crossfade;
+            channelData[i] = raw[i] * ratio + raw[length - crossfade + i] * (1 - ratio);
+          } else {
+            channelData[i] = raw[i];
+          }
+        }
+      }
+      return buffer;
+    }
+
+    function startSound() {
+      initAudio();
+      stopSound(false);
+
+      if (currentMode === 'brown') {
+        filterNode.frequency.setValueAtTime(650, audioCtx.currentTime);
+      } else if (currentMode === 'pink') {
+        filterNode.frequency.setValueAtTime(1400, audioCtx.currentTime);
+      } else {
+        filterNode.frequency.setValueAtTime(3500, audioCtx.currentTime);
+      }
+
+      const buffer = generateNoiseBuffer(currentMode);
+      currentSource = audioCtx.createBufferSource();
+      currentSource.buffer = buffer;
+      currentSource.loop = true;
+      currentSource.connect(filterNode);
+
+      const vol = document.getElementById('volumeSlider').value / 100;
+      gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, vol), audioCtx.currentTime + 1.5);
+
+      currentSource.start();
+      isPlaying = true;
+      updateUI();
+    }
+
+    function stopSound(fade = true) {
+      if (currentSource) {
+        if (fade && audioCtx && gainNode) {
+          gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.0);
+          setTimeout(() => {
+            if (currentSource) {
+              try { currentSource.stop(); } catch(e){}
+              currentSource = null;
+            }
+          }, 1000);
+        } else {
+          try { currentSource.stop(); } catch(e){}
+          currentSource = null;
+        }
+      }
+      isPlaying = false;
+      updateUI();
+    }
+
+    function togglePlay() {
+      if (isPlaying) {
+        stopSound(true);
+      } else {
+        startSound();
+        if (timerMinutes > 0 && remainingSeconds <= 0) {
+          startTimerCountdown(timerMinutes * 60);
+        }
+      }
+    }
+
+    function setNoiseMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.sound-mode-btn').forEach(b => {
+        b.classList.remove('bg-indigo-600/30', 'border-indigo-500/50', 'active');
+        b.classList.add('bg-slate-800/60', 'border-slate-700/60');
+      });
+      const activeBtn = document.getElementById('btn-' + mode);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-indigo-600/30', 'border-indigo-500/50', 'active');
+        activeBtn.classList.remove('bg-slate-800/60', 'border-slate-700/60');
+      }
+
+      const glow = document.getElementById('ambientGlow');
+      if (mode === 'brown') glow.className = "absolute -top-24 -left-24 w-64 h-64 bg-amber-700/20 rounded-full blur-3xl pointer-events-none transition-all duration-700";
+      else if (mode === 'pink') glow.className = "absolute -top-24 -left-24 w-64 h-64 bg-rose-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700";
+      else glow.className = "absolute -top-24 -left-24 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700";
+
+      if (isPlaying) {
+        startSound();
+      }
+    }
+
+    function setVolume(val) {
+      document.getElementById('volumeValue').textContent = val + '%';
+      if (gainNode && audioCtx && isPlaying) {
+        gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+        const gainVal = Math.max(0.001, (val / 100));
+        gainNode.gain.exponentialRampToValueAtTime(gainVal, audioCtx.currentTime + 0.1);
+      }
+    }
+
+    function setTimer(minutes) {
+      timerMinutes = minutes;
+      document.querySelectorAll('.timer-btn').forEach(b => {
+        b.classList.remove('bg-indigo-600/40', 'border', 'border-indigo-500/60', 'text-white', 'font-semibold', 'active');
+        b.classList.add('bg-slate-800', 'text-slate-300');
+      });
+      event.target.classList.add('bg-indigo-600/40', 'border', 'border-indigo-500/60', 'text-white', 'font-semibold', 'active');
+      event.target.classList.remove('bg-slate-800', 'text-slate-300');
+
+      clearInterval(timerInterval);
+      if (minutes > 0) {
+        startTimerCountdown(minutes * 60);
+      } else {
+        document.getElementById('timerDisplay').classList.add('hidden');
+      }
+    }
+
+    function startTimerCountdown(seconds) {
+      remainingSeconds = seconds;
+      document.getElementById('timerDisplay').classList.remove('hidden');
+      updateTimerDisplay();
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        remainingSeconds--;
+        if (remainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          stopSound(true);
+          document.getElementById('timerDisplay').classList.add('hidden');
+        } else {
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(remainingSeconds / 60);
+      const s = remainingSeconds % 60;
+      document.getElementById('timeRemaining').textContent = 
+        String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function updateUI() {
+      const playIcon = document.getElementById('playIcon');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const statusText = document.getElementById('statusText');
+      const toggleBtn = document.getElementById('togglePlayBtn');
+
+      if (isPlaying) {
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+        toggleBtn.classList.add('animate-gentle');
+        const modeNames = { brown: '포근한 브라운 노이즈 (빗소리)', pink: '잔잔한 핑크 노이즈 (파도소리)', white: '차분한 화이트 노이즈' };
+        statusText.textContent = modeNames[currentMode] + ' 재생 중';
+        statusText.classList.add('text-indigo-300');
+      } else {
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+        toggleBtn.classList.remove('animate-gentle');
+        statusText.textContent = '재생 버튼을 눌러주세요';
+        statusText.classList.remove('text-indigo-300');
+      }
+    }
+
+    document.getElementById('togglePlayBtn').addEventListener('click', togglePlay);
+    document.getElementById('volumeSlider').addEventListener('input', (e) => setVolume(e.target.value));
+  </script>
+</body>
+</html>
