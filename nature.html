@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>변귀섭 선생님 맞춤 자연의 소리 브라운 노이즈 믹서</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes pulse-nature {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(16, 185, 129, 0.35); }
+      50% { transform: scale(1.03); box-shadow: 0 0 45px rgba(6, 182, 212, 0.55); }
+    }
+    .animate-nature {
+      animation: pulse-nature 3.5s ease-in-out infinite;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #10b981;
+      cursor: pointer;
+      -webkit-appearance: none;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-3 font-sans select-none">
+
+  <div class="max-w-lg w-full bg-slate-900/95 backdrop-blur-2xl border border-emerald-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden my-4">
+    <!-- 배경 은은한 오로라 광채 -->
+    <div id="ambientGlow" class="absolute -top-24 -right-24 w-72 h-72 bg-emerald-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
+    <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-cyan-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- 헤더 -->
+    <div class="text-center relative z-10 mb-5">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-xs text-emerald-300 font-semibold mb-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        2E/ADHD 초집중 자연의 소리 멀티 믹서
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
+        <span>🌲</span> 브라운 노이즈 자연 믹서
+      </h1>
+      <p class="text-xs text-slate-400 mt-1">깊은 브라운 노이즈 위에 5가지 자연의 소리를 마음대로 조합하세요</p>
+    </div>
+
+    <!-- 메인 재생 버튼 & 상태 -->
+    <div class="flex flex-col items-center justify-center my-4 relative z-10">
+      <button id="togglePlayBtn" class="w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 hover:from-emerald-500 hover:to-cyan-400 shadow-xl shadow-emerald-500/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none">
+        <div id="playIcon" class="text-3xl text-white ml-1">▶</div>
+        <div id="pauseIcon" class="text-3xl text-white hidden">⏸</div>
+      </button>
+      <div id="statusText" class="text-sm font-bold text-slate-200 mt-2.5 tracking-wide">재생을 누르면 자연의 소리가 흐릅니다</div>
+      <div id="timerDisplay" class="text-xs text-emerald-300 font-mono mt-0.5 font-semibold hidden">남은 집중 시간: <span id="timeRemaining">--:--</span></div>
+    </div>
+
+    <!-- 원클릭 프리셋 4종 -->
+    <div class="relative z-10 mb-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">🎯 원클릭 추천 테마</span>
+      </div>
+      <div class="grid grid-cols-4 gap-1.5">
+        <button onclick="applyPreset('stream')" id="p-stream" class="preset-btn p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">🏞️ 숲속계곡</button>
+        <button onclick="applyPreset('rain')" id="p-rain" class="preset-btn p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">🌧️ 서재빗소리</button>
+        <button onclick="applyPreset('ocean')" id="p-ocean" class="preset-btn p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">🌊 밤바다파도</button>
+        <button onclick="applyPreset('forest')" id="p-forest" class="preset-btn active p-2 rounded-xl bg-emerald-600/40 border border-emerald-400/60 text-xs font-bold text-white transition">🌲 숲속의아침</button>
+      </div>
+    </div>
+
+    <!-- 5가지 자연 소리 멀티 슬라이더 (개별 볼륨 조절) -->
+    <div class="relative z-10 mb-4 bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60 space-y-3.5">
+      <div class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex justify-between">
+        <span>🎚️ 사운드 믹서 (내 취향대로 섞기)</span>
+        <button onclick="resetSliders()" class="text-[11px] text-emerald-400 hover:underline">기본값</button>
+      </div>
+
+      <!-- 1. 브라운 베이스 노이즈 -->
+      <div class="flex items-center gap-3">
+        <span class="text-base w-6 text-center">🟤</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">브라운 베이스 (저음 차폐)</span>
+            <span id="vol-brown-txt" class="font-mono text-emerald-400 text-xs">60%</span>
+          </div>
+          <input type="range" id="vol-brown" min="0" max="100" value="60" oninput="updateSoundVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- 2. 물소리 (계곡물) -->
+      <div class="flex items-center gap-3">
+        <span class="text-base w-6 text-center">💧</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">계곡 물소리 (청량한 유속)</span>
+            <span id="vol-stream-txt" class="font-mono text-emerald-400 text-xs">50%</span>
+          </div>
+          <input type="range" id="vol-stream" min="0" max="100" value="50" oninput="updateSoundVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- 3. 빗소리 (창가 빗방울) -->
+      <div class="flex items-center gap-3">
+        <span class="text-base w-6 text-center">🌧️</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">창가 빗소리 (포근한 비)</span>
+            <span id="vol-rain-txt" class="font-mono text-emerald-400 text-xs">30%</span>
+          </div>
+          <input type="range" id="vol-rain" min="0" max="100" value="30" oninput="updateSoundVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- 4. 파도소리 (해변 율동감) -->
+      <div class="flex items-center gap-3">
+        <span class="text-base w-6 text-center">🌊</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">해변 파도소리 (이완 서파)</span>
+            <span id="vol-wave-txt" class="font-mono text-emerald-400 text-xs">20%</span>
+          </div>
+          <input type="range" id="vol-wave" min="0" max="100" value="20" oninput="updateSoundVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- 5. 바람소리 (숲속 솔바람) -->
+      <div class="flex items-center gap-3">
+        <span class="text-base w-6 text-center">🍃</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">솔바람 소리 (부드러운 미풍)</span>
+            <span id="vol-wind-txt" class="font-mono text-emerald-400 text-xs">25%</span>
+          </div>
+          <input type="range" id="vol-wind" min="0" max="100" value="25" oninput="updateSoundVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- 6. 맑은 새소리 (지저귐) -->
+      <div class="flex items-center gap-3">
+        <span class="text-base w-6 text-center">🐦</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">아침 숲속 새소리 (맑은 생기)</span>
+            <span id="vol-bird-txt" class="font-mono text-emerald-400 text-xs">40%</span>
+          </div>
+          <input type="range" id="vol-bird" min="0" max="100" value="40" oninput="updateSoundVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- 7. 40Hz 감마 뇌파 동조 부스트 (토글) -->
+      <div class="flex items-center justify-between pt-2 border-t border-slate-700/50">
+        <span class="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+          <span>🧠</span> 40Hz 감마 집중 뇌파 동조
+        </span>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="toggleGamma" onchange="toggleGammaPulse()" class="sr-only peer" checked>
+          <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-500"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- 전체 마스터 볼륨 & 타이머 -->
+    <div class="relative z-10 mb-4 bg-slate-800/40 p-3 rounded-2xl border border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-semibold text-slate-300">🔊 전체 볼륨</span>
+        <input type="range" id="masterVolume" min="0" max="100" value="70" oninput="setMasterVolume(this.value)" class="w-24 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+      </div>
+      <div class="flex gap-1">
+        <button onclick="setFocusTimer(25)" class="timer-btn px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] font-medium text-slate-300 hover:bg-slate-700">25분</button>
+        <button onclick="setFocusTimer(50)" class="timer-btn active px-2.5 py-1 rounded-lg bg-emerald-600/40 border border-emerald-400/60 text-[11px] font-bold text-white">50분</button>
+        <button onclick="setFocusTimer(0)" class="timer-btn px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] font-medium text-slate-300 hover:bg-slate-700">연속</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let audioCtx = null;
+    let isPlaying = false;
+    let masterGain = null;
+
+    // 개별 사운드 게인 노드
+    let gainBrown = null, gainStream = null, gainRain = null, gainWave = null, gainWind = null, gainBird = null;
+    let gammaOsc = null, gammaGain = null;
+
+    // 오디오 소스 & LFO
+    let srcBrown = null, srcRain = null, srcStream = null, srcWave = null, srcWind = null;
+    let lfoStream = null, lfoWave = null, lfoWind = null;
+    let birdInterval = null;
+
+    let timerMinutes = 50;
+    let timerInterval = null;
+    let remainingSeconds = 50 * 60;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+
+        masterGain = audioCtx.createGain();
+        masterGain.connect(audioCtx.destination);
+        setMasterVolume(document.getElementById('masterVolume').value);
+
+        // 개별 게인 노드 생성
+        gainBrown = audioCtx.createGain();
+        gainStream = audioCtx.createGain();
+        gainRain = audioCtx.createGain();
+        gainWave = audioCtx.createGain();
+        gainWind = audioCtx.createGain();
+        gainBird = audioCtx.createGain();
+        gammaGain = audioCtx.createGain();
+
+        gainBrown.connect(masterGain);
+        gainStream.connect(masterGain);
+        gainRain.connect(masterGain);
+        gainWave.connect(masterGain);
+        gainWind.connect(masterGain);
+        gainBird.connect(masterGain);
+        gammaGain.connect(masterGain);
+
+        updateSoundVolumes();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // 브라운 노이즈 버퍼 생성 (10초 무한 루프)
+    function generateBrownBuffer() {
+      const sampleRate = audioCtx.sampleRate;
+      const length = sampleRate * 10;
+      const buffer = audioCtx.createBuffer(2, length, sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const data = buffer.getChannelData(ch);
+        let lastOut = 0.0;
+        for (let i = 0; i < length; i++) {
+          const white = Math.random() * 2 - 1;
+          lastOut = (lastOut + (0.025 * white)) / 1.025;
+          data[i] = lastOut * 3.5;
+        }
+        // 크로스페이드
+        const cross = sampleRate * 1;
+        for (let i = 0; i < cross; i++) {
+          const ratio = i / cross;
+          data[i] = data[i] * ratio + data[length - cross + i] * (1 - ratio);
+        }
+      }
+      return buffer;
+    }
+
+    // 핑크 노이즈 버퍼 생성 (빗소리/물소리용)
+    function generatePinkBuffer() {
+      const sampleRate = audioCtx.sampleRate;
+      const length = sampleRate * 10;
+      const buffer = audioCtx.createBuffer(2, length, sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const data = buffer.getChannelData(ch);
+        let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+        for (let i = 0; i < length; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.15;
+          b6 = white * 0.115926;
+        }
+        const cross = sampleRate * 1;
+        for (let i = 0; i < cross; i++) {
+          const ratio = i / cross;
+          data[i] = data[i] * ratio + data[length - cross + i] * (1 - ratio);
+        }
+      }
+      return buffer;
+    }
+
+    function startSound() {
+      initAudio();
+      stopSound(false);
+
+      const brownBuf = generateBrownBuffer();
+      const pinkBuf = generatePinkBuffer();
+
+      // 1. 브라운 베이스 노이즈 (로우패스 700Hz)
+      const filterBrown = audioCtx.createBiquadFilter();
+      filterBrown.type = 'lowpass';
+      filterBrown.frequency.setValueAtTime(700, audioCtx.currentTime);
+      srcBrown = audioCtx.createBufferSource();
+      srcBrown.buffer = brownBuf;
+      srcBrown.loop = true;
+      srcBrown.connect(filterBrown);
+      filterBrown.connect(gainBrown);
+      srcBrown.start();
+
+      // 2. 계곡 물소리 (1300Hz 로우패스 + 0.3Hz 출렁임 LFO)
+      const filterStream = audioCtx.createBiquadFilter();
+      filterStream.type = 'lowpass';
+      filterStream.frequency.setValueAtTime(1300, audioCtx.currentTime);
+
+      lfoStream = audioCtx.createOscillator();
+      lfoStream.frequency.setValueAtTime(0.32, audioCtx.currentTime);
+      const lfoStreamGain = audioCtx.createGain();
+      lfoStreamGain.gain.setValueAtTime(250, audioCtx.currentTime);
+      lfoStream.connect(lfoStreamGain);
+      lfoStreamGain.connect(filterStream.frequency);
+      lfoStream.start();
+
+      srcStream = audioCtx.createBufferSource();
+      srcStream.buffer = pinkBuf;
+      srcStream.loop = true;
+      srcStream.connect(filterStream);
+      filterStream.connect(gainStream);
+      srcStream.start();
+
+      // 3. 창가 빗소리 (1100Hz 밴드패스)
+      const filterRain = audioCtx.createBiquadFilter();
+      filterRain.type = 'bandpass';
+      filterRain.frequency.setValueAtTime(1400, audioCtx.currentTime);
+      filterRain.Q.setValueAtTime(0.7, audioCtx.currentTime);
+
+      srcRain = audioCtx.createBufferSource();
+      srcRain.buffer = pinkBuf;
+      srcRain.loop = true;
+      srcRain.connect(filterRain);
+      filterRain.connect(gainRain);
+      srcRain.start();
+
+      // 4. 밤바다 파도소리 (10초 주기 거대한 파도 LFO)
+      const filterWave = audioCtx.createBiquadFilter();
+      filterWave.type = 'lowpass';
+      filterWave.frequency.setValueAtTime(500, audioCtx.currentTime);
+
+      lfoWave = audioCtx.createOscillator();
+      lfoWave.frequency.setValueAtTime(0.1, audioCtx.currentTime); // 10초에 1번 파도 밀려옴
+      const lfoWaveGain = audioCtx.createGain();
+      lfoWaveGain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+      const waveAmpGain = audioCtx.createGain();
+      waveAmpGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+      lfoWave.connect(lfoWaveGain);
+      lfoWaveGain.connect(waveAmpGain.gain);
+      lfoWave.start();
+
+      srcWave = audioCtx.createBufferSource();
+      srcWave.buffer = brownBuf;
+      srcWave.loop = true;
+      srcWave.connect(filterWave);
+      filterWave.connect(waveAmpGain);
+      waveAmpGain.connect(gainWave);
+      srcWave.start();
+
+      // 5. 솔바람 소리 (0.15Hz 느린 미풍 필터 스위프)
+      const filterWind = audioCtx.createBiquadFilter();
+      filterWind.type = 'bandpass';
+      filterWind.frequency.setValueAtTime(450, audioCtx.currentTime);
+      filterWind.Q.setValueAtTime(1.5, audioCtx.currentTime);
+
+      lfoWind = audioCtx.createOscillator();
+      lfoWind.frequency.setValueAtTime(0.18, audioCtx.currentTime);
+      const lfoWindGain = audioCtx.createGain();
+      lfoWindGain.gain.setValueAtTime(200, audioCtx.currentTime);
+      lfoWind.connect(lfoWindGain);
+      lfoWindGain.connect(filterWind.frequency);
+      lfoWind.start();
+
+      srcWind = audioCtx.createBufferSource();
+      srcWind.buffer = pinkBuf;
+      srcWind.loop = true;
+      srcWind.connect(filterWind);
+      filterWind.connect(gainWind);
+      srcWind.start();
+
+      // 6. 아침 숲속 새소리 생성 루프 (간헐적 지저귐)
+      startBirdChirps();
+
+      // 7. 40Hz 감마 뇌파 동조
+      if (document.getElementById('toggleGamma').checked) {
+        startGammaPulse();
+      }
+
+      isPlaying = true;
+      updateUI();
+    }
+
+    // 맑은 새소리 간헐적 합성기 (2.5kHz ~ 3.5kHz FM 사운드)
+    function playSingleChirp() {
+      if (!audioCtx || !isPlaying) return;
+      const vol = document.getElementById('vol-bird').value / 100;
+      if (vol <= 0.01) return;
+
+      const osc = audioCtx.createGain();
+      const now = audioCtx.currentTime;
+
+      const chirper = audioCtx.createOscillator();
+      chirper.type = 'sine';
+
+      const baseFreq = 2600 + Math.random() * 800;
+      chirper.frequency.setValueAtTime(baseFreq, now);
+      chirper.frequency.exponentialRampToValueAtTime(baseFreq + 600, now + 0.08);
+      chirper.frequency.exponentialRampToValueAtTime(baseFreq - 300, now + 0.18);
+
+      const chirpGain = audioCtx.createGain();
+      chirpGain.gain.setValueAtTime(0.001, now);
+      chirpGain.gain.linearRampToValueAtTime(vol * 0.18, now + 0.03);
+      chirpGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+      chirper.connect(chirpGain);
+      chirpGain.connect(gainBird);
+
+      chirper.start(now);
+      chirper.stop(now + 0.25);
+    }
+
+    function startBirdChirps() {
+      clearInterval(birdInterval);
+      birdInterval = setInterval(() => {
+        if (!isPlaying) return;
+        const vol = document.getElementById('vol-bird').value / 100;
+        if (vol > 0.05 && Math.random() < 0.6) {
+          playSingleChirp();
+          if (Math.random() < 0.5) {
+            setTimeout(playSingleChirp, 140);
+          }
+        }
+      }, 2500);
+    }
+
+    function startGammaPulse() {
+      if (gammaOsc) return;
+      const carrier = audioCtx.createOscillator();
+      carrier.type = 'sine';
+      carrier.frequency.setValueAtTime(175, audioCtx.currentTime);
+
+      const modulator = audioCtx.createOscillator();
+      modulator.type = 'sine';
+      modulator.frequency.setValueAtTime(40, audioCtx.currentTime); // 40Hz
+
+      const modGain = audioCtx.createGain();
+      modGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+      gammaGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+
+      modulator.connect(modGain.gain);
+      carrier.connect(gammaGain);
+
+      carrier.start();
+      modulator.start();
+
+      gammaOsc = { carrier, modulator };
+    }
+
+    function stopGammaPulse() {
+      if (gammaOsc) {
+        try {
+          gammaOsc.carrier.stop();
+          gammaOsc.modulator.stop();
+        } catch(e){}
+        gammaOsc = null;
+      }
+    }
+
+    function toggleGammaPulse() {
+      if (document.getElementById('toggleGamma').checked) {
+        if (isPlaying) startGammaPulse();
+      } else {
+        stopGammaPulse();
+      }
+    }
+
+    function stopSound(fade = true) {
+      clearInterval(birdInterval);
+      stopGammaPulse();
+
+      if (lfoStream) { try { lfoStream.stop(); } catch(e){} lfoStream = null; }
+      if (lfoWave) { try { lfoWave.stop(); } catch(e){} lfoWave = null; }
+      if (lfoWind) { try { lfoWind.stop(); } catch(e){} lfoWind = null; }
+
+      [srcBrown, srcRain, srcStream, srcWave, srcWind].forEach(s => {
+        if (s) { try { s.stop(); } catch(e){} }
+      });
+      srcBrown = srcRain = srcStream = srcWave = srcWind = null;
+
+      isPlaying = false;
+      updateUI();
+    }
+
+    function togglePlay() {
+      if (isPlaying) {
+        stopSound(true);
+      } else {
+        startSound();
+        if (timerMinutes > 0) {
+          startTimerCountdown(remainingSeconds > 0 ? remainingSeconds : timerMinutes * 60);
+        }
+      }
+    }
+
+    function updateSoundVolumes() {
+      const brown = document.getElementById('vol-brown').value;
+      const stream = document.getElementById('vol-stream').value;
+      const rain = document.getElementById('vol-rain').value;
+      const wave = document.getElementById('vol-wave').value;
+      const wind = document.getElementById('vol-wind').value;
+      const bird = document.getElementById('vol-bird').value;
+
+      document.getElementById('vol-brown-txt').textContent = brown + '%';
+      document.getElementById('vol-stream-txt').textContent = stream + '%';
+      document.getElementById('vol-rain-txt').textContent = rain + '%';
+      document.getElementById('vol-wave-txt').textContent = wave + '%';
+      document.getElementById('vol-wind-txt').textContent = wind + '%';
+      document.getElementById('vol-bird-txt').textContent = bird + '%';
+
+      if (audioCtx) {
+        const t = audioCtx.currentTime + 0.05;
+        if (gainBrown) gainBrown.gain.linearRampToValueAtTime((brown / 100) * 0.5, t);
+        if (gainStream) gainStream.gain.linearRampToValueAtTime((stream / 100) * 0.45, t);
+        if (gainRain) gainRain.gain.linearRampToValueAtTime((rain / 100) * 0.35, t);
+        if (gainWave) gainWave.gain.linearRampToValueAtTime((wave / 100) * 0.45, t);
+        if (gainWind) gainWind.gain.linearRampToValueAtTime((wind / 100) * 0.4, t);
+        if (gainBird) gainBird.gain.linearRampToValueAtTime((bird / 100) * 0.3, t);
+      }
+    }
+
+    function setMasterVolume(val) {
+      if (masterGain && audioCtx) {
+        masterGain.gain.linearRampToValueAtTime(val / 100, audioCtx.currentTime + 0.05);
+      }
+    }
+
+    function applyPreset(name) {
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        b.classList.remove('bg-emerald-600/40', 'border', 'border-emerald-400/60', 'text-white', 'active');
+        b.classList.add('bg-slate-800', 'text-slate-300');
+      });
+      const activeBtn = document.getElementById('p-' + name);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-emerald-600/40', 'border', 'border-emerald-400/60', 'text-white', 'active');
+        activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+      }
+
+      if (name === 'stream') {
+        // 숲속 계곡 : 물소리 최상, 새소리, 미풍
+        setSliderValues(55, 80, 10, 0, 30, 45);
+      } else if (name === 'rain') {
+        // 서재 빗소리 : 브라운 베이스 + 창가 비 집중
+        setSliderValues(70, 15, 80, 0, 15, 0);
+      } else if (name === 'ocean') {
+        // 밤바다 파도 : 묵직한 브라운 + 파도 + 밤바람
+        setSliderValues(65, 0, 10, 85, 35, 0);
+      } else {
+        // 숲속의 아침 : 자연 종합 하모니
+        setSliderValues(60, 50, 30, 20, 25, 40);
+      }
+    }
+
+    function setSliderValues(brown, stream, rain, wave, wind, bird) {
+      document.getElementById('vol-brown').value = brown;
+      document.getElementById('vol-stream').value = stream;
+      document.getElementById('vol-rain').value = rain;
+      document.getElementById('vol-wave').value = wave;
+      document.getElementById('vol-wind').value = wind;
+      document.getElementById('vol-bird').value = bird;
+      updateSoundVolumes();
+    }
+
+    function resetSliders() {
+      applyPreset('forest');
+    }
+
+    function setFocusTimer(minutes) {
+      timerMinutes = minutes;
+      document.querySelectorAll('.timer-btn').forEach(b => {
+        b.classList.remove('bg-emerald-600/40', 'border', 'border-emerald-400/60', 'text-white', 'font-bold', 'active');
+        b.classList.add('bg-slate-800', 'text-slate-300');
+      });
+      event.target.classList.add('bg-emerald-600/40', 'border', 'border-emerald-400/60', 'text-white', 'font-bold', 'active');
+      event.target.classList.remove('bg-slate-800', 'text-slate-300');
+
+      clearInterval(timerInterval);
+      if (minutes > 0) {
+        remainingSeconds = minutes * 60;
+        startTimerCountdown(remainingSeconds);
+      } else {
+        document.getElementById('timerDisplay').classList.add('hidden');
+      }
+    }
+
+    function startTimerCountdown(seconds) {
+      remainingSeconds = seconds;
+      document.getElementById('timerDisplay').classList.remove('hidden');
+      updateTimerDisplay();
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        remainingSeconds--;
+        if (remainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          stopSound(true);
+          document.getElementById('timerDisplay').classList.add('hidden');
+        } else {
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(remainingSeconds / 60);
+      const s = remainingSeconds % 60;
+      document.getElementById('timeRemaining').textContent = 
+        String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function updateUI() {
+      const playIcon = document.getElementById('playIcon');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const statusText = document.getElementById('statusText');
+      const toggleBtn = document.getElementById('togglePlayBtn');
+
+      if (isPlaying) {
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+        toggleBtn.classList.add('animate-nature');
+        statusText.textContent = '🌲 평온한 자연의 소리가 흐르는 중입니다';
+        statusText.classList.add('text-emerald-300');
+      } else {
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+        toggleBtn.classList.remove('animate-nature');
+        statusText.textContent = '재생을 누르면 자연의 소리가 흐릅니다';
+        statusText.classList.remove('text-emerald-300');
+      }
+    }
+
+    document.getElementById('togglePlayBtn').addEventListener('click', togglePlay);
+  </script>
+</body>
+</html>
