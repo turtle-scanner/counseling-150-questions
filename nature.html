@@ -3,19 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>변귀섭 선생님 맞춤 초집중 40Hz & 4K 리얼 모닥불 숙면 델타 테라피</title>
+  <title>변귀섭 선생님 맞춤 초집중 40Hz & 4K 모닥불 & 평온 델타 숙면 테라피</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     @keyframes pulse-focus {
       0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(6, 182, 212, 0.4); }
       50% { transform: scale(1.03); box-shadow: 0 0 50px rgba(99, 102, 241, 0.6); }
     }
-    @keyframes pulse-sleep {
+    @keyframes pulse-fire {
       0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.4); }
       50% { transform: scale(1.03); box-shadow: 0 0 50px rgba(239, 68, 68, 0.65); }
     }
+    @keyframes pulse-serenity {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); }
+      50% { transform: scale(1.03); box-shadow: 0 0 50px rgba(99, 102, 241, 0.6); }
+    }
     .animate-focus-glow { animation: pulse-focus 3.5s ease-in-out infinite; }
-    .animate-sleep-glow { animation: pulse-sleep 4s ease-in-out infinite; }
+    .animate-fire-glow { animation: pulse-fire 4s ease-in-out infinite; }
+    .animate-serenity-glow { animation: pulse-serenity 5s ease-in-out infinite; }
     
     input[type=range]::-webkit-slider-thumb {
       height: 18px;
@@ -26,60 +31,184 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
     .focus-theme input[type=range]::-webkit-slider-thumb { background: #06b6d4; }
-    .sleep-theme input[type=range]::-webkit-slider-thumb { background: #f59e0b; }
+    .fire-theme input[type=range]::-webkit-slider-thumb { background: #f59e0b; }
+    .serenity-theme input[type=range]::-webkit-slider-thumb { background: #c084fc; }
   </style>
 </head>
-<body id="mainBody" class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-3 font-sans select-none focus-theme">
+<body id="mainBody" class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-3 font-sans select-none serenity-theme">
 
-  <div id="mainCard" class="max-w-lg w-full bg-slate-900/95 backdrop-blur-2xl border border-cyan-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden my-4 transition-all duration-700">
+  <div id="mainCard" class="max-w-lg w-full bg-slate-900/95 backdrop-blur-2xl border border-purple-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden my-4 transition-all duration-700">
     
     <!-- 배경 오로라 빛 -->
-    <div id="ambientGlow" class="absolute -top-24 -right-24 w-72 h-72 bg-cyan-600/25 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
+    <div id="ambientGlow" class="absolute -top-24 -right-24 w-72 h-72 bg-purple-600/25 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
     <div id="ambientGlow2" class="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
 
-    <!-- 상단 대분류 모드 전환 스위치 (초집중 vs 숙면) -->
+    <!-- 상단 3대 모드 전환 탭 (초집중 vs 모닥불 vs 평온숙면) -->
     <div class="relative z-10 mb-5">
-      <div class="grid grid-cols-2 gap-2 p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800">
-        <button onclick="switchCategory('focus')" id="tab-focus" class="category-tab py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-lg transition-all duration-300">
-          <span>🧠</span> 40Hz 초집중 딥워크
+      <div class="grid grid-cols-3 gap-1 p-1 bg-slate-950/80 rounded-2xl border border-slate-800">
+        <button onclick="switchCategory('serenity')" id="tab-serenity" class="category-tab py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg transition-all duration-300">
+          <span>🕊️</span> 평온 숙면
         </button>
-        <button onclick="switchCategory('sleep')" id="tab-sleep" class="category-tab py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-slate-400 hover:text-white transition-all duration-300">
-          <span>🔥</span> 4K 리얼 모닥불 & 2Hz 델타
+        <button onclick="switchCategory('fire')" id="tab-fire" class="category-tab py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 text-slate-400 hover:text-white transition-all duration-300">
+          <span>🔥</span> 리얼 모닥불
+        </button>
+        <button onclick="switchCategory('focus')" id="tab-focus" class="category-tab py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 text-slate-400 hover:text-white transition-all duration-300">
+          <span>🧠</span> 40Hz 초집중
         </button>
       </div>
     </div>
 
     <!-- 헤더 안내 -->
     <div class="text-center relative z-10 mb-4">
-      <div id="badgeText" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-xs text-cyan-300 font-semibold mb-2">
-        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-        2E 전두엽 도파민 동조 & 작업기억 강화
+      <div id="badgeText" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/80 border border-purple-500/40 text-xs text-purple-300 font-semibold mb-2">
+        <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+        부교감신경 활성화 & 432Hz 치유 이완
       </div>
       <h1 id="titleHeader" class="text-2xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
-        <span>⚡️</span> 초집중 신경음향 머신
+        <span>🕊️</span> 평온 델타 숙면 테라피
       </h1>
-      <p id="subHeader" class="text-xs text-slate-400 mt-1">40Hz 감마 바이노럴 비트와 청량한 자연음으로 잡념을 분쇄합니다</p>
+      <p id="subHeader" class="text-xs text-slate-400 mt-1">자극적인 소리를 모두 배제하고 온몸을 감싸는 평온함으로 단잠을 선물합니다</p>
     </div>
 
     <!-- 메인 재생 버튼 & 상태 -->
     <div class="flex flex-col items-center justify-center my-4 relative z-10">
-      <button id="togglePlayBtn" class="w-24 h-24 rounded-full bg-gradient-to-tr from-cyan-600 via-indigo-500 to-teal-400 shadow-xl shadow-cyan-500/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none">
+      <button id="togglePlayBtn" class="w-24 h-24 rounded-full bg-gradient-to-tr from-purple-600 via-indigo-500 to-pink-500 shadow-xl shadow-purple-500/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none">
         <div id="playIcon" class="text-3xl text-white ml-1">▶</div>
         <div id="pauseIcon" class="text-3xl text-white hidden">⏸</div>
       </button>
       <div id="statusText" class="text-sm font-bold text-slate-200 mt-2.5 tracking-wide">재생을 누르면 소리가 시작됩니다</div>
-      <div id="timerDisplay" class="text-xs text-cyan-300 font-mono mt-0.5 font-semibold hidden">남은 시간: <span id="timeRemaining">--:--</span></div>
+      <div id="timerDisplay" class="text-xs text-purple-300 font-mono mt-0.5 font-semibold hidden">남은 시간: <span id="timeRemaining">--:--</span></div>
     </div>
 
-    <!-- 1. 초집중 모드 전용 컨트롤 패널 -->
-    <div id="focusPanel" class="relative z-10 space-y-3.5 mb-4">
+    <!-- 1. 🕊️ 평온 델타 숙면 전용 컨트롤 패널 -->
+    <div id="serenityPanel" class="relative z-10 space-y-3.5 mb-4">
       <div class="grid grid-cols-3 gap-1.5">
-        <button onclick="setFocusPreset('stream')" class="preset-btn p-2 rounded-xl bg-cyan-600/30 border border-cyan-500/50 text-xs font-bold text-white">🏞️ 맑은계곡</button>
-        <button onclick="setFocusPreset('rain')" class="preset-btn p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🌧️ 창가폭우</button>
-        <button onclick="setFocusPreset('gamma')" class="preset-btn p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">⚡️ 40Hz극대화</button>
+        <button onclick="setSerenityPreset('sleep')" class="preset-btn-s p-2 rounded-xl bg-purple-600/30 border border-purple-500/50 text-xs font-bold text-white">🛌 깊은단잠</button>
+        <button onclick="setSerenityPreset('cradle')" class="preset-btn-s p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🌊 밤바다요람</button>
+        <button onclick="setSerenityPreset('hearth')" class="preset-btn-s p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🪵 훈훈한화로</button>
       </div>
 
-      <!-- 사운드 슬라이더들 -->
+      <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60 space-y-3">
+        <!-- 1.5Hz 심해 델타 바이노럴 비트 -->
+        <div class="flex items-center justify-between pb-2 border-b border-slate-700/50">
+          <div>
+            <span class="text-xs font-bold text-purple-300 flex items-center gap-1.5">
+              <span>💤</span> 1.5Hz 심해 델타 서파 수면 뇌파
+            </span>
+            <span class="text-[10px] text-slate-400 block mt-0.5">자극 없는 극저주파 동조로 무의식 숙면 유도</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggleDelta" onchange="toggleBrainWave()" class="sr-only peer" checked>
+            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500"></div>
+          </label>
+        </div>
+
+        <!-- 432Hz 치유 힐링 하모닉스 드론 -->
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-purple-200">🎵 432Hz 치유 하모닉스 (심신 안정 & 불안 해소)</span>
+            <span id="txt-s-drone" class="font-mono text-purple-400 font-bold">45%</span>
+          </div>
+          <input type="range" id="s-drone" min="0" max="100" value="45" oninput="updateSerenityVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+
+        <!-- 엄마 품 양수 브라운 노이즈 -->
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">🤱 엄마 품 양수 브라운 노이즈 (350Hz 극저음)</span>
+            <span id="txt-s-brown" class="font-mono text-purple-400">65%</span>
+          </div>
+          <input type="range" id="s-brown" min="0" max="100" value="65" oninput="updateSerenityVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+
+        <!-- 14초 자장가 밤바다 호흡 파도 -->
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">🌊 14초 주기 자장가 밤바다 (수면 호흡 동조)</span>
+            <span id="txt-s-wave" class="font-mono text-purple-400">45%</span>
+          </div>
+          <input type="range" id="s-wave" min="0" max="100" value="45" oninput="updateSerenityVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+
+        <!-- 따뜻한 화로 잉걸불 훈기 -->
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">🪵 훈훈한 숯불 잉걸불 온기 (튀지 않는 순한 화로)</span>
+            <span id="txt-s-ember" class="font-mono text-purple-400">40%</span>
+          </div>
+          <input type="range" id="s-ember" min="0" max="100" value="40" oninput="updateSerenityVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+
+        <!-- 먼 텐트 밤빗소리 -->
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">🌧️ 먼 텐트 지붕 밤빗소리 (날카로움 제로)</span>
+            <span id="txt-s-rain" class="font-mono text-purple-400">25%</span>
+          </div>
+          <input type="range" id="s-rain" min="0" max="100" value="25" oninput="updateSerenityVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 🔥 4K 리얼 모닥불 전용 컨트롤 패널 -->
+    <div id="firePanel" class="relative z-10 space-y-3.5 mb-4 hidden">
+      <div class="grid grid-cols-3 gap-1.5">
+        <button onclick="setFirePreset('fire')" class="preset-btn-f p-2 rounded-xl bg-amber-600/30 border border-amber-500/50 text-xs font-bold text-white">🔥 극초선명모닥불</button>
+        <button onclick="setFirePreset('camp')" class="preset-btn-f p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🏕️ 숲속캠핑</button>
+        <button onclick="setFirePreset('soft')" class="preset-btn-f p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🍂 고요한불멍</button>
+      </div>
+
+      <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60 space-y-3">
+        <!-- 4K 리얼 모닥불 (타닥타닥! 퍽!) -->
+        <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/30">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-bold text-amber-200 flex items-center gap-1">
+              <span>🔥</span> 4K 리얼 참나무 모닥불 (선명한 파지직·퍽!)
+            </span>
+            <span id="txt-f-fire" class="font-mono text-amber-400 font-extrabold text-sm">85%</span>
+          </div>
+          <input type="range" id="f-fire" min="0" max="100" value="85" oninput="updateFireVolumes()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          <div class="flex justify-between text-[10px] text-amber-300/80 mt-1 font-mono">
+            <span>좌우 입체 3D 스파크</span>
+            <span>참나무 코어 퍽! 폭발</span>
+            <span>초고역 바삭거림</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">🟤 초저주파 양수 브라운 (450Hz 딥컷)</span>
+            <span id="txt-f-brown" class="font-mono text-amber-400">50%</span>
+          </div>
+          <input type="range" id="f-brown" min="0" max="100" value="50" oninput="updateFireVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">🌊 12초 주기 자장가 밤바다 파도</span>
+            <span id="txt-f-wave" class="font-mono text-amber-400">30%</span>
+          </div>
+          <input type="range" id="f-wave" min="0" max="100" value="30" oninput="updateFireVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-200">🌧️ 먼 지붕 밤빗소리</span>
+            <span id="txt-f-rain" class="font-mono text-amber-400">20%</span>
+          </div>
+          <input type="range" id="f-rain" min="0" max="100" value="20" oninput="updateFireVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 🧠 40Hz 초집중 딥워크 전용 컨트롤 패널 -->
+    <div id="focusPanel" class="relative z-10 space-y-3.5 mb-4 hidden">
+      <div class="grid grid-cols-3 gap-1.5">
+        <button onclick="setFocusPreset('stream')" class="preset-btn-fc p-2 rounded-xl bg-cyan-600/30 border border-cyan-500/50 text-xs font-bold text-white">🏞️ 맑은계곡</button>
+        <button onclick="setFocusPreset('rain')" class="preset-btn-fc p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🌧️ 창가폭우</button>
+        <button onclick="setFocusPreset('gamma')" class="preset-btn-fc p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">⚡️ 40Hz극대화</button>
+      </div>
+
       <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60 space-y-3">
         <!-- 40Hz 감마 바이노럴 비트 -->
         <div class="flex items-center justify-between pb-2 border-b border-slate-700/50">
@@ -95,95 +224,33 @@
         <div>
           <div class="flex justify-between text-xs mb-1">
             <span class="font-semibold text-slate-200">💧 맑은 계곡 물소리 (잡념 세척)</span>
-            <span id="txt-stream" class="font-mono text-cyan-400">65%</span>
+            <span id="txt-focus-stream" class="font-mono text-cyan-400">65%</span>
           </div>
-          <input type="range" id="f-stream" min="0" max="100" value="65" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          <input type="range" id="focus-stream" min="0" max="100" value="65" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
         </div>
 
         <div>
           <div class="flex justify-between text-xs mb-1">
             <span class="font-semibold text-slate-200">🌧️ 창가 빗소리 (소음 완벽 차폐)</span>
-            <span id="txt-rain" class="font-mono text-cyan-400">40%</span>
+            <span id="txt-focus-rain" class="font-mono text-cyan-400">40%</span>
           </div>
-          <input type="range" id="f-rain" min="0" max="100" value="40" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          <input type="range" id="focus-rain" min="0" max="100" value="40" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
         </div>
 
         <div>
           <div class="flex justify-between text-xs mb-1">
             <span class="font-semibold text-slate-200">🐦 아침 숲속 새소리 (지적 활력)</span>
-            <span id="txt-bird" class="font-mono text-cyan-400">45%</span>
+            <span id="txt-focus-bird" class="font-mono text-cyan-400">45%</span>
           </div>
-          <input type="range" id="f-bird" min="0" max="100" value="45" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          <input type="range" id="focus-bird" min="0" max="100" value="45" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
         </div>
 
         <div>
           <div class="flex justify-between text-xs mb-1">
             <span class="font-semibold text-slate-200">🟤 브라운 노이즈 베이스</span>
-            <span id="txt-brown" class="font-mono text-cyan-400">50%</span>
+            <span id="txt-focus-brown" class="font-mono text-cyan-400">50%</span>
           </div>
-          <input type="range" id="f-brown" min="0" max="100" value="50" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. 숙면 & 4K 리얼 모닥불 전용 컨트롤 패널 -->
-    <div id="sleepPanel" class="relative z-10 space-y-3.5 mb-4 hidden">
-      <div class="grid grid-cols-3 gap-1.5">
-        <button onclick="setSleepPreset('campfire')" class="preset-btn-s p-2 rounded-xl bg-amber-600/30 border border-amber-500/50 text-xs font-bold text-white">🔥 극초선명 모닥불</button>
-        <button onclick="setSleepPreset('womb')" class="preset-btn-s p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🤱 양수브라운</button>
-        <button onclick="setSleepPreset('ocean')" class="preset-btn-s p-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 hover:bg-slate-700">🌊 깊은밤파도</button>
-      </div>
-
-      <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60 space-y-3">
-        <!-- 2Hz 델타 수면 바이노럴 비트 -->
-        <div class="flex items-center justify-between pb-2 border-b border-slate-700/50">
-          <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-            <span>💤</span> 2Hz 델타 서파 수면 뇌파 (깊은 단잠 유도)
-          </span>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="toggleDelta" onchange="toggleBrainWave()" class="sr-only peer" checked>
-            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
-          </label>
-        </div>
-
-        <!-- 4K 리얼 모닥불 (타닥타닥! 퍽!) -->
-        <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/30">
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-bold text-amber-200 flex items-center gap-1">
-              <span>🔥</span> 4K 리얼 참나무 모닥불 (선명한 파지직·퍽!)
-            </span>
-            <span id="txt-s-fire" class="font-mono text-amber-400 font-extrabold text-sm">85%</span>
-          </div>
-          <input type="range" id="s-fire" min="0" max="100" value="85" oninput="updateSleepVolumes()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-          <div class="flex justify-between text-[10px] text-amber-300/80 mt-1 font-mono">
-            <span>좌우 입체 3D 스파크</span>
-            <span>참나무 코어 퍽! 폭발</span>
-            <span>초고역 바삭거림</span>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-semibold text-slate-200">🟤 초저주파 양수 브라운 (450Hz 딥컷)</span>
-            <span id="txt-s-brown" class="font-mono text-amber-400">55%</span>
-          </div>
-          <input type="range" id="s-brown" min="0" max="100" value="55" oninput="updateSleepVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-        </div>
-
-        <div>
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-semibold text-slate-200">🌊 12초 주기 자장가 밤바다 파도</span>
-            <span id="txt-s-wave" class="font-mono text-amber-400">35%</span>
-          </div>
-          <input type="range" id="s-wave" min="0" max="100" value="35" oninput="updateSleepVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-        </div>
-
-        <div>
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-semibold text-slate-200">🌧️ 먼 지붕 밤빗소리</span>
-            <span id="txt-s-rain" class="font-mono text-amber-400">20%</span>
-          </div>
-          <input type="range" id="s-rain" min="0" max="100" value="20" oninput="updateSleepVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+          <input type="range" id="focus-brown" min="0" max="100" value="50" oninput="updateFocusVolumes()" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
         </div>
       </div>
     </div>
@@ -196,7 +263,7 @@
       </div>
       <div class="flex gap-1" id="timerGroup">
         <button onclick="setTimerVal(25)" class="timer-btn px-2 py-1 rounded-lg bg-slate-800 text-[11px] font-medium text-slate-300 hover:bg-slate-700">25분</button>
-        <button onclick="setTimerVal(50)" class="timer-btn active px-2 py-1 rounded-lg bg-cyan-600/40 border border-cyan-400/60 text-[11px] font-bold text-white">50분</button>
+        <button onclick="setTimerVal(50)" class="timer-btn active px-2 py-1 rounded-lg bg-purple-600/40 border border-purple-400/60 text-[11px] font-bold text-white">50분</button>
         <button onclick="setTimerVal(90)" class="timer-btn px-2 py-1 rounded-lg bg-slate-800 text-[11px] font-medium text-slate-300 hover:bg-slate-700">90분</button>
         <button onclick="setTimerVal(0)" class="timer-btn px-2 py-1 rounded-lg bg-slate-800 text-[11px] font-medium text-slate-300 hover:bg-slate-700">연속</button>
       </div>
@@ -205,34 +272,33 @@
     <!-- 하단 팁 -->
     <div class="relative z-10 mt-3 pt-2.5 border-t border-slate-800 text-center">
       <p id="tipText" class="text-[12px] text-slate-400 leading-relaxed">
-        🔥 <strong>4K 리얼 모닥불 :</strong> 초고역 스파크와 좌우 3D 패닝, 참나무 수액이 퍽! 하고 터지는 공명음까지 정밀 합성되어 바로 코앞에서 모닥불이 타는 선명한 현장감을 제공합니다.
+        🕊️ <strong>평온 숙면 테라피 :</strong> 날카로운 튀는 소리를 일절 배제하고 432Hz 치유 톤과 엄마 품 양수 소리로 전두엽 과흥분을 부드럽게 이완시켜 깊은 단잠으로 안내합니다.
       </p>
     </div>
 
   </div>
 
   <script>
-    let currentCategory = 'focus'; // 'focus' or 'sleep'
+    let currentCategory = 'serenity'; // 'serenity', 'fire', 'focus'
     let audioCtx = null;
     let isPlaying = false;
     let masterGain = null;
 
-    // 공통 오디오 소스 & 게인
+    // 공통 게인 & 소스
     let gBase = null, gDetail1 = null, gDetail2 = null, gDetail3 = null;
     let srcBase = null, srcDetail1 = null, srcDetail2 = null;
     let lfoNode = null;
     let birdTimer = null;
 
-    // 리얼 모닥불 전용 노드 및 타이머들
-    let fireRoarSrc = null;
-    let fireRoarGain = null;
-    let fireHissSrc = null;
-    let fireHissGain = null;
+    // 432Hz 드론 노드
+    let droneOsc1 = null, droneOsc2 = null, droneGain = null, droneLfo = null;
+    let embersSrc = null, embersGain = null;
+
+    // 리얼 모닥불 전용 노드 및 타이머
+    let fireRoarSrc = null, fireRoarGain = null;
+    let fireHissSrc = null, fireHissGain = null;
     let fireLfo = null;
-    let fireCrackleTimer = null;
-    let fireSnapTimer = null;
-    let firePopTimer = null;
-    let fireBurstTimer = null;
+    let fireCrackleTimer = null, fireSnapTimer = null, firePopTimer = null, fireBurstTimer = null;
 
     // 바이노럴 비트 노드
     let binauralLeft = null, binauralRight = null, binauralGain = null;
@@ -247,46 +313,68 @@
       const mainCard = document.getElementById('mainCard');
       const glow1 = document.getElementById('ambientGlow');
       const glow2 = document.getElementById('ambientGlow2');
-      const tabF = document.getElementById('tab-focus');
-      const tabS = document.getElementById('tab-sleep');
-      const panelF = document.getElementById('focusPanel');
-      const panelS = document.getElementById('sleepPanel');
+      
+      const tabS = document.getElementById('tab-serenity');
+      const tabF = document.getElementById('tab-fire');
+      const tabFc = document.getElementById('tab-focus');
+      
+      const panelS = document.getElementById('serenityPanel');
+      const panelF = document.getElementById('firePanel');
+      const panelFc = document.getElementById('focusPanel');
+      
       const playBtn = document.getElementById('togglePlayBtn');
       const badge = document.getElementById('badgeText');
       const titleH = document.getElementById('titleHeader');
       const subH = document.getElementById('subHeader');
       const tipT = document.getElementById('tipText');
 
-      if (cat === 'focus') {
+      // 탭 스타일 초기화
+      [tabS, tabF, tabFc].forEach(t => {
+        t.className = "category-tab py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 text-slate-400 hover:text-white transition-all duration-300";
+      });
+      panelS.classList.add('hidden');
+      panelF.classList.add('hidden');
+      panelFc.classList.add('hidden');
+
+      if (cat === 'serenity') {
+        mainBody.className = "bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-3 font-sans select-none serenity-theme";
+        mainCard.className = "max-w-lg w-full bg-slate-900/95 backdrop-blur-2xl border border-purple-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden my-4 transition-all duration-700";
+        glow1.className = "absolute -top-24 -right-24 w-72 h-72 bg-purple-600/25 rounded-full blur-3xl pointer-events-none transition-all duration-700";
+        glow2.className = "absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700";
+        tabS.className = "category-tab py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg transition-all duration-300";
+        panelS.classList.remove('hidden');
+        playBtn.className = "w-24 h-24 rounded-full bg-gradient-to-tr from-purple-600 via-indigo-500 to-pink-500 shadow-xl shadow-purple-500/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none";
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span> 부교감신경 활성화 & 432Hz 치유 이완';
+        badge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/80 border border-purple-500/40 text-xs text-purple-300 font-semibold mb-2";
+        titleH.innerHTML = '<span>🕊️</span> 평온 델타 숙면 테라피';
+        subH.textContent = "자극적인 소리를 모두 배제하고 온몸을 감싸는 평온함으로 단잠을 선물합니다";
+        tipT.innerHTML = '🕊️ <strong>평온 숙면 팁 :</strong> 볼륨을 50~60%로 편안하게 맞추고 432Hz 톤의 온기에 몸을 맡기시면 긴장이 스르르 풀립니다.';
+      } else if (cat === 'fire') {
+        mainBody.className = "bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-3 font-sans select-none fire-theme";
+        mainCard.className = "max-w-lg w-full bg-slate-900/95 backdrop-blur-2xl border border-amber-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden my-4 transition-all duration-700";
+        glow1.className = "absolute -top-24 -right-24 w-72 h-72 bg-amber-600/25 rounded-full blur-3xl pointer-events-none transition-all duration-700";
+        glow2.className = "absolute -bottom-24 -left-24 w-72 h-72 bg-red-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700";
+        tabF.className = "category-tab py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-600 via-orange-500 to-red-500 text-white shadow-lg transition-all duration-300";
+        panelF.classList.remove('hidden');
+        playBtn.className = "w-24 h-24 rounded-full bg-gradient-to-tr from-amber-600 via-orange-500 to-red-500 shadow-xl shadow-amber-500/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none";
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> 4K 초고해상도 리얼 참나무 모닥불';
+        badge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/40 text-xs text-amber-300 font-semibold mb-2";
+        titleH.innerHTML = '<span>🔥</span> 4K 리얼 참나무 모닥불';
+        subH.textContent = "타닥타닥 눈앞에서 튀는 생생한 장작불 소리로 마음을 씻어냅니다";
+        tipT.innerHTML = '🔥 <strong>초선명 모닥불 팁 :</strong> 헤드폰/이어폰을 착용하시면 좌우 3D 공간에서 튀는 장작의 바삭한 파열음이 생생히 느껴집니다.';
+      } else {
         mainBody.className = "bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-3 font-sans select-none focus-theme";
         mainCard.className = "max-w-lg w-full bg-slate-900/95 backdrop-blur-2xl border border-cyan-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden my-4 transition-all duration-700";
         glow1.className = "absolute -top-24 -right-24 w-72 h-72 bg-cyan-600/25 rounded-full blur-3xl pointer-events-none transition-all duration-700";
         glow2.className = "absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700";
-        tabF.className = "category-tab py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-lg transition-all duration-300";
-        tabS.className = "category-tab py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-slate-400 hover:text-white transition-all duration-300";
-        panelF.classList.remove('hidden');
-        panelS.classList.add('hidden');
+        tabFc.className = "category-tab py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white shadow-lg transition-all duration-300";
+        panelFc.classList.remove('hidden');
         playBtn.className = "w-24 h-24 rounded-full bg-gradient-to-tr from-cyan-600 via-indigo-500 to-teal-400 shadow-xl shadow-cyan-500/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none";
         badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> 2E 전두엽 도파민 동조 & 작업기억 강화';
         badge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-xs text-cyan-300 font-semibold mb-2";
         titleH.innerHTML = '<span>⚡️</span> 초집중 신경음향 머신';
         subH.textContent = "40Hz 감마 바이노럴 비트와 청량한 자연음으로 잡념을 분쇄합니다";
         tipT.innerHTML = '🎧 <strong>이어폰 권장 :</strong> 40Hz 감마파는 양쪽 귀로 들을 때 전두엽 뇌파를 가장 강력하게 동기화합니다.';
-      } else {
-        mainBody.className = "bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-3 font-sans select-none sleep-theme";
-        mainCard.className = "max-w-lg w-full bg-slate-900/95 backdrop-blur-2xl border border-amber-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden my-4 transition-all duration-700";
-        glow1.className = "absolute -top-24 -right-24 w-72 h-72 bg-amber-600/25 rounded-full blur-3xl pointer-events-none transition-all duration-700";
-        glow2.className = "absolute -bottom-24 -left-24 w-72 h-72 bg-red-600/20 rounded-full blur-3xl pointer-events-none transition-all duration-700";
-        tabS.className = "category-tab py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 via-orange-500 to-red-500 text-white shadow-lg transition-all duration-300";
-        tabF.className = "category-tab py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-slate-400 hover:text-white transition-all duration-300";
-        panelF.classList.add('hidden');
-        panelS.classList.remove('hidden');
-        playBtn.className = "w-24 h-24 rounded-full bg-gradient-to-tr from-amber-600 via-orange-500 to-red-500 shadow-xl shadow-amber-500/30 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 group focus:outline-none";
-        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> 4K 초고해상도 리얼 참나무 모닥불 & 2Hz 델타';
-        badge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/40 text-xs text-amber-300 font-semibold mb-2";
-        titleH.innerHTML = '<span>🔥</span> 4K 리얼 모닥불 & 델타 숙면';
-        subH.textContent = "타닥타닥 눈앞에서 튀는 생생한 장작불과 2Hz 델타 뇌파로 몸과 마음을 온전히 녹여냅니다";
-        tipT.innerHTML = '🔥 <strong>초선명 모닥불 팁 :</strong> 헤드폰이나 이어폰을 착용하시면 좌우 3D 공간에서 튀는 장작의 바삭한 파열음이 생생히 느껴집니다.';
       }
 
       if (isPlaying) {
@@ -307,6 +395,9 @@
         gDetail1 = audioCtx.createGain();
         gDetail2 = audioCtx.createGain();
         gDetail3 = audioCtx.createGain();
+        
+        droneGain = audioCtx.createGain();
+        embersGain = audioCtx.createGain();
         fireRoarGain = audioCtx.createGain();
         fireHissGain = audioCtx.createGain();
         binauralGain = audioCtx.createGain();
@@ -315,6 +406,9 @@
         gDetail1.connect(masterGain);
         gDetail2.connect(masterGain);
         gDetail3.connect(masterGain);
+        
+        droneGain.connect(masterGain);
+        embersGain.connect(masterGain);
         fireRoarGain.connect(masterGain);
         fireHissGain.connect(masterGain);
         binauralGain.connect(masterGain);
@@ -324,13 +418,12 @@
       }
     }
 
-    // 버퍼 생성기 (브라운 & 핑크)
     function createNoiseBuffers() {
       const sampleRate = audioCtx.sampleRate;
       const length = sampleRate * 10;
       const cross = sampleRate * 1;
 
-      // 브라운 버퍼
+      // 브라운 버퍼 (초저음)
       const bBuf = audioCtx.createBuffer(2, length, sampleRate);
       for (let ch = 0; ch < 2; ch++) {
         const data = bBuf.getChannelData(ch);
@@ -387,42 +480,45 @@
 
       const { bBuf, pBuf } = createNoiseBuffers();
 
-      if (currentCategory === 'focus') {
-        // [초집중 엔진 가동]
-        const fBase = audioCtx.createBiquadFilter();
-        fBase.type = 'lowpass';
-        fBase.frequency.setValueAtTime(750, audioCtx.currentTime);
+      if (currentCategory === 'serenity') {
+        // [🕊️ 평온 델타 숙면 엔진 가동 - 무자극 극강 이완]
+        // 1. 엄마 품 양수 브라운 노이즈 (350Hz 극저음 딥컷)
+        const fWomb = audioCtx.createBiquadFilter();
+        fWomb.type = 'lowpass';
+        fWomb.frequency.setValueAtTime(350, audioCtx.currentTime);
         srcBase = audioCtx.createBufferSource();
         srcBase.buffer = bBuf;
         srcBase.loop = true;
-        srcBase.connect(fBase);
-        fBase.connect(gBase);
+        srcBase.connect(fWomb);
+        fWomb.connect(gBase);
         srcBase.start();
 
-        // Detail 1 : 계곡 물소리 (1350Hz + 0.35Hz LFO)
-        const fStream = audioCtx.createBiquadFilter();
-        fStream.type = 'lowpass';
-        fStream.frequency.setValueAtTime(1350, audioCtx.currentTime);
+        // 2. 14초 주기 초저속 자장가 밤바다 파도 (수면 호흡 리듬)
+        const fWave = audioCtx.createBiquadFilter();
+        fWave.type = 'lowpass';
+        fWave.frequency.setValueAtTime(420, audioCtx.currentTime);
         lfoNode = audioCtx.createOscillator();
-        lfoNode.frequency.setValueAtTime(0.35, audioCtx.currentTime);
-        const lfoGain = audioCtx.createGain();
-        lfoGain.gain.setValueAtTime(280, audioCtx.currentTime);
-        lfoNode.connect(lfoGain);
-        lfoGain.connect(fStream.frequency);
+        lfoNode.frequency.setValueAtTime(0.07, audioCtx.currentTime); // ~14초 주기
+        const waveGain = audioCtx.createGain();
+        waveGain.gain.setValueAtTime(0.42, audioCtx.currentTime);
+        const waveAmp = audioCtx.createGain();
+        waveAmp.gain.setValueAtTime(0.48, audioCtx.currentTime);
+        lfoNode.connect(waveGain);
+        waveGain.connect(waveAmp.gain);
         lfoNode.start();
 
         srcDetail1 = audioCtx.createBufferSource();
-        srcDetail1.buffer = pBuf;
+        srcDetail1.buffer = bBuf;
         srcDetail1.loop = true;
-        srcDetail1.connect(fStream);
-        fStream.connect(gDetail1);
+        srcDetail1.connect(fWave);
+        fWave.connect(waveAmp);
+        waveAmp.connect(gDetail1);
         srcDetail1.start();
 
-        // Detail 2 : 창가 빗소리 (1400Hz 밴드패스)
+        // 3. 먼 텐트 밤빗소리 (날카로움 제로 500Hz 컷)
         const fRain = audioCtx.createBiquadFilter();
-        fRain.type = 'bandpass';
-        fRain.frequency.setValueAtTime(1400, audioCtx.currentTime);
-        fRain.Q.setValueAtTime(0.7, audioCtx.currentTime);
+        fRain.type = 'lowpass';
+        fRain.frequency.setValueAtTime(500, audioCtx.currentTime);
         srcDetail2 = audioCtx.createBufferSource();
         srcDetail2.buffer = pBuf;
         srcDetail2.loop = true;
@@ -430,16 +526,30 @@
         fRain.connect(gDetail2);
         srcDetail2.start();
 
-        startBirdChirps();
+        // 4. 따뜻한 화로 잉걸불 훈기 (튀지 않는 순한 연소음)
+        const fEmber = audioCtx.createBiquadFilter();
+        fEmber.type = 'bandpass';
+        fEmber.frequency.setValueAtTime(260, audioCtx.currentTime);
+        fEmber.Q.setValueAtTime(1.2, audioCtx.currentTime);
+        embersSrc = audioCtx.createBufferSource();
+        embersSrc.buffer = pBuf;
+        embersSrc.loop = true;
+        embersSrc.connect(fEmber);
+        fEmber.connect(embersGain);
+        embersSrc.start();
 
-        if (document.getElementById('toggleGamma').checked) {
-          startBinaural(200, 240); // 40Hz 감마
+        // 5. 432Hz 치유 힐링 하모닉스 드론 (A=432Hz + 216Hz 온화한 화음)
+        startHealingDrone();
+
+        // 6. 1.5Hz 심해 델타 서파 수면 바이노럴 비트
+        if (document.getElementById('toggleDelta').checked) {
+          startBinaural(108, 109.5); // 1.5Hz 델타 (432Hz의 서브하모닉스)
         }
 
-        updateFocusVolumes();
-      } else {
-        // [숙면 & 리얼 모닥불 엔진 가동]
-        // 1. 초저주파 양수 브라운 노이즈 (450Hz 딥컷)
+        updateSerenityVolumes();
+      } 
+      else if (currentCategory === 'fire') {
+        // [🔥 4K 리얼 모닥불 엔진 가동]
         const fWomb = audioCtx.createBiquadFilter();
         fWomb.type = 'lowpass';
         fWomb.frequency.setValueAtTime(450, audioCtx.currentTime);
@@ -450,7 +560,6 @@
         fWomb.connect(gBase);
         srcBase.start();
 
-        // 2. 12초 주기 자장가 파도
         const fWave = audioCtx.createBiquadFilter();
         fWave.type = 'lowpass';
         fWave.frequency.setValueAtTime(480, audioCtx.currentTime);
@@ -472,7 +581,6 @@
         waveAmp.connect(gDetail1);
         srcDetail1.start();
 
-        // 3. 먼 지붕 밤빗소리
         const fNightRain = audioCtx.createBiquadFilter();
         fNightRain.type = 'lowpass';
         fNightRain.frequency.setValueAtTime(650, audioCtx.currentTime);
@@ -483,26 +591,111 @@
         fNightRain.connect(gDetail2);
         srcDetail2.start();
 
-        // 4. 🔥 [핵심 업그레이드] 4K 리얼 모닥불 Hi-Fi 다층 오디오 엔진 가동!
         startRealisticCampfire(pBuf);
 
-        // 2Hz 델타 바이노럴 비트
-        if (document.getElementById('toggleDelta').checked) {
-          startBinaural(100, 102); // 2Hz 델타
+        updateFireVolumes();
+      } 
+      else {
+        // [🧠 40Hz 초집중 딥워크 엔진 가동]
+        const fBase = audioCtx.createBiquadFilter();
+        fBase.type = 'lowpass';
+        fBase.frequency.setValueAtTime(750, audioCtx.currentTime);
+        srcBase = audioCtx.createBufferSource();
+        srcBase.buffer = bBuf;
+        srcBase.loop = true;
+        srcBase.connect(fBase);
+        fBase.connect(gBase);
+        srcBase.start();
+
+        const fStream = audioCtx.createBiquadFilter();
+        fStream.type = 'lowpass';
+        fStream.frequency.setValueAtTime(1350, audioCtx.currentTime);
+        lfoNode = audioCtx.createOscillator();
+        lfoNode.frequency.setValueAtTime(0.35, audioCtx.currentTime);
+        const lfoGain = audioCtx.createGain();
+        lfoGain.gain.setValueAtTime(280, audioCtx.currentTime);
+        lfoNode.connect(lfoGain);
+        lfoGain.connect(fStream.frequency);
+        lfoNode.start();
+
+        srcDetail1 = audioCtx.createBufferSource();
+        srcDetail1.buffer = pBuf;
+        srcDetail1.loop = true;
+        srcDetail1.connect(fStream);
+        fStream.connect(gDetail1);
+        srcDetail1.start();
+
+        const fRain = audioCtx.createBiquadFilter();
+        fRain.type = 'bandpass';
+        fRain.frequency.setValueAtTime(1400, audioCtx.currentTime);
+        fRain.Q.setValueAtTime(0.7, audioCtx.currentTime);
+        srcDetail2 = audioCtx.createBufferSource();
+        srcDetail2.buffer = pBuf;
+        srcDetail2.loop = true;
+        srcDetail2.connect(fRain);
+        fRain.connect(gDetail2);
+        srcDetail2.start();
+
+        startBirdChirps();
+
+        if (document.getElementById('toggleGamma').checked) {
+          startBinaural(200, 240); // 40Hz 감마
         }
 
-        updateSleepVolumes();
+        updateFocusVolumes();
       }
 
       isPlaying = true;
       updateUI();
     }
 
-    // 🔥 4K 리얼 모닥불 엔진 (화염 연소음 + 초고역 바삭스파크 + 3D 스냅 + 참나무 수액 퍽! 폭발)
+    // 432Hz 치유 힐링 하모닉스 드론 (A=432Hz, 서브 216Hz 부드러운 패드)
+    function startHealingDrone() {
+      stopDrone();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      droneOsc1 = audioCtx.createOscillator();
+      droneOsc2 = audioCtx.createOscillator();
+
+      droneOsc1.type = 'sine';
+      droneOsc1.frequency.setValueAtTime(216, now); // 서브 옥타브 (기분 좋은 안온감)
+
+      droneOsc2.type = 'triangle';
+      droneOsc2.frequency.setValueAtTime(432, now); // 432Hz 치유 기본음
+
+      // 432Hz의 고음 거칠기를 다듬는 로우패스 필터
+      const droneFilter = audioCtx.createBiquadFilter();
+      droneFilter.type = 'lowpass';
+      droneFilter.frequency.setValueAtTime(650, now);
+
+      // 숨쉬는 듯한 미세 필터 LFO (0.09Hz)
+      droneLfo = audioCtx.createOscillator();
+      droneLfo.frequency.setValueAtTime(0.09, now);
+      const lfoGain = audioCtx.createGain();
+      lfoGain.gain.setValueAtTime(120, now);
+      droneLfo.connect(lfoGain);
+      lfoGain.connect(droneFilter.frequency);
+      droneLfo.start();
+
+      droneOsc1.connect(droneFilter);
+      droneOsc2.connect(droneFilter);
+      droneFilter.connect(droneGain);
+
+      droneOsc1.start();
+      droneOsc2.start();
+    }
+
+    function stopDrone() {
+      if (droneLfo) { try { droneLfo.stop(); } catch(e){} droneLfo = null; }
+      if (droneOsc1) { try { droneOsc1.stop(); } catch(e){} droneOsc1 = null; }
+      if (droneOsc2) { try { droneOsc2.stop(); } catch(e){} droneOsc2 = null; }
+    }
+
+    // 🔥 4K 리얼 모닥불 엔진
     function startRealisticCampfire(noiseBuffer) {
       stopCampfire();
 
-      // [레이어 A-1 : 화염의 깊은 연소 웅성거림 (Warm Roar)]
       const fRoar = audioCtx.createBiquadFilter();
       fRoar.type = 'bandpass';
       fRoar.frequency.setValueAtTime(320, audioCtx.currentTime);
@@ -515,13 +708,11 @@
       fRoar.connect(fireRoarGain);
       fireRoarSrc.start();
 
-      // [레이어 A-2 : 산소 흡입 열기 쉭쉭 공기 흐름음 (Air Hiss)]
       const fHiss = audioCtx.createBiquadFilter();
       fHiss.type = 'bandpass';
       fHiss.frequency.setValueAtTime(1450, audioCtx.currentTime);
       fHiss.Q.setValueAtTime(1.8, audioCtx.currentTime);
 
-      // 화염의 자연스러운 일렁임 LFO (0.75Hz)
       fireLfo = audioCtx.createOscillator();
       fireLfo.frequency.setValueAtTime(0.75, audioCtx.currentTime);
       const fireLfoGain = audioCtx.createGain();
@@ -537,48 +728,42 @@
       fHiss.connect(fireHissGain);
       fireHissSrc.start();
 
-      // [레이어 B : 초고역 4K 바삭거림 (Micro-Sizzle 4,500~11,000Hz, 38ms 주기 촘촘한 연쇄)]
       fireCrackleTimer = setInterval(() => {
-        if (!isPlaying || currentCategory !== 'sleep') return;
-        const vol = document.getElementById('s-fire').value / 100;
+        if (!isPlaying || currentCategory !== 'fire') return;
+        const vol = document.getElementById('f-fire').value / 100;
         if (vol > 0.05 && Math.random() < 0.88) {
           playUltraCrispSizzle(vol);
         }
       }, 38);
 
-      // [레이어 C : 마른 잔가지 딱! 딱! 튀는 3D 스냅 (180ms 주기)]
       fireSnapTimer = setInterval(() => {
-        if (!isPlaying || currentCategory !== 'sleep') return;
-        const vol = document.getElementById('s-fire').value / 100;
+        if (!isPlaying || currentCategory !== 'fire') return;
+        const vol = document.getElementById('f-fire').value / 100;
         if (vol > 0.05 && Math.random() < 0.65) {
           playTwigSnap(vol);
         }
       }, 190);
 
-      // [레이어 D : 불꽃 연쇄 버스트 (따-다닥! 3~4발 연속 파열, 700ms 주기)]
       fireBurstTimer = setInterval(() => {
-        if (!isPlaying || currentCategory !== 'sleep') return;
-        const vol = document.getElementById('s-fire').value / 100;
+        if (!isPlaying || currentCategory !== 'fire') return;
+        const vol = document.getElementById('f-fire').value / 100;
         if (vol > 0.05 && Math.random() < 0.35) {
           playSparkBurst(vol);
         }
       }, 750);
 
-      // [레이어 E : 굵은 참나무 장작 코어 수액 폭발 퍽! 쿵! (1.6초 주기)]
       firePopTimer = setInterval(() => {
-        if (!isPlaying || currentCategory !== 'sleep') return;
-        const vol = document.getElementById('s-fire').value / 100;
+        if (!isPlaying || currentCategory !== 'fire') return;
+        const vol = document.getElementById('f-fire').value / 100;
         if (vol > 0.05 && Math.random() < 0.5) {
           playDeepOakWoodPop(vol);
         }
       }, 1600);
     }
 
-    // 1. 극초선명 바삭거림 (Micro-Sizzle: 4,500Hz ~ 11,000Hz 디랙 델타 임펄스)
     function playUltraCrispSizzle(vol) {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
-      // 1.5ms ~ 3.5ms의 극도로 짧은 초고역 펄스
       const dur = 0.0015 + Math.random() * 0.0025;
       const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
       const d = buf.getChannelData(0);
@@ -588,7 +773,6 @@
       const src = audioCtx.createBufferSource();
       src.buffer = buf;
 
-      // 선명도를 극대화하는 고역 하이패스 + 피킹
       const hp = audioCtx.createBiquadFilter();
       hp.type = 'highpass';
       hp.frequency.setValueAtTime(4500 + Math.random() * 4500, now);
@@ -596,7 +780,6 @@
       const g = audioCtx.createGain();
       g.gain.setValueAtTime(vol * (0.22 + Math.random() * 0.28), now);
 
-      // 3D 스테레오 패닝 (-0.85 ~ +0.85)
       const panner = createPanner((Math.random() * 1.7) - 0.85);
 
       if (panner) {
@@ -612,7 +795,6 @@
       src.start(now);
     }
 
-    // 2. 나뭇가지 뚝! 딱! 튀는 3D 스냅 소리 (2,000Hz ~ 4,200Hz)
     function playTwigSnap(vol) {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
@@ -648,13 +830,12 @@
       src.start(now);
     }
 
-    // 3. 연쇄 불꽃 스파크 버스트 (따-다닥! 3~4발 연속 파열)
     function playSparkBurst(vol) {
       const count = 2 + Math.floor(Math.random() * 3);
       const pan = (Math.random() * 1.6) - 0.8;
       for (let i = 0; i < count; i++) {
         setTimeout(() => {
-          if (!isPlaying || currentCategory !== 'sleep') return;
+          if (!isPlaying || currentCategory !== 'fire') return;
           playSingleBurstSnap(vol, pan + (Math.random() * 0.2 - 0.1));
         }, i * (22 + Math.random() * 28));
       }
@@ -693,16 +874,13 @@
       src.start(now);
     }
 
-    // 4. 굵은 참나무 장작 수액 폭발음 (코어 퍽! 쿵! + 날카로운 스냅 타격)
     function playDeepOakWoodPop(vol) {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
       const panVal = (Math.random() * 1.4) - 0.7;
 
-      // 1) 고음 파열 스냅 (Transient Crack)
       playSingleBurstSnap(vol * 1.4, panVal);
 
-      // 2) 중저음 통울림 공명 (Wood Cavity Resonant Thud: 320Hz -> 65Hz)
       const osc = audioCtx.createOscillator();
       const oscG = audioCtx.createGain();
       const startFreq = 280 + Math.random() * 140;
@@ -734,9 +912,8 @@
       osc.start(now);
       osc.stop(now + 0.09);
 
-      // 3) 폭발 후 튕겨나가는 2차 잔여 스파크
       setTimeout(() => {
-        if (!isPlaying || currentCategory !== 'sleep') return;
+        if (!isPlaying || currentCategory !== 'fire') return;
         playUltraCrispSizzle(vol * 1.1);
       }, 35);
     }
@@ -747,21 +924,12 @@
       clearInterval(firePopTimer);
       clearInterval(fireBurstTimer);
 
-      if (fireLfo) {
-        try { fireLfo.stop(); } catch(e){}
-        fireLfo = null;
-      }
-      if (fireRoarSrc) {
-        try { fireRoarSrc.stop(); } catch(e){}
-        fireRoarSrc = null;
-      }
-      if (fireHissSrc) {
-        try { fireHissSrc.stop(); } catch(e){}
-        fireHissSrc = null;
-      }
+      if (fireLfo) { try { fireLfo.stop(); } catch(e){} fireLfo = null; }
+      if (fireRoarSrc) { try { fireRoarSrc.stop(); } catch(e){} fireRoarSrc = null; }
+      if (fireHissSrc) { try { fireHissSrc.stop(); } catch(e){} fireHissSrc = null; }
     }
 
-    // 입체 스테레오 바이노럴 비트
+    // 입체 바이노럴 비트
     function startBinaural(leftFreq, rightFreq) {
       stopBinaural();
       if (!audioCtx) return;
@@ -778,8 +946,8 @@
 
       const gainL = audioCtx.createGain();
       const gainR = audioCtx.createGain();
-      gainL.gain.setValueAtTime(0.04, audioCtx.currentTime);
-      gainR.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gainL.gain.setValueAtTime(0.038, audioCtx.currentTime);
+      gainR.gain.setValueAtTime(0.038, audioCtx.currentTime);
 
       binauralLeft.connect(gainL);
       binauralRight.connect(gainR);
@@ -800,11 +968,11 @@
 
     function toggleBrainWave() {
       if (!isPlaying) return;
-      if (currentCategory === 'focus') {
-        if (document.getElementById('toggleGamma').checked) startBinaural(200, 240);
+      if (currentCategory === 'serenity') {
+        if (document.getElementById('toggleDelta').checked) startBinaural(108, 109.5);
         else stopBinaural();
-      } else {
-        if (document.getElementById('toggleDelta').checked) startBinaural(100, 102);
+      } else if (currentCategory === 'focus') {
+        if (document.getElementById('toggleGamma').checked) startBinaural(200, 240);
         else stopBinaural();
       }
     }
@@ -813,7 +981,7 @@
       clearInterval(birdTimer);
       birdTimer = setInterval(() => {
         if (!isPlaying || currentCategory !== 'focus') return;
-        const vol = document.getElementById('f-bird').value / 100;
+        const vol = document.getElementById('focus-bird').value / 100;
         if (vol > 0.05 && Math.random() < 0.65) {
           playChirp(vol);
           if (Math.random() < 0.5) setTimeout(() => playChirp(vol), 130);
@@ -846,14 +1014,15 @@
     function stopAudioEngine(fade = true) {
       clearInterval(birdTimer);
       stopCampfire();
+      stopDrone();
       stopBinaural();
 
       if (lfoNode) { try { lfoNode.stop(); } catch(e){} lfoNode = null; }
 
-      [srcBase, srcDetail1, srcDetail2].forEach(s => {
+      [srcBase, srcDetail1, srcDetail2, embersSrc].forEach(s => {
         if (s) { try { s.stop(); } catch(e){} }
       });
-      srcBase = srcDetail1 = srcDetail2 = null;
+      srcBase = srcDetail1 = srcDetail2 = embersSrc = null;
 
       isPlaying = false;
       updateUI();
@@ -870,16 +1039,61 @@
       }
     }
 
-    function updateFocusVolumes() {
-      const brown = document.getElementById('f-brown').value;
-      const stream = document.getElementById('f-stream').value;
-      const rain = document.getElementById('f-rain').value;
-      const bird = document.getElementById('f-bird').value;
+    function updateSerenityVolumes() {
+      const drone = document.getElementById('s-drone').value;
+      const brown = document.getElementById('s-brown').value;
+      const wave = document.getElementById('s-wave').value;
+      const ember = document.getElementById('s-ember').value;
+      const rain = document.getElementById('s-rain').value;
 
-      document.getElementById('txt-brown').textContent = brown + '%';
-      document.getElementById('txt-stream').textContent = stream + '%';
-      document.getElementById('txt-rain').textContent = rain + '%';
-      document.getElementById('txt-bird').textContent = bird + '%';
+      document.getElementById('txt-s-drone').textContent = drone + '%';
+      document.getElementById('txt-s-brown').textContent = brown + '%';
+      document.getElementById('txt-s-wave').textContent = wave + '%';
+      document.getElementById('txt-s-ember').textContent = ember + '%';
+      document.getElementById('txt-s-rain').textContent = rain + '%';
+
+      if (audioCtx && currentCategory === 'serenity') {
+        const t = audioCtx.currentTime + 0.05;
+        if (droneGain) droneGain.gain.linearRampToValueAtTime((drone / 100) * 0.35, t);
+        if (gBase) gBase.gain.linearRampToValueAtTime((brown / 100) * 0.65, t);
+        if (gDetail1) gDetail1.gain.linearRampToValueAtTime((wave / 100) * 0.48, t);
+        if (embersGain) embersGain.gain.linearRampToValueAtTime((ember / 100) * 0.35, t);
+        if (gDetail2) gDetail2.gain.linearRampToValueAtTime((rain / 100) * 0.3, t);
+      }
+    }
+
+    function updateFireVolumes() {
+      const fire = document.getElementById('f-fire').value;
+      const brown = document.getElementById('f-brown').value;
+      const wave = document.getElementById('f-wave').value;
+      const rain = document.getElementById('f-rain').value;
+
+      document.getElementById('txt-f-fire').textContent = fire + '%';
+      document.getElementById('txt-f-brown').textContent = brown + '%';
+      document.getElementById('txt-f-wave').textContent = wave + '%';
+      document.getElementById('txt-f-rain').textContent = rain + '%';
+
+      if (audioCtx && currentCategory === 'fire') {
+        const t = audioCtx.currentTime + 0.05;
+        if (gBase) gBase.gain.linearRampToValueAtTime((brown / 100) * 0.5, t);
+        if (gDetail1) gDetail1.gain.linearRampToValueAtTime((wave / 100) * 0.35, t);
+        if (gDetail2) gDetail2.gain.linearRampToValueAtTime((rain / 100) * 0.25, t);
+        if (gDetail3) gDetail3.gain.linearRampToValueAtTime((fire / 100) * 0.95, t);
+        if (fireRoarGain) fireRoarGain.gain.linearRampToValueAtTime((fire / 100) * 0.22, t);
+        if (fireHissGain) fireHissGain.gain.linearRampToValueAtTime((fire / 100) * 0.16, t);
+      }
+    }
+
+    function updateFocusVolumes() {
+      const stream = document.getElementById('focus-stream').value;
+      const rain = document.getElementById('focus-rain').value;
+      const bird = document.getElementById('focus-bird').value;
+      const brown = document.getElementById('focus-brown').value;
+
+      document.getElementById('txt-focus-stream').textContent = stream + '%';
+      document.getElementById('txt-focus-rain').textContent = rain + '%';
+      document.getElementById('txt-focus-bird').textContent = bird + '%';
+      document.getElementById('txt-focus-brown').textContent = brown + '%';
 
       if (audioCtx && currentCategory === 'focus') {
         const t = audioCtx.currentTime + 0.05;
@@ -890,80 +1104,79 @@
       }
     }
 
-    function updateSleepVolumes() {
-      const brown = document.getElementById('s-brown').value;
-      const wave = document.getElementById('s-wave').value;
-      const fire = document.getElementById('s-fire').value;
-      const rain = document.getElementById('s-rain').value;
-
-      document.getElementById('txt-s-brown').textContent = brown + '%';
-      document.getElementById('txt-s-wave').textContent = wave + '%';
-      document.getElementById('txt-s-fire').textContent = fire + '%';
-      document.getElementById('txt-s-rain').textContent = rain + '%';
-
-      if (audioCtx && currentCategory === 'sleep') {
-        const t = audioCtx.currentTime + 0.05;
-        if (gBase) gBase.gain.linearRampToValueAtTime((brown / 100) * 0.5, t);
-        if (gDetail1) gDetail1.gain.linearRampToValueAtTime((wave / 100) * 0.4, t);
-        if (gDetail2) gDetail2.gain.linearRampToValueAtTime((rain / 100) * 0.3, t);
-        // 장작 타는 소리의 생동감과 명료도를 높여 선명하게 전달
-        if (gDetail3) gDetail3.gain.linearRampToValueAtTime((fire / 100) * 0.95, t);
-        if (fireRoarGain) fireRoarGain.gain.linearRampToValueAtTime((fire / 100) * 0.22, t);
-        if (fireHissGain) fireHissGain.gain.linearRampToValueAtTime((fire / 100) * 0.16, t);
-      }
-    }
-
     function setMasterVolume(val) {
       if (masterGain && audioCtx) {
         masterGain.gain.linearRampToValueAtTime(val / 100, audioCtx.currentTime + 0.05);
       }
     }
 
+    // 프리셋 설정 함수들
+    function setSerenityPreset(type) {
+      if (type === 'sleep') {
+        setSValues(55, 75, 40, 30, 20); // 깊은단잠 (432Hz + 양수브라운 중심)
+      } else if (type === 'cradle') {
+        setSValues(40, 50, 75, 20, 35); // 밤바다요람 (파도 중심)
+      } else {
+        setSValues(30, 55, 30, 75, 40); // 훈훈한화로 (숯불온기 중심)
+      }
+    }
+
+    function setSValues(dr, br, wa, em, ra) {
+      document.getElementById('s-drone').value = dr;
+      document.getElementById('s-brown').value = br;
+      document.getElementById('s-wave').value = wa;
+      document.getElementById('s-ember').value = em;
+      document.getElementById('s-rain').value = ra;
+      updateSerenityVolumes();
+    }
+
+    function setFirePreset(type) {
+      if (type === 'fire') {
+        setFValues(95, 40, 20, 15);
+      } else if (type === 'camp') {
+        setFValues(75, 60, 40, 35);
+      } else {
+        setFValues(60, 45, 15, 10);
+      }
+    }
+
+    function setFValues(fi, br, wa, ra) {
+      document.getElementById('f-fire').value = fi;
+      document.getElementById('f-brown').value = br;
+      document.getElementById('f-wave').value = wa;
+      document.getElementById('f-rain').value = ra;
+      updateFireVolumes();
+    }
+
     function setFocusPreset(type) {
       if (type === 'stream') {
-        setFValues(45, 80, 20, 45);
+        setFcValues(80, 25, 45, 45);
       } else if (type === 'rain') {
-        setFValues(60, 20, 85, 0);
+        setFcValues(20, 85, 0, 60);
       } else {
-        setFValues(50, 60, 40, 30);
+        setFcValues(60, 40, 30, 50);
         document.getElementById('toggleGamma').checked = true;
         toggleBrainWave();
       }
     }
 
-    function setFValues(b, s, r, bd) {
-      document.getElementById('f-brown').value = b;
-      document.getElementById('f-stream').value = s;
-      document.getElementById('f-rain').value = r;
-      document.getElementById('f-bird').value = bd;
+    function setFcValues(st, ra, bi, br) {
+      document.getElementById('focus-stream').value = st;
+      document.getElementById('focus-rain').value = ra;
+      document.getElementById('focus-bird').value = bi;
+      document.getElementById('focus-brown').value = br;
       updateFocusVolumes();
-    }
-
-    function setSleepPreset(type) {
-      if (type === 'campfire') {
-        setSValues(40, 15, 10, 95); // 4K 모닥불 극대화
-      } else if (type === 'womb') {
-        setSValues(85, 20, 15, 30);
-      } else {
-        setSValues(50, 85, 10, 35);
-      }
-    }
-
-    function setSValues(b, w, r, f) {
-      document.getElementById('s-brown').value = b;
-      document.getElementById('s-wave').value = w;
-      document.getElementById('s-rain').value = r;
-      document.getElementById('s-fire').value = f;
-      updateSleepVolumes();
     }
 
     function setTimerVal(mins) {
       timerMinutes = mins;
       document.querySelectorAll('.timer-btn').forEach(b => {
-        b.classList.remove('bg-cyan-600/40', 'bg-amber-600/40', 'border', 'border-cyan-400/60', 'border-amber-400/60', 'text-white', 'font-bold', 'active');
+        b.classList.remove('bg-purple-600/40', 'bg-amber-600/40', 'bg-cyan-600/40', 'border', 'border-purple-400/60', 'border-amber-400/60', 'border-cyan-400/60', 'text-white', 'font-bold', 'active');
         b.classList.add('bg-slate-800', 'text-slate-300');
       });
-      event.target.classList.add(currentCategory === 'focus' ? 'bg-cyan-600/40' : 'bg-amber-600/40', 'border', currentCategory === 'focus' ? 'border-cyan-400/60' : 'border-amber-400/60', 'text-white', 'font-bold', 'active');
+      
+      const themeColor = currentCategory === 'serenity' ? 'purple' : (currentCategory === 'fire' ? 'amber' : 'cyan');
+      event.target.classList.add(`bg-${themeColor}-600/40`, 'border', `border-${themeColor}-400/60`, 'text-white', 'font-bold', 'active');
       event.target.classList.remove('bg-slate-800', 'text-slate-300');
 
       clearInterval(timerInterval);
@@ -1009,18 +1222,25 @@
       if (isPlaying) {
         playIcon.classList.add('hidden');
         pauseIcon.classList.remove('hidden');
-        toggleBtn.classList.add(currentCategory === 'focus' ? 'animate-focus-glow' : 'animate-sleep-glow');
-        if (currentCategory === 'focus') {
-          statusText.textContent = '⚡️ 40Hz 초집중 자연의 소리가 흐르는 중입니다';
-          statusText.className = "text-sm font-bold text-cyan-300 mt-2.5 tracking-wide";
-        } else {
+        
+        toggleBtn.classList.remove('animate-serenity-glow', 'animate-fire-glow', 'animate-focus-glow');
+        if (currentCategory === 'serenity') {
+          toggleBtn.classList.add('animate-serenity-glow');
+          statusText.textContent = '🕊️ 432Hz 치유 톤과 평온한 숙면 소리가 흐르는 중입니다';
+          statusText.className = "text-sm font-bold text-purple-300 mt-2.5 tracking-wide";
+        } else if (currentCategory === 'fire') {
+          toggleBtn.classList.add('animate-fire-glow');
           statusText.textContent = '🔥 4K 리얼 참나무 모닥불 소리가 생생하게 흐르는 중입니다';
           statusText.className = "text-sm font-bold text-amber-300 mt-2.5 tracking-wide";
+        } else {
+          toggleBtn.classList.add('animate-focus-glow');
+          statusText.textContent = '⚡️ 40Hz 초집중 자연의 소리가 흐르는 중입니다';
+          statusText.className = "text-sm font-bold text-cyan-300 mt-2.5 tracking-wide";
         }
       } else {
         playIcon.classList.remove('hidden');
         pauseIcon.classList.add('hidden');
-        toggleBtn.classList.remove('animate-focus-glow', 'animate-sleep-glow');
+        toggleBtn.classList.remove('animate-serenity-glow', 'animate-fire-glow', 'animate-focus-glow');
         statusText.textContent = '재생을 누르면 소리가 시작됩니다';
         statusText.className = "text-sm font-bold text-slate-200 mt-2.5 tracking-wide";
       }
