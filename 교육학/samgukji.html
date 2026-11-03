@@ -5590,12 +5590,12 @@ ${promoMsg}
       const clickedUnit = findUnitAt(q, r);
       const selectedUnit = sam5BattleState.selectedUnit;
 
-      // 2. [★원클릭 공격 혁신★] 아군 부대가 선택된 상태에서 적 부대를 직접 클릭했을 때 -> 즉시 공격/원거리/돌격 감행!
+      // 2. [★원클릭 공격 완전 자동화★] 아군 부대가 선택된 상태에서 적 부대를 직접 클릭했을 때!
       if (selectedUnit && selectedUnit.faction === "ally" && !selectedUnit.acted && sam5BattleState.phase === "ally" && clickedUnit && clickedUnit.faction === "enemy") {
         const dist = getHexDistance(selectedUnit.q, selectedUnit.r, clickedUnit.q, clickedUnit.r);
         const isArcher = isMasterArcher(selectedUnit);
 
-        // A. 인접 1칸 적 -> 즉시 근접 공격 또는 3면 포위 일제합공!
+        // A. 인접 1칸 적 -> 즉시 칼을 뽑아 근접 공격 또는 3면 포위 일제합공!
         if (dist === 1) {
           executeSkillAction('attack', clickedUnit);
           clearSkillMode();
@@ -5603,53 +5603,49 @@ ${promoMsg}
           return;
         }
 
-        // B. 사거리 4칸 이내 적 -> 원거리 신궁/맹화시/안행 궁시 사격!
-        if (dist <= 4 && (isArcher || selectedUnit.formation === 'anhaeng')) {
+        // B. 사거리 2~4칸 적 -> 모든 장수 궁시(화살) 사격 즉각 100% 발사!
+        if (dist <= 4) {
           executeSkillAction('archery', clickedUnit);
           clearSkillMode();
           renderBattlefield();
           return;
         }
 
-        // C. [★자동 돌격 이동 공격★] 이동하지 않은 상태라면, 적 인접 빈 타일로 쇄도 후 근접 공격!
+        // C. 거리 4칸 초과인 적 -> 적에게 닿을 수 있는 이동 가능 타일 중 가장 가까운 곳으로 전속력 돌격 진격!
         if (!selectedUnit.moved) {
           computeMovementRange(selectedUnit);
-          const adjHexes = getHexNeighbors(clickedUnit.q, clickedUnit.r);
-          const chargeHex = sam5BattleState.reachableHexes.find(h => adjHexes.some(a => a.q === h.q && a.r === h.r));
-          if (chargeHex) {
-            logBattle(`🏇 [질풍 돌격!] ${selectedUnit.name} 부대가 적장 ${clickedUnit.name}을 향해 쇄도하여 통렬한 돌격 공격을 감행합니다!`);
-            selectedUnit.q = chargeHex.q;
-            selectedUnit.r = chargeHex.r;
-            selectedUnit.moved = true;
-            sam5BattleState.reachableHexes = [];
-            playSound('fanfare');
-            executeSkillAction('attack', clickedUnit);
-            renderBattlefield();
-            return;
-          }
-        }
+          if (sam5BattleState.reachableHexes.length > 0) {
+            let bestHex = null;
+            let bestDist = 999;
+            sam5BattleState.reachableHexes.forEach(h => {
+              const d = getHexDistance(h.q, h.r, clickedUnit.q, clickedUnit.r);
+              if (d < bestDist) {
+                bestDist = d;
+                bestHex = h;
+              }
+            });
 
-        // D. 적이 사거리 밖인 경우: 적에게 가장 가까운 이동 가능 타일로 급속 진격
-        if (!selectedUnit.moved && sam5BattleState.reachableHexes.length > 0) {
-          let bestHex = null;
-          let bestDist = 999;
-          sam5BattleState.reachableHexes.forEach(h => {
-            const d = getHexDistance(h.q, h.r, clickedUnit.q, clickedUnit.r);
-            if (d < bestDist) {
-              bestDist = d;
-              bestHex = h;
+            if (bestHex) {
+              selectedUnit.q = bestHex.q;
+              selectedUnit.r = bestHex.r;
+              selectedUnit.moved = true;
+              sam5BattleState.reachableHexes = [];
+              playSound('fanfare');
+
+              const newDist = getHexDistance(selectedUnit.q, selectedUnit.r, clickedUnit.q, clickedUnit.r);
+              if (newDist === 1) {
+                logBattle(`🏇 [질풍 돌격!] ${selectedUnit.name} 부대가 적장 ${clickedUnit.name}에게 쇄도하여 통렬한 돌격을 가합니다!`);
+                executeSkillAction('attack', clickedUnit);
+              } else if (newDist <= 4) {
+                logBattle(`🏇🏹 [돌격 사격!] ${selectedUnit.name} 부대가 진격 후 적장 ${clickedUnit.name}에게 화살비를 쏟아붓습니다!`);
+                executeSkillAction('archery', clickedUnit);
+              } else {
+                logBattle(`🏇 ${selectedUnit.name} 부대가 적장 ${clickedUnit.name}을 향해 급속 돌격 진격했습니다!`);
+                updateActionCommands();
+              }
+              renderBattlefield();
+              return;
             }
-          });
-          if (bestHex) {
-            selectedUnit.q = bestHex.q;
-            selectedUnit.r = bestHex.r;
-            selectedUnit.moved = true;
-            sam5BattleState.reachableHexes = [];
-            logBattle(`🏇 ${selectedUnit.name} 부대가 적장 ${clickedUnit.name}을 향해 급속 진격했습니다!`);
-            playSound('fanfare');
-            updateActionCommands();
-            renderBattlefield();
-            return;
           }
         }
       }
@@ -5678,7 +5674,7 @@ ${promoMsg}
         return;
       }
 
-      // 4. 부대 선택 (아군 우선 및 교대 선택 자유화)
+      // 4. 부대 선택 (아군 및 적군 자유 클릭)
       if (clickedUnit) {
         selectUnit(clickedUnit);
       } else {
@@ -5817,7 +5813,9 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     function computeMovementRange(unit) {
       sam5BattleState.reachableHexes = [];
       const form = FORMATIONS[unit.formation];
-      const maxMove = Math.max(1, 2 + (form ? form.moveBonus : 0));
+      // 대형 13x8 전장 맞춤 기동력 상향 (기본 3칸, 추행/기마 5칸)
+      const baseMove = (unit.faction === 'ally' && gameState.troopLevel >= 3) ? 4 : 3;
+      const maxMove = Math.max(2, baseMove + (form ? form.moveBonus : 0));
 
       // BFS 큐: { q, r, cost }
       const queue = [{ q: unit.q, r: unit.r, cost: 0 }];
@@ -5947,7 +5945,6 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
 
       const isArcher = isMasterArcher(u);
       const adjEnemies = getEnemiesInRange(u, 1);
-      const longRangeEnemies = getEnemiesInRange(u, 4);
       const allEnemies = UNITS.filter(en => en.faction === "enemy" && en.troops > 0);
 
       const btnAtk = document.getElementById("btnAttack");
@@ -5959,11 +5956,11 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
       const btnDuel = document.getElementById("btnDuel");
       const btnWait = document.getElementById("btnWait");
 
-      // 1. 진형 변경 & 대기(행동완료)는 언제나 항시 활성화!
+      // 1. 진형 변경 & 대기(행동완료)는 항시 활성화!
       if (btnForm) btnForm.disabled = false;
       if (btnWait) btnWait.disabled = false;
 
-      // 2. 🗡️ 근접 공격: 인접한 적이 있거나, 이동 전/후로 공격할 적이 존재하면 활성화!
+      // 2. 🗡️ 근접 공격: 적이 전장에 살아있으면 항시 활성화! (누르면 타겟 지정 후 돌격 공격!)
       if (btnAtk) {
         btnAtk.disabled = (allEnemies.length === 0);
         const canEncircle3 = adjEnemies.some(e => getSurroundingUnits(e, 'ally').length >= 3);
@@ -5979,9 +5976,9 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
         }
       }
 
-      // 3. 🏹 안행 궁시: 사거리 4칸 이내 적이 있거나 원거리 사격 가능 시 활성화!
+      // 3. 🏹 안행 궁시: 모든 장수 화살 사격 100% 항시 활성화! (사거리 4칸)
       if (btnArc) {
-        btnArc.disabled = (longRangeEnemies.length === 0);
+        btnArc.disabled = (allEnemies.length === 0);
         if (u.name.includes('황충')) {
           btnArc.innerHTML = '🏹 황충 신궁 (사거리4)';
           btnArc.className = "px-3 py-2 rounded bg-emerald-800 hover:bg-emerald-700 border-2 border-yellow-300 text-yellow-300 font-black text-xs shadow-lg transition";
@@ -5991,43 +5988,30 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
         } else if (u.name.includes('서황') || u.name.includes('공손찬')) {
           btnArc.innerHTML = `🏹 ${u.name} 명궁 (사거리4)`;
           btnArc.className = "px-3 py-2 rounded bg-teal-800 hover:bg-teal-700 border-2 border-yellow-400 text-yellow-200 font-black text-xs shadow-lg transition";
-        } else if (u.formation === 'anhaeng') {
-          btnArc.innerHTML = '🏹 안행 궁시 (사거리4)';
-          btnArc.className = "px-3 py-2 rounded bg-blue-900 hover:bg-blue-800 border-2 border-blue-400 text-cyan-200 font-black text-xs shadow transition";
         } else {
-          btnArc.innerHTML = '🏹 안행 궁시 (전환사격)';
-          btnArc.className = "px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-500 text-slate-200 font-bold text-xs shadow transition";
+          btnArc.innerHTML = '🏹 궁시 사격 (사거리4)';
+          btnArc.className = "px-3 py-2 rounded bg-blue-900 hover:bg-blue-800 border-2 border-cyan-400 text-cyan-200 font-black text-xs shadow-lg transition";
         }
       }
 
       // 4. 🔥 불화살 & 화계
       if (btnFire) {
+        btnFire.disabled = (allEnemies.length === 0);
         if (isArcher) {
-          btnFire.disabled = (longRangeEnemies.length === 0);
           btnFire.innerHTML = `🔥 ${u.name} 맹화시 (불화살)`;
           btnFire.className = "px-3 py-2 rounded bg-red-800 hover:bg-red-700 border-2 border-yellow-400 text-yellow-300 font-black text-xs shadow-lg transition";
         } else {
-          const hasFire = u.skills.includes("화계") || u.skills.includes("화시") || u.int >= 75;
-          const fireEnemies = getEnemiesInRange(u, 2);
-          btnFire.disabled = !hasFire || fireEnemies.length === 0;
           btnFire.innerHTML = '🔥 화계 (풍향확산)';
           btnFire.className = "px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold text-xs shadow transition";
         }
       }
 
       // 5. 🌀 혼란 & ⚡ 분기
-      if (btnChaos) {
-        const canChaos = u.skills.includes("혼란") || u.int >= 75;
-        btnChaos.disabled = !canChaos || getEnemiesInRange(u, 2).length === 0;
-      }
-      if (btnFlurry) {
-        btnFlurry.disabled = !u.skills.includes("분기") || adjEnemies.length === 0;
-      }
+      if (btnChaos) btnChaos.disabled = (allEnemies.length === 0);
+      if (btnFlurry) btnFlurry.disabled = (allEnemies.length === 0);
 
       // 6. ⚔️ 일기토
-      if (btnDuel) {
-        btnDuel.disabled = (adjEnemies.length === 0 && getEnemiesInRange(u, 2).length === 0);
-      }
+      if (btnDuel) btnDuel.disabled = (allEnemies.length === 0);
     }
 
     // ==========================================================================
@@ -6061,25 +6045,19 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
       if (!u || u.acted || sam5BattleState.phase !== 'ally') return;
 
       const isArcher = isMasterArcher(u);
-
-      // 안행진이 아니면 자동으로 안행진(雁行陣)으로 전술 전환!
-      if (u.formation !== 'anhaeng' && !isArcher) {
-        u.formation = 'anhaeng';
-        logBattle(`🏹 [진형 전환] ${u.name} 부대가 장거리 사격을 위해 [안행진(雁行)]으로 전술을 전환했습니다! (사거리 4칸)`);
-        playSound('fanfare');
-        updateUnitDetailCard(u);
-      }
-
-      const arcRange = 4; // 사거리 4칸 초장거리 지원!
+      const arcRange = 4;
       sam5BattleState.skillMode = 'archery';
-      sam5BattleState.attackableTargets = getEnemiesInRange(u, arcRange);
-
-      if (sam5BattleState.attackableTargets.length === 0) {
-        logBattle(`🏹 사거리 ${arcRange}칸 이내에 조준할 수 있는 적 부대가 없습니다.`);
+      
+      const targets = getEnemiesInRange(u, arcRange);
+      if (targets.length > 0) {
+        sam5BattleState.attackableTargets = targets;
       } else {
-        const title = isArcher ? (u.name.includes('황충') ? '황충 백발백중 신궁' : '태사자 강동맹궁') : '안행 궁시 장거리 사격';
-        logBattle(`🏹 [${title}] 사거리 ${arcRange}칸 이내의 붉은 타겟 적을 클릭하여 화살비를 퍼부으십시오!`);
+        // 사거리 밖이면 전장의 모든 적을 타겟으로 지정하여 자동 돌격 후 사격!
+        sam5BattleState.attackableTargets = UNITS.filter(en => en.faction === 'enemy' && en.troops > 0);
       }
+
+      const title = isArcher ? (u.name.includes('황충') ? '황충 백발백중 신궁' : '태사자 강동맹궁') : '아군 원거리 궁시 사격';
+      logBattle(`🏹 [${title}] 타격할 적 부대(붉은 타겟)를 클릭하여 화살비를 퍼부으십시오!`);
       renderBattlefield();
     }
 
