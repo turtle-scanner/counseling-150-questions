@@ -3040,7 +3040,40 @@
           logMessage(`⛓️ [적장 생포!] ${p1.name} 장군이 일기토에서 적장 [${capName}]을 사로잡아 감옥에 투옥했습니다! (전쟁 영구 출진 금지)`, 'text-yellow-300 font-black');
 
           // 침공 요격 결투인 경우 적군 대군 격퇴 & 승리 모달
+          
+          // 침공 요격 결투인 경우 적군 대군 격퇴 & 승리 모달
           if (sam5DuelState.isInvasionDuel) {
+            setTimeout(() => {
+              closeModal("duelModal");
+              const vicMsg = document.getElementById("battleVictoryMsg");
+              if (vicMsg) {
+                vicMsg.innerHTML = `
+                  <div class="text-base text-yellow-300 font-black mb-1">
+                    🎉 [적 침공군 완전 격퇴!]
+                  </div>
+                  <div>
+                    ${p1.name} 장군이 일기토에서 적 총대장 [${capName}]을 생포하여 압송했습니다!<br>
+                    총대장을 잃은 적 대군 17,000여 명은 사기를 잃고 뿔뿔이 궤멸 퇴각했습니다!<br>
+                    <strong>영지가 안전하게 사수되었으며, 적장은 아군 감옥에 영구 투옥되었습니다!</strong>
+                  </div>
+                `;
+              }
+              openModal("battle-victory-modal");
+            }, 800);
+          } else {
+            // ⚔️ 전술 헥스 전장 일기토 승리 처리!
+            if (p2.troops !== undefined) {
+              applyDamage(p2, p2.troops); // 적장 부대 즉시 전멸!
+            }
+            if (p2.isBoss || p2.name.includes('손책') || p2.name.includes('여포') || p2.name.includes('장노')) {
+              setTimeout(() => {
+                closeModal("duelModal");
+                triggerVictory(`일기토 대승! 적 총대장 [${capName}]을 꺾고 적 본대를 와해시켰습니다!`);
+              }, 700);
+            }
+          }
+
+          if (false && sam5DuelState.isInvasionDuel) {
             setTimeout(() => {
               closeModal("duelModal");
               const vicMsg = document.getElementById("battleVictoryMsg");
@@ -5636,6 +5669,25 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     // 전투 액션 실행: 바둑 3면 포위 일제합공 & 황충/태사자 원거리 화살 및 불화살
     // ==========================================================================
     function executeSkillAction(mode, targetPos) {
+
+      // ⚔️ [일기토 조준 돌격 처리]
+      if (mode === 'duel' && targetUnit) {
+        // 적장 인접 빈 타일로 질풍 이동
+        const curDist = getHexDistance(u.q, u.r, targetUnit.q, targetUnit.r);
+        if (curDist > 1 && !u.moved) {
+          const adjHexes = getHexNeighbors(targetUnit.q, targetUnit.r);
+          const emptyAdj = adjHexes.find(h => !findUnitAt(h.q, h.r) && MAP_TERRAIN[h.r] && MAP_TERRAIN[h.r][h.q] !== 3);
+          if (emptyAdj) {
+            u.q = emptyAdj.q;
+            u.r = emptyAdj.r;
+            u.moved = true;
+          }
+        }
+        logBattle(`🏇⚔️ [질풍 쇄도 일기토!] ${u.name} 장군이 말을 몰아 적장 ${targetUnit.name}의 코앞으로 돌진하여 칼을 겨누었습니다!`);
+        startTacticalDuel(u, targetUnit);
+        return;
+      }
+
       const u = sam5BattleState.selectedUnit;
       if (!u) return;
       const targetUnit = findUnitAt(targetPos.q, targetPos.r);
@@ -5856,53 +5908,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
       sam5BattleState.attackableTargets = [];
     }
 
-    function onCmdDuel() {
-      const u = sam5BattleState.selectedUnit;
-      if (!u || u.acted || sam5BattleState.phase !== 'ally') return;
-
-      const adjEnemies = getEnemiesInRange(u, 1);
-      if (adjEnemies.length === 0) {
-        logBattle("인접한 적 부대가 없어 일기토를 신청할 수 없습니다.");
-        return;
-      }
-
-      const target = adjEnemies[0];
-      const uWar = getOfficerDuelWar(u);
-      const tWar = getOfficerDuelWar(target);
-
-      logBattle(`⚔️🏇 [일기토 신청!] ${u.name}(무력:${uWar}) 장군이 적장 ${target.name}(무력:${tWar})에게 1:1 결투를 신청했습니다!`);
-      playSound('fanfare');
-
-      // 여포 무력 119 필살 대승 판정
-      let isVictory = false;
-      if (u.name.includes('여포')) {
-        isVictory = true;
-        logBattle(`👹⚡ [천하무쌍 여포 무력 119!] 여포의 방천화극이 일격에 적장 ${target.name}을 베어 넘겼습니다!`);
-      } else if (target.name.includes('여포')) {
-        isVictory = false;
-        logBattle(`👹⚡ [적장 여포 무력 119!] 적장 여포의 방천화극 앞에 ${u.name}이 중상을 입고 패퇴했습니다!`);
-      } else {
-        const winChance = 50 + (uWar - tWar) * 2.5;
-        isVictory = (Math.random() * 100 < winChance);
-      }
-
-      if (isVictory) {
-        playSound('slash');
-        logBattle(`🏆✨ [일기토 대승!] ${u.name} 장군이 적장 ${target.name}을 격파하여 적 전군이 패닉에 빠졌습니다!`);
-        target.troops = 0;
-        showDamagePop(target.q, target.r, "☠️일기토 전사!");
-        gainTroopExp(50, '일기토 대승');
-        checkVictoryCondition();
-      } else {
-        playSound('slash');
-        logBattle(`🚨 [일기토 패배!] ${u.name} 부대가 큰 타격을 입고 사기가 꺾였습니다.`);
-        u.troops = Math.max(100, Math.floor(u.troops * 0.4));
-        u.morale = Math.max(10, u.morale - 40);
-        showDamagePop(u.q, u.r, "일기토 패배!");
-      }
-
-      finishUnitAction(u);
-    }
+    
 
     function onCmdWait() {
       if (sam5BattleState.selectedUnit) finishUnitAction(sam5BattleState.selectedUnit);
@@ -5966,37 +5972,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     // ==========================================================================
     // 전략 기믹 2: 일기토(一騎討) 일격필살 시스템
     // ==========================================================================
-    function onCmdDuel() {
-      const u = sam5BattleState.selectedUnit;
-      if (!u) return;
-      const enemies = getEnemiesInRange(u, 1);
-      if (enemies.length === 0) return;
-
-      // 여포가 범위 내에 있으면 우선 대결!
-      const target = enemies.find(e => e.isBoss) || enemies[0];
-      sam5DuelState.p1 = u;
-      sam5DuelState.p2 = target;
-      sam5DuelState.p1Hp = 100;
-      sam5DuelState.p2Hp = 100;
-      sam5DuelState.round = 1;
-
-      document.getElementById("duelP1Name").innerText = u.name;
-      document.getElementById("duelP1War").innerText = `무력 ${u.war}`;
-      document.getElementById("duelP1Avatar").innerText = u.avatar;
-      document.getElementById("duelP1Hp").style.width = "100%";
-
-      document.getElementById("duelP2Name").innerText = target.name;
-      document.getElementById("duelP2War").innerText = `무력 ${target.war}`;
-      document.getElementById("duelP2Avatar").innerText = target.avatar;
-      document.getElementById("duelP2Hp").style.width = "100%";
-
-      document.getElementById("duelNarrative").innerText = `${u.name}이 청룡언월도/장팔사모를 치켜들며 ${target.name}에게 생사를 건 1:1 결투를 신청했습니다!`;
-      document.getElementById("btnDuelRound").classList.remove("hidden");
-      document.getElementById("btnDuelClose").classList.add("hidden");
-
-      document.getElementById("duelModal").classList.remove("hidden");
-      playSound('fanfare');
-    }
+    
 
     function progressDuelRound() {
       const { p1, p2 } = sam5DuelState;
@@ -6093,6 +6069,97 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
       }, 700);
     }
 
+    
+    // ==========================================================================
+    // ⚔️ [전장 1:1 일기토] 거리 제한 박멸 & 전장의 모든 적장 돌격 결투 시스템
+    // ==========================================================================
+    function onCmdDuel() {
+      let u = sam5BattleState.selectedUnit;
+      if (!u || u.acted || sam5BattleState.phase !== 'ally') {
+        // 선택된 아군이 없으면 최강 무력 장수(관우/장비/조운 등) 자동 선택
+        const readyAlly = UNITS.find(unit => unit.faction === 'ally' && unit.troops > 0 && !unit.acted);
+        if (readyAlly) {
+          selectUnit(readyAlly);
+          u = readyAlly;
+        } else {
+          logBattle("행동 가능한 아군 장수가 없습니다.");
+          return;
+        }
+      }
+
+      // 생존한 모든 적 부대 탐색
+      const aliveEnemies = UNITS.filter(e => e.faction === 'enemy' && e.troops > 0);
+      if (aliveEnemies.length === 0) {
+        logBattle("전장에 생존한 적장이 없습니다!");
+        return;
+      }
+
+      // 인접한 적이 있으면 최우선 적장과 즉시 일기토!
+      const adjEnemies = getEnemiesInRange(u, 1);
+      if (adjEnemies.length > 0) {
+        const target = adjEnemies.find(e => e.isBoss) || adjEnemies[0];
+        logBattle(`⚔️🏇 [일기토 신청!] ${u.name} 장군이 인접한 적장 [${target.name}]에게 1:1 결투를 신청했습니다!`);
+        startTacticalDuel(u, target);
+        return;
+      }
+
+      // 인접한 적이 없더라도 전장의 모든 적장을 타겟으로 활성화 (클릭 시 전속력 돌격 일기토!)
+      sam5BattleState.skillMode = 'duel';
+      sam5BattleState.attackableTargets = aliveEnemies;
+      logBattle(`⚔️🏇 [일기토 돌격 모드!] 1:1 진검승부를 펼칠 적 부대(붉은 타겟)를 클릭하십시오! ${u.name} 장군이 말을 몰아 적장 앞으로 질풍 돌격합니다!`);
+      playSound('fanfare');
+      renderBattlefield();
+    }
+
+    // 전술 헥스 전장 일기토 개시 함수
+    function startTacticalDuel(allyUnit, enemyUnit) {
+      sam5DuelState.p1 = allyUnit;
+      sam5DuelState.p2 = enemyUnit;
+      sam5DuelState.p1Hp = Math.max(30, 100 - (allyUnit.fatigue || 0));
+      sam5DuelState.p2Hp = Math.max(30, 100 - (enemyUnit.fatigue || 10));
+      sam5DuelState.round = 0;
+      sam5DuelState.isInvasionDuel = false; // 전장 헥스 일기토
+
+      const bannerImg = document.getElementById("duelBannerImg");
+      if (bannerImg && typeof GLOBAL_SAM3_ASSETS !== 'undefined') {
+        bannerImg.src = GLOBAL_SAM3_ASSETS.duelReady;
+      }
+
+      const p1NameEl = document.getElementById("duelP1Name");
+      if (p1NameEl) p1NameEl.innerText = allyUnit.name;
+      const p1WarEl = document.getElementById("duelP1War");
+      if (p1WarEl) p1WarEl.innerText = "무력 " + (allyUnit.war || 95);
+      const p1AvatarEl = document.getElementById("duelP1Avatar");
+      if (p1AvatarEl) p1AvatarEl.innerText = allyUnit.icon || '🐉';
+      const p1HpEl = document.getElementById("duelP1Hp");
+      if (p1HpEl) p1HpEl.style.width = sam5DuelState.p1Hp + "%";
+
+      const p2NameEl = document.getElementById("duelP2Name");
+      if (p2NameEl) p2NameEl.innerText = enemyUnit.name;
+      const p2WarEl = document.getElementById("duelP2War");
+      if (p2WarEl) p2WarEl.innerText = "무력 " + (enemyUnit.war || 90);
+      const p2AvatarEl = document.getElementById("duelP2Avatar");
+      if (p2AvatarEl) p2AvatarEl.innerText = enemyUnit.avatar || '👹';
+      const p2HpEl = document.getElementById("duelP2Hp");
+      if (p2HpEl) p2HpEl.style.width = sam5DuelState.p2Hp + "%";
+
+      const narrativeEl = document.getElementById("duelNarrative");
+      if (narrativeEl) {
+        narrativeEl.innerHTML = `<p class="text-yellow-300 font-black">⚔️ [일기토 개시!] ${allyUnit.name} vs ${enemyUnit.name}! 적장의 목을 베면 적 부대가 즉시 전멸합니다!</p>`;
+      }
+
+      const btnRound = document.getElementById("btnDuelRound");
+      if (btnRound) btnRound.classList.remove("hidden");
+      const btnClose = document.getElementById("btnDuelClose");
+      if (btnClose) btnClose.classList.add("hidden");
+
+      playSound('fanfare');
+      openModal("duelModal");
+    }
+
+    // ==========================================================================
+    // 🤖 [적군 AI 전면 혁신] 성벽 우회 진격 & 궁시 사격 & 돌격 공격 스마트 AI
+    // ==========================================================================
     function runEnemyAI() {
       const enemies = UNITS.filter(u => u.faction === "enemy" && u.troops > 0);
       let step = 0;
@@ -6104,120 +6171,93 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
         }
 
         const enemy = enemies[step];
+        if (!enemy || enemy.troops <= 0) {
+          step++;
+          setTimeout(executeNextEnemy, 200);
+          return;
+        }
+
         const allies = UNITS.filter(u => u.faction === "ally" && u.troops > 0);
+        if (allies.length === 0) {
+          finishFullTurn();
+          return;
+        }
 
-        if (allies.length > 0) {
-          // 아군 총대장 탐색 (유비 우선, 없으면 0번 장수)
-          const commander = allies.find(a => a.name.includes('유비') || a.id === 'liu_bei') || allies[0];
-          const allyDepotQ = 0, allyDepotR = 2;
+        // 1. 가장 가까운 아군 탐색 (유비가 근처면 유비 우선 타겟)
+        let targetAlly = allies[0];
+        let minDist = 999;
+        allies.forEach(a => {
+          let d = getHexDistance(enemy.q, enemy.r, a.q, a.r);
+          if (a.name.includes('유비')) d -= 1.5; // 유비 우선 조준
+          if (d < minDist) {
+            minDist = d;
+            targetAlly = a;
+          }
+        });
 
-          // 🛡️ 1. 적 군량창고 2부대 무조건 철통 사수 시스템 (절대 이탈 금지!)
-          if (enemy.role === 'guard_depot_1' || enemy.role === 'guard_depot_2' || enemy.role === 'guard_depot') {
-            // 적 군량고 위치 (기본 12, 4)
-            let depotQ = 12, depotR = 4;
-            for (let r = 0; r < GRID_ROWS; r++) {
-              for (let q = 0; q < GRID_COLS; q++) {
-                if (MAP_TERRAIN[r] && MAP_TERRAIN[r][q] === 4) {
-                  depotQ = q; depotR = r;
+        const curDist = getHexDistance(enemy.q, enemy.r, targetAlly.q, targetAlly.r);
+        const isArcher = (enemy.name.includes('태사자') || enemy.formation === 'anhaeng' || enemy.role === 'archer');
+        const attackRange = isArcher ? 3 : 1;
+
+        // Case A: 이미 사거리 내에 아군이 있으면 즉시 공격!
+        if (curDist <= attackRange) {
+          if (isArcher && curDist > 1) {
+            logBattle(`🏹🔥 [적군 궁시 사격!] 적장 ${enemy.name}이 아군 ${targetAlly.name}에게 빗발치는 화살비를 퍼부었습니다!`);
+            playSound('arrow');
+          } else {
+            logBattle(`🗡️💥 [적군 맹공 돌격!] 적장 ${enemy.name}이 아군 ${targetAlly.name}에게 돌격을 감행했습니다!`);
+            playSound('slash');
+          }
+          const dmg = calculateCombatDamage(enemy, targetAlly, isArcher ? 'archery' : 'melee');
+          applyDamage(targetAlly, dmg);
+          showDamagePop(targetAlly.q, targetAlly.r, `💥 -${dmg}`);
+        } else {
+          // Case B: 사거리 밖이면 아군을 향해 스마트 이동 후 공격!
+          // 주변 6방향 중 아군과 거리가 가장 가까워지는 유효 빈 타일 탐색
+          const neighbors = getHexNeighbors(enemy.q, enemy.r);
+          let bestNeighbor = null;
+          let bestD = curDist;
+
+          neighbors.forEach(n => {
+            // 유효 좌표 및 성벽(3) 제외, 다른 유닛 없음
+            if (n.q >= 0 && n.q < GRID_COLS && n.r >= 0 && n.r < GRID_ROWS) {
+              const terrain = (MAP_TERRAIN[n.r] && MAP_TERRAIN[n.r][n.q] !== undefined) ? MAP_TERRAIN[n.r][n.q] : 0;
+              if (terrain !== 3 && !findUnitAt(n.q, n.r)) {
+                const d = getHexDistance(n.q, n.r, targetAlly.q, targetAlly.r);
+                if (d < bestD) {
+                  bestD = d;
+                  bestNeighbor = n;
                 }
               }
             }
+          });
 
-            // 군량고 2칸 이내로 접근한 아군 침입자 감지
-            const intruders = allies.filter(a => getHexDistance(a.q, a.r, depotQ, depotR) <= 2.5);
-            enemy.formation = 'bangwon'; // 방어력 최강 방원진(방어 1위, 화살 차단) 상시 유지!
+          if (bestNeighbor) {
+            enemy.q = bestNeighbor.q;
+            enemy.r = bestNeighbor.r;
+            logBattle(`🏇💨 적장 [${enemy.name}] 부대가 아군 [${targetAlly.name}]을 향해 맹렬히 진격해옵니다!`);
 
-            if (intruders.length > 0) {
-              let target = intruders[0];
-              let minDist = getHexDistance(enemy.q, enemy.r, target.q, target.r);
-              intruders.forEach(a => {
-                const d = getHexDistance(enemy.q, enemy.r, a.q, a.r);
-                if (d < minDist) { minDist = d; target = a; }
-              });
-
-              if (minDist === 1) {
-                logBattle(`🛡️⚔️ [군량고 결사 사수!] ${enemy.name} 부대가 군량고를 노리는 아군 ${target.name}에게 철통 요격 일격을 가합니다!`);
-                playSound('slash');
-                const dmg = Math.floor(calculateCombatDamage(enemy, target, 'melee') * 1.35);
-                applyDamage(target, dmg);
+            // 이동 후 사거리 검사 및 공격
+            const newDist = getHexDistance(enemy.q, enemy.r, targetAlly.q, targetAlly.r);
+            if (newDist <= attackRange) {
+              if (isArcher && newDist > 1) {
+                logBattle(`🏹 [진격 사격!] ${enemy.name}이 진격 후 ${targetAlly.name}에게 화살비를 퍼붓습니다!`);
+                playSound('arrow');
               } else {
-                // 군량고 인접 범위(거리 1칸) 내에서만 이동하여 침입자를 가로막음! (절대 멀리 나가지 않음)
-                const adjDepots = getHexNeighbors(depotQ, depotR);
-                let bestAdj = null;
-                let bestD = 999;
-                adjDepots.forEach(h => {
-                  if (!findUnitAt(h.q, h.r)) {
-                    const d = getHexDistance(h.q, h.r, target.q, target.r);
-                    if (d < bestD) { bestD = d; bestAdj = h; }
-                  }
-                });
-                if (bestAdj) {
-                  enemy.q = bestAdj.q;
-                  enemy.r = bestAdj.r;
-                }
-                logBattle(`🛡️ ${enemy.name} 부대가 군량고 앞목을 틀어막고 방원진으로 철통 결사 방어 중입니다!`);
+                logBattle(`🗡️ [진격 돌격!] ${enemy.name}이 쇄도하여 ${targetAlly.name}에게 칼을 휘두릅니다!`);
+                playSound('slash');
               }
-            } else {
-              // 침입자가 없으면 군량고 인접 지정 초소 위치를 굳건히 지킴
-              logBattle(`🌾🛡️ ${enemy.name} 부대가 적 군량고 바로 앞을 철통 방원진으로 결사 사수하고 있습니다.`);
+              const dmg = calculateCombatDamage(enemy, targetAlly, isArcher ? 'archery' : 'melee');
+              applyDamage(targetAlly, dmg);
+              showDamagePop(targetAlly.q, targetAlly.r, `💥 -${dmg}`);
             }
-          }
-          // 🐎 2. 아군 군량고 우회 기습부대 (role: 'raider')
-          else if (enemy.role === 'raider' && !sam5BattleState.allySupplyBurned) {
-            const distToAllyDepot = getHexDistance(enemy.q, enemy.r, allyDepotQ, allyDepotR);
-            const adjAllies = allies.filter(a => getHexDistance(enemy.q, enemy.r, a.q, a.r) === 1);
-
-            // 바로 앞을 아군이 가로막고 있으면 돌파 시도 공격!
-            if (adjAllies.length > 0) {
-              const target = adjAllies[0];
-              logBattle(`🐎 적 기습부대 ${enemy.name}이 군량고 진로를 가로막은 ${target.name}에게 돌파 공격을 가합니다!`);
-              playSound('slash');
-              const dmg = calculateCombatDamage(enemy, target, 'melee');
-              applyDamage(target, dmg);
-            } else {
-              // 아군 군량고(0, 2)를 향해 우회 쇄도!
-              const stepQ = enemy.q > allyDepotQ ? enemy.q - 1 : (enemy.q < allyDepotQ ? enemy.q + 1 : enemy.q);
-              const stepR = enemy.r > allyDepotR ? enemy.r - 1 : (enemy.r < allyDepotR ? enemy.r + 1 : enemy.r);
-
-              if (stepQ === allyDepotQ && stepR === allyDepotR) {
-                enemy.q = stepQ; enemy.r = stepR;
-                triggerAllySupplyRaid(enemy);
-              } else if (!findUnitAt(stepQ, stepR)) {
-                enemy.q = stepQ; enemy.r = stepR;
-                logBattle(`🐎🚨 [적 기습 경보!] 적 기습부대 ${enemy.name}이 아군 본진 군량고를 노리고 우회 진격 중입니다!`);
-              }
-            }
-          }
-          // 👑 3. 적 본대: 아군 총대장(유비) 집중 포위 공격 (Focus Fire on Commander!)
-          else {
-            const target = commander || allies[0];
-            const distToCommander = getHexDistance(enemy.q, enemy.r, target.q, target.r);
-            const adjAllies = allies.filter(a => getHexDistance(enemy.q, enemy.r, a.q, a.r) === 1);
-
-            if (distToCommander === 1) {
-              // 총대장에게 집중 공격!
-              logBattle(`👑⚡ [총대장 집중 공격!] 적장 ${enemy.name}이 아군 총대장 ${target.name}에게 맹공을 퍼붓습니다!`);
-              playSound('slash');
-              const dmg = Math.floor(calculateCombatDamage(enemy, target, 'melee') * 1.25);
-              applyDamage(target, dmg);
-              if (target.troops <= 0) {
-                logBattle(`🚨 [비보!] 아군 총대장 ${target.name}이 쓰러졌습니다!`);
-              }
-            } else if (adjAllies.length > 0) {
-              // 총대장으로 가는 길을 막는 호위 아군 공격
-              const blocker = adjAllies[0];
-              logBattle(`⚔️ 적장 ${enemy.name}이 총대장을 호위하는 ${blocker.name}에게 맹공을 퍼붓습니다!`);
-              playSound('slash');
-              const dmg = calculateCombatDamage(enemy, blocker, 'melee');
-              applyDamage(blocker, dmg);
-            } else {
-              // 총대장을 향해 좁혀오며 진격!
-              const stepQ = enemy.q > target.q ? enemy.q - 1 : (enemy.q < target.q ? enemy.q + 1 : enemy.q);
-              const stepR = enemy.r > target.r ? enemy.r - 1 : (enemy.r < target.r ? enemy.r + 1 : enemy.r);
-              if (!findUnitAt(stepQ, stepR)) {
-                enemy.q = stepQ; enemy.r = stepR;
-                logBattle(`🏇 적장 ${enemy.name} 부대가 총대장 ${target.name}을 포위하기 위해 쇄도합니다.`);
-              }
+          } else {
+            // 정면이 막혀있으면 우회할 수 있는 빈 타일로라도 한 걸음 전진
+            const anyEmpty = neighbors.find(n => n.q >= 0 && n.q < GRID_COLS && n.r >= 0 && n.r < GRID_ROWS && MAP_TERRAIN[n.r][n.q] !== 3 && !findUnitAt(n.q, n.r));
+            if (anyEmpty) {
+              enemy.q = anyEmpty.q;
+              enemy.r = anyEmpty.r;
+              logBattle(`🏇 적장 [${enemy.name}]이 진로를 우회하며 전진합니다.`);
             }
           }
         }
@@ -6225,7 +6265,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
         enemy.acted = true;
         renderBattlefield();
         step++;
-        setTimeout(executeNextEnemy, 550);
+        setTimeout(executeNextEnemy, 500);
       }
 
       executeNextEnemy();
