@@ -869,7 +869,7 @@
           <span class="text-2xl">⚔️</span>
           <div>
             <h2 class="text-base font-black text-red-300 text-pixel" id="deploy-modal-title">
-              [출전 장수 편성] 침공 부대 선발
+              [출전 장수 편성] 침공 부대 선발 ➔ 삼국지 V 10턴 헥스 결전
             </h2>
             <div class="text-[11px] text-amber-200" id="deploy-target-desc">
               침공 목표 영지로 출격할 장수를 지명하십시오.
@@ -898,7 +898,7 @@
           • ⚠️ 피로도 70% 이상인 장수는 <strong>탈진하여 연속 출전 불가</strong> (휴양 필요)
         </div>
         <button onclick="confirmOfficerDeployment()" id="btn-deploy-confirm" class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-black text-xs rounded border-2 border-yellow-300 shadow-xl flex items-center gap-1.5 animate-pulse">
-          <span>⚔️</span> 선발 장수 출진! (전장 돌입)
+          <span>⚔️</span> 선발 장수 출진! (삼국지 5 헥스 전장 돌입)
         </button>
       </div>
 
@@ -2447,8 +2447,8 @@
       if (actionContainer) {
         if (p.ruler !== gameState.rulerName) {
           actionContainer.innerHTML = `
-            <button onclick="openWarModal(${p.id})" class="w-full py-2 bg-gradient-to-r from-red-700 to-rose-700 hover:from-red-600 hover:to-rose-600 text-yellow-100 font-black text-xs rounded border-2 border-yellow-300 shadow flex items-center justify-center gap-1.5 animate-pulse">
-              <span>⚔️</span> 이 적 영지 즉시 침공 (전쟁 개시!)
+            <button onclick="openWarModal(${p.id})" class="w-full py-2.5 bg-gradient-to-r from-red-700 via-amber-600 to-rose-700 hover:from-red-600 hover:to-rose-500 text-yellow-100 font-black text-xs rounded-lg border-2 border-yellow-300 shadow-2xl flex items-center justify-center gap-2 animate-pulse">
+              <span>⚔️</span> ${p.id}. ${p.name} (${p.ruler}군) 침공작전 개시 (출전 장수 편성)
             </button>
           `;
         } else {
@@ -2860,7 +2860,8 @@
         };
         openHexBattle(enemyTargetProv, fakeFromProv, deployedOfficers);
       } else {
-        // 일반 공격 10턴 헥스 결전
+        // 일반 공격 ➔ 삼국지 5 10턴 헥스 결전 전장 돌입!
+        logMessage(`🚩 [선발 완료] ${deployedOfficers.map(o => o.name.split(' ')[0]).join(', ')} 장군이 출격하여 삼국지 5 전장에 포진합니다!`, 'text-yellow-300 font-black');
         openHexBattle(deployingTargetProv, deployingFromProv, deployedOfficers);
       }
     }
@@ -4352,9 +4353,13 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
         });
       }
 
-      resetHexBattlefield(targetProv, fromProv, deployedOfficers);
       openModal('hex-battle-modal');
-      logMessage(`⚔️ [전술 결전 돌입] ${fromProv.name}의 아군이 ${targetProv.name}의 ${targetProv.ruler}군을 상대로 10턴 헥스 결전에 돌입했습니다!`, 'text-yellow-300 font-black');
+      resetHexBattlefield(targetProv, fromProv, deployedOfficers);
+      setTimeout(() => {
+        renderBattlefield();
+        deselectUnit();
+      }, 50);
+      logMessage(`⚔️ [삼국지 5 헥스 결전 돌입] ${fromProv.name}의 아군이 ${targetProv.name}의 ${targetProv.ruler}군을 상대로 10턴 결전에 돌입했습니다!`, 'text-yellow-300 font-black');
     }
 
     // ==================== 🗺️ 헥스 전장 ➔ 전국 지도 안전 복귀 시스템 ====================
