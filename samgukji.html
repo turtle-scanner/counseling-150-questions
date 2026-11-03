@@ -366,6 +366,19 @@
 <body class="bg-gray-950 min-h-screen text-slate-100 flex flex-col justify-between">
 
   <!-- ==================== 1. 상단 메뉴바 (원작 팝업 윈도우 완벽 연동) ==================== -->
+  
+  <!-- ==================== ✨ v3.5 최신 업데이트 완료 알림 배너 ==================== -->
+  <div id="v35-update-banner" class="w-full bg-gradient-to-r from-red-950 via-amber-950 to-blue-950 border-b-2 border-yellow-400 py-1.5 px-3 flex items-center justify-between text-xs shadow-lg z-[999999] relative">
+    <div class="flex items-center gap-2 overflow-x-auto">
+      <span class="px-2 py-0.5 bg-red-600 text-white font-black rounded text-[10px] animate-pulse">v3.5 최신판</span>
+      <span class="text-yellow-300 font-bold">✨ [최신 업데이트 완료]</span>
+      <span class="text-slate-200">⚔️ 전쟁 출전 장수 3인 선발 | 💤 피로도 70% 출전제한 & 휴양/포상 회복 | 🏹 교주 사섭 초상화 매칭 | 🛡️ 손책군 침공 요격 일기토 버그 수리 완료!</span>
+    </div>
+    <button onclick="document.getElementById('v35-update-banner').style.display='none'" class="text-amber-300 hover:text-white font-mono text-xs px-2 py-0.5 border border-amber-600/60 rounded">
+      ✕ 닫기
+    </button>
+  </div>
+
   <header id="main-header" class="px-2 sm:px-3 py-1 flex items-center justify-between gap-1 shadow-2xl">
     
     <!-- 10대 메뉴 (가로 1줄 고정, 각 버튼 클릭 시 바로 아래에 하얀 테두리 세로 팝업창 찰칵 노출) -->
@@ -1251,133 +1264,19 @@
             <div class="font-black text-xs text-white">12. 공융 (문거)</div>
             <div class="text-[10px] text-lime-300 font-bold bg-lime-950/90 px-2 py-0.5 rounded border border-lime-600 mt-1">북해/청주 (3번)</div>
           </div>
+
+          <!-- 13. 사섭 (교주 군주) -->
+          <div onclick="selectIntroRuler('사섭', 9, 'shishe')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400 shadow" id="card-사섭">
+            <img src="data:image/jpeg;base64,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" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow ring-1 ring-purple-500" alt="사섭">
+            <div class="font-black text-xs text-white">13. 사섭 (위언)</div>
+            <div class="text-[10px] text-purple-300 font-bold bg-purple-950/90 px-2 py-0.5 rounded border border-purple-600 mt-1">교주/남월 (9번)</div>
+          </div>
         </div>
       </div>
 
     </div>
   </div>
-        <div class="text-right">
-          <span class="px-3 py-1 bg-blue-950 border border-blue-500 rounded text-xs text-cyan-300 font-bold">
-            1. 시나리오 : 2. 난세, 군웅 전토를 할거
-          </span>
-        </div>
-      </div>
-
-      <!-- 난이도 설정 바 -->
-      <div class="bg-blue-950/80 border border-amber-500/60 p-3 rounded mb-3 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="text-amber-400 font-bold text-xs">3. 게임레벨 (난이도) :</span>
-          <div class="flex gap-2">
-            <button onclick="setIntroDifficulty('hard')" id="intro-diff-hard" class="px-3 py-1 text-xs font-black rounded border-2 border-red-500 bg-red-900 text-yellow-200 shadow ring-2 ring-red-400">
-              🔥 상급 (어려움)
-            </button>
-            <button onclick="setIntroDifficulty('normal')" id="intro-diff-normal" class="px-3 py-1 text-xs font-bold rounded border border-blue-500 bg-blue-900 text-slate-200 hover:bg-blue-800">
-              ⚖️ 중급 (보통)
-            </button>
-            <button onclick="setIntroDifficulty('easy')" id="intro-diff-easy" class="px-3 py-1 text-xs font-bold rounded border border-emerald-500 bg-emerald-950 text-slate-300 hover:bg-emerald-900">
-              🌱 초급 (쉬움)
-            </button>
-          </div>
-        </div>
-        <div class="text-[11px] text-slate-300">
-          💡 상급은 적 군벌의 침공과 무력이 강화되어 실전 코에이의 긴장감을 만끽할 수 있습니다.
-        </div>
-      </div>
-
-      <!-- 12대 군주 선택 카드 그리드 -->
-      <div class="mb-3">
-        <div class="text-xs text-amber-300 font-bold mb-2 flex items-center justify-between">
-          <span>🚩 플레이할 군주를 선택하십시오 (클릭하여 선택):</span>
-          <span id="selected-ruler-announce" class="text-yellow-300 font-black">현재 선택: 유비 (형주 8번)</span>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5" id="intro-ruler-grid">
-          <!-- 1. 공손찬 -->
-          <div onclick="selectIntroRuler('공손찬', 1, 'gongsongzan')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-공손찬">
-            <img id="intro-face-gongsongzan" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="공손찬">
-            <div class="font-black text-xs text-white">1. 공손찬</div>
-            <div class="text-[10px] text-amber-300 font-bold bg-amber-950/80 px-2 py-0.5 rounded border border-amber-600 mt-1">북평 (유주)</div>
-          </div>
-          <!-- 2. 원소 -->
-          <div onclick="selectIntroRuler('원소', 2, 'yuanshao_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-원소">
-            <img id="intro-face-yuanshao_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="원소">
-            <div class="font-black text-xs text-white">2. 원소</div>
-            <div class="text-[10px] text-yellow-300 font-bold bg-yellow-950/80 px-2 py-0.5 rounded border border-yellow-600 mt-1">남피 (기주)</div>
-          </div>
-          <!-- 3. 공융 -->
-          <div onclick="selectIntroRuler('공융', 3, 'gongyong')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-공융">
-            <img id="intro-face-gongyong" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="공융">
-            <div class="font-black text-xs text-white">3. 공융</div>
-            <div class="text-[10px] text-orange-300 font-bold bg-orange-950/80 px-2 py-0.5 rounded border border-orange-600 mt-1">북해 (청주)</div>
-          </div>
-          <!-- 4. 유요 -->
-          <div onclick="selectIntroRuler('유요', 7, 'liuyao')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-유요">
-            <img id="intro-face-liuyao" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="유요">
-            <div class="font-black text-xs text-white">4. 유요</div>
-            <div class="text-[10px] text-lime-300 font-bold bg-lime-950/80 px-2 py-0.5 rounded border border-lime-600 mt-1">수춘 (양주)</div>
-          </div>
-          <!-- 5. 손책 -->
-          <div onclick="selectIntroRuler('손책', 7, 'sunce')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-손책">
-            <img id="intro-face-sunce" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="손책">
-            <div class="font-black text-xs text-white">5. 손책</div>
-            <div class="text-[10px] text-red-300 font-bold bg-red-950/80 px-2 py-0.5 rounded border border-red-600 mt-1">노강 (양주)</div>
-          </div>
-          <!-- 6. 왕랑 -->
-          <div onclick="selectIntroRuler('왕랑', 7, 'wanglang')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-왕랑">
-            <img id="intro-face-wanglang" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="왕랑">
-            <div class="font-black text-xs text-white">6. 왕랑</div>
-            <div class="text-[10px] text-sky-300 font-bold bg-sky-950/80 px-2 py-0.5 rounded border border-sky-600 mt-1">회계 (양주)</div>
-          </div>
-          <!-- 7. 원술 -->
-          <div onclick="selectIntroRuler('원술', 3, 'yuanshu')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-원술">
-            <img id="intro-face-yuanshu" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="원술">
-            <div class="font-black text-xs text-white">7. 원술</div>
-            <div class="text-[10px] text-pink-300 font-bold bg-pink-950/80 px-2 py-0.5 rounded border border-pink-600 mt-1">완 (예주)</div>
-          </div>
-          <!-- 8. 유표 -->
-          <div onclick="selectIntroRuler('유표', 8, 'liubiao_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-유표">
-            <img id="intro-face-liubiao_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="유표">
-            <div class="font-black text-xs text-white">8. 유표</div>
-            <div class="text-[10px] text-cyan-300 font-bold bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-600 mt-1">양양 (형주)</div>
-          </div>
-          <!-- 9. 마등 -->
-          <div onclick="selectIntroRuler('마등', 11, 'mateng_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-마등">
-            <img id="intro-face-mateng_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="마등">
-            <div class="font-black text-xs text-white">9. 마등</div>
-            <div class="text-[10px] text-teal-300 font-bold bg-teal-950/80 px-2 py-0.5 rounded border border-teal-600 mt-1">서량 (량주)</div>
-          </div>
-          <!-- 10. 조조 -->
-          <div onclick="selectIntroRuler('조조', 13, 'caocao_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-조조">
-            <img id="intro-face-caocao_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="조조">
-            <div class="font-black text-xs text-white">10. 조조</div>
-            <div class="text-[10px] text-blue-300 font-bold bg-blue-950/80 px-2 py-0.5 rounded border border-blue-600 mt-1">낙양 (사례)</div>
-          </div>
-          <!-- 11. 여포 -->
-          <div onclick="selectIntroRuler('여포', 6, 'lubu')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-여포">
-            <img id="intro-face-lubu" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="여포">
-            <div class="font-black text-xs text-white">11. 여포</div>
-            <div class="text-[10px] text-purple-300 font-bold bg-purple-950/80 px-2 py-0.5 rounded border border-purple-600 mt-1">복양 (연주)</div>
-          </div>
-          <!-- 12. 장노 -->
-          <div onclick="selectIntroRuler('장노', 10, 'zhanglu')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-장노">
-            <img id="intro-face-zhanglu" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="장노">
-            <div class="font-black text-xs text-white">12. 장노</div>
-            <div class="text-[10px] text-green-300 font-bold bg-green-950/80 px-2 py-0.5 rounded border border-green-600 mt-1">한중 (익주)</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 하단 출진 버튼 -->
-      <div class="border-t-2 border-amber-400 pt-3 flex items-center justify-between">
-        <div class="text-xs text-slate-300">
-          👑 선택한 군주로 천하 13주를 통일하고 한나라 황제에 즉위하십시오!
-        </div>
-        <button onclick="confirmIntroStart()" class="px-8 py-3 bg-gradient-to-r from-red-600 via-amber-600 to-red-600 hover:from-red-500 hover:to-amber-500 text-yellow-100 font-black text-sm rounded-lg border-2 border-yellow-300 shadow-2xl flex items-center gap-2 animate-pulse">
-          <span>⚔️</span> 선택한 군주로 천하통일 출진!
-        </button>
-      </div>
-
-    </div>
-  </div>
+        
 
 
   <!-- ==================== 🔥 삼국지 V (三國志 V) 헥스 전술 결전 모달 ==================== -->
