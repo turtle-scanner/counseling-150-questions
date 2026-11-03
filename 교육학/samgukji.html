@@ -1533,6 +1533,17 @@
 
     <!-- 우측: 부대 정보 & 삼국지 5 특화 군령창 (1열 차지) -->
     <div class="lg:col-span-1 flex flex-col gap-2">
+      <!-- 🛡️ 아군 부대 원클릭 선택 퀵바 (클릭 미스 완전 박멸) -->
+      <div class="koei-frame p-2 rounded-lg flex flex-col gap-1 border-2 border-yellow-600/70 shadow-lg">
+        <div class="flex justify-between items-center text-[11px] text-yellow-300 font-black border-b border-yellow-700/50 pb-0.5">
+          <span>⚡ 아군 부대 원클릭 선택</span>
+          <span class="text-[9px] text-cyan-300">(클릭 시 즉시 선택)</span>
+        </div>
+        <div id="allyQuickSelectBar" class="grid grid-cols-2 gap-1 mt-0.5">
+          <!-- JS로 동적 렌더링 -->
+        </div>
+      </div>
+
       
       <!-- 선택된 무장 상세 카드 -->
       <div class="koei-frame p-2.5 rounded-lg flex flex-col gap-1.5">
@@ -1583,7 +1594,11 @@
           </div>
 
           <div class="grid grid-cols-2 gap-1.5">
-            <button id="btnAttack" onclick="onCmdAttack()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+            <!-- ⚡ 원클릭 즉시 자동 공격 스마트 버튼 -->
+            <button id="btnAutoSmartAttack" onclick="onCmdAutoSmartAttack()" class="col-span-2 py-2 px-3 rounded bg-gradient-to-r from-red-800 via-amber-600 to-red-800 hover:from-red-700 hover:to-amber-500 border-2 border-yellow-300 text-yellow-200 font-black text-xs shadow-xl flex items-center justify-center gap-1.5 transition transform hover:scale-[1.02] active:scale-95 animate-pulse">
+              <span>⚡</span> <span>원클릭 즉시 공격 (최인접 적 자동 타격)</span>
+            </button>
+            <button id="btnAttack" onclick="onCmdAttack()"  class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
               <span>🗡️</span> <span>근접 공격</span>
             </button>
             <button id="btnArchery" onclick="onCmdArchery()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
@@ -5010,7 +5025,14 @@ ${promoMsg}
 
       logBattle(`⚔️ [개전] ${gameState.rulerName}군과 ${enemyRuler}군이 전장에서 대치합니다! 10턴 내로 적 본대를 궤멸시키십시오!`);
       renderBattlefield();
-      deselectUnit();
+      const firstAlly = UNITS.find(u => u.faction === 'ally' && u.troops > 0 && !u.acted);
+      if (firstAlly) {
+        selectUnit(firstAlly);
+      } else {
+        deselectUnit();
+      }
+      renderAllyQuickBar();
+      renderBattlefield();
     }
 
     function openHexBattle(targetProv, fromProv, deployedOfficers = []) {
@@ -5664,101 +5686,66 @@ ${promoMsg}
       const mx = (e.clientX - rect.left) * scaleX;
       const my = (e.clientY - rect.top) * scaleY;
 
-      // 1. [유닛 직접 타겟팅] 반지름 36px 이내 장수 아이콘 클릭 감지
-      let clickedUnit = null;
-      let minUnitDist = 9999;
-      for (const u of UNITS) {
-        if (u.troops <= 0) continue;
-        const { x, y } = getHexPixel(u.q, u.r);
-        const d = Math.hypot(mx - x, my - y);
-        if (d < minUnitDist && d < 36) {
-          minUnitDist = d;
-          clickedUnit = u;
-        }
-      }
-
-      // 유닛을 클릭한 경우
-      if (clickedUnit) {
-        handleUnitClick(clickedUnit);
-        return;
-      }
-
-      // 2. [타일 클릭 판정] 빈 헥스 타일 (이동 타일, 지형 타일 등) 감지
+      // 1. 가장 가까운 헥스 타일 찾기
       let closestHex = null;
-      let minDist = 9999;
+      let minTileDist = 9999;
       for (let r = 0; r < GRID_ROWS; r++) {
         for (let q = 0; q < GRID_COLS; q++) {
           const { x, y } = getHexPixel(q, r);
           const dist = Math.hypot(mx - x, my - y);
-          if (dist < minDist) {
-            minDist = dist;
+          if (dist < minTileDist) {
+            minTileDist = dist;
             closestHex = { q, r };
           }
         }
       }
 
-      if (closestHex && minDist < 48) {
+      // 2. 해당 헥스에 위치한 유닛 또는 반경 42px 내 유닛 감지 (초정밀 타겟팅)
+      let clickedUnit = null;
+      if (closestHex && minTileDist < HEX_RADIUS * 1.25) {
+        clickedUnit = findUnitAt(closestHex.q, closestHex.r);
+      }
+      if (!clickedUnit) {
+        for (const u of UNITS) {
+          if (u.troops <= 0) continue;
+          const { x, y } = getHexPixel(u.q, u.r);
+          const d = Math.hypot(mx - x, my - y);
+          if (d < 42) {
+            clickedUnit = u;
+            break;
+          }
+        }
+      }
+
+      // 🎯 유닛을 클릭한 경우
+      if (clickedUnit) {
+        handleUnitClick(clickedUnit);
+        return;
+      }
+
+      // 🎯 빈 타일을 클릭한 경우 (이동 또는 조준)
+      if (closestHex && minTileDist < HEX_RADIUS * 1.25) {
         handleTileClick(closestHex.q, closestHex.r);
       }
     });
 
     // 🎯 유닛 클릭 핸들러: 아군 선택 / 적군 원클릭 즉시 공격
-    function handleUnitClick(unit) {
-      const selected = sam5BattleState.selectedUnit;
-
-      // 특기/명령 조준 모드(화계, 원거리 조준 등)인 경우
-      if (sam5BattleState.skillMode) {
-        executeSkillAction(sam5BattleState.skillMode, unit);
-        clearSkillMode();
-        renderBattlefield();
-        return;
-      }
-
-      // 아군 턴이 아니면 단순 카드 조회
-      if (sam5BattleState.phase !== "ally") {
-        selectUnit(unit);
-        renderBattlefield();
-        return;
-      }
-
-      // A. 아군 부대를 클릭한 경우 -> 선택 및 이동범위 활성화
-      if (unit.faction === "ally") {
-        selectUnit(unit);
-        logBattle(`🛡️ 아군 [${unit.name}] 부대를 선택했습니다. 적 부대를 클릭하면 즉시 공격합니다!`);
-        renderBattlefield();
-        return;
-      }
-
-      // B. 적군 부대를 클릭한 경우 -> 이미 선택된 아군이 있으면 100% 즉시 공격 감행!
-      if (unit.faction === "enemy") {
-        if (selected && selected.faction === "ally" && !selected.acted) {
-          executeDirectAttack(selected, unit);
-          renderBattlefield();
-          return;
-        } else {
-          // 선택된 아군이 없으면 적군 상세 카드 조회
-          selectUnit(unit);
-          renderBattlefield();
-          return;
-        }
-      }
-    }
-
     // 🎯 원클릭 자동 공격 및 돌격 전담 실행기 (Direct Attack & Auto Charge)
     function executeDirectAttack(attacker, target) {
+      if (!attacker || !target) return;
       const dist = getHexDistance(attacker.q, attacker.r, target.q, target.r);
       const isArcher = isMasterArcher(attacker);
 
       // Case 1: 인접 1칸 적 -> 즉시 칼을 뽑아 근접 공격 또는 3면 포위 일제합공!
       if (dist === 1) {
-        logBattle(`🗡️ [근접 공격] ${attacker.name} 부대가 적장 ${target.name}에게 돌격을 감행합니다!`);
+        logBattle("🗡️ [근접 공격] " + attacker.name + " 부대가 적장 " + target.name + "에게 돌격을 감행합니다!");
         executeSkillAction('attack', target);
         return;
       }
 
       // Case 2: 2~4칸 거리 적 -> 모든 장수 화살(궁시) 사격 또는 맹화시 발사!
       if (dist <= 4) {
-        logBattle(`🏹 [원거리 사격] ${attacker.name} 부대가 적장 ${target.name}에게 화살비를 쏟아붓습니다! (사거리 4칸)`);
+        logBattle("🏹 [원거리 사격] " + attacker.name + " 부대가 적장 " + target.name + "에게 화살비를 쏟아붓습니다! (사거리 4칸)");
         executeSkillAction('archery', target);
         return;
       }
@@ -5786,13 +5773,13 @@ ${promoMsg}
 
             const newDist = getHexDistance(attacker.q, attacker.r, target.q, target.r);
             if (newDist === 1) {
-              logBattle(`🏇 [질풍 돌격!] ${attacker.name} 부대가 적장 ${target.name}에게 쇄도하여 통렬한 돌격을 가합니다!`);
+              logBattle("🏇 [질풍 돌격!] " + attacker.name + " 부대가 적장 " + target.name + "에게 쇄도하여 통렬한 돌격을 가합니다!");
               executeSkillAction('attack', target);
             } else if (newDist <= 4) {
-              logBattle(`🏇🏹 [돌격 사격!] ${attacker.name} 부대가 진격 후 적장 ${target.name}에게 화살비를 쏟아붓습니다!`);
+              logBattle("🏇🏹 [돌격 사격!] " + attacker.name + " 부대가 진격 후 적장 " + target.name + "에게 화살비를 쏟아붓습니다!");
               executeSkillAction('archery', target);
             } else {
-              logBattle(`🏇 ${attacker.name} 부대가 적장 ${target.name}을 향해 급속 돌격 진격했습니다!`);
+              logBattle("🏇 " + attacker.name + " 부대가 적장 " + target.name + "을 향해 급속 돌격 진격했습니다!");
               updateActionCommands();
             }
             return;
@@ -5800,10 +5787,59 @@ ${promoMsg}
         }
       }
 
-      logBattle(`적장 ${target.name}이 너무 멀어 공격이 닿지 않습니다. 먼저 파란 이동 타일을 클릭하여 진격하십시오.`);
+      logBattle("적장 " + target.name + "이 너무 멀어 공격이 닿지 않습니다. 먼저 녹색 이동 타일을 클릭하여 진격하십시오.");
     }
 
-    // 🎯 빈 타일 클릭 핸들러 (이동 및 스킬 조준)
+    function handleUnitClick(unit) {
+      const selected = sam5BattleState.selectedUnit;
+
+      // 특기/명령 조준 모드(화계, 원거리 조준 등)인 경우
+      if (sam5BattleState.skillMode) {
+        executeSkillAction(sam5BattleState.skillMode, unit);
+        clearSkillMode();
+        renderBattlefield();
+        return;
+      }
+
+      // 아군 턴이 아니면 단순 카드 조회
+      if (sam5BattleState.phase !== "ally") {
+        selectUnit(unit);
+        renderBattlefield();
+        return;
+      }
+
+      // A. 아군 부대를 클릭한 경우 -> 선택 및 이동범위 활성화
+      if (unit.faction === "ally") {
+        selectUnit(unit);
+        logBattle(`🛡️ 아군 [${unit.name}] 부대를 선택했습니다. 적 부대를 클릭하거나 [원클릭 즉시 공격]을 누르십시오!`);
+        renderBattlefield();
+        return;
+      }
+
+      // B. 적군 부대를 클릭한 경우 -> 이미 선택된 아군이 있으면 100% 즉시 공격 감행!
+      if (unit.faction === "enemy") {
+        if (selected && selected.faction === "ally" && !selected.acted) {
+          executeDirectAttack(selected, unit);
+          renderBattlefield();
+          return;
+        } else {
+          // 선택된 아군이 아직 없으면 첫 번째 미행동 아군을 즉시 골라주고 그 적을 타격!
+          const firstAlly = UNITS.find(u => u.faction === 'ally' && u.troops > 0 && !u.acted);
+          if (firstAlly) {
+            selectUnit(firstAlly);
+            executeDirectAttack(firstAlly, unit);
+            renderBattlefield();
+            return;
+          } else {
+            selectUnit(unit);
+            renderBattlefield();
+            return;
+          }
+        }
+      }
+    }
+
+    // 🎯 빈 타일 클릭 핸들러: 이동 & 실수 클릭 보호(Deselect Protection)
     function handleTileClick(q, r) {
       // 1. 공격/특기 조준 발동 모드 (화계 등 타일 조준)
       if (sam5BattleState.skillMode) {
@@ -5835,7 +5871,7 @@ ${promoMsg}
         } else if (destTerrain === 8 && !sam5BattleState.allySupplyBurned) {
           logBattle(`🌾 아군 ${selectedUnit.name} 부대가 본진 군량고를 경비하고 있습니다.`);
         } else {
-          logBattle(`${selectedUnit.name} 부대가 진격하여 진형을 잡았습니다.`);
+          logBattle(`${selectedUnit.name} 부대가 진격했습니다. 이제 적을 클릭하여 공격하십시오!`);
         }
 
         playSound('fanfare');
@@ -5844,12 +5880,16 @@ ${promoMsg}
         return;
       }
 
-      // 3. 아무것도 없는 허공 클릭 시 선택 해제
+      // 3. 🛡️ 실수 클릭 보호: 빈 땅을 잘못 클릭해도 아군 부대 선택을 풀지 않음!
+      if (selectedUnit && selectedUnit.faction === 'ally') {
+        logBattle(`💡 이동할 수 없는 위치입니다. 녹색 이동 타일을 클릭하거나, 붉은 적군을 클릭하여 공격하십시오.`);
+        return;
+      }
+
       deselectUnit();
       renderBattlefield();
     }
 
-    // 하위 호환 매핑
     function handleHexClick(q, r) {
       const u = findUnitAt(q, r);
       if (u) {
@@ -5859,7 +5899,95 @@ ${promoMsg}
       }
     }
 
+    
+    // ==========================================================================
+    // 🛡️ 아군 부대 원클릭 선택 퀵바 실시간 렌더링 시스템
+    // ==========================================================================
+    function renderAllyQuickBar() {
+      const container = document.getElementById("allyQuickSelectBar");
+      if (!container) return;
+      const allies = UNITS.filter(u => u.faction === 'ally' && u.troops > 0);
+      const selected = sam5BattleState.selectedUnit;
+
+      container.innerHTML = allies.map(u => {
+        const isSel = selected && selected.id === u.id;
+        const isActed = u.acted;
+        
+        let bgClass = "bg-slate-900 border-slate-700 text-slate-300 hover:bg-blue-900/60";
+        if (isSel) {
+          bgClass = "bg-amber-600 border-yellow-300 text-white font-black shadow-md ring-2 ring-yellow-400 animate-pulse";
+        } else if (isActed) {
+          bgClass = "bg-slate-950/70 border-slate-800 text-slate-500 opacity-60";
+        }
+
+        const actLabel = isActed ? '완료' : '대기';
+        return `
+          <button onclick="selectUnitById('${u.id}')" 
+                  class="py-1 px-1.5 rounded border text-[11px] flex items-center justify-between transition ${bgClass}">
+            <span class="flex items-center gap-1 font-bold">
+              <span>${u.avatar}</span>
+              <span class="truncate max-w-[65px]">${u.name}</span>
+            </span>
+            <span class="text-[9px] px-1 rounded ${isActed ? 'bg-slate-800 text-slate-400' : 'bg-cyan-900 text-cyan-200'}">
+              ${actLabel}
+            </span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // ID로 부대 즉시 선택
+    function selectUnitById(unitId) {
+      if (sam5BattleState.battleOver || sam5BattleState.phase !== 'ally') return;
+      const u = UNITS.find(unit => unit.id === unitId && unit.faction === 'ally' && unit.troops > 0);
+      if (u) {
+        selectUnit(u);
+        playSound('fanfare');
+        renderBattlefield();
+      }
+    }
+
+    // ⚡ 원클릭 즉시 자동 공격: 현재 선택된 아군이 가장 가까운 적을 자동 타격!
+    function onCmdAutoSmartAttack() {
+      const u = sam5BattleState.selectedUnit;
+      if (!u || u.acted || sam5BattleState.phase !== 'ally') {
+        // 선택된 아군이 없으면 첫 번째 미행동 아군 자동 선택
+        const firstAlly = UNITS.find(unit => unit.faction === 'ally' && unit.troops > 0 && !unit.acted);
+        if (firstAlly) {
+          selectUnit(firstAlly);
+          onCmdAutoSmartAttack();
+        } else {
+          logBattle("행동 가능한 아군 부대가 없습니다. 턴을 종료하십시오.");
+        }
+        return;
+      }
+
+      // 살아있는 모든 적 중 가장 가까운 적 탐색
+      const aliveEnemies = UNITS.filter(en => en.faction === 'enemy' && en.troops > 0);
+      if (aliveEnemies.length === 0) {
+        logBattle("전장에 생존한 적 부대가 없습니다!");
+        return;
+      }
+
+      let closestEnemy = null;
+      let minDistance = 999;
+      aliveEnemies.forEach(en => {
+        const d = getHexDistance(u.q, u.r, en.q, en.r);
+        if (d < minDistance) {
+          minDistance = d;
+          closestEnemy = en;
+        }
+      });
+
+      if (closestEnemy) {
+        logBattle(`⚡ [자동 타격] ${u.name} 부대가 가장 인접한 적장 ${closestEnemy.name}을 정밀 조준하여 공격합니다!`);
+        executeDirectAttack(u, closestEnemy);
+        renderBattlefield();
+      }
+    }
+
     function selectUnit(unit) {
+      if (!unit || unit.troops <= 0) return;
       sam5BattleState.selectedUnit = unit;
       updateUnitDetailCard(unit);
 
@@ -5871,6 +5999,7 @@ ${promoMsg}
 
       sam5BattleState.attackableTargets = [];
       updateActionCommands();
+      renderAllyQuickBar();
     }
 
         function disableAllCommands() {
@@ -6288,7 +6417,20 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
       sam5BattleState.reachableHexes = [];
       sam5BattleState.attackableTargets = [];
       clearSkillMode();
+
+      // 다음 행동 가능한 아군 자동 순차 선택 (원활한 조작 보장)
+      const nextAlly = UNITS.find(unit => unit.faction === 'ally' && unit.troops > 0 && !unit.acted);
+      if (nextAlly && sam5BattleState.phase === 'ally' && !sam5BattleState.battleOver) {
+        sam5BattleState.selectedUnit = nextAlly;
+        updateUnitDetailCard(nextAlly);
+        if (!nextAlly.moved) computeMovementRange(nextAlly);
+        logBattle(`🗡️ 다음 아군 [${nextAlly.name}] 부대로 순차 전환되었습니다. 적을 클릭하여 공격하십시오!`);
+      } else {
+        deselectUnit();
+      }
+
       updateActionCommands();
+      renderAllyQuickBar();
       renderBattlefield();
 
       // 아군 모든 부대가 행동 완료했는지 검사
