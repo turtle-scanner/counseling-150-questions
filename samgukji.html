@@ -628,7 +628,13 @@
         <!-- 🔥 병사 등급(보병->기마병->전차병->중보병->친위병) & 레벨 1~100 게이지 -->
         <div class="bg-blue-950/90 border-2 border-amber-400/80 rounded-lg p-2.5 mb-2.5 shadow">
           <div class="flex items-center justify-between mb-1">
-            <div class="flex items-center gap-1.5">
+            <div id="action-points-banner" class="flex items-center">
+        <div class="flex items-center gap-2 bg-gradient-to-r from-slate-950 via-amber-950/80 to-slate-950 border-2 border-yellow-400 px-3 py-1 rounded-full shadow-lg">
+          <span class="text-xs font-black text-amber-300">🚩 이달의 전략 행동력:</span>
+          <span class="text-sm font-black text-yellow-300 tracking-wider">⭐⭐⭐⭐⭐ (5/5)</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5">
               <span id="troop-tier-icon" class="text-base">🛡️</span>
               <span id="troop-tier-name" class="font-black text-xs text-white">보병 (기본)</span>
               <span id="troop-tier-badge" class="troop-tier-badge bg-slate-800 border border-slate-500 text-slate-200">Lv. 1</span>
@@ -1452,7 +1458,7 @@
       
       <!-- 캔버스 컨테이너 -->
       <div class="relative w-full flex items-center justify-center">
-        <canvas id="battleCanvas" width="920" height="560" class="rounded border border-amber-900/80 cursor-pointer max-w-full h-auto bg-[#0a0f1d]"></canvas>
+        <canvas id="battleCanvas" width="1160" height="590" class="rounded border border-amber-900/80 cursor-pointer max-w-full h-auto bg-[#0a0f1d]"></canvas>
         <div id="damageOverlay" class="absolute inset-0 pointer-events-none"></div>
       </div>
 
@@ -2111,7 +2117,7 @@
         { name: '조인 (자효)', war: 88, int: 74, lead: 90, icon: '🛡️', title: '철벽의 맹장', element: 'earth', elemIcon: '⛰️', elemName: '땅 (土 - 육군)' }
       ],
       '여포': [
-        { name: '여포 (봉선)', war: 100, int: 45, lead: 86, icon: '👹', title: '천하무쌍 비장', faceKey: 'lubu', element: 'earth', elemIcon: '⛰️', elemName: '땅 (土 - 육군)', level: 10, exp: 1500, troopType: 'royal', troopName: '친위병 (천하무쌍)' },
+        { name: '여포 (봉선)', war: 100, duelWar: 119, int: 45, lead: 86, icon: '👹', title: '천하무쌍 비장 (일기토 무력 119)', faceKey: 'lubu', element: 'earth', elemIcon: '⛰️', elemName: '땅 (土 - 육군)', level: 10, exp: 1500, troopType: 'royal', troopName: '친위병 (천하무쌍)' },
         { name: '장료 (문원)', war: 94, int: 84, lead: 95, icon: '⚡', title: '팔건장 으뜸', element: 'earth', elemIcon: '⛰️', elemName: '땅 (土 - 육군)' },
         { name: '고순 (함진영)', war: 86, int: 60, lead: 88, icon: '🛡️', title: '함진영 대장', element: 'earth', elemIcon: '⛰️', elemName: '땅 (土 - 육군)' }
       ],
@@ -2164,7 +2170,9 @@
       selectedProvId: 8,
       allies: [],
       storageHp: 100,
-      difficulty: 'hard', // 기본 난이도: 상급 (사용자가 너무 쉽지 않게 상급 요청!)
+      difficulty: 'hard',
+      actionPoints: 5,
+      maxActionPoints: 5, // 기본 난이도: 상급 (사용자가 너무 쉽지 않게 상급 요청!)
       rates: { riceSell: 107, riceBuy: 59, crossbow: 57, heavyBow: 95, horse: 49 },
       currentInfoTab: 'sol',
       bgmPlaying: false,
@@ -2433,6 +2441,7 @@
     }
 
     function updateRightPanel(provId) {
+      updateActionPointUI();
       const p = PROVINCES.find(x => x.id === provId);
       if (!p) return;
 
@@ -2619,9 +2628,63 @@
     }
 
     // ==================== 0. 휴양 (턴 넘김 & 난이도별 침공 시뮬레이션) ====================
+    
+    // ==========================================================================
+    // ⭐ 전략 지도 1턴(1달)당 5회 행동 제한 시스템
+    // ==========================================================================
+    function getRemainingActionPoints() {
+      if (gameState.actionPoints === undefined) gameState.actionPoints = 5;
+      return gameState.actionPoints;
+    }
+
+    function consumeActionPoint(actionName = '전략 명령') {
+      if (gameState.actionPoints === undefined) gameState.actionPoints = 5;
+      if (gameState.actionPoints <= 0) {
+        alert(`⚠️ [행동력 소진]\n\n이번 달(턴)에 하달할 수 있는 5회의 전략 명령을 모두 소진하였습니다!\n\n상단 좌측의 [0. 휴양]을 클릭하여 다음 달로 넘어가십시오.`);
+        return false;
+      }
+      gameState.actionPoints--;
+      updateActionPointUI();
+      logMessage(`⭐ [행동력 소모] '${actionName}' 수행 완료 (잔여 행동력: ${gameState.actionPoints} / 5)`, 'text-yellow-300 font-bold');
+      return true;
+    }
+
+    function resetMonthlyActionPoints() {
+      gameState.actionPoints = 5;
+      updateActionPointUI();
+      logMessage(`⭐ [새 달 시작] 전략 행동력이 5개로 가득 충전되었습니다! (5회 명령 가능)`, 'text-emerald-300 font-black');
+    }
+
+    function updateActionPointUI() {
+      const pts = gameState.actionPoints !== undefined ? gameState.actionPoints : 5;
+      const stars = '⭐'.repeat(pts) + '☆'.repeat(5 - pts);
+
+      // 1. 헤더 상단 배너 갱신
+      const headerBanner = document.getElementById('action-points-banner');
+      if (headerBanner) {
+        headerBanner.innerHTML = `
+          <div class="flex items-center gap-2 bg-gradient-to-r from-slate-950 via-amber-950/80 to-slate-950 border-2 border-yellow-400 px-3 py-1 rounded-full shadow-lg">
+            <span class="text-xs font-black text-amber-300">🚩 이달의 전략 행동력:</span>
+            <span class="text-sm font-black text-yellow-300 tracking-wider">${stars} (${pts}/5)</span>
+          </div>
+        `;
+      }
+
+      // 2. 우측 패널 안의 텍스트도 실시간 갱신
+      const panelBanner = document.querySelector('#action-points-banner span.tracking-wider');
+      if (panelBanner) {
+        panelBanner.innerText = `${stars} (${pts}/5)`;
+      }
+    }
+
     function executeRest() {
       closeAllPopups();
       playSfx('rest');
+
+      // ⭐ 한 달(턴) 넘김 시 전략 행동력 5개 즉각 충전!
+      gameState.actionPoints = 5;
+      updateActionPointUI();
+      logMessage(`⭐ [새 달 시작] 전략 행동력이 5개로 완충되었습니다! (5회 명령 가능)`, 'text-emerald-300 font-black');
       gameState.month++;
       if (gameState.month > 12) {
         gameState.month = 1;
@@ -2819,7 +2882,7 @@
     function executeSpecialTraining() {
       const myProv = getMyCapital();
       if (myProv.gold < 200 || myProv.food < 500) {
-        alert("⚠️ 훈련을 위한 군자금(금 200전) 또는 군량(500석)이 부족합니다!");
+        alert(`⚠️ 훈련을 위한 군자금(금 200전) 또는 군량(500석)이 부족합니다!`);
         return;
       }
       myProv.gold -= 200;
@@ -2902,37 +2965,51 @@
       openModal('officer-deploy-modal');
     }
 
+    // 각 장수별 사용자 정의 진형 및 병력 상태 맵
+    let customTroopSettings = {};
+
+    function setOfficerCustomFormation(offId, formKey) {
+      if (!customTroopSettings[offId]) customTroopSettings[offId] = {};
+      customTroopSettings[offId].formation = formKey;
+      playSfx('select');
+    }
+
+    function setOfficerCustomSoldiers(offId, count) {
+      if (!customTroopSettings[offId]) customTroopSettings[offId] = {};
+      customTroopSettings[offId].soldiers = parseInt(count);
+      const labelEl = document.getElementById(`soldier-val-${offId}`);
+      if (labelEl) labelEl.innerText = `${parseInt(count).toLocaleString()}명`;
+    }
+
     function renderDeployOfficerList() {
       const container = document.getElementById('deploy-officer-list');
       if (!container) return;
 
       const maxAllowed = getMaxDeployableCount();
       const maxLvl = Math.max(...MY_OFFICERS.map(o => o.level || 1), 1);
+      const totalAvailable = deployingFromProv ? deployingFromProv.soldiers : 20000;
+      const defaultPerUnit = Math.floor(totalAvailable / maxAllowed);
 
       // 상단 출전 규모 및 5대 속성 상성 안내 바 동적 주입
       const elemGuideHeader = `
         <div class="col-span-1 md:col-span-2 bg-slate-950/95 border-2 border-yellow-500/80 p-3 rounded-lg text-xs text-slate-200 mb-2 shadow-xl">
           <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-yellow-500/30">
             <span class="font-black text-amber-300 text-sm flex items-center gap-1.5">
-              <span>🚩 [출전 군단 규모]</span>
-              <span class="text-white bg-amber-600 px-2 py-0.5 rounded text-[11px]">최고 Lv.${maxLvl} 달성</span>
-              <span class="text-yellow-300">➔ 최대 ${maxAllowed}개 부대 출전 가능!</span>
+              <span>🚩 [부대 커스텀 편성]</span>
+              <span class="text-white bg-amber-600 px-2 py-0.5 rounded text-[11px]">최고 Lv.${maxLvl}</span>
+              <span class="text-yellow-300">최대 ${maxAllowed}개 부대 출전 가능!</span>
             </span>
-            <span class="text-[11px] text-cyan-300 font-bold">선택: ${selectedDeployOfficerIds.length} / ${maxAllowed}부대</span>
+            <span class="text-[11px] text-cyan-300 font-bold">선발: ${selectedDeployOfficerIds.length} / ${maxAllowed}부대</span>
           </div>
           <div class="text-[11px] text-slate-300 mb-2">
-            ※ <strong>출전 해금 기준:</strong> Lv.1~9 (3부대) ➔ <span class="text-yellow-300 font-bold">Lv.10 (4부대)</span> ➔ <span class="text-cyan-300 font-bold">Lv.20 (5부대)</span> ➔ <span class="text-purple-300 font-bold">Lv.50 (6부대 대군단)</span>
+            💡 <strong>부대 설정:</strong> 각 장수별로 <strong>출전 진형(5대 진형)</strong>과 <strong>병력 수(슬라이더)</strong>를 직접 지휘관 마음대로 설정할 수 있습니다!
           </div>
-          <div class="font-black text-yellow-300 flex items-center justify-between mb-1.5">
-            <span>🔮 5대 부대 속성 상성 (우세 시 대미지 +50% 극딜 폭발!)</span>
-            <span class="text-[10px] text-cyan-300">적 세력 속성에 맞추어 출전시키십시오!</span>
-          </div>
-          <div class="grid grid-cols-5 gap-1.5 text-center text-[10px] font-bold">
-            <div class="bg-blue-950/90 p-1.5 rounded border border-blue-500 text-cyan-200">💧 물 (손권)<br><span class="text-[9px] text-yellow-300">▶ 불(🔥) 격파</span></div>
-            <div class="bg-red-950/90 p-1.5 rounded border border-red-500 text-red-200">🔥 불 (원소/공손)<br><span class="text-[9px] text-yellow-300">▶ 나무(🌲) 격파</span></div>
-            <div class="bg-emerald-950/90 p-1.5 rounded border border-emerald-500 text-emerald-200">🌲 나무 (촉한)<br><span class="text-[9px] text-yellow-300">▶ 땅(⛰️) 격파</span></div>
-            <div class="bg-amber-950/90 p-1.5 rounded border border-amber-500 text-amber-200">⛰️ 땅 (중원 육군)<br><span class="text-[9px] text-yellow-300">▶ 물(💧)/바람(🌪️)</span></div>
-            <div class="bg-purple-950/90 p-1.5 rounded border border-purple-500 text-purple-200">🌪️ 바람 (서량 기병)<br><span class="text-[9px] text-yellow-300">▶ 물(💧) 격파</span></div>
+          <div class="grid grid-cols-5 gap-1 text-center text-[10px] font-bold">
+            <div class="bg-blue-950/90 p-1 rounded border border-blue-500 text-cyan-200">💧 물 (손권)<br>▶ 불(🔥) 격파</div>
+            <div class="bg-red-950/90 p-1 rounded border border-red-500 text-red-200">🔥 불 (원소/공손)<br>▶ 나무(🌲) 격파</div>
+            <div class="bg-emerald-950/90 p-1 rounded border border-emerald-500 text-emerald-200">🌲 나무 (촉한)<br>▶ 땅(⛰️) 격파</div>
+            <div class="bg-amber-950/90 p-1 rounded border border-amber-500 text-amber-200">⛰️ 땅 (중원 육군)<br>▶ 물/바람 격파</div>
+            <div class="bg-purple-950/90 p-1 rounded border border-purple-500 text-purple-200">🌪️ 바람 (서량 기병)<br>▶ 물(💧) 격파</div>
           </div>
         </div>
       `;
@@ -2944,40 +3021,70 @@
         const offLvl = off.level || 1;
         const offTroopName = off.troopName || '보병';
 
+        if (!customTroopSettings[off.id]) {
+          const defaultForm = off.name.includes('황충') ? 'anhaeng' : (off.name.includes('조운') ? 'chuhaeng' : 'gyorin');
+          customTroopSettings[off.id] = {
+            formation: defaultForm,
+            soldiers: Math.min(10000, Math.max(3000, defaultPerUnit))
+          };
+        }
+
+        const currSetting = customTroopSettings[off.id];
+
         let statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 border border-emerald-500 text-emerald-300 font-bold">🟢 쾌조</span>';
         if (off.fatigue >= 70) {
           statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-red-950 border border-red-500 text-red-300 font-black animate-pulse">🔴 탈진</span>';
-        } else if (off.fatigue >= 35) {
-          statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950 border border-amber-500 text-amber-300 font-bold">🟡 보통</span>';
         }
 
         const cardBorder = isExhausted
-          ? 'border-red-900/60 bg-slate-950/90 opacity-60 cursor-not-allowed'
-          : (isSelected ? 'border-yellow-400 bg-amber-950/80 ring-2 ring-yellow-400 cursor-pointer shadow-lg' : 'border-blue-700 bg-blue-950/80 hover:border-yellow-400 cursor-pointer');
+          ? 'border-red-900/60 bg-slate-950/90 opacity-60'
+          : (isSelected ? 'border-yellow-400 bg-amber-950/90 ring-2 ring-yellow-400 shadow-xl' : 'border-blue-800 bg-blue-950/80 hover:border-yellow-400');
 
         return `
-          <div onclick="toggleDeployOfficer('${off.id}')" class="p-2.5 rounded-lg border-2 transition flex items-center justify-between ${cardBorder}">
-            <div class="flex items-center gap-2.5">
-              <span class="text-3xl">${off.icon || '⚔️'}</span>
-              <div class="space-y-0.5">
-                <div class="flex items-center gap-2">
-                  <span class="font-black text-xs text-white">${off.name}</span>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-900 border border-amber-400 text-yellow-300 font-bold">Lv.${offLvl} ${offTroopName}</span>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-slate-900 border border-blue-400 text-cyan-300 font-bold">${off.elemIcon || '⛰️'} ${off.elemName || '땅 (土)'}</span>
-                  ${statusBadge}
-                </div>
-                <div class="text-[11px] text-yellow-300">
-                  무력: <strong>${off.war}</strong> | 지력: <strong>${off.int}</strong> | 통솔: <strong>${off.lead || 80}</strong>
-                  ${off.name.includes('황충') ? '<span class="ml-1 text-red-400 font-bold">[🏹신궁/화시 특화]</span>' : ''}
-                </div>
-                <div class="text-[10px] text-slate-300">
-                  ${off.title || '용맹한 장수'} (피로도: ${off.fatigue || 0}%)
+          <div class="p-3 rounded-lg border-2 transition ${cardBorder} flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5 cursor-pointer" onclick="toggleDeployOfficer('${off.id}')">
+                <span class="text-3xl">${off.icon || '⚔️'}</span>
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-black text-xs text-white">${off.name}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-900 border border-amber-400 text-yellow-300 font-bold">Lv.${offLvl}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-slate-900 border border-blue-400 text-cyan-300 font-bold">${off.elemIcon || '⛰️'} ${off.elemName || '땅 (土)'}</span>
+                    ${statusBadge}
+                  </div>
+                  <div class="text-[11px] text-yellow-300 mt-0.5">
+                    무력: <strong>${off.war}</strong> | 지력: <strong>${off.int}</strong> | 통솔: <strong>${off.lead || 80}</strong>
+                    ${(off.name.includes('황충') || off.name.includes('서황') || off.name.includes('태사자') || off.name.includes('공손찬')) ? '<span class="ml-1 text-red-400 font-bold">[🏹신궁 4칸 저격]</span>' : ''}
+                  </div>
                 </div>
               </div>
+              <button onclick="toggleDeployOfficer('${off.id}')" class="px-3 py-1 rounded text-xs font-black shadow transition ${isSelected ? 'bg-yellow-500 text-slate-950' : 'bg-slate-800 text-slate-300 border border-slate-600 hover:border-yellow-400'}">
+                ${isSelected ? '✓ 선발 해제' : '+ 출전 선발'}
+              </button>
             </div>
-            <div class="text-right">
-              ${isSelected ? '<span class="px-3 py-1 bg-yellow-500 text-slate-950 font-black rounded text-xs shadow">✓ 출전 선발</span>' : '<span class="px-3 py-1 bg-slate-800 text-slate-300 border border-slate-600 rounded text-xs">선택</span>'}
-            </div>
+
+            <!-- 부대 설정 (진형 및 병력 슬라이더 커스텀) -->
+            ${isSelected ? `
+              <div class="mt-1 p-2 bg-slate-950/90 rounded border border-yellow-500/40 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                <div class="flex items-center justify-between">
+                  <span class="text-amber-300 font-bold">🛡️ 출전 진형:</span>
+                  <select onchange="setOfficerCustomFormation('${off.id}', this.value)" class="bg-slate-900 border border-amber-400 text-yellow-300 rounded px-1.5 py-0.5 text-xs font-bold">
+                    <option value="gyorin" ${currSetting.formation === 'gyorin' ? 'selected' : ''}>어린 (돌파 +40%)</option>
+                    <option value="anhaeng" ${currSetting.formation === 'anhaeng' ? 'selected' : ''}>안행 (사거리4 사격)</option>
+                    <option value="bangwon" ${currSetting.formation === 'bangwon' ? 'selected' : ''}>방원 (방어 +60%)</option>
+                    <option value="bongsi" ${currSetting.formation === 'bongsi' ? 'selected' : ''}>봉시 (일기토 2배)</option>
+                    <option value="chuhaeng" ${currSetting.formation === 'chuhaeng' ? 'selected' : ''}>추행 (기동력 +2칸)</option>
+                  </select>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-amber-300 font-bold">👥 배정 병력:</span>
+                  <div class="flex items-center gap-1.5 flex-1 justify-end">
+                    <input type="range" min="1000" max="${Math.min(10000, totalAvailable)}" step="500" value="${currSetting.soldiers}" oninput="setOfficerCustomSoldiers('${off.id}', this.value)" class="w-24 accent-yellow-400">
+                    <span id="soldier-val-${off.id}" class="text-white font-mono font-bold text-xs">${currSetting.soldiers.toLocaleString()}명</span>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
           </div>
         `;
       }).join('');
@@ -3009,7 +3116,7 @@
 
     function confirmOfficerDeployment() {
       if (selectedDeployOfficerIds.length === 0) {
-        alert("⚠️ 최소 1명 이상의 장수를 출전 부대로 선택해야 합니다!");
+        alert(`⚠️ 최소 1명 이상의 장수를 출전 부대로 선택해야 합니다!`);
         return;
       }
 
@@ -3059,6 +3166,13 @@
 
     // ==================== 1:1 장수 전략 결투 (일기토) 시스템 ====================
     let selectedMyOfficerIdx = 0;
+
+        function getOfficerDuelWar(officer) {
+      if (!officer) return 80;
+      const n = (officer.name || '') + ' ' + (officer.fullName || '');
+      if (n.includes('여포')) return 119; // 🔥 천하무쌍 여포는 일기토 무력 119!
+      return officer.war || 80;
+    }
 
     function openDuelSelectModal(targetProvId = null, specificRuler = null) {
       closeAllPopups();
@@ -3188,6 +3302,11 @@
       duelState.round = 1;
       duelState.myOfficer = myOff;
       duelState.enemyOfficer = enemyOff;
+      myOff.war = getOfficerDuelWar(myOff);
+      enemyOff.war = getOfficerDuelWar(enemyOff);
+      if ((myOff.name || '').includes('여포') || (enemyOff.name || '').includes('여포')) {
+        logMessage(`👹⚡ [천하무쌍 비장 강림!] 여포의 무력이 [119]로 폭발하여 일기토 절대무적을 자랑합니다!`, 'text-red-400 font-black text-sm');
+      }
       duelState.myHp = 100;
       duelState.enemyHp = 100;
       duelState.enemyConfused = false;
@@ -4001,14 +4120,15 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
 
     function executeHireOfficer() {
       closeAllPopups();
-      alert("📜 [장수 등용] 영지 내 미관료 인재 또는 포로로 잡힌 적장을 등용합니다. (전쟁 승리 시 포로 등용 모달 지원)");
+      alert(`📜 [장수 등용] 영지 내 미관료 인재 또는 포로로 잡힌 적장을 등용합니다. (전쟁 승리 시 포로 등용 모달 지원)`);
     }
 
     function executeRelief() {
+      if (!consumeActionPoint('주민 구휼')) return;
       closeAllPopups();
       const myProv = getMyCapital();
       if (myProv.food < 1000) {
-        alert("⚠️ 구휼을 위한 군량이 부족합니다! (군량 1,000석 필요)");
+        alert(`⚠️ 구휼을 위한 군량이 부족합니다! (군량 1,000석 필요)`);
         return;
       }
       myProv.food -= 1000;
@@ -4028,11 +4148,11 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       }
     }
 
-    function executeDelegate() { closeAllPopups(); alert("📜 [위임] 태수에게 영지 내정 및 방어를 전권 위임합니다."); }
-    function executeAppoint() { closeAllPopups(); alert("📜 [임명] 영지의 태수 및 군사를 재배치 임명합니다."); }
-    function executeDirectOrder() { closeAllPopups(); alert("📜 [명령] 각 장수에게 개별 특별 임무를 하달합니다."); }
-    function executeFireOfficer() { closeAllPopups(); alert("⚠️ [해고] 장수를 관직에서 면직시킵니다."); }
-    function executeConfiscate() { closeAllPopups(); alert("⚠️ [몰수] 장수가 소지한 보물이나 관직을 회수합니다."); }
+    function executeDelegate() { closeAllPopups(); alert(`📜 [위임] 태수에게 영지 내정 및 방어를 전권 위임합니다.`); }
+    function executeAppoint() { closeAllPopups(); alert(`📜 [임명] 영지의 태수 및 군사를 재배치 임명합니다.`); }
+    function executeDirectOrder() { closeAllPopups(); alert(`📜 [명령] 각 장수에게 개별 특별 임무를 하달합니다.`); }
+    function executeFireOfficer() { closeAllPopups(); alert(`⚠️ [해고] 장수를 관직에서 면직시킵니다.`); }
+    function executeConfiscate() { closeAllPopups(); alert(`⚠️ [몰수] 장수가 소지한 보물이나 관직을 회수합니다.`); }
 
     function executeLandDev() {
       closeAllPopups();
@@ -4073,6 +4193,7 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       updateRightPanel(p.id);
     }
     function executeRecruit() {
+      if (!consumeActionPoint('모병 및 징집')) return;
       closeAllPopups();
       const p = getMyCapital();
       if (p.gold < 250) { alert('모병 자금 250전이 필요합니다.'); return; }
@@ -4081,6 +4202,168 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       logMessage(`🚩 [모병] 의병을 모집하여 정예병 2,000명 합류 (민심 +2)`, 'text-emerald-300 font-bold');
       updateRightPanel(p.id);
     }
+    
+    // ==========================================================================
+    // 🏛️ 정식 패키지급 삼국지 3 10대 메뉴 전수 구현 (14대 필수 명령어)
+    // ==========================================================================
+    function openMoveModal() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      const neighbors = (myProv.neighbors || [1, 2, 4, 13]).map(id => PROVINCES.find(p => p.id === id)).filter(Boolean);
+      const targetName = neighbors[0] ? neighbors[0].name : '인접 영지';
+      
+      const moveCount = Math.min(3000, Math.floor(myProv.soldiers * 0.3));
+      if (myProv.soldiers < 2000) {
+        alert(`⚠️ [이동 불가] 영지를 수비할 최소 병력(2,000명)이 부족하여 장수를 이동할 수 없습니다.`);
+        return;
+      }
+      if (!consumeActionPoint('영지 간 이동')) return;
+      myProv.soldiers -= moveCount;
+      if (neighbors[0]) neighbors[0].soldiers += moveCount;
+      playSound('fanfare');
+      logMessage(`🚩 [군사 이동] ${myProv.name}에서 ${targetName}(으)로 병력 ${moveCount.toLocaleString()}명이 이동했습니다!`, 'text-cyan-300 font-bold');
+      updateRightPanel(myProv.id);
+      alert(`🚩 [군사 이동 완료]
+
+${myProv.name} ➔ ${targetName}
+병력 ${moveCount.toLocaleString()}명이 안전하게 이동 배치되었습니다.`);
+    }
+
+    function openTransportModal() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (!consumeActionPoint('군수 수송')) return;
+      if (myProv.gold < 300 || myProv.rice < 1000) {
+        alert(`⚠️ 수송할 여유 군자금이나 군량이 부족합니다.`);
+        return;
+      }
+      myProv.gold -= 200;
+      myProv.rice -= 500;
+      playSound('fanfare');
+      logMessage(`📦 [수송 완료] 인접 전선 기지로 금 200전, 군량 500석을 보급 수송했습니다!`, 'text-amber-300 font-bold');
+      updateRightPanel(myProv.id);
+      alert(`📦 [수송 완료]\n\n전선 기지로 군자금 200전과 군량 500석의 보급 수송을 완료했습니다!`);
+    }
+
+    function openTradeModal() {
+      closeAllPopups();
+      if (!consumeActionPoint('상인 무역')) return;
+      openModal('merchant-modal');
+    }
+
+    function confirmTrade() {
+      closeModal('merchant-modal');
+      logMessage("🤝 [상인 거래] 낙양 거상과의 거래가 성사되었습니다.", 'text-yellow-300 font-bold');
+    }
+
+    function openTreasureModal() {
+      closeAllPopups();
+      const treasuresList = Object.values(LEGENDARY_TREASURES).map(t => `
+        <div class="p-2.5 bg-slate-900 border border-amber-500/60 rounded-lg flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">${t.icon}</span>
+            <div>
+              <div class="font-black text-amber-300 text-sm">${t.name}</div>
+              <div class="text-xs text-slate-300">${t.effect}</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">${t.desc}</div>
+            </div>
+          </div>
+          <span class="px-2 py-1 rounded bg-amber-950 border border-yellow-400 text-yellow-300 font-bold text-xs">보유중</span>
+        </div>
+      `).join('');
+
+      alert(`🏆 [천하 5대 전설의 보물 도감]
+
+1. 🐎 적토마: 무력 +5, 이동력 +2칸
+2. 🐉 청룡언월도: 무력 +10, 통솔 +6 (일기토 118)
+3. ⚡ 장팔사모: 무력 +9, 분기 2.5배 (일기토 117)
+4. 👑 전국옥새: 매력 100, 민충 100 영구 유지
+5. 📜 손자병법서: 지력 +10, 통솔 +10, 계략 100% 명중`);
+    }
+
+    function openTaxRateModal() {
+      closeAllPopups();
+      if (!consumeActionPoint('세율 조정')) return;
+      const myProv = getMyCapital();
+      myProv.civilians = Math.max(50, (myProv.civilians || 80) - 5);
+      myProv.gold += 350;
+      playSound('fanfare');
+      logMessage(`💰 [세수 징수] 특별 세수를 징수하여 금 350전을 국고에 납입했습니다. (민충 -5)`, 'text-yellow-300 font-bold');
+      updateRightPanel(myProv.id);
+      alert(`💰 [세율 조정 완료]\n\n세율을 40%로 조정하여 국고에 금 350전이 입고되었습니다.`);
+    }
+
+    function openQuestModal() {
+      closeAllPopups();
+      alert(`📜 [헌제 칙명 퀘스트]
+
+황제 폐하의 밀조:
+'역적들을 토벌하고 낙양 황궁을 수복하여 한실의 부흥을 이룩하라!'
+
+▶ 목표: 13개 주 천하통일 달성
+▶ 보상: 유비 황제 즉위식 & 개국공신 논공행상`);
+    }
+
+    function executeShipBuilding() {
+      closeAllPopups();
+      if (!consumeActionPoint('누선 함선 건조')) return;
+      const myProv = getMyCapital();
+      if (myProv.gold < 150) { alert('함선 건조 군비(금 150전)가 부족합니다.'); return; }
+      myProv.gold -= 150;
+      playSound('build');
+      logMessage(`⚓ [함선 건조 완료] 대형 누선 50척을 건조하여 수군 전력이 대폭 강화되었습니다!`, 'text-cyan-300 font-black');
+      updateRightPanel(myProv.id);
+      alert(`⚓ [누선 함선 건조 완료!]\n\n장강과 수로 전투에서 수군 공격력이 +30% 상승하고 물길 이동력이 +1칸 증가합니다!`);
+    }
+
+    function executeEmergencyTax() {
+      closeAllPopups();
+      openTaxRateModal();
+    }
+
+    function executeHeal() {
+      closeAllPopups();
+      MY_OFFICERS.forEach(o => {
+        o.hp = 100;
+        o.fatigue = 0;
+      });
+      playSound('fanfare');
+      logMessage("💊 [명의 화타 치료] 아군 전 장수의 부상과 피로도가 100% 완치되었습니다!", 'text-emerald-300 font-black');
+      alert(`💊 [화타 명의 진료 완료!]\n\n아군 전 장수의 체력 100% 회복 및 피로도 0% 완치!`);
+    }
+
+    function executeTreasureSearch() {
+      closeAllPopups();
+      if (!consumeActionPoint('보물 수색')) return;
+      const myProv = getMyCapital();
+      const roll = Math.random();
+      if (roll < 0.6) {
+        playSound('fanfare');
+        logMessage(`🏆✨ [보물 발견!] ${myProv.name} 고분에서 고대 보검을 발굴했습니다! (국고 금 +300전)`, 'text-yellow-300 font-black');
+        myProv.gold += 300;
+        updateRightPanel(myProv.id);
+      } else {
+        logMessage(`🔍 [수색 완료] ${myProv.name} 명산대천을 수색하였으나 특이사항이 없습니다.`, 'text-slate-300 font-bold');
+      }
+    }
+
+    function executeWander() {
+      closeAllPopups();
+      alert(`🚩 [방랑군 거병]\n\n현재 유비군은 웅대한 본거지를 거느린 정규 군벌이므로 방랑할 필요가 없습니다. 천하통일에 매진하십시오!`);
+    }
+
+    function handleInvasionDefend() {
+      closeModal('invasion-alert-modal');
+      if (!pendingInvasion) return;
+      const { attackerRuler, fromProv, targetProv, invasionForce } = pendingInvasion;
+      openOfficerDeployModal(targetProv, fromProv, true);
+    }
+
+    function selectScenario(scenNum) {
+      alert(`🚩 [시나리오 ${scenNum} 선택]\n\n영웅집결 & 난세의 영웅들 시나리오가 활성화되었습니다.`);
+    }
+
+
     function executeTraining() {
       closeAllPopups();
       const myProv = getMyCapital();
@@ -4256,22 +4539,27 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       }
 
       // 최대 6개 부대 안정적 포진 좌표 (본진 좌측)
+            // 13열 와이드 대전장 아군 포진 (좌측 본진)
       const allyPositions = [
-        { q: 1, r: 4, form: 'gyorin' },    // 1번 선봉 중앙
-        { q: 1, r: 5, form: 'bongsi' },    // 2번 남쪽 돌파
-        { q: 0, r: 3, form: 'chuhaeng' },  // 3번 북쪽 기동
-        { q: 0, r: 4, form: 'bangwon' },   // 4번 본진 중앙 수호 (Lv.10 해금)
-        { q: 1, r: 3, form: 'anhaeng' },   // 5번 후방 원거리 지원 (Lv.20 해금)
-        { q: 0, r: 5, form: 'gyorin' }     // 6번 남익 후위 호위 (Lv.50 해금)
+        { q: 2, r: 3, form: 'gyorin' },    // 1번 선봉 중앙
+        { q: 2, r: 4, form: 'bongsi' },    // 2번 남쪽 돌파
+        { q: 1, r: 2, form: 'chuhaeng' },  // 3번 북쪽 기동
+        { q: 1, r: 3, form: 'bangwon' },   // 4번 본진 중앙 수호
+        { q: 2, r: 2, form: 'anhaeng' },   // 5번 후방 원거리 지원
+        { q: 1, r: 5, form: 'gyorin' }     // 6번 남익 후위 호위
       ];
 
       const soldierTotal = fromProv ? fromProv.soldiers : 20000;
       const soldierPerUnit = Math.floor(soldierTotal / Math.max(1, allyOfficers.length));
 
-      const allyUnits = allyOfficers.map((off, idx) => {
+            const allyUnits = allyOfficers.map((off, idx) => {
         const pos = allyPositions[idx % allyPositions.length];
-        const isHwang = off.name.includes('황충');
-        const defaultSkills = isHwang
+        const isMaster = isMasterArcher(off);
+        const userSet = customTroopSettings[off.id] || {};
+        const chosenForm = userSet.formation || (isMaster ? 'anhaeng' : pos.form);
+        const chosenTroops = userSet.soldiers || Math.min(10000, Math.max(3000, soldierPerUnit));
+
+        const defaultSkills = isMaster
           ? ['신궁', '화시', '돌격', '분기']
           : (off.war >= 95 ? ['천하무쌍', '돌격', '분기', '일기토'] : (off.int >= 80 ? ['화계', '혼란', '고무', '수습'] : ['돌격', '분기', '화시']));
 
@@ -4292,13 +4580,13 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
           int: off.int,
           lead: off.lead || 85,
           chr: 85,
-          troops: Math.min(10000, Math.max(3000, soldierPerUnit)),
-          maxTroops: Math.min(10000, Math.max(3000, soldierPerUnit)),
+          troops: chosenTroops,
+          maxTroops: chosenTroops,
           morale: 100,
-          formation: isHwang ? 'anhaeng' : pos.form,
+          formation: chosenForm,
           availableFormations: ['gyorin', 'bongsi', 'bangwon', 'chuhaeng', 'anhaeng'],
           skills: defaultSkills,
-          arcRange: isHwang ? 4 : (pos.form === 'anhaeng' ? 3 : 1),
+          arcRange: isMaster ? 4 : (chosenForm === 'anhaeng' ? 4 : 1),
           q: pos.q,
           r: pos.r,
           moved: false,
@@ -4320,11 +4608,13 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       }
 
       // 적 포진: 0번은 보스, 1번은 본대전투, 2번은 기습병(raider), 마지막은 군량고 수비병(guard_depot)
+            // 13열 와이드 대전장 적군 포진 (성문 수비 & 본대 & 군량고 철통수비)
       const enemyPositions = [
-        { q: 6, r: 3, form: 'bongsi', role: 'assault' },       // 적 보스 돌격
-        { q: 6, r: 4, form: 'gyorin', role: 'assault' },       // 적 본대 보조
-        { q: 5, r: 1, form: 'chuhaeng', role: 'raider' },      // 🐎 아군 군량고(0, 2) 우회 기습 부대!
-        { q: 7, r: 3, form: 'bangwon', role: 'guard_depot' }   // 🛡️ 적 군량고(8, 3) 바로 앞 철통 수비대장!
+        { q: 9, r: 3, form: 'bongsi', role: 'assault' },       // 적 보스 돌격대
+        { q: 9, r: 4, form: 'gyorin', role: 'assault' },       // 적 본대
+        { q: 8, r: 2, form: 'chuhaeng', role: 'raider' },      // 🐎 아군 군량고(0, 3) 우회 기습대!
+        { q: 7, r: 2, form: 'bangwon', role: 'gate_guard' },   // 🛡️ 성문(6, 2) 철통 수비대장!
+        { q: 11, r: 4, form: 'bangwon', role: 'guard_depot' }  // 🛡️ 적 군량고(12, 4) 사수대장!
       ];
 
       const enemyTotal = targetProv ? targetProv.soldiers : 24000;
@@ -4379,93 +4669,99 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
 
     // ==================== 🗺️ 지역별 6대 맞춤 전장 & 숨겨진 보물 기믹 엔진 ====================
     const REGIONAL_MAPS = {
-      // 1. 하북 대평원 (유주 1, 기주 2, 청주 3, 연주 4)
+      // 1. 하북 대평원 (유주 1, 기주 2, 청주 3, 연주 4) - 하북 방어 목책 성벽 & 2대 관문 성문
       'plains': {
-        name: '하북 대평원',
-        desc: '광활한 평야와 듬성한 숲. 기병 돌격과 일화계가 맹위를 떨칩니다!',
+        name: '하북 대평원 & 하북 관문 대성벽',
+        desc: '광활한 평원을 가로지르는 철옹성 성벽! 2곳의 성문(⛩️)을 돌파하거나 우회하십시오!',
         terrain: [
-          [0, 1, 0, 0, 7, 0, 0, 1, 0], // (4, 0) 전설의 보물 사당!
-          [0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [8, 0, 0, 1, 0, 0, 1, 0, 0], // (0, 2) 🌾 아군 군량고!
-          [0, 0, 0, 0, 0, 0, 0, 0, 4], // (8, 3) 🌾 적 군량고!
-          [0, 1, 0, 0, 0, 0, 0, 1, 0],
-          [0, 0, 0, 1, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 1, 0, 0, 0]
+          [0, 1, 0, 0, 7, 0, 3, 0, 1, 0, 0, 1, 0], // (4, 0) 전설의 보물 사당!
+          [0, 0, 1, 0, 0, 0, 3, 0, 0, 1, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0], // (6, 2) ⛩️ 북쪽 하북 성문!
+          [8, 0, 0, 1, 0, 0, 3, 0, 1, 0, 0, 0, 0], // (0, 3) 🌾 아군 군량고!
+          [0, 1, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 4], // (12, 4) 🌾 적 군량고!
+          [0, 0, 0, 0, 0, 0, 9, 0, 0, 1, 0, 0, 0], // (6, 5) ⛩️ 남쪽 하북 성문!
+          [0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0],
+          [0, 1, 0, 0, 0, 1, 3, 0, 1, 0, 0, 1, 0]
         ],
         treasure: { name: '적토마 (赤兎馬)', stat: '무력 +5, 기동력 +1칸', type: 'war', val: 5 }
       },
-      // 2. 서촉 험산 협곡 (익주 10, 양주 11, 병주 12)
+      // 2. 서촉 험산 협곡 (익주 10, 양주 11, 병주 12) - 검각/양평관 천혜의 암벽 관문 성벽
       'mountain': {
-        name: '서촉 험산 협곡',
-        desc: '좁은 협곡과 거친 암벽. 원거리 궁시와 기습 복병에 유리합니다!',
+        name: '서촉 험산 협곡 & 검각 천혜 성벽',
+        desc: '험준한 암벽산맥 사이에 버틴 검각 철벽 성벽! 좁은 협곡 성문(⛩️)을 사수하십시오!',
         terrain: [
-          [2, 2, 0, 0, 0, 2, 2, 2, 2],
-          [2, 0, 0, 7, 2, 2, 0, 0, 2], // (3, 1) 협곡 비밀 동굴!
-          [8, 0, 2, 0, 0, 2, 0, 0, 0], // (0, 2) 🌾 아군 군량고!
-          [0, 2, 0, 0, 0, 0, 2, 0, 4], // (8, 3) 🌾 적 군량고!
-          [0, 2, 2, 0, 0, 2, 2, 0, 0],
-          [2, 0, 0, 0, 2, 0, 0, 2, 0],
-          [2, 2, 0, 0, 0, 0, 2, 2, 2]
+          [2, 2, 0, 0, 0, 2, 3, 2, 2, 0, 0, 2, 2],
+          [2, 0, 0, 7, 2, 2, 3, 2, 0, 0, 2, 0, 2], // (3, 1) 협곡 비밀 동굴!
+          [0, 0, 2, 0, 0, 0, 3, 0, 0, 2, 0, 0, 0],
+          [8, 0, 2, 0, 0, 0, 9, 0, 0, 0, 2, 0, 0], // (0, 3) 🌾 아군 군량고! / (6, 3) ⛩️ 검각 성문!
+          [0, 2, 0, 0, 0, 0, 3, 0, 2, 0, 0, 0, 4], // (12, 4) 🌾 적 군량고!
+          [0, 2, 2, 0, 0, 0, 9, 0, 2, 2, 0, 0, 0], // (6, 5) ⛩️ 남쪽 우회 관문!
+          [2, 0, 0, 0, 2, 2, 3, 2, 0, 0, 2, 2, 0],
+          [2, 2, 0, 0, 0, 2, 3, 2, 0, 0, 0, 2, 2]
         ],
         treasure: { name: '장팔사모 (丈八蛇矛)', stat: '무력 +7 영구 상승', type: 'war', val: 7 }
       },
-      // 3. 강동 적벽 수향 수로 (양주 7, 서주 5, 예주 6)
+      // 3. 강동 적벽 수향 수로 (양주 7, 서주 5, 예주 6) - 장강 수채 철쇄 수상 방벽 & 수상 수문
       'water': {
-        name: '강동 적벽 수향 수로',
-        desc: '거대한 장강과 미로 같은 수로. 수군 화공과 배후 기습이 승패를 가릅니다!',
+        name: '강동 적벽 수향 & 장강 수상 철쇄 성벽',
+        desc: '거대한 장강을 가로지르는 철쇄 수상 방벽! 수문(⛩️)을 통과해 적진을 강습하십시오!',
         terrain: [
-          [0, 1, 5, 5, 0, 0, 1, 0, 0],
-          [1, 0, 5, 5, 5, 0, 0, 0, 0],
-          [8, 0, 0, 5, 5, 5, 0, 1, 0], // (0, 2) 🌾 아군 군량고!
-          [0, 1, 0, 0, 5, 5, 5, 0, 4], // (8, 3) 🌾 적 군량고!
-          [0, 0, 1, 0, 0, 5, 5, 7, 0], // (7, 4) 침몰 보물선!
-          [1, 0, 0, 1, 0, 0, 5, 5, 0],
-          [0, 0, 0, 0, 1, 0, 0, 5, 0]
+          [0, 1, 5, 5, 0, 0, 3, 0, 0, 5, 5, 1, 0],
+          [1, 0, 5, 5, 5, 0, 3, 0, 5, 5, 5, 0, 0],
+          [0, 0, 0, 5, 5, 0, 9, 0, 5, 5, 0, 1, 0], // (6, 2) ⛩️ 북쪽 수상 수문!
+          [8, 0, 1, 0, 5, 5, 3, 5, 5, 0, 1, 0, 0], // (0, 3) 🌾 아군 군량고!
+          [0, 1, 0, 0, 5, 5, 3, 5, 5, 0, 0, 0, 4], // (12, 4) 🌾 적 군량고!
+          [0, 0, 1, 0, 0, 0, 9, 0, 0, 5, 5, 7, 0], // (6, 5) ⛩️ 남쪽 수상 수문! / (11, 5) 침몰 보물선!
+          [1, 0, 0, 1, 0, 0, 3, 0, 0, 1, 5, 5, 0],
+          [0, 0, 0, 0, 1, 0, 3, 1, 0, 0, 0, 5, 0]
         ],
         treasure: { name: '손자병법서 (孫子兵法)', stat: '지력 +8, 통솔 +6', type: 'int', val: 8 }
       },
-      // 4. 중원 낙양 호로관 관문 (사례교위부 13)
+      // 4. 중원 낙양 호로관 (사례교위부 13) - 난공불락 호로관 거대 석벽 & 호로관 철갑 성문
       'fortress': {
-        name: '중원 낙양 호로관 관문',
-        desc: '철옹성 호로관 성벽과 거대 망루. 관문 방어선 돌파가 관건입니다!',
+        name: '중원 낙양 호로관 난공불락 대성벽',
+        desc: '천하제일 관문 호로관 성벽! 굳게 닫힌 철갑 성문(⛩️)을 화공과 궁시로 무너뜨리십시오!',
         terrain: [
-          [0, 1, 0, 0, 0, 2, 2, 2, 0],
-          [1, 0, 0, 0, 2, 2, 3, 2, 0],
-          [8, 0, 1, 0, 0, 3, 3, 0, 7], // (0, 2) 🌾 아군 군량고! / (8, 2) 황실 비고!
-          [0, 0, 0, 0, 0, 3, 0, 0, 4], // (8, 3) 🌾 적 군량고!
-          [0, 1, 0, 0, 0, 0, 0, 1, 0],
-          [0, 0, 1, 1, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 1, 0, 0, 0]
+          [0, 1, 0, 0, 0, 2, 3, 2, 2, 0, 0, 1, 0],
+          [1, 0, 0, 0, 2, 2, 3, 2, 0, 0, 0, 0, 7], // (12, 1) 황실 비고!
+          [0, 0, 1, 0, 0, 0, 9, 0, 0, 1, 0, 0, 0], // (6, 2) ⛩️ 호로관 제1철문!
+          [8, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0], // (0, 3) 🌾 아군 군량고!
+          [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 4], // (12, 4) 🌾 적 군량고!
+          [0, 1, 0, 0, 0, 0, 9, 0, 0, 0, 1, 0, 0], // (6, 5) ⛩️ 호로관 제2철문!
+          [0, 0, 1, 1, 0, 2, 3, 2, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 1, 3, 1, 0, 0, 0, 1, 0]
         ],
         treasure: { name: '의천검 (倚天劍)', stat: '무력 +8 영구 상승', type: 'war', val: 8 }
       },
-      // 5. 형주 신야 복합 수륙 (형주 8)
+      // 5. 형주 신야 복합 수륙 (형주 8) - 신야 팔괘 목책 성벽 & 성문
       'hyeongju': {
-        name: '형주 신야 복합 수륙 전장',
-        desc: '평야, 수로, 숲이 뒤엉킨 천혜의 요충지. 진형과 풍향을 읽어야 승리합니다!',
+        name: '형주 신야 복합 수륙 & 신야 목책 방벽',
+        desc: '평야와 수로를 잇는 신야 방벽! 성문(⛩️)을 사수하며 와룡선생의 계략을 펼치십시오!',
         terrain: [
-          [0, 7, 1, 0, 0, 5, 0, 1, 0], // (1, 0) 와룡선생 사당!
-          [1, 0, 0, 0, 5, 5, 0, 0, 0],
-          [8, 0, 1, 0, 5, 0, 1, 0, 0], // (0, 2) 🌾 아군 군량고!
-          [0, 5, 5, 5, 0, 0, 0, 0, 4], // (8, 3) 🌾 적 군량고!
-          [0, 1, 0, 0, 0, 1, 0, 1, 0],
-          [0, 0, 1, 1, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 1, 0, 0, 0]
+          [0, 7, 1, 0, 0, 5, 3, 5, 0, 1, 0, 1, 0], // (1, 0) 와룡 사당!
+          [1, 0, 0, 0, 5, 5, 3, 0, 0, 0, 5, 0, 0],
+          [0, 0, 1, 0, 5, 0, 9, 0, 1, 0, 0, 0, 0], // (6, 2) ⛩️ 신야 북문!
+          [8, 0, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0], // (0, 3) 🌾 아군 군량고!
+          [0, 5, 5, 5, 0, 0, 3, 0, 0, 0, 0, 0, 4], // (12, 4) 🌾 적 군량고!
+          [0, 1, 0, 0, 0, 0, 9, 0, 1, 0, 1, 0, 0], // (6, 5) ⛩️ 신야 남문!
+          [0, 0, 1, 1, 0, 5, 3, 5, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0]
         ],
         treasure: { name: '청룡언월도 (靑龍偃月刀)', stat: '무력 +8, 통솔 +5', type: 'war', val: 8 }
       },
-      // 6. 남월 교주 밀림 늪지대 (교주 9)
+      // 6. 남월 교주 밀림 맹독 (교주 9) - 남만 거석 성벽 & 토성 관문
       'jungle': {
-        name: '남월 교주 밀림 맹독 늪지대',
-        desc: '독안개와 맹독 늪. 이동마다 체력 손실에 주의해야 합니다!',
+        name: '남월 교주 밀림 & 남만 거석 방벽',
+        desc: '독안개 늪지에 세워진 고대 거석 성벽! 성문(⛩️)을 뚫고 적 보급로를 끊으십시오!',
         terrain: [
-          [1, 6, 6, 1, 0, 0, 1, 6, 0],
-          [6, 1, 0, 6, 6, 0, 0, 1, 0],
-          [8, 0, 1, 0, 6, 6, 0, 0, 0], // (0, 2) 🌾 아군 군량고!
-          [1, 0, 0, 0, 0, 6, 1, 0, 4], // (8, 3) 🌾 적 군량고!
-          [0, 6, 1, 0, 0, 0, 6, 7, 0], // (7, 4) 남만 비밀 성소!
-          [6, 1, 0, 1, 6, 0, 0, 6, 0],
-          [0, 0, 6, 0, 1, 6, 0, 0, 0]
+          [1, 6, 6, 1, 0, 0, 3, 0, 1, 6, 0, 1, 0],
+          [6, 1, 0, 6, 6, 0, 3, 0, 0, 1, 0, 0, 0],
+          [0, 0, 1, 0, 6, 0, 9, 0, 0, 0, 6, 0, 0], // (6, 2) ⛩️ 남만 북쪽 관문!
+          [8, 0, 0, 0, 0, 0, 3, 0, 6, 1, 0, 0, 0], // (0, 3) 🌾 아군 군량고!
+          [0, 6, 1, 0, 0, 0, 3, 0, 0, 0, 6, 7, 4], // (12, 4) 🌾 적 군량고! / (11, 4) 남만 성소!
+          [6, 1, 0, 1, 6, 0, 9, 0, 0, 6, 0, 0, 0], // (6, 5) ⛩️ 남만 남쪽 관문!
+          [0, 0, 6, 0, 1, 6, 3, 0, 0, 0, 6, 0, 0],
+          [1, 0, 0, 0, 0, 1, 3, 1, 6, 0, 0, 1, 0]
         ],
         treasure: { name: '옥새 (玉璽)', stat: '매력 +10 영구 상승', type: 'int', val: 10 }
       }
@@ -4486,10 +4782,15 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       const preset = REGIONAL_MAPS[mapKey] || REGIONAL_MAPS['plains'];
       currentBattleTreasure = preset.treasure ? { ...preset.treasure, found: false } : null;
 
-      // 맵 깊은 복사
+      // 13열 8행 완전 동적 안전 복사
+      MAP_TERRAIN = Array.from({length: GRID_ROWS}, () => Array(GRID_COLS).fill(0));
       for (let r = 0; r < GRID_ROWS; r++) {
         for (let q = 0; q < GRID_COLS; q++) {
-          MAP_TERRAIN[r][q] = preset.terrain[r][q];
+          if (preset.terrain[r] && preset.terrain[r][q] !== undefined) {
+            MAP_TERRAIN[r][q] = preset.terrain[r][q];
+          } else {
+            MAP_TERRAIN[r][q] = 0;
+          }
         }
       }
 
@@ -4871,23 +5172,15 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
     ];
 
     // 3. 전장 그리드 및 지형 설정 (Odd-R Hex Grid)
-    const GRID_COLS = 9;
-    const GRID_ROWS = 7;
-    const HEX_RADIUS = 36;
+    const GRID_COLS = 13;
+    const GRID_ROWS = 8;
+    const HEX_RADIUS = 38;
     const HEX_W = Math.sqrt(3) * HEX_RADIUS;
     const HEX_H = 2 * HEX_RADIUS;
 
     // 지형 매핑
     // 0: 평지, 1: 숲(화계 쉬움/방어+15%), 2: 산악, 3: 호로관 관문, 4: 적 군량 보급창(우측 상단 8, 3)
-    const MAP_TERRAIN = [
-      [0, 1, 0, 0, 0, 2, 2, 2, 0],
-      [1, 0, 0, 0, 2, 2, 3, 2, 0],
-      [0, 0, 1, 0, 0, 3, 3, 0, 0],
-      [0, 0, 0, 0, 0, 3, 0, 0, 4], // (q:8, r:3) 보급창고!
-      [0, 1, 0, 0, 0, 0, 0, 1, 0],
-      [0, 0, 1, 1, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 1, 0, 0, 0]
-    ];
+    let MAP_TERRAIN = Array.from({length: GRID_ROWS}, () => Array(GRID_COLS).fill(0));
 
     // 게임 상태
     let sam5BattleState = {
@@ -4903,7 +5196,8 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       soundEnabled: true,
       fireTiles: [{ q: 4, r: 2, turns: 3 }],
       supplyBurned: false, // 보급창 함락 여부
-      battleOver: false
+      battleOver: false,
+      battleRhythmStreak: 0
     };
 
     // 일기토 상태
@@ -4994,8 +5288,8 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
     // 헥스 좌표 연산
     // ==========================================================================
     function getHexPixel(q, r) {
-      const x = 52 + q * HEX_W + (r % 2 === 1 ? HEX_W / 2 : 0);
-      const y = 46 + r * (HEX_H * 0.75);
+      const x = 58 + q * HEX_W + (r % 2 === 1 ? HEX_W / 2 : 0);
+      const y = 48 + r * (HEX_H * 0.75);
       return { x, y };
     }
 
@@ -5051,7 +5345,8 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
 
           if (terrain === 1) tileColor = "#14532d"; // 숲
           else if (terrain === 2) tileColor = "#44403c"; // 산악
-          else if (terrain === 3) tileColor = "#7f1d1d"; // 호로관
+          else if (terrain === 3) tileColor = "#334155"; // 🧱 성벽 (석조 방벽)
+          else if (terrain === 9) tileColor = "#78350f"; // ⛩️ 성문/관문
           else if (terrain === 4) tileColor = sam5BattleState.supplyBurned ? "#292524" : "#854d0e"; // 🌾 적 보급창
           else if (terrain === 8) tileColor = sam5BattleState.allySupplyBurned ? "#292524" : "#047857"; // 🌾 아군 보급창
           else if (terrain === 5) tileColor = "#1e3a8a"; // 강물/수로
@@ -5084,9 +5379,34 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
           ctx.textAlign = "center";
           if (terrain === 1) ctx.fillText("🌲숲", x, y - 16);
           else if (terrain === 2) ctx.fillText("⛰️산", x, y - 16);
-          else if (terrain === 3) ctx.fillText("🏯호로관", x, y - 16);
-          else if (terrain === 4) ctx.fillText(sam5BattleState.supplyBurned ? "💥소실" : "🌾적군량고", x, y - 16);
-          else if (terrain === 8) ctx.fillText(sam5BattleState.allySupplyBurned ? "💥소실" : "🌾아군량고", x, y - 16);
+          else if (terrain === 3) {
+            ctx.font = "bold 11px sans-serif";
+            ctx.fillStyle = "#cbd5e1";
+            ctx.fillText("🧱성벽", x, y - 14);
+            ctx.font = "14px sans-serif";
+            ctx.fillText("🛡️", x, y + 14);
+          }
+          else if (terrain === 9) {
+            ctx.font = "bold 11px sans-serif";
+            ctx.fillStyle = "#fde047";
+            ctx.fillText("⛩️성문", x, y - 14);
+            ctx.font = "14px sans-serif";
+            ctx.fillText("🚪", x, y + 14);
+          }
+          else if (terrain === 4) {
+            ctx.font = "bold 11px sans-serif";
+            ctx.fillStyle = sam5BattleState.supplyBurned ? "#ef4444" : "#facc15";
+            ctx.fillText(sam5BattleState.supplyBurned ? "💥적량고소실" : "🌾적군군량고", x, y - 16);
+            ctx.font = "14px sans-serif";
+            ctx.fillText(sam5BattleState.supplyBurned ? "🔥" : "🏯", x, y + 16);
+          }
+          else if (terrain === 8) {
+            ctx.font = "bold 11px sans-serif";
+            ctx.fillStyle = sam5BattleState.allySupplyBurned ? "#ef4444" : "#34d399";
+            ctx.fillText(sam5BattleState.allySupplyBurned ? "💥아량고소실" : "🌾아군군량고", x, y - 16);
+            ctx.font = "14px sans-serif";
+            ctx.fillText(sam5BattleState.allySupplyBurned ? "🔥" : "🏰", x, y + 16);
+          }
 
           if (isBurning) {
             ctx.font = "15px sans-serif";
@@ -5330,23 +5650,82 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     // ==========================================================================
     // 이동 범위 연산 (추행진 기동력 +2 적용)
     // ==========================================================================
+    // ==========================================================================
+    // 🛡️ 헥스 인접 6방향 탐색 및 ZOC(통제선 / 적 돌파 저지) BFS 이동 알고리즘
+    // ==========================================================================
+    function getHexNeighbors(q, r) {
+      const isOdd = (r % 2 !== 0);
+      const diffs = isOdd ? [
+        { dq: 1, dr: 0 }, { dq: -1, dr: 0 },
+        { dq: 1, dr: -1 }, { dq: 0, dr: -1 },
+        { dq: 1, dr: 1 }, { dq: 0, dr: 1 }
+      ] : [
+        { dq: 1, dr: 0 }, { dq: -1, dr: 0 },
+        { dq: 0, dr: -1 }, { dq: -1, dr: -1 },
+        { dq: 0, dr: 1 }, { dq: -1, dr: 1 }
+      ];
+      return diffs.map(d => ({ q: q + d.dq, r: r + d.dr }))
+        .filter(n => n.q >= 0 && n.q < GRID_COLS && n.r >= 0 && n.r < GRID_ROWS);
+    }
+
+    function isEnemyAdjacent(q, r, friendlyFaction) {
+      const neighbors = getHexNeighbors(q, r);
+      return neighbors.some(n => {
+        const u = findUnitAt(n.q, n.r);
+        return u && u.troops > 0 && u.faction !== friendlyFaction;
+      });
+    }
+
     function computeMovementRange(unit) {
       sam5BattleState.reachableHexes = [];
       const form = FORMATIONS[unit.formation];
-      const baseMove = 2 + (form ? form.moveBonus : 0);
+      const maxMove = Math.max(1, 2 + (form ? form.moveBonus : 0));
 
-      for (let r = 0; r < GRID_ROWS; r++) {
-        for (let q = 0; q < GRID_COLS; q++) {
-          if (q === unit.q && r === unit.r) continue;
-          if (findUnitAt(q, r)) continue;
+      // BFS 큐: { q, r, cost }
+      const queue = [{ q: unit.q, r: unit.r, cost: 0 }];
+      const visited = new Map();
+      visited.set(`${unit.q},${unit.r}`, 0);
 
-          const terrain = MAP_TERRAIN[r][q];
-          // 호로관(3) 성벽은 직접 진입 불가 (우회 돌파)
+      while (queue.length > 0) {
+        const curr = queue.shift();
+
+        if (curr.cost >= maxMove) continue;
+
+        const neighbors = getHexNeighbors(curr.q, curr.r);
+
+        for (const n of neighbors) {
+          const terrain = (MAP_TERRAIN[n.r] && MAP_TERRAIN[n.r][n.q] !== undefined) ? MAP_TERRAIN[n.r][n.q] : 0;
+
+          // 호로관 관문(3)은 아군 직접 진입 불가
           if (terrain === 3 && unit.faction === "ally") continue;
 
-          const dist = getHexDistance(unit.q, unit.r, q, r);
-          if (dist <= baseMove) {
-            sam5BattleState.reachableHexes.push({ q, r });
+          // ⚠️ 적 유닛이 있는 타일은 절대 통과 불가! (적 돌파 저지)
+          const occupant = findUnitAt(n.q, n.r);
+          if (occupant && occupant.troops > 0 && occupant.faction !== unit.faction) {
+            continue; // 적이 길목을 막고 있으면 뚫고 갈 수 없음!
+          }
+
+          // 지형별 이동 비용: 산악(2)은 2 소모, 독천(6)은 2 소모, 기타 1
+          let moveCost = 1;
+          if (terrain === 2 || terrain === 6) moveCost = 2;
+
+          const nextCost = curr.cost + moveCost;
+          if (nextCost > maxMove) continue;
+
+          const key = `${n.q},${n.r}`;
+          if (!visited.has(key) || visited.get(key) > nextCost) {
+            visited.set(key, nextCost);
+
+            // 다른 유닛이 없는 빈 타일이면 이동 가능 타일로 등록
+            if (!occupant || occupant.id === unit.id) {
+              sam5BattleState.reachableHexes.push({ q: n.q, r: n.r });
+            }
+
+            // ⚠️ ZOC (Zone of Control) 규칙: 적 부대와 바로 인접한 헥스에 진입하면 적의 저지로 더 이상 전진 불가 (즉시 정지!)
+            const enteredZoc = isEnemyAdjacent(n.q, n.r, unit.faction);
+            if (!enteredZoc) {
+              queue.push({ q: n.q, r: n.r, cost: nextCost });
+            }
           }
         }
       }
@@ -5805,6 +6184,54 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
       sam5BattleState.attackableTargets = [];
     }
 
+    function onCmdDuel() {
+      const u = sam5BattleState.selectedUnit;
+      if (!u || u.acted || sam5BattleState.phase !== 'ally') return;
+
+      const adjEnemies = getEnemiesInRange(u, 1);
+      if (adjEnemies.length === 0) {
+        logBattle("인접한 적 부대가 없어 일기토를 신청할 수 없습니다.");
+        return;
+      }
+
+      const target = adjEnemies[0];
+      const uWar = getOfficerDuelWar(u);
+      const tWar = getOfficerDuelWar(target);
+
+      logBattle(`⚔️🏇 [일기토 신청!] ${u.name}(무력:${uWar}) 장군이 적장 ${target.name}(무력:${tWar})에게 1:1 결투를 신청했습니다!`);
+      playSound('fanfare');
+
+      // 여포 무력 119 필살 대승 판정
+      let isVictory = false;
+      if (u.name.includes('여포')) {
+        isVictory = true;
+        logBattle(`👹⚡ [천하무쌍 여포 무력 119!] 여포의 방천화극이 일격에 적장 ${target.name}을 베어 넘겼습니다!`);
+      } else if (target.name.includes('여포')) {
+        isVictory = false;
+        logBattle(`👹⚡ [적장 여포 무력 119!] 적장 여포의 방천화극 앞에 ${u.name}이 중상을 입고 패퇴했습니다!`);
+      } else {
+        const winChance = 50 + (uWar - tWar) * 2.5;
+        isVictory = (Math.random() * 100 < winChance);
+      }
+
+      if (isVictory) {
+        playSound('slash');
+        logBattle(`🏆✨ [일기토 대승!] ${u.name} 장군이 적장 ${target.name}을 격파하여 적 전군이 패닉에 빠졌습니다!`);
+        target.troops = 0;
+        showDamagePop(target.q, target.r, "☠️일기토 전사!");
+        gainTroopExp(50, '일기토 대승');
+        checkVictoryCondition();
+      } else {
+        playSound('slash');
+        logBattle(`🚨 [일기토 패배!] ${u.name} 부대가 큰 타격을 입고 사기가 꺾였습니다.`);
+        u.troops = Math.max(100, Math.floor(u.troops * 0.4));
+        u.morale = Math.max(10, u.morale - 40);
+        showDamagePop(u.q, u.r, "일기토 패배!");
+      }
+
+      finishUnitAction(u);
+    }
+
     function onCmdWait() {
       if (sam5BattleState.selectedUnit) finishUnitAction(sam5BattleState.selectedUnit);
     }
@@ -5990,14 +6417,16 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
         const allies = UNITS.filter(u => u.faction === "ally" && u.troops > 0);
 
         if (allies.length > 0) {
+          // 아군 총대장 탐색 (유비 우선, 없으면 0번 장수)
+          const commander = allies.find(a => a.name.includes('유비') || a.id === 'liu_bei') || allies[0];
+          const allyDepotQ = 0, allyDepotR = 2;
+
           // 🛡️ 1. 군량고 철통 수비대장 (role: 'guard_depot')
           if (enemy.role === 'guard_depot') {
             const depotQ = 8, depotR = 3;
-            // 군량고 주변 2.5칸 이내에 아군이 침입했는지 감시
             const intruders = allies.filter(a => getHexDistance(a.q, a.r, depotQ, depotR) <= 2.5);
 
             if (intruders.length > 0) {
-              // 침입한 아군 중 가장 가까운 자 요격
               let target = intruders[0];
               let minDist = getHexDistance(enemy.q, enemy.r, target.q, target.r);
               intruders.forEach(a => {
@@ -6011,7 +6440,6 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
                 const dmg = calculateCombatDamage(enemy, target, 'melee');
                 applyDamage(target, dmg);
               } else {
-                // 침입자를 가로막기 위해 이동
                 const stepQ = enemy.q > target.q ? enemy.q - 1 : (enemy.q < target.q ? enemy.q + 1 : enemy.q);
                 const stepR = enemy.r > target.r ? enemy.r - 1 : (enemy.r < target.r ? enemy.r + 1 : enemy.r);
                 if (!findUnitAt(stepQ, stepR)) {
@@ -6020,7 +6448,6 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
                 }
               }
             } else {
-              // 침입자가 없으면 군량고 앞목(7, 3)을 굳건히 지키며 방원진 대기!
               if (enemy.q !== 7 || enemy.r !== 3) {
                 const stepQ = enemy.q > 7 ? enemy.q - 1 : (enemy.q < 7 ? enemy.q + 1 : enemy.q);
                 const stepR = enemy.r > 3 ? enemy.r - 1 : (enemy.r < 3 ? enemy.r + 1 : enemy.r);
@@ -6028,20 +6455,19 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
                   enemy.q = stepQ; enemy.r = stepR;
                 }
               }
-              enemy.formation = 'bangwon'; // 철통 방원진 유지
+              enemy.formation = 'bangwon';
               logBattle(`🛡️ 적 수비대장 ${enemy.name}이 군량고 앞목을 철통 방원진으로 사수하고 있습니다!`);
             }
           }
           // 🐎 2. 아군 군량고 우회 기습부대 (role: 'raider')
           else if (enemy.role === 'raider' && !sam5BattleState.allySupplyBurned) {
-            const allyDepotQ = 0, allyDepotR = 2;
             const distToAllyDepot = getHexDistance(enemy.q, enemy.r, allyDepotQ, allyDepotR);
-
-            // 바로 인접한 아군이 있으면 먼저 공격
             const adjAllies = allies.filter(a => getHexDistance(enemy.q, enemy.r, a.q, a.r) === 1);
-            if (adjAllies.length > 0 && Math.random() < 0.4) {
+
+            // 바로 앞을 아군이 가로막고 있으면 돌파 시도 공격!
+            if (adjAllies.length > 0) {
               const target = adjAllies[0];
-              logBattle(`🐎 적 기습부대 ${enemy.name}이 진로를 가로막은 ${target.name}에게 기습 돌격을 감행합니다!`);
+              logBattle(`🐎 적 기습부대 ${enemy.name}이 군량고 진로를 가로막은 ${target.name}에게 돌파 공격을 가합니다!`);
               playSound('slash');
               const dmg = calculateCombatDamage(enemy, target, 'melee');
               applyDamage(target, dmg);
@@ -6051,7 +6477,6 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
               const stepR = enemy.r > allyDepotR ? enemy.r - 1 : (enemy.r < allyDepotR ? enemy.r + 1 : enemy.r);
 
               if (stepQ === allyDepotQ && stepR === allyDepotR) {
-                // 아군 군량고 점령 성공!
                 enemy.q = stepQ; enemy.r = stepR;
                 triggerAllySupplyRaid(enemy);
               } else if (!findUnitAt(stepQ, stepR)) {
@@ -6060,27 +6485,35 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
               }
             }
           }
-          // ⚔️ 3. 일반 적군 부대 (협공 및 전방 주력 교전)
+          // 👑 3. 적 본대: 아군 총대장(유비) 집중 포위 공격 (Focus Fire on Commander!)
           else {
-            let closestAlly = null;
-            let minDist = 999;
-            allies.forEach(a => {
-              const d = getHexDistance(enemy.q, enemy.r, a.q, a.r);
-              if (d < minDist) { minDist = d; closestAlly = a; }
-            });
+            const target = commander || allies[0];
+            const distToCommander = getHexDistance(enemy.q, enemy.r, target.q, target.r);
+            const adjAllies = allies.filter(a => getHexDistance(enemy.q, enemy.r, a.q, a.r) === 1);
 
-            if (minDist === 1) {
-              logBattle(`⚔️ 적장 ${enemy.name}이 ${closestAlly.name}에게 맹공을 퍼붓습니다!`);
+            if (distToCommander === 1) {
+              // 총대장에게 집중 공격!
+              logBattle(`👑⚡ [총대장 집중 공격!] 적장 ${enemy.name}이 아군 총대장 ${target.name}에게 맹공을 퍼붓습니다!`);
               playSound('slash');
-              const dmg = calculateCombatDamage(enemy, closestAlly, 'melee');
-              applyDamage(closestAlly, dmg);
+              const dmg = Math.floor(calculateCombatDamage(enemy, target, 'melee') * 1.25);
+              applyDamage(target, dmg);
+              if (target.troops <= 0) {
+                logBattle(`🚨 [비보!] 아군 총대장 ${target.name}이 쓰러졌습니다!`);
+              }
+            } else if (adjAllies.length > 0) {
+              // 총대장으로 가는 길을 막는 호위 아군 공격
+              const blocker = adjAllies[0];
+              logBattle(`⚔️ 적장 ${enemy.name}이 총대장을 호위하는 ${blocker.name}에게 맹공을 퍼붓습니다!`);
+              playSound('slash');
+              const dmg = calculateCombatDamage(enemy, blocker, 'melee');
+              applyDamage(blocker, dmg);
             } else {
-              // 아군을 향해 진격
-              const stepQ = enemy.q > closestAlly.q ? enemy.q - 1 : (enemy.q < closestAlly.q ? enemy.q + 1 : enemy.q);
-              const stepR = enemy.r > closestAlly.r ? enemy.r - 1 : (enemy.r < closestAlly.r ? enemy.r + 1 : enemy.r);
+              // 총대장을 향해 좁혀오며 진격!
+              const stepQ = enemy.q > target.q ? enemy.q - 1 : (enemy.q < target.q ? enemy.q + 1 : enemy.q);
+              const stepR = enemy.r > target.r ? enemy.r - 1 : (enemy.r < target.r ? enemy.r + 1 : enemy.r);
               if (!findUnitAt(stepQ, stepR)) {
                 enemy.q = stepQ; enemy.r = stepR;
-                logBattle(`🏇 적군 ${enemy.name} 부대가 진형을 좁히며 쇄도합니다.`);
+                logBattle(`🏇 적장 ${enemy.name} 부대가 총대장 ${target.name}을 포위하기 위해 쇄도합니다.`);
               }
             }
           }
@@ -6100,7 +6533,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
 
       // 10턴 초과 시 타임오버 패배 판정!
       if (sam5BattleState.turn > MAX_TURNS) {
-        triggerDefeat("10턴이 경과하여 동탁의 서량 기병 10만 본대가 당도했습니다! 연합군은 퇴로가 끊겨 패주했습니다.");
+        checkTimeoutBattleResult();
         return;
       }
 
@@ -6187,6 +6620,41 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
       // 즉시 전국 지도로 복귀하며 영지 점령 및 포로 처분 모달 호출!
       closeHexBattle(true);
     }
+
+        // 10턴 경과 시 승패 및 무승부(비김) 정밀 판정
+    function checkTimeoutBattleResult() {
+      const aliveAllies = UNITS.filter(u => u.faction === 'ally' && u.troops > 0);
+      const aliveEnemies = UNITS.filter(u => u.faction === 'enemy' && u.troops > 0);
+
+      const allyTotal = aliveAllies.reduce((sum, u) => sum + u.troops, 0);
+      const enemyTotal = aliveEnemies.reduce((sum, u) => sum + u.troops, 0);
+
+      if (allyTotal > enemyTotal * 1.3) {
+        triggerVictory();
+      } else if (Math.abs(allyTotal - enemyTotal) <= enemyTotal * 0.4 || (aliveAllies.length > 0 && aliveEnemies.length > 0)) {
+        // 🤝 1번 비김 (명예로운 무승부!)
+        triggerDraw("10턴 간의 혈전 끝에 양군 모두 군량이 소진되어 명예로운 무승부로 전선을 물렸습니다!");
+      } else {
+        triggerDefeat("10턴이 경과하여 적 증원군 10만 대군이 당도했습니다! 연합군은 전선을 보존하며 철수했습니다.");
+      }
+    }
+
+    function triggerDraw(reason) {
+      if (sam5BattleState.battleOver) return;
+      sam5BattleState.battleOver = true;
+      playSound('drum');
+      logBattle(`🤝 [무승부 (비김)] ${reason}`);
+      logMessage(`🤝 [전투 무승부] 10턴 간의 팽팽한 호적수 공방 끝에 양군이 대치하며 무승부로 회군했습니다.`, 'text-cyan-300 font-extrabold text-sm');
+
+      alert(`🤝 [10턴 결전 무승부 (비김)!]
+
+${reason}
+
+▶ 영지 변동 없이 양군 모두 전력을 보존하며 회군하였습니다.
+▶ 다음 전투에서 승기를 잡으십시오!`);
+      closeHexBattle(false);
+    }
+
 
     function triggerDefeat(msg) {
       if (sam5BattleState.battleOver) return;
