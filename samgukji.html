@@ -477,7 +477,7 @@
           <div onclick="openSaveModal()" class="koei-popup-item !text-emerald-300">2. 저  장 (5슬롯)</div>
           <div onclick="openLoadModal()" class="koei-popup-item !text-cyan-300">3. 로  드 (날짜/제목)</div>
           <div onclick="openDuelSelectModal()" class="koei-popup-item orange">4. 1:1 장수 결투</div>
-          <div onclick="openRulerSelectModal()" class="koei-popup-item orange">5. 군주변경 (공손찬 등)</div>
+          <div onclick="openModal('intro-ruler-select-modal')" class="koei-popup-item !text-yellow-300 font-black">5. 시나리오/군주 선택창 열기</div>
           <div onclick="resetGame()" class="koei-popup-item">6. 처음부터</div>
         </div>
       </div>
@@ -983,7 +983,7 @@
   
   
   <!-- ==================== 🔥 [정통 코에이 삼국지 III] 시나리오 & 군주 선택 오프닝 ==================== -->
-  <div id="intro-ruler-select-modal" class="fixed inset-0 modal-backdrop z-[999999] flex items-center justify-center p-3 bg-black/95">
+  <div id="intro-ruler-select-modal" class="fixed inset-0 modal-backdrop z-[999999] hidden flex items-center justify-center p-3 bg-black/95">
     <div class="koei-box w-full max-w-4xl p-5 rounded-lg shadow-2xl border-4 border-amber-400 max-h-[96vh] flex flex-col justify-between overflow-y-auto">
       
       <!-- 상단 원작 타이틀 및 결정/중지 버튼 -->
@@ -2105,8 +2105,15 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-      setupIntroFaces(); updateTroopLevelUI();
-      openModal('intro-ruler-select-modal');
+      // 🔥 사용자의 요청: 실행하자마자 바로 '유비'로 즉시 인게임 실행!
+      changeRuler('유비', 8, 'liubei');
+      updateTroopLevelUI();
+      renderMapPins();
+      updateRightPanel(8);
+      setupRulerPortraits();
+      bindKeyboardShortcuts();
+      updateDifficultyUI();
+      logMessage('👑 [유비 천하통일 출진] 유비(현덕)가 형주(8번)에서 대의의 깃발을 올렸습니다! (관우·장비·조운 출진 대기)', 'text-yellow-300 font-extrabold text-sm');
       renderMapPins();
       updateRightPanel(gameState.selectedProvId);
       setupRulerPortraits();
