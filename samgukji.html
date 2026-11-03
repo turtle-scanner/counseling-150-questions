@@ -3513,8 +3513,15 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       gameState.selectedProvId = provId;
       renderMapPins();
       updateRightPanel(provId);
-      logMessage(`👑 [군주 변경] 이제부터 '${name}'(으)로 천하통일을 지휘합니다!`, 'text-yellow-300 font-black');
+            logMessage(`👑 [군주 변경] 이제부터 '${name}'(으)로 천하통일을 지휘합니다!`, 'text-yellow-300 font-black');
     }
+
+    // ==================== 사운드 엔진 (Web Audio API) ====================
+    function toggleBGM() {
+      closeAllPopups();
+      if (!gameState.audioCtx) {
+        try { gameState.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+      }
       gameState.bgmPlaying = !gameState.bgmPlaying;
       const statusEl = document.getElementById('bgm-status');
       const iconEl = document.getElementById('bgm-icon');
@@ -3933,7 +3940,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     ];
 
     // 게임 상태
-    let gameState = {
+    let sam5BattleState = {
       turn: 1,
       maxTurns: MAX_TURNS,
       phase: "ally", // 'ally' or 'enemy'
@@ -3950,7 +3957,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     };
 
     // 일기토 상태
-    let duelState = {
+    let sam5DuelState = {
       p1: null, p2: null,
       p1Hp: 100, p2Hp: 100,
       round: 0
@@ -3969,7 +3976,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function playSound(type) {
-      if (!gameState.soundEnabled) return;
+      if (!sam5BattleState.soundEnabled) return;
       try {
         const actx = getAudioContext();
         if (actx.state === 'suspended') actx.resume();
@@ -4028,9 +4035,9 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function toggleSound() {
-      gameState.soundEnabled = !gameState.soundEnabled;
-      document.getElementById("soundLabel").innerText = gameState.soundEnabled ? "효과음 ON" : "효과음 OFF";
-      document.getElementById("soundBtn").classList.toggle("opacity-50", !gameState.soundEnabled);
+      sam5BattleState.soundEnabled = !sam5BattleState.soundEnabled;
+      document.getElementById("soundLabel").innerText = sam5BattleState.soundEnabled ? "효과음 ON" : "효과음 OFF";
+      document.getElementById("soundBtn").classList.toggle("opacity-50", !sam5BattleState.soundEnabled);
     }
 
     // ==========================================================================
@@ -4095,22 +4102,22 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
           if (terrain === 1) tileColor = "#14532d"; // 숲
           else if (terrain === 2) tileColor = "#44403c"; // 산악
           else if (terrain === 3) tileColor = "#7f1d1d"; // 호로관
-          else if (terrain === 4) tileColor = gameState.supplyBurned ? "#292524" : "#854d0e"; // 보급창
+          else if (terrain === 4) tileColor = sam5BattleState.supplyBurned ? "#292524" : "#854d0e"; // 보급창
 
           // 이동/공격 하이라이트
-          const isReachable = gameState.reachableHexes.some(h => h.q === q && h.r === r);
+          const isReachable = sam5BattleState.reachableHexes.some(h => h.q === q && h.r === r);
           if (isReachable) {
             tileColor = "#065f46";
             borderColor = "#34d399";
           }
 
-          const isAttackable = gameState.attackableTargets.some(t => t.q === q && t.r === r);
+          const isAttackable = sam5BattleState.attackableTargets.some(t => t.q === q && t.r === r);
           if (isAttackable) {
             tileColor = "#991b1b";
             borderColor = "#f87171";
           }
 
-          const isBurning = gameState.fireTiles.some(f => f.q === q && f.r === r);
+          const isBurning = sam5BattleState.fireTiles.some(f => f.q === q && f.r === r);
           if (isBurning) {
             tileColor = "#c2410c";
           }
@@ -4124,7 +4131,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
           if (terrain === 1) ctx.fillText("🌲숲", x, y - 16);
           else if (terrain === 2) ctx.fillText("⛰️산", x, y - 16);
           else if (terrain === 3) ctx.fillText("🏯호로관", x, y - 16);
-          else if (terrain === 4) ctx.fillText(gameState.supplyBurned ? "💥소실" : "🌾군량고", x, y - 16);
+          else if (terrain === 4) ctx.fillText(sam5BattleState.supplyBurned ? "💥소실" : "🌾군량고", x, y - 16);
 
           if (isBurning) {
             ctx.font = "15px sans-serif";
@@ -4137,7 +4144,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       UNITS.forEach(unit => {
         if (unit.troops <= 0) return;
         const { x, y } = getHexPixel(unit.q, unit.r);
-        const isSelected = gameState.selectedUnit && gameState.selectedUnit.id === unit.id;
+        const isSelected = sam5BattleState.selectedUnit && sam5BattleState.selectedUnit.id === unit.id;
         const isAlly = unit.faction === "ally";
 
         // 선택 하이라이트 원
@@ -4203,7 +4210,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     // 마우스 상호작용
     // ==========================================================================
     canvas.addEventListener("click", function(e) {
-      if (gameState.battleOver) return;
+      if (sam5BattleState.battleOver) return;
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
@@ -4229,10 +4236,10 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
 
     function handleHexClick(q, r) {
       // 1. 공격/특기 발동 모드
-      if (gameState.skillMode) {
-        const target = gameState.attackableTargets.find(t => t.q === q && t.r === r);
+      if (sam5BattleState.skillMode) {
+        const target = sam5BattleState.attackableTargets.find(t => t.q === q && t.r === r);
         if (target) {
-          executeSkillAction(gameState.skillMode, target);
+          executeSkillAction(sam5BattleState.skillMode, target);
         } else {
           logBattle("명령 대상이 올바르지 않아 군령을 철회했습니다.");
         }
@@ -4242,18 +4249,18 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       }
 
       // 2. 이동 타일 클릭 시 (이동 실행)
-      const canMove = gameState.reachableHexes.find(h => h.q === q && h.r === r);
-      if (canMove && gameState.selectedUnit && !gameState.selectedUnit.moved) {
-        gameState.selectedUnit.q = q;
-        gameState.selectedUnit.r = r;
-        gameState.selectedUnit.moved = true;
-        gameState.reachableHexes = [];
+      const canMove = sam5BattleState.reachableHexes.find(h => h.q === q && h.r === r);
+      if (canMove && sam5BattleState.selectedUnit && !sam5BattleState.selectedUnit.moved) {
+        sam5BattleState.selectedUnit.q = q;
+        sam5BattleState.selectedUnit.r = r;
+        sam5BattleState.selectedUnit.moved = true;
+        sam5BattleState.reachableHexes = [];
 
         // 특수 기믹: 보급창(8, 3) 도달 검사
-        if (q === 8 && r === 3 && !gameState.supplyBurned) {
-          triggerSupplyRaid(gameState.selectedUnit);
+        if (q === 8 && r === 3 && !sam5BattleState.supplyBurned) {
+          triggerSupplyRaid(sam5BattleState.selectedUnit);
         } else {
-          logBattle(`${gameState.selectedUnit.name} 부대가 진격하여 진형을 잡았습니다.`);
+          logBattle(`${sam5BattleState.selectedUnit.name} 부대가 진격하여 진형을 잡았습니다.`);
         }
 
         playSound('fanfare');
@@ -4273,23 +4280,23 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function selectUnit(unit) {
-      gameState.selectedUnit = unit;
+      sam5BattleState.selectedUnit = unit;
       updateUnitDetailCard(unit);
 
-      if (unit.faction === "ally" && !unit.moved && !unit.acted && gameState.phase === "ally") {
+      if (unit.faction === "ally" && !unit.moved && !unit.acted && sam5BattleState.phase === "ally") {
         computeMovementRange(unit);
       } else {
-        gameState.reachableHexes = [];
+        sam5BattleState.reachableHexes = [];
       }
 
-      gameState.attackableTargets = [];
+      sam5BattleState.attackableTargets = [];
       updateActionCommands();
     }
 
     function deselectUnit() {
-      gameState.selectedUnit = null;
-      gameState.reachableHexes = [];
-      gameState.attackableTargets = [];
+      sam5BattleState.selectedUnit = null;
+      sam5BattleState.reachableHexes = [];
+      sam5BattleState.attackableTargets = [];
       clearSkillMode();
       document.getElementById("unitName").innerText = "부대를 선택하세요";
       document.getElementById("unitGeneralTitle").innerText = "-";
@@ -4308,7 +4315,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     // 전략 기믹 1: 보급창고(군량고) 기습 점령 이벤트
     // ==========================================================================
     function triggerSupplyRaid(hero) {
-      gameState.supplyBurned = true;
+      sam5BattleState.supplyBurned = true;
       logBattle(`🌾💥 [전략 성공!] ${hero.name}이 적의 보급창고를 불태웠습니다! 동탁군 전원 패닉 & 사기 급락!`);
       playSound('fire');
 
@@ -4327,7 +4334,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     // 이동 범위 연산 (추행진 기동력 +2 적용)
     // ==========================================================================
     function computeMovementRange(unit) {
-      gameState.reachableHexes = [];
+      sam5BattleState.reachableHexes = [];
       const form = FORMATIONS[unit.formation];
       const baseMove = 2 + (form ? form.moveBonus : 0);
 
@@ -4342,7 +4349,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
 
           const dist = getHexDistance(unit.q, unit.r, q, r);
           if (dist <= baseMove) {
-            gameState.reachableHexes.push({ q, r });
+            sam5BattleState.reachableHexes.push({ q, r });
           }
         }
       }
@@ -4385,8 +4392,8 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function updateActionCommands() {
-      const u = gameState.selectedUnit;
-      if (!u || u.faction !== "ally" || u.acted || gameState.phase !== "ally") {
+      const u = sam5BattleState.selectedUnit;
+      if (!u || u.faction !== "ally" || u.acted || sam5BattleState.phase !== "ally") {
         disableAllCommands();
         return;
       }
@@ -4426,33 +4433,33 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     // 전투 액션: 일반공격, 안행궁시, 화계(풍향확산), 분기, 혼란
     // ==========================================================================
     function onCmdAttack() {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       if (!u) return;
-      gameState.skillMode = 'attack';
-      gameState.attackableTargets = getEnemiesInRange(u, 1);
+      sam5BattleState.skillMode = 'attack';
+      sam5BattleState.attackableTargets = getEnemiesInRange(u, 1);
       logBattle("공격할 적 부대를 선택하십시오.");
       renderBattlefield();
     }
 
     function onCmdArchery() {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       if (!u) return;
       const form = FORMATIONS[u.formation];
-      gameState.skillMode = 'archery';
-      gameState.attackableTargets = getEnemiesInRange(u, form.arcRange);
+      sam5BattleState.skillMode = 'archery';
+      sam5BattleState.attackableTargets = getEnemiesInRange(u, form.arcRange);
       logBattle(`🏹 [안행진 일제사격] 사거리 ${form.arcRange}칸 이내의 적을 조준하십시오.`);
       renderBattlefield();
     }
 
     function onCmdFireSkill() {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       if (!u) return;
-      gameState.skillMode = 'fire';
-      gameState.attackableTargets = [];
+      sam5BattleState.skillMode = 'fire';
+      sam5BattleState.attackableTargets = [];
       for (let r = 0; r < GRID_ROWS; r++) {
         for (let q = 0; q < GRID_COLS; q++) {
           if (getHexDistance(u.q, u.r, q, r) <= 2) {
-            gameState.attackableTargets.push({ q, r });
+            sam5BattleState.attackableTargets.push({ q, r });
           }
         }
       }
@@ -4461,16 +4468,16 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function onCmdChaosSkill() {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       if (!u) return;
-      gameState.skillMode = 'chaos';
-      gameState.attackableTargets = getEnemiesInRange(u, 2);
+      sam5BattleState.skillMode = 'chaos';
+      sam5BattleState.attackableTargets = getEnemiesInRange(u, 2);
       logBattle("혼란을 걸 적 부대를 선택하십시오.");
       renderBattlefield();
     }
 
     function onCmdFlurry() {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       if (!u) return;
       const enemies = getEnemiesInRange(u, 1);
       if (enemies.length === 0) return;
@@ -4487,7 +4494,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function executeSkillAction(mode, targetPos) {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       const targetUnit = findUnitAt(targetPos.q, targetPos.r);
 
       if (mode === 'attack' && targetUnit) {
@@ -4508,7 +4515,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       } else if (mode === 'fire') {
         logBattle(`🔥 [대화계] 불길이 거세게 치솟습니다! 남동풍을 타고 번져갑니다.`);
         playSound('fire');
-        gameState.fireTiles.push({ q: targetPos.q, r: targetPos.r, turns: 3 });
+        sam5BattleState.fireTiles.push({ q: targetPos.q, r: targetPos.r, turns: 3 });
         if (targetUnit) {
           applyDamage(targetUnit, 1500);
           targetUnit.morale = Math.max(10, targetUnit.morale - 20);
@@ -4575,12 +4582,12 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function clearSkillMode() {
-      gameState.skillMode = null;
-      gameState.attackableTargets = [];
+      sam5BattleState.skillMode = null;
+      sam5BattleState.attackableTargets = [];
     }
 
     function onCmdWait() {
-      if (gameState.selectedUnit) finishUnitAction(gameState.selectedUnit);
+      if (sam5BattleState.selectedUnit) finishUnitAction(sam5BattleState.selectedUnit);
     }
 
     function finishUnitAction(unit) {
@@ -4596,7 +4603,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     // 진형 변경 시스템
     // ==========================================================================
     function openFormationModal() {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       if (!u) return;
       const listEl = document.getElementById("formationChoiceList");
       listEl.innerHTML = "";
@@ -4642,18 +4649,18 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     // 전략 기믹 2: 일기토(一騎討) 일격필살 시스템
     // ==========================================================================
     function onCmdDuel() {
-      const u = gameState.selectedUnit;
+      const u = sam5BattleState.selectedUnit;
       if (!u) return;
       const enemies = getEnemiesInRange(u, 1);
       if (enemies.length === 0) return;
 
       // 여포가 범위 내에 있으면 우선 대결!
       const target = enemies.find(e => e.isBoss) || enemies[0];
-      duelState.p1 = u;
-      duelState.p2 = target;
-      duelState.p1Hp = 100;
-      duelState.p2Hp = 100;
-      duelState.round = 1;
+      sam5DuelState.p1 = u;
+      sam5DuelState.p2 = target;
+      sam5DuelState.p1Hp = 100;
+      sam5DuelState.p2Hp = 100;
+      sam5DuelState.round = 1;
 
       document.getElementById("duelP1Name").innerText = u.name;
       document.getElementById("duelP1War").innerText = `무력 ${u.war}`;
@@ -4674,8 +4681,8 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function progressDuelRound() {
-      const { p1, p2 } = duelState;
-      duelState.round++;
+      const { p1, p2 } = sam5DuelState;
+      sam5DuelState.round++;
       playSound('slash');
 
       const p1Roll = p1.war + Math.floor(Math.random() * 25);
@@ -4688,23 +4695,23 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
 
       if (p1Roll >= p2Roll) {
         const dmg = Math.floor((p1Roll - p2Roll) * 1.8) + 20;
-        duelState.p2Hp = Math.max(0, duelState.p2Hp - dmg);
-        logBox.innerText = `[제${duelState.round}합] ${p1.name}의 일격필살! ${p2.name}에게 ${dmg}의 타격을 입혔습니다!`;
+        sam5DuelState.p2Hp = Math.max(0, sam5DuelState.p2Hp - dmg);
+        logBox.innerText = `[제${sam5DuelState.round}합] ${p1.name}의 일격필살! ${p2.name}에게 ${dmg}의 타격을 입혔습니다!`;
       } else {
         const dmg = Math.floor((p2Roll - p1Roll) * 1.8) + 20;
-        duelState.p1Hp = Math.max(0, duelState.p1Hp - dmg);
-        logBox.innerText = `[제${duelState.round}합] ${p2.name}의 거친 방천화극 반격! ${p1.name}이 부상을 입었습니다 (-${dmg})!`;
+        sam5DuelState.p1Hp = Math.max(0, sam5DuelState.p1Hp - dmg);
+        logBox.innerText = `[제${sam5DuelState.round}합] ${p2.name}의 거친 방천화극 반격! ${p1.name}이 부상을 입었습니다 (-${dmg})!`;
       }
 
-      document.getElementById("duelP1Hp").style.width = `${duelState.p1Hp}%`;
-      document.getElementById("duelP2Hp").style.width = `${duelState.p2Hp}%`;
+      document.getElementById("duelP1Hp").style.width = `${sam5DuelState.p1Hp}%`;
+      document.getElementById("duelP2Hp").style.width = `${sam5DuelState.p2Hp}%`;
 
       // 승패 판정
-      if (duelState.p1Hp <= 0 || duelState.p2Hp <= 0 || duelState.round >= 5) {
+      if (sam5DuelState.p1Hp <= 0 || sam5DuelState.p2Hp <= 0 || sam5DuelState.round >= 5) {
         document.getElementById("btnDuelRound").classList.add("hidden");
         document.getElementById("btnDuelClose").classList.remove("hidden");
 
-        if (duelState.p2Hp <= 0) {
+        if (sam5DuelState.p2Hp <= 0) {
           logBox.innerText = `🏆 [초대형 전공!] ${p1.name}이 적장 ${p2.name}을 베어 낙마시켰습니다! 적 군세가 완전히 와해되었습니다!`;
           applyDamage(p2, p2.troops); // 적장 전멸
           if (p2.isBoss) {
@@ -4713,7 +4720,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
               triggerVictory("일기토 승리! 적 총대장 여포를 꺾고 호로관을 함락시켰습니다!");
             }, 600);
           }
-        } else if (duelState.p1Hp <= 0) {
+        } else if (sam5DuelState.p1Hp <= 0) {
           logBox.innerText = `💀 ${p1.name}이 패배하여 전선에서 후퇴합니다...`;
           applyDamage(p1, p1.troops);
         } else {
@@ -4724,7 +4731,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
 
     function closeDuelModal() {
       document.getElementById("duelModal").classList.add("hidden");
-      if (gameState.selectedUnit) finishUnitAction(gameState.selectedUnit);
+      if (sam5BattleState.selectedUnit) finishUnitAction(sam5BattleState.selectedUnit);
     }
 
     // ==========================================================================
@@ -4738,10 +4745,10 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function endPlayerTurn() {
-      if (gameState.phase !== "ally" || gameState.battleOver) return;
-      gameState.phase = "enemy";
+      if (sam5BattleState.phase !== "ally" || sam5BattleState.battleOver) return;
+      sam5BattleState.phase = "enemy";
       document.getElementById("btnEndTurn").disabled = true;
-      document.getElementById("turnInfo").innerText = `제 ${gameState.turn} / 10 턴 [동탁군 반격 개시]`;
+      document.getElementById("turnInfo").innerText = `제 ${sam5BattleState.turn} / 10 턴 [동탁군 반격 개시]`;
       logBattle("🚩 동탁군이 북을 울리며 전면 반격을 개시합니다!");
       playSound('drum');
 
@@ -4755,7 +4762,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       let step = 0;
 
       function executeNextEnemy() {
-        if (step >= enemies.length || gameState.battleOver) {
+        if (step >= enemies.length || sam5BattleState.battleOver) {
           finishFullTurn();
           return;
         }
@@ -4802,20 +4809,20 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
 
     // 턴 교대 및 화계 번짐 연산
     function finishFullTurn() {
-      gameState.turn++;
+      sam5BattleState.turn++;
 
       // 10턴 초과 시 타임오버 패배 판정!
-      if (gameState.turn > MAX_TURNS) {
+      if (sam5BattleState.turn > MAX_TURNS) {
         triggerDefeat("10턴이 경과하여 동탁의 서량 기병 10만 본대가 당도했습니다! 연합군은 퇴로가 끊겨 패주했습니다.");
         return;
       }
 
-      gameState.phase = "ally";
+      sam5BattleState.phase = "ally";
       document.getElementById("btnEndTurn").disabled = false;
-      document.getElementById("turnInfo").innerText = `제 ${gameState.turn} / 10 턴 [연합군 행동]`;
+      document.getElementById("turnInfo").innerText = `제 ${sam5BattleState.turn} / 10 턴 [연합군 행동]`;
 
       // 10턴 게이지 업데이트
-      const turnsLeft = MAX_TURNS - gameState.turn + 1;
+      const turnsLeft = MAX_TURNS - sam5BattleState.turn + 1;
       document.getElementById("turnCountdownText").innerText = `${turnsLeft} 턴 남음!`;
       const percent = (turnsLeft / MAX_TURNS) * 100;
       const barEl = document.getElementById("turnProgressBar");
@@ -4828,7 +4835,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
 
       // 전략 기믹 3: 남동풍을 타고 화계(불길) 확산
       const newFires = [];
-      gameState.fireTiles.forEach(f => {
+      sam5BattleState.fireTiles.forEach(f => {
         f.turns--;
         if (f.turns > 0) {
           newFires.push(f);
@@ -4838,10 +4845,10 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
           }
         }
       });
-      gameState.fireTiles = newFires;
+      sam5BattleState.fireTiles = newFires;
 
       // 불타는 타일 위의 부대에게 화염 피해
-      gameState.fireTiles.forEach(f => {
+      sam5BattleState.fireTiles.forEach(f => {
         const u = findUnitAt(f.q, f.r);
         if (u) {
           applyDamage(u, 750);
@@ -4855,7 +4862,7 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
         u.acted = false;
       });
 
-      logBattle(`제 ${gameState.turn} 턴 시작! 남은 기회는 ${turnsLeft}번입니다.`);
+      logBattle(`제 ${sam5BattleState.turn} 턴 시작! 남은 기회는 ${turnsLeft}번입니다.`);
       deselectUnit();
       renderBattlefield();
     }
@@ -4878,16 +4885,16 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
 
     function triggerVictory(msg) {
-      if (gameState.battleOver) return;
-      gameState.battleOver = true;
+      if (sam5BattleState.battleOver) return;
+      sam5BattleState.battleOver = true;
       playSound('fanfare');
-      alert(`🎉 [대승리 - 10턴 결전 완료]\n\n${msg}\n소요 턴: ${gameState.turn}턴만에 완벽한 승리를 거두었습니다!`);
+      alert(`🎉 [대승리 - 10턴 결전 완료]\n\n${msg}\n소요 턴: ${sam5BattleState.turn}턴만에 완벽한 승리를 거두었습니다!`);
       logBattle(`🏆 대승리! ${msg}`);
     }
 
     function triggerDefeat(msg) {
-      if (gameState.battleOver) return;
-      gameState.battleOver = true;
+      if (sam5BattleState.battleOver) return;
+      sam5BattleState.battleOver = true;
       playSound('fire');
       alert(`💀 [작전 실패 - 시간 초과 패배]\n\n${msg}`);
       logBattle(`통한의 패배: ${msg}`);
