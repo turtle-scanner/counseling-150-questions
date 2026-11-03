@@ -2148,7 +2148,7 @@
           mult: 0.70,
           isAdv: false,
           isDisadv: true,
-          text: `🛡️ [상성 열세] ${rule ? rule.icon : ''} 속성이 적 ${defRule.icon} 속성의 상성에 막혀 대미지가 30% 경감되었습니다.`
+          text: `🛡️ [상성 열세] ${rule ? rule.icon : ''} 속성이 적 ${defRule ? defRule.icon : ''} 속성의 상성에 막혀 대미지가 30% 경감되었습니다.`
         };
       }
       return { mult: 1.0, isAdv: false, isDisadv: false, text: '' };
@@ -6219,10 +6219,41 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     // ==========================================================================
     function executeSkillAction(mode, targetPos) {
       const u = sam5BattleState.selectedUnit;
+      if (!u) return;
       const targetUnit = findUnitAt(targetPos.q, targetPos.r);
+      if (!targetUnit) return;
       const isArcher = isMasterArcher(u);
 
       if (mode === 'attack' && targetUnit) {
+        // [★돌격 이동 자동 결합★] 적과 거리가 1칸보다 멀고 아직 이동하지 않았다면 적 앞으로 즉시 쇄도 이동!
+        const curDist = getHexDistance(u.q, u.r, targetUnit.q, targetUnit.r);
+        if (curDist > 1 && !u.moved) {
+          computeMovementRange(u);
+          const adjHexes = getHexNeighbors(targetUnit.q, targetUnit.r);
+          const chargeHex = sam5BattleState.reachableHexes.find(h => adjHexes.some(a => a.q === h.q && a.r === h.r));
+          if (chargeHex) {
+            u.q = chargeHex.q;
+            u.r = chargeHex.r;
+            u.moved = true;
+            sam5BattleState.reachableHexes = [];
+            logBattle(`🏇 [질풍 쇄도!] ${u.name} 부대가 적장 ${targetUnit.name}의 코앞으로 돌진하여 일격을 가합니다!`);
+            playSound('fanfare');
+          } else if (sam5BattleState.reachableHexes.length > 0) {
+            // 가장 가까운 타일로 전진
+            let bestHex = null;
+            let bestD = 999;
+            sam5BattleState.reachableHexes.forEach(h => {
+              const d = getHexDistance(h.q, h.r, targetUnit.q, targetUnit.r);
+              if (d < bestD) { bestD = d; bestHex = h; }
+            });
+            if (bestHex) {
+              u.q = bestHex.q;
+              u.r = bestHex.r;
+              u.moved = true;
+              sam5BattleState.reachableHexes = [];
+            }
+          }
+        }
         // ⬛⬜ 바둑의 원리 및 포위망 검사
         const surroundingAllies = getSurroundingUnits(targetUnit, u.faction);
         const surroundCount = surroundingAllies.length;
@@ -6402,7 +6433,6 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
 
     function clearSkillMode() {
       sam5BattleState.skillMode = null;
-      applyRegionalBattlefield(targetProv);
       sam5BattleState.attackableTargets = [];
     }
 
