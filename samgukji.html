@@ -337,6 +337,30 @@
       box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
     }
 
+
+
+    /* 지도 핀 클릭 보장 및 z-index 최상위 */
+    #map-pins-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: auto !important;
+      z-index: 50 !important;
+    }
+    .map-pin {
+      position: absolute;
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      z-index: 60 !important;
+      transform: translate(-50%, -50%);
+    }
+    .menu-btn {
+      cursor: pointer !important;
+      pointer-events: auto !important;
+    }
+    .koei-popup-window {
+      z-index: 9999999 !important;
+    }
+    
 </style>
 </head>
 <body class="bg-gray-950 min-h-screen text-slate-100 flex flex-col justify-between">
@@ -2105,21 +2129,22 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-      // 🔥 사용자의 요청: 실행하자마자 바로 '유비'로 즉시 인게임 실행!
-      changeRuler('유비', 8, 'liubei');
-      updateTroopLevelUI();
-      renderMapPins();
-      updateRightPanel(8);
-      setupRulerPortraits();
-      bindKeyboardShortcuts();
-      updateDifficultyUI();
-      logMessage('👑 [유비 천하통일 출진] 유비(현덕)가 형주(8번)에서 대의의 깃발을 올렸습니다! (관우·장비·조운 출진 대기)', 'text-yellow-300 font-extrabold text-sm');
-      renderMapPins();
-      updateRightPanel(gameState.selectedProvId);
-      setupRulerPortraits();
-      bindKeyboardShortcuts();
-      updateDifficultyUI();
-      logMessage('🎮 삼국지 3 팝업 & 1:1 장수 결투 & 적군 침공 AI 에디션 가동!', 'text-emerald-400 font-bold');
+      try {
+        gameState.rulerName = '유비';
+        gameState.myCapitalId = 8;
+        gameState.currentRuler = 'liubei';
+        gameState.selectedProvId = 8;
+
+        renderMapPins();
+        updateRightPanel(8);
+        setupRulerPortraits();
+        updateTroopLevelUI();
+        bindKeyboardShortcuts();
+        updateDifficultyUI();
+        logMessage('👑 [유비 천하통일 출진] 유비(현덕)가 형주(8번)에서 대의의 깃발을 올렸습니다! (관우·장비·조운 출진 대기)', 'text-yellow-300 font-extrabold text-sm');
+      } catch (err) {
+        console.error('Initialization error:', err);
+      }
     });
 
     function setupRulerPortraits() {
@@ -3481,21 +3506,15 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     function openRulerSelectModal() { closeAllPopups(); openModal('ruler-select-modal'); }
     function changeRuler(name, provId, rulerKey) {
       closeModal('ruler-select-modal');
+      closeModal('intro-ruler-select-modal');
       gameState.rulerName = name;
       gameState.myCapitalId = provId;
       gameState.currentRuler = rulerKey;
       gameState.selectedProvId = provId;
       renderMapPins();
       updateRightPanel(provId);
-      logMessage(`👑 [군주 변경] 이제부터 '${name}'으로 천하통일을 지휘합니다!`, 'text-yellow-300 font-black');
+      logMessage(`👑 [군주 변경] 이제부터 '${name}'(으)로 천하통일을 지휘합니다!`, 'text-yellow-300 font-black');
     }
-
-    // ==================== 사운드 엔진 (Web Audio API) ====================
-    function toggleBGM() {
-      closeAllPopups();
-      if (!gameState.audioCtx) {
-        try { gameState.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
-      }
       gameState.bgmPlaying = !gameState.bgmPlaying;
       const statusEl = document.getElementById('bgm-status');
       const iconEl = document.getElementById('bgm-icon');
@@ -3584,8 +3603,14 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       }
     }
 
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+    }
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
 
     function bindKeyboardShortcuts() {
       window.addEventListener('keydown', (e) => {
