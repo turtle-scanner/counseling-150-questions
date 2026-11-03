@@ -4263,6 +4263,60 @@ ${promoMsg}
       renderBattlefield();
     }
 
+    
+    // ==========================================================================
+    // ⚔️ [전쟁 출격 / 침공 작전 개시] openWarModal & openOfficerDeployModal
+    // ==========================================================================
+    function openWarModal(targetProvId) {
+      closeAllPopups();
+      playSfx('fanfare');
+
+      const myCapital = getMyCapital() || PROVINCES[7];
+      let targetProv = null;
+
+      if (targetProvId) {
+        targetProv = PROVINCES.find(p => p.id === parseInt(targetProvId, 10));
+      }
+      if (!targetProv && gameState.selectedProvId) {
+        targetProv = PROVINCES.find(p => p.id === gameState.selectedProvId);
+      }
+      if (!targetProv || targetProv.ruler === gameState.rulerName) {
+        // 아군 영지가 아닌 인접 적 영지 중 첫 번째 자동 선택
+        targetProv = PROVINCES.find(p => p.ruler !== gameState.rulerName) || PROVINCES[9];
+      }
+
+      // 행동력 검사 및 소모 (없으면 휴양 안내)
+      if (gameState.actionPoints <= 0) {
+        alert("⚠️ [전략 행동력 부족]\n\n이번 달의 전략 행동력을 모두 소진하였습니다!\n[0. 휴양]을 눌러 다음 달로 턴을 넘기거나 군비를 보충하십시오.");
+        return;
+      }
+
+      if (!consumeActionPoint('출진')) return;
+
+      logMessage(`⚔️🚩 [출진 개시!] ${myCapital.name}의 아군 대군이 적 영지 [${targetProv.name} (${targetProv.ruler}령)]을 향해 10턴 헥스 결전 출진을 개시합니다!`, 'text-yellow-300 font-black');
+
+      // 최정예 아군 장수 자동 선발 (관우, 장비, 조운, 황충, 위연, 유비 등)
+      const deploySquad = MY_OFFICERS.slice(0, 6);
+
+      // 즉시 10턴 헥스 결전 전장으로 시원하게 돌입!
+      openHexBattle(targetProv, myCapital, deploySquad);
+    }
+
+    function openWarTargetSelectModal() {
+      // 인접 적 영지 중 하나를 골라 출격
+      const enemyProvs = PROVINCES.filter(p => p.ruler !== gameState.rulerName);
+      if (enemyProvs.length > 0) {
+        openWarModal(enemyProvs[0].id);
+      } else {
+        alert("천하를 통일하여 더 이상 침공할 적 영지가 없습니다!");
+      }
+    }
+
+    function openOfficerDeployModal(targetProv, fromProv, isDefense = false) {
+      closeAllPopups();
+      openWarModal(targetProv ? targetProv.id : null);
+    }
+
     function openHexBattle(targetProv, fromProv, deployedOfficers = []) {
       closeAllPopups();
       hexBattleContext.targetProv = targetProv;
@@ -6051,8 +6105,11 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     // ==========================================================================
     function checkAllUnitsActed() {
       const allDone = UNITS.filter(u => u.faction === "ally" && u.troops > 0).every(u => u.acted);
-      if (allDone) {
-        logBattle("아군 전 부대가 행동을 완료했습니다. [아군 턴 종료] 버튼을 눌러 적군 턴을 진행하십시오.");
+      if (allDone && sam5BattleState.phase === 'ally' && !sam5BattleState.battleOver) {
+        logBattle("🚩 아군 전 부대 행동 완료! 자동으로 적군 반격 턴으로 전환됩니다.");
+        setTimeout(() => {
+          endPlayerTurn();
+        }, 800);
       }
     }
 
@@ -6160,6 +6217,59 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     // ==========================================================================
     // 🤖 [적군 AI 전면 혁신] 성벽 우회 진격 & 궁시 사격 & 돌격 공격 스마트 AI
     // ==========================================================================
+    // ==========================================================================
+    // 🧭 헥스 전장 스마트 BFS 최단 경로 탐색기 (성문 통과 & 장애물 우회)
+    // ==========================================================================
+    function getNextStepTowards(startQ, startR, targetQ, targetR) {
+      if (getHexDistance(startQ, startR, targetQ, targetR) <= 1) {
+        return null; // 이미 인접함
+      }
+
+      const queue = [{ q: startQ, r: startR, firstStep: null }];
+      const visited = new Set();
+      visited.add(`${startQ},${startR}`);
+
+      let closestFallback = null;
+      let minFallbackDist = getHexDistance(startQ, startR, targetQ, targetR);
+
+      while (queue.length > 0) {
+        const curr = queue.shift();
+        const distToTarget = getHexDistance(curr.q, curr.r, targetQ, targetR);
+
+        if (distToTarget <= 1) {
+          return curr.firstStep; // 타겟 인접 최단경로의 첫 발자국 반환!
+        }
+
+        const neighbors = getHexNeighbors(curr.q, curr.r);
+        for (const n of neighbors) {
+          if (n.q < 0 || n.q >= GRID_COLS || n.r < 0 || n.r >= GRID_ROWS) continue;
+          const key = `${n.q},${n.r}`;
+          if (visited.has(key)) continue;
+
+          const terrain = (MAP_TERRAIN[n.r] && MAP_TERRAIN[n.r][n.q] !== undefined) ? MAP_TERRAIN[n.r][n.q] : 0;
+          if (terrain === 3) continue; // 성벽(3) 통과 불가 (성문은 통과 가능)
+
+          const occupied = findUnitAt(n.q, n.r);
+          if (occupied && !(n.q === targetQ && n.r === targetR)) continue; // 다른 유닛 통과 불가
+
+          visited.add(key);
+          const firstStep = curr.firstStep || { q: n.q, r: n.r };
+          queue.push({ q: n.q, r: n.r, firstStep: firstStep });
+
+          const d = getHexDistance(n.q, n.r, targetQ, targetR);
+          if (d < minFallbackDist) {
+            minFallbackDist = d;
+            closestFallback = firstStep;
+          }
+        }
+      }
+
+      return closestFallback;
+    }
+
+    // ==========================================================================
+    // 🤖 [적군 AI 전면 대개혁] 모든 적군이 성문을 통과하여 맹렬히 진격 & 공격!
+    // ==========================================================================
     function runEnemyAI() {
       const enemies = UNITS.filter(u => u.faction === "enemy" && u.troops > 0);
       let step = 0;
@@ -6183,89 +6293,63 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
           return;
         }
 
-        // 1. 가장 가까운 아군 탐색 (유비가 근처면 유비 우선 타겟)
+        // 가장 가까운 아군 또는 유비 탐색
         let targetAlly = allies[0];
         let minDist = 999;
         allies.forEach(a => {
           let d = getHexDistance(enemy.q, enemy.r, a.q, a.r);
-          if (a.name.includes('유비')) d -= 1.5; // 유비 우선 조준
+          if (a.name.includes('유비')) d -= 1.2;
           if (d < minDist) {
             minDist = d;
             targetAlly = a;
           }
         });
 
-        const curDist = getHexDistance(enemy.q, enemy.r, targetAlly.q, targetAlly.r);
         const isArcher = (enemy.name.includes('태사자') || enemy.formation === 'anhaeng' || enemy.role === 'archer');
         const attackRange = isArcher ? 3 : 1;
+        let curDist = getHexDistance(enemy.q, enemy.r, targetAlly.q, targetAlly.r);
 
-        // Case A: 이미 사거리 내에 아군이 있으면 즉시 공격!
+        // 1. 이미 사거리 내에 있는 경우 -> 즉각 공격!
         if (curDist <= attackRange) {
-          if (isArcher && curDist > 1) {
-            logBattle(`🏹🔥 [적군 궁시 사격!] 적장 ${enemy.name}이 아군 ${targetAlly.name}에게 빗발치는 화살비를 퍼부었습니다!`);
-            playSound('arrow');
-          } else {
-            logBattle(`🗡️💥 [적군 맹공 돌격!] 적장 ${enemy.name}이 아군 ${targetAlly.name}에게 돌격을 감행했습니다!`);
-            playSound('slash');
-          }
-          const dmg = calculateCombatDamage(enemy, targetAlly, isArcher ? 'archery' : 'melee');
-          applyDamage(targetAlly, dmg);
-          showDamagePop(targetAlly.q, targetAlly.r, `💥 -${dmg}`);
+          performEnemyAttack(enemy, targetAlly, isArcher && curDist > 1);
         } else {
-          // Case B: 사거리 밖이면 아군을 향해 스마트 이동 후 공격!
-          // 주변 6방향 중 아군과 거리가 가장 가까워지는 유효 빈 타일 탐색
-          const neighbors = getHexNeighbors(enemy.q, enemy.r);
-          let bestNeighbor = null;
-          let bestD = curDist;
-
-          neighbors.forEach(n => {
-            // 유효 좌표 및 성벽(3) 제외, 다른 유닛 없음
-            if (n.q >= 0 && n.q < GRID_COLS && n.r >= 0 && n.r < GRID_ROWS) {
-              const terrain = (MAP_TERRAIN[n.r] && MAP_TERRAIN[n.r][n.q] !== undefined) ? MAP_TERRAIN[n.r][n.q] : 0;
-              if (terrain !== 3 && !findUnitAt(n.q, n.r)) {
-                const d = getHexDistance(n.q, n.r, targetAlly.q, targetAlly.r);
-                if (d < bestD) {
-                  bestD = d;
-                  bestNeighbor = n;
-                }
-              }
+          // 2. 사거리 밖인 경우 -> BFS 길찾기로 1~2칸 성문 통과 진격!
+          for (let moveCount = 0; moveCount < 2; moveCount++) {
+            const nextStep = getNextStepTowards(enemy.q, enemy.r, targetAlly.q, targetAlly.r);
+            if (nextStep && !findUnitAt(nextStep.q, nextStep.r)) {
+              enemy.q = nextStep.q;
+              enemy.r = nextStep.r;
+            } else {
+              break;
             }
-          });
+          }
 
-          if (bestNeighbor) {
-            enemy.q = bestNeighbor.q;
-            enemy.r = bestNeighbor.r;
-            logBattle(`🏇💨 적장 [${enemy.name}] 부대가 아군 [${targetAlly.name}]을 향해 맹렬히 진격해옵니다!`);
+          logBattle(`🏇 적장 [${enemy.name}] 부대가 성문을 뚫고 아군 [${targetAlly.name}]을 향해 전속력 진격합니다!`);
 
-            // 이동 후 사거리 검사 및 공격
-            const newDist = getHexDistance(enemy.q, enemy.r, targetAlly.q, targetAlly.r);
-            if (newDist <= attackRange) {
-              if (isArcher && newDist > 1) {
-                logBattle(`🏹 [진격 사격!] ${enemy.name}이 진격 후 ${targetAlly.name}에게 화살비를 퍼붓습니다!`);
-                playSound('arrow');
-              } else {
-                logBattle(`🗡️ [진격 돌격!] ${enemy.name}이 쇄도하여 ${targetAlly.name}에게 칼을 휘두릅니다!`);
-                playSound('slash');
-              }
-              const dmg = calculateCombatDamage(enemy, targetAlly, isArcher ? 'archery' : 'melee');
-              applyDamage(targetAlly, dmg);
-              showDamagePop(targetAlly.q, targetAlly.r, `💥 -${dmg}`);
-            }
-          } else {
-            // 정면이 막혀있으면 우회할 수 있는 빈 타일로라도 한 걸음 전진
-            const anyEmpty = neighbors.find(n => n.q >= 0 && n.q < GRID_COLS && n.r >= 0 && n.r < GRID_ROWS && MAP_TERRAIN[n.r][n.q] !== 3 && !findUnitAt(n.q, n.r));
-            if (anyEmpty) {
-              enemy.q = anyEmpty.q;
-              enemy.r = anyEmpty.r;
-              logBattle(`🏇 적장 [${enemy.name}]이 진로를 우회하며 전진합니다.`);
-            }
+          // 이동 후 사거리 검사 및 공격
+          curDist = getHexDistance(enemy.q, enemy.r, targetAlly.q, targetAlly.r);
+          if (curDist <= attackRange) {
+            performEnemyAttack(enemy, targetAlly, isArcher && curDist > 1);
           }
         }
 
         enemy.acted = true;
         renderBattlefield();
         step++;
-        setTimeout(executeNextEnemy, 500);
+        setTimeout(executeNextEnemy, 450);
+      }
+
+      function performEnemyAttack(attacker, target, isRanged) {
+        if (isRanged) {
+          logBattle(`🏹🔥 [적군 궁시 사격!] 적장 ${attacker.name}이 아군 ${target.name}에게 빗발치는 화살비를 퍼부었습니다!`);
+          playSound('arrow');
+        } else {
+          logBattle(`🗡️💥 [적군 맹공 돌격!] 적장 ${attacker.name}이 아군 ${target.name}에게 돌격을 감행했습니다!`);
+          playSound('slash');
+        }
+        const dmg = calculateCombatDamage(attacker, target, isRanged ? 'archery' : 'melee');
+        applyDamage(target, dmg);
+        showDamagePop(target.q, target.r, `💥 -${dmg}`);
       }
 
       executeNextEnemy();
