@@ -288,6 +288,55 @@
       animation: clashShake 0.4s ease-in-out;
     }
   
+
+
+    /* 병사 레벨업 및 전직 뱃지 */
+    .troop-tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 900;
+      box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    }
+
+    /* 일기토 필살기 컷인 애니메이션 */
+    @keyframes cutinSlideIn {
+      0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+      50% { transform: translateX(5%) skewX(-15deg); opacity: 1; }
+      100% { transform: translateX(0) skewX(0); opacity: 1; }
+    }
+    .cutin-banner {
+      animation: cutinSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes flashWhite {
+      0% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+    .screen-flash {
+      position: fixed;
+      inset: 0;
+      background: white;
+      pointer-events: none;
+      z-index: 9999999;
+      animation: flashWhite 0.35s ease-out forwards;
+    }
+
+    /* 보물 카드 */
+    .treasure-card {
+      background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+      border: 1.5px solid #d97706;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.8), inset 0 0 8px rgba(217, 119, 6, 0.3);
+      transition: all 0.2s ease;
+    }
+    .treasure-card:hover {
+      border-color: #fbbf24;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
+    }
+
 </style>
 </head>
 <body class="bg-gray-950 min-h-screen text-slate-100 flex flex-col justify-between">
@@ -407,6 +456,10 @@
           8. 특별 ▾
         </button>
         <div id="popup-special" class="koei-popup-window">
+
+          <div onclick="openTreasureModal()" class="koei-popup-item !text-amber-300 font-black">🏆 보물 보관함 (하사)</div>
+          <div onclick="openQuestModal()" class="koei-popup-item !text-yellow-300 font-black">👑 황제 칙명 & 관직</div>
+
           <div onclick="executeWander()" class="koei-popup-item">1. 방  랑</div>
           <div onclick="executeHeal()" class="koei-popup-item orange">2. 치  료</div>
           <div onclick="executeEmergencyTax()" class="koei-popup-item">3. 임시징수</div>
@@ -534,7 +587,28 @@
         </div>
 
 
-        <div class="flex items-center justify-between text-xs font-bold text-slate-200 mb-2 px-1">
+        
+        <!-- 🔥 병사 등급(보병->기마병->전차병->중보병->친위병) & 레벨 1~100 게이지 -->
+        <div class="bg-blue-950/90 border-2 border-amber-400/80 rounded-lg p-2.5 mb-2.5 shadow">
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center gap-1.5">
+              <span id="troop-tier-icon" class="text-base">🛡️</span>
+              <span id="troop-tier-name" class="font-black text-xs text-white">보병 (기본)</span>
+              <span id="troop-tier-badge" class="troop-tier-badge bg-slate-800 border border-slate-500 text-slate-200">Lv. 1</span>
+            </div>
+            <span id="troop-tier-mod" class="text-[11px] text-yellow-300 font-bold">공방 1.0배</span>
+          </div>
+          <!-- 레벨 100 경험치 프로그레스 바 -->
+          <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-blue-600/60 p-0.5">
+            <div id="troop-exp-bar" class="h-full rounded-full bg-gradient-to-r from-blue-500 via-amber-500 to-yellow-400 transition-all duration-300" style="width: 10%;"></div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] text-slate-300 mt-1">
+            <span id="troop-exp-text">경험치: 10 / 100 EXP</span>
+            <span class="text-cyan-300">다음 승급: <strong id="troop-next-promo-text" class="text-yellow-300">Lv.3 기마병</strong></span>
+          </div>
+        </div>
+
+<div class="flex items-center justify-between text-xs font-bold text-slate-200 mb-2 px-1">
           <div><span class="text-pink-400">태수</span> <span id="panel-governor" class="text-white">유비</span></div>
           <div><span class="text-emerald-400">군사</span> <span id="panel-advisor" class="text-white">관우</span></div>
           <div><span class="text-cyan-400">성 방어</span> <span id="panel-defense" class="text-amber-300 font-mono">65</span></div>
@@ -1854,7 +1928,7 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-      setupIntroFaces();
+      setupIntroFaces(); updateTroopLevelUI();
       openModal('intro-ruler-select-modal');
       renderMapPins();
       updateRightPanel(gameState.selectedProvId);
@@ -3206,127 +3280,16 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
     }
     function executeTraining() {
       closeAllPopups();
-      const p = getMyCapital();
-      p.defense = Math.min(100, p.defense + 5);
-      playSfx('war');
-      logMessage(`🛡️ [훈련] 전군 전투 훈련을 실시하여 부대 사기와 방어력을 다졌습니다.`, 'text-yellow-200');
-      updateRightPanel(p.id);
-    }
-    function openMoveModal() { closeAllPopups(); alert('부대를 인접한 아군 영지로 이동시킵니다.'); }
-    function openTransportModal() { closeAllPopups(); alert('금과 군량을 다른 본거지로 수송합니다.'); }
-    function openReorganizeModal() { closeAllPopups(); alert('장수별 부대 편성을 변경합니다.'); }
-    function executeShipBuilding() {
-      closeAllPopups();
-      const p = getMyCapital();
-      if (p.gold < 300) { alert('선박 건조 자금 300전이 필요합니다.'); return; }
-      p.gold -= 300;
-      playSfx('build');
-      logMessage(`⛵ [선박 건조] 대형 누선을 건조하여 수전 능력을 극대화했습니다.`, 'text-cyan-300 font-bold');
-      updateRightPanel(p.id);
-    }
-
-    // ==================== 인사 명령 ====================
-    function executeSearchOfficer() {
-      closeAllPopups();
-      playSfx('rest');
-      const found = Math.random() < 0.65;
-      if (found) {
-        const pool = ['방통', '서서', '강유', '마속', '이엄', '황월영'];
-        const name = pool[Math.floor(Math.random() * pool.length)];
-        const p = getMyCapital();
-        p.officers++;
-        logMessage(`✨ [인재 발견!] 재야의 명사 '${name}'을 찾아내어 휘하로 맞이했습니다!`, 'text-yellow-300 font-black');
-        alert(`✨ [인재 등용 성공!]\n재야의 인걸 '${name}'이 군주의 덕망에 감복하여 합류했습니다!`);
-        updateRightPanel(p.id);
-      } else {
-        logMessage('🔍 천하를 수색하였으나 새로운 재야 인사를 찾지 못했습니다.', 'text-slate-400');
-        alert('주변을 수색했으나 등용할 인재를 찾지 못했습니다.');
-      }
-    }
-    function executeHireOfficer() { closeAllPopups(); alert('적국 장수를 회유하여 등용 공작을 펼칩니다.'); }
-    function executeReward() {
-      closeAllPopups();
-      const p = getMyCapital();
-      if (p.gold < 100) { alert('포상금 100전이 필요합니다.'); return; }
-      p.gold -= 100;
-      p.loyalty = Math.min(100, p.loyalty + 8);
-      playSfx('build');
-      logMessage(`🎁 [포상] 장수들에게 금과 보물을 하사하여 충성도를 높였습니다. (민심 +8)`, 'text-yellow-300');
-      updateRightPanel(p.id);
-    }
-    function executeRelief() {
-      closeAllPopups();
-      const p = getMyCapital();
-      if (p.food < 1000) { alert('구휼미 1000석이 필요합니다.'); return; }
-      p.food -= 1000;
-      p.loyalty = Math.min(100, p.loyalty + 10);
-      playSfx('victory');
-      logMessage(`🍚 [주민 구휼] 백성들에게 쌀을 나누어주어 민충이 크게 상승했습니다! (+10)`, 'text-emerald-300 font-bold');
-      updateRightPanel(p.id);
-    }
-    function executeDelegate() { closeAllPopups(); alert('태수에게 영지 통치를 위임합니다.'); }
-    function executeAppoint() { closeAllPopups(); alert('태수 및 군사를 새로 임명합니다.'); }
-    function executeDirectOrder() { closeAllPopups(); alert('직속 명령을 하달합니다.'); }
-    function executeFireOfficer() { closeAllPopups(); alert('신임하지 않는 장수를 해고합니다.'); }
-    function executeConfiscate() { closeAllPopups(); alert('장수의 보물을 몰수합니다.'); }
-
-    // ==================== 특별 명령 ====================
-    function executeWander() { closeAllPopups(); if (confirm('영지를 버리고 방랑군이 되겠습니까?')) alert('방랑을 시작합니다.'); }
-    function executeHeal() { closeAllPopups(); alert('명의 화타를 초빙하여 부상당한 장수를 치료합니다.'); }
-    function executeEmergencyTax() {
-      closeAllPopups();
-      const p = getMyCapital();
-      p.gold += 800; p.loyalty = Math.max(10, p.loyalty - 15);
-      logMessage(`⚠️ [임시 징수] 긴급 세금 징수로 금 800전을 확보했으나 민심이 크게 하락했습니다! (-15)`, 'text-orange-400 font-bold');
-      updateRightPanel(p.id);
-    }
-    function openTaxRateModal() { closeAllPopups(); alert('세율을 30% ~ 60% 사이로 조절합니다.'); }
-
-    // ==================== 상인 거래 ====================
-    let currentTradeType = 'sellFood';
-    function openTradeModal(type) {
-      closeAllPopups();
-      currentTradeType = type;
-      const titles = {
-        sellFood: '군량 매출 (쌀 팔기)',
-        buyFood: '군량 매입 (쌀 사기)',
-        buyWeapons: '노궁/강노 매입',
-        buyHorses: '군마 매입'
-      };
-      document.getElementById('trade-title').innerText = titles[type] || '상인 거래';
       const myProv = getMyCapital();
-      let info = `현재 시세: 쌀 팜(${gameState.rates.riceSell}), 쌀 삼(${gameState.rates.riceBuy}), 군마(${gameState.rates.horse})<br>보유 금: <strong>${myProv.gold}전</strong> | 군량: <strong>${myProv.food}석</strong>`;
-      document.getElementById('trade-info').innerHTML = info;
-      openModal('trade-modal');
-    }
-
-    function confirmTrade() {
-      const myProv = getMyCapital();
-      const qty = parseInt(document.getElementById('trade-input').value, 10) || 1000;
-      if (qty <= 0) return;
-
-      if (currentTradeType === 'sellFood') {
-        if (myProv.food < qty) { alert('보유 군량이 부족합니다.'); return; }
-        myProv.food -= qty;
-        const gain = Math.floor((qty / 100) * gameState.rates.riceSell);
-        myProv.gold += gain;
-        logMessage(`💰 [군량 판매] 군량 ${qty}석을 팔아 금 ${gain}전을 얻었습니다.`, 'text-yellow-300 font-bold');
-      } else if (currentTradeType === 'buyFood') {
-        const cost = Math.floor((qty / 100) * gameState.rates.riceBuy);
-        if (myProv.gold < cost) { alert('군자금이 부족합니다.'); return; }
-        myProv.gold -= cost;
-        myProv.food += qty;
-        logMessage(`🌾 [군량 구입] 금 ${cost}전으로 군량 ${qty}석을 매입했습니다.`, 'text-emerald-300 font-bold');
-      } else if (currentTradeType === 'buyHorses') {
-        const cost = Math.floor((qty / 10) * gameState.rates.horse);
-        if (myProv.gold < cost) { alert('군자금이 부족합니다.'); return; }
-        myProv.gold -= cost;
-        p = myProv;
-        p.defense = Math.min(100, p.defense + 8);
-        logMessage(`🐎 [군마 구입] 군마를 확보하여 기병 전력을 강화했습니다! (방어력 +8)`, 'text-yellow-200 font-bold');
-      }
+      if (myProv.gold < 100) { alert('군사 훈련을 위한 군비(금 100전)가 부족합니다.'); return; }
+      myProv.gold -= 100;
+      myProv.soldiers = Math.min(50000, myProv.soldiers + 200);
       playSfx('build');
-      closeModal('trade-modal');
+      
+      // 🔥 병사 경험치 대량 획득 및 레벨업 체크!
+      addTroopExp(180);
+      
+      logMessage(`⚔️ [군사 훈련] 아군 전 부대가 강도 높은 훈련을 실시했습니다! (병사 경험치 +180 EXP)`, 'text-cyan-300 font-bold');
       updateRightPanel(myProv.id);
     }
 
@@ -4740,5 +4703,112 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
   
 
 </script>
+
+  <!-- ==================== 🔥 병종 승급 전직 축하 모달 ==================== -->
+  <div id="troop-promotion-modal" class="fixed inset-0 modal-backdrop z-[9999999] hidden flex items-center justify-center p-3 bg-black/90">
+    <div class="koei-box w-full max-w-lg p-5 rounded-xl shadow-2xl border-4 border-yellow-400 text-center flex flex-col items-center gap-3">
+      <div class="text-4xl animate-bounce" id="promo-icon">🐎</div>
+      <h2 class="text-xl font-black text-yellow-300 text-pixel tracking-wider" id="promo-title">
+        🎉 [병종 승급] 기마병(騎馬兵) 승급 달성!
+      </h2>
+      <div class="text-sm font-bold text-amber-200" id="promo-subtitle">
+        병사들의 숙련도가 3레벨에 도달하여 전원 '기마병'으로 전직하였습니다!
+      </div>
+      <div class="p-3 bg-blue-950/80 border border-yellow-500/60 rounded-lg text-xs text-slate-200 text-left w-full space-y-1.5" id="promo-desc">
+        <div>• 기동력 +1칸 증가 (빠른 전장 기습 가능)</div>
+        <div>• 평지 돌격 피해량 +35% 증가</div>
+        <div>• 적 방어선 돌파 확률 대폭 향상!</div>
+      </div>
+      <button onclick="closeModal('troop-promotion-modal')" class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-black font-black text-sm shadow-xl border-2 border-yellow-200 mt-2">
+        천하통일을 향해 진격하라! (확인)
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ==================== 🏆 전설의 보물 보관함 & 하사 모달 ==================== -->
+  <div id="treasure-modal" class="fixed inset-0 modal-backdrop z-[999999] hidden flex items-center justify-center p-3 bg-black/85">
+    <div class="koei-box w-full max-w-3xl p-4 rounded-lg shadow-2xl border-4 border-amber-400 max-h-[90vh] flex flex-col justify-between overflow-y-auto">
+      <div class="flex items-center justify-between border-b-2 border-amber-400 pb-2 mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🏆</span>
+          <h2 class="text-base font-black text-yellow-300 text-pixel">
+            [전설의 보물 보관함] 명마 · 명검 · 병법서
+          </h2>
+        </div>
+        <button onclick="closeModal('treasure-modal')" class="text-slate-400 hover:text-white font-mono text-sm px-2 py-0.5 border border-slate-600 rounded">
+          ✕ 닫기
+        </button>
+      </div>
+
+      <div class="text-xs text-amber-200 mb-2 px-1 flex items-center justify-between">
+        <span>💡 보물을 맹장에게 하사하면 능력치가 비약적으로 상승하고 충성도가 100(절대 불변)이 됩니다!</span>
+        <button onclick="executeTreasureSearch()" class="px-3 py-1 bg-amber-700 hover:bg-amber-600 text-yellow-100 font-black rounded text-xs border border-yellow-300 shadow">
+          🔍 천하 명산 보물 탐색 (금 300)
+        </button>
+      </div>
+
+      <div id="treasure-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 max-h-[60vh] overflow-y-auto p-1">
+        <!-- 동적 렌더링 -->
+      </div>
+
+      <div class="border-t border-amber-500/40 pt-2.5 mt-2 flex justify-end">
+        <button onclick="closeModal('treasure-modal')" class="px-4 py-1.5 bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs rounded border border-slate-500">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== ⚔️ 일기토 필살기 컷인 오버레이 ==================== -->
+  <div id="cutin-overlay" class="fixed inset-0 pointer-events-none z-[9999999] hidden flex items-center justify-center">
+    <div class="cutin-banner w-full bg-gradient-to-r from-red-950 via-amber-900 to-red-950 border-y-4 border-yellow-400 py-6 px-10 shadow-2xl flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <div id="cutin-icon" class="text-6xl filter drop-shadow-[0_0_15px_rgba(255,215,0,0.8)]">🐉</div>
+        <div>
+          <div id="cutin-title" class="text-yellow-300 font-black text-2xl text-pixel tracking-wider drop-shadow-[0_2px_4px_#000]">
+            [무성(武聖) 관우] 청룡언월도 극의!
+          </div>
+          <div id="cutin-quote" class="text-white font-bold text-lg italic mt-1 drop-shadow-[0_2px_4px_#000]">
+            "내 청룡도 앞에 목을 내놓아라!"
+          </div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-red-400 font-black text-3xl animate-pulse">치명타 3배!</div>
+        <div class="text-yellow-200 text-xs font-bold mt-1">적장 방어구 완전 분쇄</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== 👑 관직 승진 & 황제 칙명 모달 ==================== -->
+  <div id="quest-modal" class="fixed inset-0 modal-backdrop z-[999999] hidden flex items-center justify-center p-3 bg-black/85">
+    <div class="koei-box w-full max-w-lg p-5 rounded-lg shadow-2xl border-4 border-yellow-400 flex flex-col gap-3">
+      <div class="flex items-center justify-between border-b-2 border-yellow-400 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">👑</span>
+          <h2 class="text-base font-black text-yellow-300 text-pixel" id="quest-modal-title">
+            [황제 칙명] 한실 부흥의 밀서
+          </h2>
+        </div>
+        <span class="px-2 py-0.5 rounded text-xs bg-amber-950 border border-yellow-400 text-yellow-200 font-bold" id="quest-rank-badge">승상(丞相)</span>
+      </div>
+
+      <div class="p-3 bg-blue-950/90 border border-amber-500/70 rounded-lg text-xs text-slate-200 space-y-2 leading-relaxed" id="quest-modal-body">
+        "조조가 허창에서 천자를 능멸하고 국정을 전횡하고 있소. 충의로운 주군이시여, 조조의 본거지 낙양을 탈환하여 사직을 구원하시오!"
+      </div>
+
+      <div class="p-2.5 bg-amber-950/60 border border-amber-500 rounded text-xs text-yellow-200 font-bold" id="quest-reward-text">
+        🎁 칙명 달성 보상: 군자금 3,000전 + 전설의 보물 '전국옥새(傳國玉璽)' 하사!
+      </div>
+
+      <button onclick="closeModal('quest-modal')" class="w-full py-2.5 rounded bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-600 hover:to-amber-600 text-white font-black text-xs border border-yellow-300 shadow">
+        칙명을 받들어 충의를 다하겠나이다! (확인)
+      </button>
+    </div>
+  </div>
+
 </body>
 </html>
