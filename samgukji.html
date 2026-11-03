@@ -2379,55 +2379,77 @@
 
     // ==================== 🔥 게임레벨 : 상급, 중급, 초급 설정 ====================
     // ==================== 🎖️ 병종 숙련도 경험치(EXP) & 전직 승급 엔진 ====================
+    // ==================== 부대 병과 & 승급 티어 마스터 정의 ====================
+    function getTroopTierInfo(lvl) {
+      const level = Math.max(1, lvl || 1);
+      const tiers = [
+        { level: 1, name: '보병 (기본)', mult: 1.00, icon: '🛡️', nextName: 'Lv.2 숙련보병' },
+        { level: 2, name: '숙련보병', mult: 1.15, icon: '🛡️', nextName: 'Lv.3 기마병' },
+        { level: 3, name: '기마병', mult: 1.30, icon: '🐎', nextName: 'Lv.4 강궁병' },
+        { level: 4, name: '강궁병', mult: 1.45, icon: '🏹', nextName: 'Lv.5 제갈연노병' },
+        { level: 5, name: '제갈연노병', mult: 1.60, icon: '🎯', nextName: 'Lv.6 철갑전차병' },
+        { level: 6, name: '철갑전차병', mult: 1.80, icon: '🛡️', nextName: 'Lv.7 호표기 돌격병' },
+        { level: 7, name: '호표기 돌격기병', mult: 2.05, icon: '⚡', nextName: 'Lv.8 서량철기병' },
+        { level: 8, name: '서량철기병', mult: 2.30, icon: '🏔️', nextName: 'Lv.9 천하무적군' }
+      ];
+
+      if (level <= 8) {
+        const t = tiers[level - 1];
+        return {
+          level: level,
+          typeName: t.name,
+          mult: t.mult.toFixed(2),
+          icon: t.icon,
+          nextPromoText: t.nextName,
+          reqExp: Math.min(250, 80 + (level - 1) * 20)
+        };
+      } else {
+        // 9레벨 이상: 천하무적군 (신화 단계 - 무제한 레벨업 & 공방 배율 지속 강화)
+        const mult = (2.30 + (level - 8) * 0.15).toFixed(2);
+        return {
+          level: level,
+          typeName: '천하무적군',
+          mult: mult,
+          icon: '👑',
+          nextPromoText: `Lv.${level + 1} 천하무적 극의 각성`,
+          reqExp: Math.min(300, 150 + (level - 8) * 5)
+        };
+      }
+    }
+
     function gainTroopExp(amount, reason = '') {
       if (gameState.troopExp === undefined) gameState.troopExp = 0;
       if (gameState.troopLevel === undefined) gameState.troopLevel = 1;
-      if (gameState.troopTypeName === undefined) gameState.troopTypeName = '보병 (기본)';
 
       gameState.troopExp += amount;
       if (reason) {
         logMessage(`🎖️ [경험치 획득] ${reason} (+${amount} EXP)`, 'text-yellow-300 font-bold');
       }
 
-      const reqExp = gameState.troopLevel * 100;
-      if (gameState.troopExp >= reqExp) {
-        gameState.troopExp -= reqExp;
-        gameState.troopLevel += 2; // 🔥 전장 실전 경험으로 레벨 +2씩 폭풍 성장!
-        logBattle(`🔥🎉 [전장 대각성 레벨업!] 전장에서 얻은 치열한 실전 경험으로 전 부대 숙련도 레벨이 +2 폭풍 상승했습니다! (현재 Lv.${gameState.troopLevel})`);
-        logMessage(`🔥🎉 [전장 레벨업!] 실전 경험치 누적으로 전 부대 레벨이 +2 대폭 상승했습니다! (Lv.${gameState.troopLevel})`, 'text-yellow-300 font-black');
+      let info = getTroopTierInfo(gameState.troopLevel);
+      let leveledUp = false;
+
+      // 누적 경험치로 폭풍 레벨업 가능!
+      while (gameState.troopExp >= info.reqExp) {
+        gameState.troopExp -= info.reqExp;
+        gameState.troopLevel += 1;
+        leveledUp = true;
+        info = getTroopTierInfo(gameState.troopLevel);
+        gameState.troopTypeName = info.typeName;
+
+        logBattle(`🔥🎉 [전 부대 레벨업!] 치열한 실전 경험으로 전 부대 숙련도가 Lv.${gameState.troopLevel}(으)로 상승했습니다! (${info.typeName}, 공방 ${info.mult}배)`);
+        logMessage(`🔥🎉 [전장 레벨업!] 전 부대 숙련도 Lv.${gameState.troopLevel} 달성! (${info.typeName}, 공방 ${info.mult}배)`, 'text-yellow-300 font-black');
         playSfx('victory');
 
-        let promoTitle = '';
-        let promoDesc = '';
-        let promoIcon = '🐎';
-
-        if (gameState.troopLevel === 3) {
-          gameState.troopTypeName = '기마병';
-          promoTitle = '🎉 [병종 승급] 기마병(騎馬兵) 승급 달성!';
-          promoDesc = '병사들이 3레벨에 도달하여 전원 기마병으로 전직했습니다! 평지 돌격력 +35%, 기동력 +1칸 증가!';
-          promoIcon = '🐎';
-        } else if (gameState.troopLevel === 6) {
-          gameState.troopTypeName = '전차병';
-          promoTitle = '🎉 [병종 승급] 전차병(戰車兵) 승급 달성!';
-          promoDesc = '병사들이 6레벨에 도달하여 철갑 전차병으로 전직했습니다! 적 방어선 돌파 확률 대폭 향상!';
-          promoIcon = '🛡️';
-        } else if (gameState.troopLevel === 9) {
-          gameState.troopTypeName = '중보병';
-          promoTitle = '🎉 [병종 승급] 정예 중보병(重步兵) 승급 달성!';
-          promoDesc = '병사들이 9레벨에 도달하여 철벽의 중보병으로 전직했습니다! 방어력 +50% 향상!';
-          promoIcon = '⚔️';
-        }
-
-        if (promoTitle) {
+        // 주요 승급 분기 축하 모달 (1~9레벨)
+        if ([2, 3, 4, 5, 6, 7, 8, 9].includes(gameState.troopLevel)) {
           const tIcon = document.getElementById('promo-icon');
           const tTitle = document.getElementById('promo-title');
           const tDesc = document.getElementById('promo-desc');
-          if (tIcon) tIcon.innerText = promoIcon;
-          if (tTitle) tTitle.innerText = promoTitle;
-          if (tDesc) tDesc.innerText = promoDesc;
+          if (tIcon) tIcon.innerText = info.icon;
+          if (tTitle) tTitle.innerText = `🎉 [병종 승급] ${info.typeName} 승급 달성!`;
+          if (tDesc) tDesc.innerText = `병사들이 Lv.${gameState.troopLevel}에 도달하여 ${info.typeName}(으)로 전직했습니다! 공방 ${info.mult}배 대폭 강화!`;
           openModal('troop-promotion-modal');
-        } else {
-          logMessage(`⭐ [부대 숙련도 상승] 아군 병사들의 레벨이 Lv.${gameState.troopLevel}로 올랐습니다! (공방 보정 +${gameState.troopLevel * 4}%)`, 'text-emerald-300 font-black');
         }
       }
 
@@ -2437,37 +2459,33 @@
     function updateTroopLevelUI() {
       const lvl = gameState.troopLevel || 1;
       const exp = gameState.troopExp || 0;
-      const typeName = gameState.troopTypeName || '보병 (기본)';
-      const mult = (1.0 + (lvl - 1) * 0.15).toFixed(2);
+      const info = getTroopTierInfo(lvl);
+      gameState.troopTypeName = info.typeName;
 
-      // 우측 패널의 실제 엘리먼트 ID들 매핑
+      // 우측 패널 UI 엘리먼트 매핑
       const tName = document.getElementById('troop-tier-name');
       const tBadge = document.getElementById('troop-tier-badge');
       const tMod = document.getElementById('troop-tier-mod');
       const tBar = document.getElementById('troop-exp-bar');
       const tText = document.getElementById('troop-exp-text');
       const tIcon = document.getElementById('troop-tier-icon');
+      const tNext = document.getElementById('troop-next-promo-text'); // 🔥 핵심 버그 수정: 다음 승급 실시간 동적 갱신!
 
-      const icons = {
-        '보병': '🛡️', '숙련보병': '🛡️', '기마병': '🐎', '강궁병': '🏹',
-        '연노병': '🎯', '전차병': '🛡️', '돌격기병': '⚡', '서량철기병': '🏔️', '천하무적군': '👑'
-      };
-      const curIcon = icons[typeName.split(' ')[0]] || '🛡️';
-
-      if (tName) tName.innerText = typeName;
+      if (tName) tName.innerText = info.typeName;
       if (tBadge) tBadge.innerText = `Lv. ${lvl}`;
-      if (tMod) tMod.innerText = `공방 ${mult}배`;
-      if (tBar) tBar.style.width = `${Math.min(100, (exp / (lvl * 100)) * 100)}%`;
-      if (tText) tText.innerText = `경험치: ${exp} / ${lvl * 100} EXP`;
-      if (tIcon) tIcon.innerText = curIcon;
+      if (tMod) tMod.innerText = `공방 ${info.mult}배`;
+      if (tBar) tBar.style.width = `${Math.min(100, (exp / info.reqExp) * 100)}%`;
+      if (tText) tText.innerText = `경험치: ${exp} / ${info.reqExp} EXP`;
+      if (tIcon) tIcon.innerText = info.icon;
+      if (tNext) tNext.innerText = info.nextPromoText;
 
       // 하위 호환 매핑
       const pType = document.getElementById('panel-troop-type');
       const pLvl = document.getElementById('panel-troop-lvl');
       const pMult = document.getElementById('panel-troop-mult');
-      if (pType) pType.innerText = typeName;
+      if (pType) pType.innerText = info.typeName;
       if (pLvl) pLvl.innerText = `Lv. ${lvl}`;
-      if (pMult) pMult.innerText = `공방 ${mult}배`;
+      if (pMult) pMult.innerText = `공방 ${info.mult}배`;
     }
 
     function setDifficulty(level) {
@@ -2873,7 +2891,65 @@
       }
     }
 
-    function executeRest() {
+        // ==========================================================================
+    // 💰🌾 1월(금세) & 5월(군량 추수) 정기 대규모 국고 세금 결산 시스템
+    // ==========================================================================
+    function collectAnnualTaxes(month) {
+      const myProvinces = PROVINCES.filter(p => p.ruler === gameState.rulerName);
+      if (myProvinces.length === 0) return;
+      const myCapital = getMyCapital() || myProvinces[0];
+
+      if (month === 1) {
+        // 💰 1월 (새해 정기 금세 - 金)
+        let totalGold = 0;
+        myProvinces.forEach(p => {
+          const pop = p.pop || 300000;
+          const taxRate = p.taxRate || 20;
+          const goldTax = Math.floor(pop * 0.025 * (taxRate / 100)) + 2500;
+          p.gold = (p.gold || 0) + goldTax;
+          totalGold += goldTax;
+        });
+
+        playSfx('fanfare');
+        logMessage(`💰✨ [1월 정기 세금 결산] 전국 ${myProvinces.length}개 영지에서 총 [금 ${totalGold.toLocaleString()}전]의 정기 금세가 국고에 입고되었습니다!`, 'text-yellow-300 font-extrabold text-sm');
+
+        alert(`💰✨ [1월 새해 정기 금세(金稅) 국고 입고!]
+
+새해 정월을 맞이하여 전국의 백성들이 주군께 충성을 다하며 금세를 바쳤습니다!
+
+▶ 징수 대상: 아군 통치 ${myProvinces.length}개 영지 전역
+▶ 총 징수 금화: +금 ${totalGold.toLocaleString()}전 입고!
+▶ 본거지 [${myCapital.name}] 국고 금화: ${myCapital.gold.toLocaleString()}전
+
+풍부한 군자금으로 장수를 등용하고 전력을 대폭 확충하십시오!`);
+
+      } else if (month === 5) {
+        // 🌾 5월 (초여름/가을 군량 풍년 추수 결산 - 糧)
+        let totalFood = 0;
+        myProvinces.forEach(p => {
+          const pop = p.pop || 300000;
+          const taxRate = p.taxRate || 20;
+          const foodTax = Math.floor(pop * 0.12 * (taxRate / 100)) + 30000;
+          p.food = (p.food || 0) + foodTax;
+          totalFood += foodTax;
+        });
+
+        playSfx('fanfare');
+        logMessage(`🌾✨ [5월 군량 추수 결산] 전국 ${myProvinces.length}개 영지에서 총 [군량 ${totalFood.toLocaleString()}석]의 풍년 햇곡식이 국고에 입고되었습니다!`, 'text-emerald-300 font-extrabold text-sm');
+
+        alert(`🌾✨ [5월 풍년 군량(軍糧) 대추수 국고 입고!]
+
+5월 오곡이 무르익는 추수기를 맞이하여 전국의 들판에서 풍성한 수확을 거두었습니다!
+
+▶ 징수 대상: 아군 통치 ${myProvinces.length}개 영지 전역
+▶ 총 수확 군량: +군량 ${totalFood.toLocaleString()}석 입고!
+▶ 본거지 [${myCapital.name}] 국고 군량: ${myCapital.food.toLocaleString()}석
+
+풍족한 군량미로 군사들의 사기가 충천하며 대규모 원정 침공 작전이 가능해졌습니다!`);
+      }
+    }
+
+function executeRest() {
       closeAllPopups();
       playSfx('rest');
 
@@ -2922,9 +2998,11 @@
         }
       }
 
-      // 분기별 세금
-      if ([1, 4, 7, 10].includes(gameState.month)) {
-        collectQuarterlyTaxes();
+      // 💰🌾 [1월 정기 금세 & 5월 정기 군량 추수 징수 시스템]
+      if (gameState.month === 1) {
+        collectAnnualTaxes(1);
+      } else if (gameState.month === 5) {
+        collectAnnualTaxes(5);
       }
 
       const myProv = getMyCapital();
@@ -3516,39 +3594,13 @@ ${myProv.name} ➔ ${targetName}
       // ⚔️ 훈련 1회당 전 부대 병과 레벨 즉시 +1 상승!
       if (gameState.troopLevel === undefined) gameState.troopLevel = 1;
       gameState.troopLevel++;
-      gameState.troopExp = 0; // 다음 훈련을 위해 리셋
+      gameState.troopExp = 0; // 레벨업 후 경험치 리셋
       
-      // 레벨에 따른 정규 병종 승급 트리
-      let promoMsg = '';
-      if (gameState.troopLevel === 2) {
-        gameState.troopTypeName = '숙련보병';
-        promoMsg = '▶ [병종 진화] 숙련보병 승급! (공방 1.15배)';
-      } else if (gameState.troopLevel === 3) {
-        gameState.troopTypeName = '기마병';
-        promoMsg = '▶ [병종 대승급] 기마병(騎馬兵) 승급! (공방 1.3배 & 기동력 +1)';
-      } else if (gameState.troopLevel === 4) {
-        gameState.troopTypeName = '강궁병';
-        promoMsg = '▶ [병종 진화] 강궁병(强弓兵) 승급! (공방 1.45배 & 사거리 지원)';
-      } else if (gameState.troopLevel === 5) {
-        gameState.troopTypeName = '연노병';
-        promoMsg = '▶ [병종 대승급] 제갈연노병(連弩兵) 승급! (공방 1.6배 & 연타 사격)';
-      } else if (gameState.troopLevel === 6) {
-        gameState.troopTypeName = '전차병';
-        promoMsg = '▶ [병종 대승급] 철갑전차병(戰車兵) 승급! (공방 1.8배 & 방어선 돌파)';
-      } else if (gameState.troopLevel === 7) {
-        gameState.troopTypeName = '돌격기병';
-        promoMsg = '▶ [병종 대승급] 호표기 돌격기병 승급! (공방 2.0배 & 치명타 2배)';
-      } else if (gameState.troopLevel === 8) {
-        gameState.troopTypeName = '서량철기병';
-        promoMsg = '▶ [병종 대승급] 서량 철기병 승급! (공방 2.3배 & 철벽 방어)';
-      } else if (gameState.troopLevel >= 9) {
-        gameState.troopTypeName = '천하무적군';
-        const mult = (1.0 + (gameState.troopLevel - 1) * 0.2).toFixed(1);
-        promoMsg = `▶ [최종 신화] 천하무적군(天下無敵) 달성! (공방 ${mult}배 극대화)`;
-      }
+      const info = getTroopTierInfo(gameState.troopLevel);
+      gameState.troopTypeName = info.typeName;
 
       updateTroopLevelUI();
-      logMessage(`⚔️🎖️ [전군 맹훈련 대성공!] 아군 전 부대의 숙련도 레벨이 Lv.${gameState.troopLevel}(으)로 +1 레벨업했습니다! ${promoMsg}`, 'text-yellow-300 font-black text-sm');
+      logMessage(`⚔️🎖️ [전군 맹훈련 대성공!] 아군 전 부대의 숙련도 레벨이 Lv.${gameState.troopLevel}(으)로 +1 레벨업했습니다! [${info.typeName}, 공방 ${info.mult}배]`, 'text-yellow-300 font-black text-sm');
       updateRightPanel(myProv.id);
 
       alert(`⚔️🎖️ [군사 맹훈련 완수 - 전 부대 레벨 +1 레벨업!]
@@ -5752,7 +5804,7 @@ ${promoMsg}
       if (alertEl) alertEl.innerText = "🎉 적 군량고 소실! 10턴 내에 전멸시킬 수 있는 절호의 기회입니다!";
 
       logMessage(`🔥 [적 군량고 점령 소각!] ${hero.name} 장군이 적 후방 보급창을 궤멸시켜 적 전군이 패닉에 빠졌습니다!`, 'text-yellow-300 font-extrabold text-sm');
-      gainTroopExp(50, '적 군량고 소각 기습 대성공');
+      gainTroopExp(100, '적 군량고 소각 기습 대성공');
       alert(`🌾💥 [전략 대성공! 적 군량고 기습 소각!]
 
 ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만들었습니다!
@@ -5818,9 +5870,9 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     function computeMovementRange(unit) {
       sam5BattleState.reachableHexes = [];
       const form = FORMATIONS[unit.formation];
-      // 대형 13x8 전장 맞춤 기동력 상향 (기본 3칸, 추행/기마 5칸)
-      const baseMove = (unit.faction === 'ally' && gameState.troopLevel >= 3) ? 4 : 3;
-      const maxMove = Math.max(2, baseMove + (form ? form.moveBonus : 0));
+      // ⛩️ 대형 13x8 전장 맞춤 기동력 상향 (기본 4칸, 추행/기마 5~6칸)
+      const baseMove = (unit.faction === 'ally' && gameState.troopLevel >= 3) ? 5 : 4;
+      const maxMove = Math.max(3, baseMove + (form ? form.moveBonus : 0));
 
       // BFS 큐: { q, r, cost }
       const queue = [{ q: unit.q, r: unit.r, cost: 0 }];
@@ -5837,16 +5889,21 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
         for (const n of neighbors) {
           const terrain = (MAP_TERRAIN[n.r] && MAP_TERRAIN[n.r][n.q] !== undefined) ? MAP_TERRAIN[n.r][n.q] : 0;
 
-          // 호로관 관문(3)은 아군 직접 진입 불가
-          if (terrain === 3 && unit.faction === "ally") continue;
+          // 🧱 성벽(3)은 아군/적군 모두 통과 불가!
+          if (terrain === 3) continue;
 
-          // ⚠️ 적 유닛이 있는 타일은 절대 통과 불가! (적 돌파 저지)
+          // ⛩️ 성문(9)은 아군이든 적군이든 누구나 자유롭게 드나들 수 있는 열린 관문!
+          const isGateTile = (terrain === 9);
+
+          // ⚠️ 다른 유닛이 있는 타일 판별
           const occupant = findUnitAt(n.q, n.r);
+          
+          // 적 유닛이 서 있는 타일은 뚫고 지나갈 수 없음 (적 돌파 저지)
           if (occupant && occupant.troops > 0 && occupant.faction !== unit.faction) {
-            continue; // 적이 길목을 막고 있으면 뚫고 갈 수 없음!
+            continue;
           }
 
-          // 지형별 이동 비용: 산악(2)은 2 소모, 독천(6)은 2 소모, 기타 1
+          // 지형별 이동 비용: 성문(9)은 1, 평지/숲 1, 산악(2) 2, 독천(6) 2
           let moveCost = 1;
           if (terrain === 2 || terrain === 6) moveCost = 2;
 
@@ -5857,14 +5914,16 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
           if (!visited.has(key) || visited.get(key) > nextCost) {
             visited.set(key, nextCost);
 
-            // 다른 유닛이 없는 빈 타일이면 이동 가능 타일로 등록
+            // 다른 유닛이 없는 빈 타일(또는 자기 자신 타일)이면 이동 가능 타일로 등록
             if (!occupant || occupant.id === unit.id) {
               sam5BattleState.reachableHexes.push({ q: n.q, r: n.r });
             }
 
-            // ⚠️ ZOC (Zone of Control) 규칙: 적 부대와 바로 인접한 헥스에 진입하면 적의 저지로 더 이상 전진 불가 (즉시 정지!)
+            // ⚠️ ZOC (Zone of Control) 규칙:
+            // 적 부대와 바로 인접한 헥스에 진입하면 정지하지만,
+            // ⛩️ 성문(9) 타일이거나 성문을 통과할 때는 관문 돌파 특권으로 ZOC 정지 없이 시원하게 통과 허용!
             const enteredZoc = isEnemyAdjacent(n.q, n.r, unit.faction);
-            if (!enteredZoc) {
+            if (!enteredZoc || isGateTile) {
               queue.push({ q: n.q, r: n.r, cost: nextCost });
             }
           }
@@ -6222,8 +6281,8 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
           targetUnit.acted = true; // 혼란 행동불능
 
           applyDamage(targetUnit, dmg);
-          surroundingAllies.forEach(a => gainTroopExp(30, '3면 포위 일제공격'));
-          gainTroopExp(35, '바둑의 포위 섬멸 대승');
+          surroundingAllies.forEach(a => gainTroopExp(60, '3면 포위 일제공격'));
+          gainTroopExp(70, '바둑의 포위 섬멸 대승');
         } else if (surroundCount === 2) {
           // ⚔️ 2면 협공 (Pincer Attack: 대미지 +50% & 적 반격 절반)
           dmg = Math.floor(dmg * 1.5);
@@ -6231,7 +6290,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
           playSound('slash');
           showDamagePop(targetUnit.q, targetUnit.r, `🔥협공! -${dmg}`);
           applyDamage(targetUnit, dmg);
-          gainTroopExp(20, '양면 협공');
+          gainTroopExp(40, '양면 협공');
 
           if (targetUnit.troops > 0) {
             const counterDmg = Math.floor(calculateCombatDamage(targetUnit, u, 'melee') * 0.35);
@@ -6242,7 +6301,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
           logBattle(`🗡️ ${u.name} 부대가 ${targetUnit.name}에게 돌격을 감행합니다!`);
           playSound('slash');
           applyDamage(targetUnit, dmg);
-          gainTroopExp(15, '돌격 교전');
+          gainTroopExp(30, '돌격 교전');
 
           if (adv.isAdv) {
             logBattle(adv.text);
@@ -6264,13 +6323,13 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
           const dmg = Math.floor(calculateCombatDamage(u, targetUnit, 'archery') * 1.5);
           applyDamage(targetUnit, dmg);
           showDamagePop(targetUnit.q, targetUnit.r, `🎯장거리 저격! -${dmg}`);
-          gainTroopExp(25, '원거리 신궁 저격');
+          gainTroopExp(45, '원거리 신궁 저격');
         } else {
           logBattle(`🏹 ${u.name} 부대의 화살비가 쏟아집니다! (사거리 4칸)`);
           playSound('arrow');
           const dmg = calculateCombatDamage(u, targetUnit, 'archery');
           applyDamage(targetUnit, dmg);
-          gainTroopExp(15, '궁시 지원');
+          gainTroopExp(30, '궁시 지원');
         }
       } else if (mode === 'fire') {
         if (isArcher && targetUnit) {
@@ -6283,12 +6342,12 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
           sam5BattleState.fireTiles.push({ q: targetPos.q, r: targetPos.r, turns: 3 });
           targetUnit.morale = Math.max(10, targetUnit.morale - 35);
           showDamagePop(targetUnit.q, targetUnit.r, `🔥원거리 맹화시! -${dmg}`);
-          gainTroopExp(30, '원거리 불화살 폭격 성공');
+          gainTroopExp(50, '원거리 불화살 폭격 성공');
         } else {
           logBattle(`🔥 [대화계] 불길이 거세게 치솟습니다! 남동풍을 타고 번져갑니다.`);
           playSound('fire');
           sam5BattleState.fireTiles.push({ q: targetPos.q, r: targetPos.r, turns: 3 });
-          gainTroopExp(25, '대화계 성공');
+          gainTroopExp(50, '대화계 성공');
           if (targetUnit) {
             applyDamage(targetUnit, 1500);
             targetUnit.morale = Math.max(10, targetUnit.morale - 20);
@@ -6299,7 +6358,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
         if (Math.random() * 100 < successRate) {
           targetUnit.morale = Math.max(10, targetUnit.morale - 30);
           targetUnit.acted = true;
-          gainTroopExp(25, '혼란 계략 성공');
+          gainTroopExp(50, '혼란 계략 성공');
           logBattle(`🌀 [혼란 대성공] ${targetUnit.name}의 군심이 무너져 행동 불능이 되었습니다!`);
           playSound('fanfare');
         } else {
@@ -6954,7 +7013,7 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
 
     function triggerVictory(msg) {
       openModal('battle-victory-modal');
-      gainTroopExp(60, '10턴 결전 대승리');
+      gainTroopExp(150, '10턴 결전 대승리');
       if (sam5BattleState.battleOver) return;
       sam5BattleState.battleOver = true;
       playSound('fanfare');
