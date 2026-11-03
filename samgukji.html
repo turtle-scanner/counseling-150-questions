@@ -196,7 +196,99 @@
     .text-pixel {
       text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
     }
-  </style>
+  
+
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&family=Nanum+Gothic+Coding:wght@700;800&display=swap');
+
+    * { box-sizing: border-box; user-select: none; }
+    body {
+      font-family: 'Nanum Gothic Coding', 'Noto Serif KR', monospace, serif;
+      background-color: #070a12;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* 코에이 삼국지 5 특유의 전통 골드 프레임 */
+    .koei-frame {
+      background: radial-gradient(circle at 50% 20%, #172554, #080c16);
+      border: 3px double #eab308;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(0, 0, 0, 0.7);
+    }
+    .koei-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #ca8a04;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+    }
+
+    /* 삼국지 5 스타일 액션 버튼 */
+    .sam5-btn {
+      background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+      border: 1.5px solid #eab308;
+      color: #fef08a;
+      font-weight: 800;
+      text-shadow: 1px 1px 2px #000;
+      transition: all 0.15s ease-in-out;
+      cursor: pointer;
+    }
+    .sam5-btn:hover:not(:disabled) {
+      background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      border-color: #fef08a;
+      box-shadow: 0 0 10px rgba(234, 179, 8, 0.6);
+      transform: translateY(-1px);
+    }
+    .sam5-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: #475569;
+      color: #64748b;
+    }
+
+    /* 진형 배지 스타일 */
+    .formation-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 900;
+      border-radius: 4px;
+      border: 1px solid #eab308;
+      background: #854d0e;
+      color: #fef08a;
+    }
+
+    /* 10턴 긴장감 턴 게이지 */
+    .turn-meter-bar {
+      transition: width 0.4s ease-out, background-color 0.4s ease-out;
+    }
+
+    /* 플로팅 대미지 애니메이션 */
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -45px) scale(1.3); }
+    }
+    .damage-pop {
+      position: absolute;
+      pointer-events: none;
+      animation: floatUp 0.85s ease-out forwards;
+      font-weight: 900;
+      text-shadow: 0 0 5px #000, 2px 2px 2px #000;
+      font-size: 1.25rem;
+    }
+
+    /* 일기토 컷신 진동 */
+    @keyframes clashShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-9px) rotate(-1.5deg); }
+      40%, 80% { transform: translateX(9px) rotate(1.5deg); }
+    }
+    .clash-anim {
+      animation: clashShake 0.4s ease-in-out;
+    }
+  
+</style>
 </head>
 <body class="bg-gray-950 min-h-screen text-slate-100 flex flex-col justify-between">
 
@@ -815,7 +907,491 @@
   </div>
 
   
-  <!-- ==================== 침공 목표 적 영지 선택 모달 (인접 영지 공격 버그 완전 박멸) ==================== -->
+  
+  <!-- ==================== 🔥 [오프닝] 12대 군주 선택 & 시나리오 설정 모달 ==================== -->
+  <div id="intro-ruler-select-modal" class="fixed inset-0 modal-backdrop z-[999999] flex items-center justify-center p-3 bg-black/95">
+    <div class="koei-box w-full max-w-4xl p-5 rounded-lg shadow-2xl border-4 border-amber-400 max-h-[95vh] flex flex-col justify-between overflow-y-auto">
+      
+      <!-- 헤더 -->
+      <div class="border-b-2 border-amber-400 pb-3 mb-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl animate-bounce">👑</span>
+          <div>
+            <h1 class="text-xl font-black text-yellow-300 text-pixel tracking-wider">
+              삼국지 III (三國志 III) 황제의 결단 : 군웅할거
+            </h1>
+            <div class="text-xs text-amber-200 mt-0.5">
+              서기 194년 봄, 천하가 12군벌로 나뉘었습니다. 천하통일을 이룰 군주를 선택하십시오!
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="px-3 py-1 bg-blue-950 border border-blue-500 rounded text-xs text-cyan-300 font-bold">
+            1. 시나리오 : 2. 난세, 군웅 전토를 할거
+          </span>
+        </div>
+      </div>
+
+      <!-- 난이도 설정 바 -->
+      <div class="bg-blue-950/80 border border-amber-500/60 p-3 rounded mb-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 font-bold text-xs">3. 게임레벨 (난이도) :</span>
+          <div class="flex gap-2">
+            <button onclick="setIntroDifficulty('hard')" id="intro-diff-hard" class="px-3 py-1 text-xs font-black rounded border-2 border-red-500 bg-red-900 text-yellow-200 shadow ring-2 ring-red-400">
+              🔥 상급 (어려움)
+            </button>
+            <button onclick="setIntroDifficulty('normal')" id="intro-diff-normal" class="px-3 py-1 text-xs font-bold rounded border border-blue-500 bg-blue-900 text-slate-200 hover:bg-blue-800">
+              ⚖️ 중급 (보통)
+            </button>
+            <button onclick="setIntroDifficulty('easy')" id="intro-diff-easy" class="px-3 py-1 text-xs font-bold rounded border border-emerald-500 bg-emerald-950 text-slate-300 hover:bg-emerald-900">
+              🌱 초급 (쉬움)
+            </button>
+          </div>
+        </div>
+        <div class="text-[11px] text-slate-300">
+          💡 상급은 적 군벌의 침공과 무력이 강화되어 실전 코에이의 긴장감을 만끽할 수 있습니다.
+        </div>
+      </div>
+
+      <!-- 12대 군주 선택 카드 그리드 -->
+      <div class="mb-3">
+        <div class="text-xs text-amber-300 font-bold mb-2 flex items-center justify-between">
+          <span>🚩 플레이할 군주를 선택하십시오 (클릭하여 선택):</span>
+          <span id="selected-ruler-announce" class="text-yellow-300 font-black">현재 선택: 유비 (형주 8번)</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5" id="intro-ruler-grid">
+          <!-- 1. 공손찬 -->
+          <div onclick="selectIntroRuler('공손찬', 1, 'gongsongzan')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-공손찬">
+            <img id="intro-face-gongsongzan" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="공손찬">
+            <div class="font-black text-xs text-white">1. 공손찬</div>
+            <div class="text-[10px] text-amber-300 font-bold bg-amber-950/80 px-2 py-0.5 rounded border border-amber-600 mt-1">북평 (유주)</div>
+          </div>
+          <!-- 2. 원소 -->
+          <div onclick="selectIntroRuler('원소', 2, 'yuanshao_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-원소">
+            <img id="intro-face-yuanshao_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="원소">
+            <div class="font-black text-xs text-white">2. 원소</div>
+            <div class="text-[10px] text-yellow-300 font-bold bg-yellow-950/80 px-2 py-0.5 rounded border border-yellow-600 mt-1">남피 (기주)</div>
+          </div>
+          <!-- 3. 공융 -->
+          <div onclick="selectIntroRuler('공융', 3, 'gongyong')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-공융">
+            <img id="intro-face-gongyong" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="공융">
+            <div class="font-black text-xs text-white">3. 공융</div>
+            <div class="text-[10px] text-orange-300 font-bold bg-orange-950/80 px-2 py-0.5 rounded border border-orange-600 mt-1">북해 (청주)</div>
+          </div>
+          <!-- 4. 유요 -->
+          <div onclick="selectIntroRuler('유요', 7, 'liuyao')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-유요">
+            <img id="intro-face-liuyao" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="유요">
+            <div class="font-black text-xs text-white">4. 유요</div>
+            <div class="text-[10px] text-lime-300 font-bold bg-lime-950/80 px-2 py-0.5 rounded border border-lime-600 mt-1">수춘 (양주)</div>
+          </div>
+          <!-- 5. 손책 -->
+          <div onclick="selectIntroRuler('손책', 7, 'sunce')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-손책">
+            <img id="intro-face-sunce" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="손책">
+            <div class="font-black text-xs text-white">5. 손책</div>
+            <div class="text-[10px] text-red-300 font-bold bg-red-950/80 px-2 py-0.5 rounded border border-red-600 mt-1">노강 (양주)</div>
+          </div>
+          <!-- 6. 왕랑 -->
+          <div onclick="selectIntroRuler('왕랑', 7, 'wanglang')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-왕랑">
+            <img id="intro-face-wanglang" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="왕랑">
+            <div class="font-black text-xs text-white">6. 왕랑</div>
+            <div class="text-[10px] text-sky-300 font-bold bg-sky-950/80 px-2 py-0.5 rounded border border-sky-600 mt-1">회계 (양주)</div>
+          </div>
+          <!-- 7. 원술 -->
+          <div onclick="selectIntroRuler('원술', 3, 'yuanshu')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-원술">
+            <img id="intro-face-yuanshu" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="원술">
+            <div class="font-black text-xs text-white">7. 원술</div>
+            <div class="text-[10px] text-pink-300 font-bold bg-pink-950/80 px-2 py-0.5 rounded border border-pink-600 mt-1">완 (예주)</div>
+          </div>
+          <!-- 8. 유표 -->
+          <div onclick="selectIntroRuler('유표', 8, 'liubiao_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-유표">
+            <img id="intro-face-liubiao_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="유표">
+            <div class="font-black text-xs text-white">8. 유표</div>
+            <div class="text-[10px] text-cyan-300 font-bold bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-600 mt-1">양양 (형주)</div>
+          </div>
+          <!-- 9. 마등 -->
+          <div onclick="selectIntroRuler('마등', 11, 'mateng_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-마등">
+            <img id="intro-face-mateng_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="마등">
+            <div class="font-black text-xs text-white">9. 마등</div>
+            <div class="text-[10px] text-teal-300 font-bold bg-teal-950/80 px-2 py-0.5 rounded border border-teal-600 mt-1">서량 (량주)</div>
+          </div>
+          <!-- 10. 조조 -->
+          <div onclick="selectIntroRuler('조조', 13, 'caocao_retro')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-조조">
+            <img id="intro-face-caocao_retro" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="조조">
+            <div class="font-black text-xs text-white">10. 조조</div>
+            <div class="text-[10px] text-blue-300 font-bold bg-blue-950/80 px-2 py-0.5 rounded border border-blue-600 mt-1">낙양 (사례)</div>
+          </div>
+          <!-- 11. 여포 -->
+          <div onclick="selectIntroRuler('여포', 6, 'lubu')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-여포">
+            <img id="intro-face-lubu" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="여포">
+            <div class="font-black text-xs text-white">11. 여포</div>
+            <div class="text-[10px] text-purple-300 font-bold bg-purple-950/80 px-2 py-0.5 rounded border border-purple-600 mt-1">복양 (연주)</div>
+          </div>
+          <!-- 12. 장노 -->
+          <div onclick="selectIntroRuler('장노', 10, 'zhanglu')" class="intro-ruler-card p-2 rounded border-2 cursor-pointer transition flex flex-col items-center bg-blue-950/90 border-blue-700 hover:border-yellow-400" id="card-장노">
+            <img id="intro-face-zhanglu" class="w-16 h-20 object-cover rounded border border-amber-500/80 mb-1.5 shadow" alt="장노">
+            <div class="font-black text-xs text-white">12. 장노</div>
+            <div class="text-[10px] text-green-300 font-bold bg-green-950/80 px-2 py-0.5 rounded border border-green-600 mt-1">한중 (익주)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 출진 버튼 -->
+      <div class="border-t-2 border-amber-400 pt-3 flex items-center justify-between">
+        <div class="text-xs text-slate-300">
+          👑 선택한 군주로 천하 13주를 통일하고 한나라 황제에 즉위하십시오!
+        </div>
+        <button onclick="confirmIntroStart()" class="px-8 py-3 bg-gradient-to-r from-red-600 via-amber-600 to-red-600 hover:from-red-500 hover:to-amber-500 text-yellow-100 font-black text-sm rounded-lg border-2 border-yellow-300 shadow-2xl flex items-center gap-2 animate-pulse">
+          <span>⚔️</span> 선택한 군주로 천하통일 출진!
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ==================== 🔥 삼국지 V (三國志 V) 헥스 전술 결전 모달 ==================== -->
+  <div id="hex-battle-modal" class="fixed inset-0 modal-backdrop z-[99999] hidden flex flex-col items-center justify-center p-2 bg-black/90">
+    <div class="koei-box w-full max-w-6xl p-2.5 rounded shadow-2xl border-4 border-yellow-500 max-h-[96vh] flex flex-col overflow-y-auto">
+      
+      <!-- 상단 헤더 및 후퇴 버튼 -->
+      <div class="flex items-center justify-between border-b-2 border-yellow-600 pb-1.5 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⚔️</span>
+          <h2 id="hex-modal-title" class="text-base font-black text-yellow-300 text-pixel">
+            [삼국지 V 헥스 전술 결전] 10턴 결전: 적 군량고 습격 & 일기토 대승 전략
+          </h2>
+        </div>
+        <button onclick="closeHexBattle(false)" class="sam5-btn px-3 py-1 rounded text-xs bg-red-900 text-white font-bold border border-red-500">
+          🏳️ 퇴각 (전장 이탈)
+        </button>
+      </div>
+
+      <!-- 삼국지 5 실전 바디 임베딩 -->
+      <div id="sam5-container" class="w-full flex-1">
+        <body class="p-2 md:p-3 min-h-screen flex flex-col justify-between">
+
+  <!-- 상단 상태바 & 10턴 긴장감 게이지 HUD -->
+  <header class="koei-frame p-3 rounded-lg mb-2 flex flex-col md:flex-row justify-between items-center gap-3">
+    
+    <!-- 좌측 타이틀 & 시나리오 -->
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded border-2 border-yellow-500 overflow-hidden bg-slate-900 flex items-center justify-center text-2xl shadow-lg">
+        ⚔️
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xl font-black text-yellow-300">삼국지 V (三國志 V)</span>
+          <span class="text-xs bg-red-950 text-amber-300 px-2 py-0.5 rounded border border-red-600 font-extrabold animate-pulse">
+            🔥 10턴 결전 룰
+          </span>
+        </div>
+        <div class="text-xs text-slate-300 flex items-center gap-3 mt-1">
+          <span>기후: <strong id="weatherText" class="text-blue-300">맑음 ☀️</strong></span>
+          <span>풍향: <strong id="windText" class="text-emerald-300">남동풍 ⇲ (화계 번짐)</strong></span>
+          <span>전황: <strong id="turnInfo" class="text-yellow-300">제 1 / 10 턴 [연합군 행동]</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 중앙 10턴 카운트다운 타이머 바 -->
+    <div class="w-full md:w-64 flex flex-col gap-1">
+      <div class="flex justify-between text-xs font-bold">
+        <span class="text-slate-300">동탁 10만 증원군 도착까지:</span>
+        <span id="turnCountdownText" class="text-yellow-400 font-black">10 턴 남음</span>
+      </div>
+      <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden border border-yellow-600/80 p-0.5 shadow-inner">
+        <div id="turnProgressBar" class="turn-meter-bar h-full rounded-full bg-gradient-to-r from-emerald-500 via-yellow-500 to-red-500 w-full"></div>
+      </div>
+    </div>
+
+    <!-- 우측 오디오 제어 & 리셋 -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleSound()" id="soundBtn" class="sam5-btn px-3 py-1.5 rounded text-xs flex items-center gap-1">
+        <span>🔊</span> <span id="soundLabel">효과음 ON</span>
+      </button>
+      <button onclick="restartBattle()" class="sam5-btn px-3 py-1.5 rounded text-xs bg-slate-800 text-amber-200">
+        🔄 전장 초기화
+      </button>
+    </div>
+  </header>
+
+  <!-- 전략 브리핑 미션 HUD 박스 -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 text-xs">
+    <div class="koei-card p-2 rounded flex items-center gap-2 border-l-4 border-l-red-500">
+      <span class="text-base">🎯</span>
+      <div>
+        <strong class="text-yellow-300 block">승리 전략 1 (단기결전)</strong>
+        <span class="text-slate-300">관우·장비로 여포에게 <strong>일기토</strong> 신청 승리 시 즉시 대승!</span>
+      </div>
+    </div>
+    <div class="koei-card p-2 rounded flex items-center gap-2 border-l-4 border-l-amber-500">
+      <span class="text-base">🌾</span>
+      <div>
+        <strong class="text-yellow-300 block">승리 전략 2 (보급로 절단)</strong>
+        <span class="text-slate-300">조운(추행진)으로 적 후방 <strong>보급창고</strong> 점령 시 적 전군 패닉!</span>
+      </div>
+    </div>
+    <div class="koei-card p-2 rounded flex items-center gap-2 border-l-4 border-l-blue-500">
+      <span class="text-base">🔥</span>
+      <div>
+        <strong class="text-yellow-300 block">승리 전략 3 (화계 & 진형)</strong>
+        <span class="text-slate-300">남동풍을 타고 번지는 <strong>화계 + 안행진 궁시</strong>로 10턴 내 궤멸!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 전장 레이아웃 -->
+  <main class="grid grid-cols-1 lg:grid-cols-4 gap-2 flex-1">
+    
+    <!-- 좌측/중앙: 헥스(Hex) 전장 캔버스 (3열 차지) -->
+    <div class="lg:col-span-3 koei-frame p-2 rounded-lg flex flex-col items-center justify-center relative overflow-hidden bg-black/60 shadow-2xl">
+      <div class="w-full flex justify-between items-center px-2 py-1 text-xs text-amber-300 font-bold border-b border-yellow-800/60 mb-1">
+        <span>⚔️ 헥스 전장 (좌클릭: 부대 선택 / 이동 타일 클릭 / 적군 타격)</span>
+        <span class="text-yellow-400 font-extrabold" id="tacticalAlertText">💡 조운의 기동력을 이용해 적의 보급고를 노려보세요!</span>
+      </div>
+      
+      <!-- 캔버스 컨테이너 -->
+      <div class="relative w-full flex items-center justify-center">
+        <canvas id="battleCanvas" width="920" height="560" class="rounded border border-amber-900/80 cursor-pointer max-w-full h-auto bg-[#0a0f1d]"></canvas>
+        <div id="damageOverlay" class="absolute inset-0 pointer-events-none"></div>
+      </div>
+
+      <!-- 전술 진형 상성 팁 -->
+      <div class="w-full mt-1.5 grid grid-cols-2 md:grid-cols-5 gap-1.5 text-[11px] text-slate-300 px-2 py-1 bg-slate-950/80 rounded border border-slate-800">
+        <div><strong class="text-red-400">어린(魚鱗):</strong> 평지 돌격 +35%</div>
+        <div><strong class="text-blue-400">안행(雁行):</strong> 원거리 궁시(사거리3)</div>
+        <div><strong class="text-emerald-400">방원(方圓):</strong> 방어 1위, 활 차단</div>
+        <div><strong class="text-orange-400">봉시(鋒矢):</strong> 돌파 & 일기토 2배</div>
+        <div><strong class="text-purple-400">추행(錐行):</strong> 이동력 +2칸 (기습)</div>
+      </div>
+    </div>
+
+    <!-- 우측: 부대 정보 & 삼국지 5 특화 군령창 (1열 차지) -->
+    <div class="lg:col-span-1 flex flex-col gap-2">
+      
+      <!-- 선택된 무장 상세 카드 -->
+      <div class="koei-frame p-2.5 rounded-lg flex flex-col gap-1.5">
+        <div class="border-b border-yellow-700 pb-1 flex justify-between items-center">
+          <span class="text-xs text-yellow-300 font-extrabold">무장 정밀 상태</span>
+          <span id="unitFactionBadge" class="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-900 text-blue-200 border border-blue-500">연합군</span>
+        </div>
+
+        <div id="unitDetailBox" class="flex gap-2.5 items-center">
+          <div id="unitAvatar" class="w-14 h-14 rounded border-2 border-yellow-500 bg-slate-900 flex items-center justify-center text-3xl shadow">
+            ⚔️
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <span id="unitName" class="text-sm font-black text-amber-200">부대를 선택하세요</span>
+              <span id="unitFormationBadge" class="formation-badge hidden">어린</span>
+            </div>
+            <div class="text-[11px] text-slate-300 mt-0.5" id="unitGeneralTitle">-</div>
+            <div class="text-xs text-yellow-400 font-bold mt-0.5">
+              병력: <span id="unitTroops" class="text-white">-</span> / 사기: <span id="unitMorale" class="text-emerald-400">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4대 능력치 -->
+        <div class="grid grid-cols-4 gap-1 text-center bg-slate-950/90 p-1 rounded border border-slate-800 text-[11px]">
+          <div><span class="text-slate-400 block text-[10px]">무력</span><strong id="statWar" class="text-red-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">지력</span><strong id="statInt" class="text-blue-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">통솔</span><strong id="statLead" class="text-yellow-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">매력</span><strong id="statChr" class="text-purple-400">-</strong></div>
+        </div>
+
+        <!-- 무장 보유 특기 리스트 -->
+        <div class="mt-0.5">
+          <div class="text-[10px] text-slate-400 mb-0.5">보유 특기(特技):</div>
+          <div id="unitSkillsList" class="flex flex-wrap gap-1 text-[10px]">
+            <span class="text-slate-500">부대를 클릭하십시오</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 코에이 삼국지 5 정통 군사 명령 패널 -->
+      <div class="koei-frame p-2.5 rounded-lg flex-1 flex flex-col justify-between">
+        <div>
+          <div class="border-b border-yellow-700 pb-1 mb-2 flex justify-between items-center">
+            <span class="text-xs text-yellow-300 font-extrabold">전술 군령 (軍令)</span>
+            <span id="actionPoints" class="text-[10px] text-amber-400 font-bold">10턴 결전 모드</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1.5">
+            <button id="btnAttack" onclick="onCmdAttack()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🗡️</span> <span>근접 공격</span>
+            </button>
+            <button id="btnArchery" onclick="onCmdArchery()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🏹</span> <span>안행 궁시</span>
+            </button>
+            <button id="btnFireSkill" onclick="onCmdFireSkill()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🔥</span> <span>화계 (풍향확산)</span>
+            </button>
+            <button id="btnChaosSkill" onclick="onCmdChaosSkill()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🌀</span> <span>혼란 계략</span>
+            </button>
+            <button id="btnFlurry" onclick="onCmdFlurry()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>⚡</span> <span>분기 (광역타격)</span>
+            </button>
+            <button id="btnFormation" onclick="openFormationModal()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🛡️</span> <span>진형 변경</span>
+            </button>
+            <button id="btnDuel" onclick="onCmdDuel()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1 text-red-300 font-black border-red-500" disabled>
+              <span>⚔️</span> <span>일기토 (일격필살)</span>
+            </button>
+            <button id="btnWait" onclick="onCmdWait()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1 bg-slate-900" disabled>
+              <span>⏸️</span> <span>행동 완료</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 턴 종료 버튼 -->
+        <div class="mt-3 pt-2 border-t border-yellow-900/60">
+          <button onclick="endPlayerTurn()" id="btnEndTurn" class="w-full sam5-btn py-2.5 rounded text-xs bg-gradient-to-r from-red-950 via-red-900 to-amber-900 hover:from-red-800 hover:to-amber-800 text-yellow-200 border-yellow-500 font-black shadow-lg flex items-center justify-center gap-1.5">
+            <span>🚩</span> <span>아군 턴 종료 (적군 행동 개시)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 하단 전투 실황 중계 로그 -->
+  <footer class="koei-frame p-2 rounded-lg mt-2 flex items-center gap-2">
+    <div class="text-xs text-yellow-400 font-black whitespace-nowrap">📜 전황 일지:</div>
+    <div id="battleLog" class="text-xs text-slate-200 flex-1 truncate font-medium">
+      [10턴 결전] 10턴 이내에 여포를 일기토로 꺾거나, 보급고를 태워 동탁군을 섬멸하십시오!
+    </div>
+  </footer>
+
+  <!-- 진형 변경 팝업 모달 -->
+  <div id="formationModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div class="koei-frame max-w-md w-full p-4 rounded-lg shadow-2xl">
+      <div class="flex justify-between items-center border-b border-yellow-600 pb-2 mb-3">
+        <h3 class="text-sm font-black text-yellow-300 flex items-center gap-1">
+          <span>🛡️</span> 삼국지 5 진형(陣形) 선택
+        </h3>
+        <button onclick="closeFormationModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-3">
+        진형을 변환하면 10턴 결전의 형세를 바꿀 수 있습니다. 전황에 맞추어 공격·방어·궁시·기동을 선택하십시오.
+      </p>
+
+      <div class="grid grid-cols-1 gap-2" id="formationChoiceList">
+        <!-- JS로 동적 생성 -->
+      </div>
+
+      <div class="mt-4 flex justify-end">
+        <button onclick="closeFormationModal()" class="sam5-btn px-4 py-1.5 rounded text-xs">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 일기토(一騎討) 컷신 모달 -->
+  <div id="duelModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
+    <div class="koei-frame max-w-lg w-full p-5 rounded-lg border-2 border-red-600 shadow-2xl text-center">
+      <div class="text-red-500 font-black text-xl mb-1 tracking-widest flex items-center justify-center gap-2">
+        <span>⚔️</span> 一 騎 討 (일기토) <span>⚔️</span>
+      </div>
+      <div class="text-xs text-yellow-300 mb-3" id="duelSubtitle">적장의 목을 베면 즉시 적 군세가 와해되어 승리합니다!</div>
+
+      <!-- 결투 대치 화면 -->
+      <div class="flex justify-around items-center my-3 bg-slate-950 p-4 rounded border border-yellow-900/80">
+        <!-- 아군 무장 -->
+        <div class="flex flex-col items-center">
+          <div id="duelP1Avatar" class="w-16 h-16 rounded-full border-2 border-blue-500 bg-slate-800 flex items-center justify-center text-3xl shadow-lg">
+            🧔
+          </div>
+          <span id="duelP1Name" class="text-sm font-black text-blue-300 mt-2">관우</span>
+          <span id="duelP1War" class="text-xs text-red-400 font-bold">무력 98</span>
+          <div class="w-24 bg-slate-700 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-600">
+            <div id="duelP1Hp" class="bg-blue-500 h-full w-full transition-all duration-300"></div>
+          </div>
+        </div>
+
+        <div class="text-3xl font-black text-yellow-400 clash-anim" id="duelVsIcon">VS</div>
+
+        <!-- 적군 무장 -->
+        <div class="flex flex-col items-center">
+          <div id="duelP2Avatar" class="w-16 h-16 rounded-full border-2 border-red-500 bg-slate-800 flex items-center justify-center text-3xl shadow-lg">
+            🏹
+          </div>
+          <span id="duelP2Name" class="text-sm font-black text-red-300 mt-2">여포</span>
+          <span id="duelP2War" class="text-xs text-red-400 font-bold">무력 100</span>
+          <div class="w-24 bg-slate-700 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-600">
+            <div id="duelP2Hp" class="bg-red-500 h-full w-full transition-all duration-300"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 결투 진행 로그 텍스트 -->
+      <div id="duelNarrative" class="bg-black/60 p-2.5 rounded text-xs text-slate-200 min-h-[48px] flex items-center justify-center border border-slate-800 font-bold">
+        두 맹장이 말을 몰아 창검을 맞부딪힙니다!
+      </div>
+
+      <div class="mt-4 flex justify-center gap-3">
+        <button id="btnDuelRound" onclick="progressDuelRound()" class="sam5-btn px-6 py-2 rounded text-xs font-black text-yellow-200 animate-bounce">
+          💥 검을 맞댄다! (합 겨루기)
+        </button>
+        <button id="btnDuelClose" onclick="closeDuelModal()" class="sam5-btn px-4 py-2 rounded text-xs hidden">
+          확인
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ==================== 🔥 포로 처분 모달 (등용 / 석방 / 참수) ==================== -->
+  <div id="prisoner-modal" class="fixed inset-0 modal-backdrop z-[999999] hidden flex items-center justify-center p-3 bg-black/85">
+    <div class="koei-box w-full max-w-md p-4 rounded shadow-2xl border-4 border-amber-400 flex flex-col gap-3">
+      <div class="flex items-center justify-between border-b-2 border-amber-400 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⛓️</span>
+          <h2 class="text-base font-black text-amber-300 text-pixel">[적장 생포] 포로 처분</h2>
+        </div>
+        <span class="px-2 py-0.5 rounded text-xs bg-red-950 border border-red-500 text-yellow-300 font-bold">생포 완료</span>
+      </div>
+
+      <!-- 포로 정보 카드 -->
+      <div class="p-3 bg-blue-950/90 border border-amber-500/70 rounded-lg flex items-center gap-3">
+        <div id="prisoner-icon" class="text-3xl p-2 bg-slate-900 rounded border border-amber-400">👤</div>
+        <div class="space-y-1">
+          <div id="prisoner-name" class="text-sm font-black text-yellow-200">적장</div>
+          <div id="prisoner-stats" class="text-xs text-slate-300">무력: 95 | 지력: 70 | 통솔: 88</div>
+          <div id="prisoner-title" class="text-[11px] text-cyan-300">적 군벌 주력 무장</div>
+        </div>
+      </div>
+
+      <div class="text-xs text-slate-200 leading-relaxed bg-slate-900/80 p-2.5 rounded border border-blue-900">
+        "주군, 전투에서 적장을 굴복시키고 생포하였습니다! 이 자를 어떻게 처분하시겠습니까?"
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 pt-1">
+        <button onclick="handlePrisonerRecruit()" class="py-2.5 rounded bg-gradient-to-b from-emerald-600 to-emerald-800 hover:from-emerald-500 hover:to-emerald-700 text-yellow-100 font-black text-xs shadow border border-emerald-400 flex flex-col items-center gap-0.5">
+          <span>🤝 등 용</span>
+          <span class="text-[10px] text-emerald-200 font-normal">(아군 장수 영입)</span>
+        </button>
+        <button onclick="handlePrisonerRelease()" class="py-2.5 rounded bg-gradient-to-b from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 text-cyan-100 font-bold text-xs shadow border border-cyan-400 flex flex-col items-center gap-0.5">
+          <span>🕊️ 석 방</span>
+          <span class="text-[10px] text-cyan-200 font-normal">(민충·명성 +15)</span>
+        </button>
+        <button onclick="handlePrisonerExecute()" class="py-2.5 rounded bg-gradient-to-b from-rose-800 to-red-950 hover:from-rose-700 hover:to-red-900 text-red-200 font-black text-xs shadow border border-red-500 flex flex-col items-center gap-0.5">
+          <span>⚔️ 참 수</span>
+          <span class="text-[10px] text-red-300 font-normal">(적 전력 영구제거)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+<!-- ==================== 침공 목표 적 영지 선택 모달 (인접 영지 공격 버그 완전 박멸) ==================== -->
   <div id="war-target-modal" class="fixed inset-0 modal-backdrop z-50 hidden flex items-center justify-center p-3">
     <div class="koei-box w-full max-w-2xl p-4 rounded shadow-2xl border-4 border-red-500 max-h-[88vh] flex flex-col">
       <div class="flex items-center justify-between border-b-2 border-red-500 pb-2 mb-3">
@@ -1278,6 +1854,8 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
+      setupIntroFaces();
+      openModal('intro-ruler-select-modal');
       renderMapPins();
       updateRightPanel(gameState.selectedProvId);
       setupRulerPortraits();
@@ -2268,27 +2846,9 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       battleData.enemySoldiers = target.soldiers;
       battleData.storageHp = gameState.storageHp;
 
-      // 5. 모달 UI 바인딩
-      document.getElementById('battle-title').innerText = `[야전 결전] ${myProv.name} ➔ ${target.name} (${gameState.rulerName}군 vs ${target.ruler}군)`;
-      document.getElementById('battle-enemy-name').innerText = `⚔️ 적군 (${target.ruler} 수비군: ${target.name})`;
-      document.getElementById('battle-enemy-def-tag').innerText = `성벽 방어력: ${target.defense}`;
-      document.getElementById('battle-my-soldiers-txt').innerText = myProv.soldiers.toLocaleString();
-      document.getElementById('battle-enemy-soldiers-txt').innerText = target.soldiers.toLocaleString();
-      document.getElementById('battle-storage-pct').innerText = `${gameState.storageHp}%`;
-      document.getElementById('battle-storage-bar').style.width = `${gameState.storageHp}%`;
-
-      document.getElementById('battle-enemy-power-pct').innerText = '100%';
-      document.getElementById('battle-enemy-bar').style.width = '100%';
-      document.getElementById('battle-my-power-pct').innerText = '100%';
-      document.getElementById('battle-my-bar').style.width = '100%';
-
-      document.getElementById('battle-modal-logs').innerHTML = `
-        <div class="text-yellow-300 font-bold">🚩 [출진 개시] ${myProv.name}의 아군 ${myProv.soldiers.toLocaleString()}명이 ${target.name}(${target.ruler}군)을 향해 진격을 개시했습니다!</div>
-        <div class="text-cyan-200">⚔️ 상단의 [1:1 결투 개시]를 눌러 장수를 골라 적장과 1번씩 맞붙거나, 아래 [총공격]으로 적군을 격멸하십시오!</div>
-      `;
-
-      playSfx('war');
-      openModal('battle-modal');
+      // 🔥 삼국지 5 헥스 전술 전장으로 즉시 진입!
+      openHexBattle(target, myProv);
+      return;
     }
 
     // 침공 목표 적 영지 목록 모달
@@ -2893,6 +3453,1292 @@ ${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입�
       closeAllPopups();
       if (confirm('게임을 처음부터 다시 시작하시겠습니까?')) location.reload();
     }
-  </script>
+  
+
+    // ==================== 🔥 삼국지 5 헥스 전술 전장 엔진 통합 ====================
+    let hexBattleContext = {
+      targetProv: null,
+      fromProv: null,
+      capturedOfficer: null
+    };
+
+    function openHexBattle(targetProv, fromProv) {
+      closeAllPopups();
+      hexBattleContext.targetProv = targetProv;
+      hexBattleContext.fromProv = fromProv;
+      hexBattleContext.capturedOfficer = null;
+
+      document.getElementById('hex-modal-title').innerText = `[삼국지 V 헥스 전술 결전] ${fromProv.name} ➔ ${targetProv.name} (${gameState.rulerName}군 vs ${targetProv.ruler}군)`;
+
+      if (typeof restartBattle === 'function') {
+        restartBattle();
+      }
+
+      openModal('hex-battle-modal');
+      logMessage(`⚔️ [전술 결전 개시] ${fromProv.name}의 아군이 ${targetProv.name}의 ${targetProv.ruler}군을 상대로 10턴 헥스 결전에 돌입했습니다!`, 'text-yellow-300 font-black');
+    }
+
+    function closeHexBattle(isVictory = false) {
+      closeModal('hex-battle-modal');
+      if (isVictory && hexBattleContext.targetProv) {
+        onHexBattleVictory(hexBattleContext.targetProv);
+      }
+    }
+
+    function onHexBattleVictory(targetProv) {
+      playSfx('victory');
+      const prevRuler = targetProv.ruler;
+      targetProv.ruler = gameState.rulerName;
+      targetProv.leader = gameState.rulerName;
+      targetProv.defense = 50;
+
+      // 생포할 적장 결정
+      const enemyList = ENEMY_OFFICERS_BY_RULER[prevRuler] || [
+        { name: `${prevRuler}의 맹장`, war: 88, int: 65, lead: 84, icon: '🛡️', title: '적 수비대장' }
+      ];
+      const captured = enemyList[Math.floor(Math.random() * enemyList.length)];
+      hexBattleContext.capturedOfficer = captured;
+
+      renderMapPins();
+      updateRightPanel(targetProv.id);
+      checkUnification();
+
+      // 포로 처분 모달 띄우기
+      showPrisonerModal(captured);
+    }
+
+    // ==================== 🔥 포로 처분 (등용 / 석방 / 참수) ====================
+    function showPrisonerModal(off) {
+      document.getElementById('prisoner-name').innerText = off.name;
+      document.getElementById('prisoner-icon').innerText = off.icon || '👤';
+      document.getElementById('prisoner-stats').innerText = `무력: ${off.war} | 지력: ${off.int} | 통솔: ${off.lead || 80}`;
+      document.getElementById('prisoner-title').innerText = off.title || '적군 명장';
+      openModal('prisoner-modal');
+    }
+
+    function handlePrisonerRecruit() {
+      const off = hexBattleContext.capturedOfficer;
+      closeModal('prisoner-modal');
+      if (!off) return;
+
+      const isLiuBei = (gameState.rulerName === '유비');
+      const successChance = isLiuBei ? 0.80 : 0.65;
+
+      if (Math.random() < successChance) {
+        MY_OFFICERS.push({
+          id: 'recruited_' + Date.now(),
+          name: off.name,
+          war: off.war,
+          int: off.int,
+          lead: off.lead || 80,
+          icon: off.icon || '⚔️',
+          title: `[등용] ${off.title || '귀순 장수'}`,
+          hp: 100
+        });
+        playSfx('victory');
+        alert(`🎉 [등용 성공!]\n${off.name}이 ${gameState.rulerName}의 큰 뜻과 인덕에 감복하여 충성을 맹세했습니다!\n이제부터 아군 맹장으로 1:1 결투 및 전투에 출전시킬 수 있습니다!`);
+        logMessage(`👑 [장수 등용] ${off.name}이 아군 진영에 합류했습니다! (보유 장수: ${MY_OFFICERS.length}명)`, 'text-yellow-300 font-black');
+      } else {
+        alert(`⚠️ ${off.name}이 끝내 고개를 저으며 등용을 거부하여 군감에 수감하였습니다.`);
+        logMessage(`⛓️ ${off.name}이 등용을 거부하여 감옥에 가두었습니다.`, 'text-slate-400');
+      }
+    }
+
+    function handlePrisonerRelease() {
+      const off = hexBattleContext.capturedOfficer;
+      closeModal('prisoner-modal');
+      if (!off) return;
+
+      const myProv = getMyCapital();
+      myProv.loyalty = Math.min(100, myProv.loyalty + 15);
+      myProv.gold += 300;
+      updateRightPanel(myProv.id);
+
+      playSfx('build');
+      alert(`🕊️ [석방]\n${off.name}의 오랏줄을 풀어주고 후하게 대접하여 돌려보냈습니다.\n주군의 고결한 인덕이 천하에 퍼져 민충이 15 올랐습니다! (명성 상승)`);
+      logMessage(`🕊️ [석방] ${off.name}을 풀어주어 천하에 인덕을 떨쳤습니다! (민충 +15)`, 'text-cyan-300 font-bold');
+    }
+
+    function handlePrisonerExecute() {
+      const off = hexBattleContext.capturedOfficer;
+      closeModal('prisoner-modal');
+      if (!off) return;
+
+      playTone(180, 0.4, 'sawtooth', 0.3);
+      alert(`⚔️ [참수]\n${off.name}의 목을 베어 군문 앞에 효수하였습니다!\n적 군벌의 주력 무장이 영구히 제거되었습니다.`);
+      logMessage(`⚔️ [처형] 적장 ${off.name}을 참수하여 적의 기세를 꺾었습니다!`, 'text-red-400 font-black');
+    }
+
+    // ==================== 🔥 인트로 12대 군주 선택 로직 ====================
+    let selectedIntroRulerName = '유비';
+    let selectedIntroProvId = 8;
+    let selectedIntroKey = 'liubei';
+
+    function selectIntroRuler(name, provId, key) {
+      selectedIntroRulerName = name;
+      selectedIntroProvId = provId;
+      selectedIntroKey = key;
+
+      document.querySelectorAll('.intro-ruler-card').forEach(el => {
+        el.classList.remove('border-yellow-400', 'ring-2', 'ring-yellow-300', 'bg-blue-900');
+        el.classList.add('border-blue-700');
+      });
+
+      const targetCard = document.getElementById('card-' + name);
+      if (targetCard) {
+        targetCard.classList.remove('border-blue-700');
+        targetCard.classList.add('border-yellow-400', 'ring-2', 'ring-yellow-300', 'bg-blue-900');
+      }
+
+      document.getElementById('selected-ruler-announce').innerText = `현재 선택: ${name} (${PROVINCES.find(p=>p.id===provId)?.name || ''} ${provId}번)`;
+      playTone(520, 0.08, 'sine', 0.15);
+    }
+
+    function setIntroDifficulty(level) {
+      setDifficulty(level);
+      const bHard = document.getElementById('intro-diff-hard');
+      const bNormal = document.getElementById('intro-diff-normal');
+      const bEasy = document.getElementById('intro-diff-easy');
+      if (bHard) bHard.className = (level==='hard') ? 'px-3 py-1 text-xs font-black rounded border-2 border-red-500 bg-red-900 text-yellow-200 shadow ring-2 ring-red-400' : 'px-3 py-1 text-xs font-bold rounded border border-red-900 bg-slate-900 text-slate-400';
+      if (bNormal) bNormal.className = (level==='normal') ? 'px-3 py-1 text-xs font-black rounded border-2 border-blue-500 bg-blue-900 text-yellow-200 shadow ring-2 ring-blue-400' : 'px-3 py-1 text-xs font-bold rounded border border-blue-900 bg-slate-900 text-slate-400';
+      if (bEasy) bEasy.className = (level==='easy') ? 'px-3 py-1 text-xs font-black rounded border-2 border-emerald-500 bg-emerald-900 text-yellow-200 shadow ring-2 ring-emerald-400' : 'px-3 py-1 text-xs font-bold rounded border border-emerald-900 bg-slate-900 text-slate-400';
+    }
+
+    function confirmIntroStart() {
+      closeModal('intro-ruler-select-modal');
+      changeRuler(selectedIntroRulerName, selectedIntroProvId, selectedIntroKey);
+      playSfx('victory');
+      logMessage(`👑 [거병 개시] 군주 '${selectedIntroRulerName}'으로 난세를 평정하기 위한 대장정에 올랐습니다!`, 'text-yellow-300 font-extrabold text-sm');
+    }
+
+    function setupIntroFaces() {
+      const p = PORTRAITS;
+      const setImg = (id, key) => { const el = document.getElementById(id); if (el && p[key]) el.src = p[key]; };
+      setImg('intro-face-gongsongzan', 'gongsongzan');
+      setImg('intro-face-yuanshao_retro', 'yuanshao_retro');
+      setImg('intro-face-gongyong', 'gongyong');
+      setImg('intro-face-liuyao', 'liuyao');
+      setImg('intro-face-sunce', 'sunce');
+      setImg('intro-face-wanglang', 'wanglang');
+      setImg('intro-face-yuanshu', 'yuanshu');
+      setImg('intro-face-liubiao_retro', 'liubiao_retro');
+      setImg('intro-face-mateng_retro', 'mateng_retro');
+      setImg('intro-face-caocao_retro', 'caocao_retro');
+      setImg('intro-face-lubu', 'lubu');
+      setImg('intro-face-zhanglu', 'zhanglu');
+    }
+
+    // ==================== 🔥 삼국지 5 헥스 전장 스크립트 임베딩 ====================
+    
+    /* ==========================================================================
+       삼국지 5 웹 시뮬레이터 10턴 결전 전략 엔진 (10-Turn Tactical Engine)
+       ========================================================================== */
+
+    const MAX_TURNS = 10; // 10턴 승부 제한
+
+    // 1. 삼국지 5 정통 진형 데이터 (전략 보정치 극대화)
+    const FORMATIONS = {
+      gyorin: {
+        name: "어린 (魚鱗)",
+        desc: "평지 돌파 공격력 +40%, 방어 보통. 10턴 결전 돌파에 적합.",
+        atkMod: 1.40, defMod: 1.0, arcRange: 1, arcMod: 0.6, moveBonus: 0,
+        badgeBg: "#b91c1c", color: "#fef08a"
+      },
+      anhaeng: {
+        name: "안행 (雁行)",
+        desc: "궁시 사거리 +2 (최대 3칸), 사격 피해 +50%, 근접 방어 -25%.",
+        atkMod: 0.75, defMod: 0.75, arcRange: 3, arcMod: 1.5, moveBonus: 0,
+        badgeBg: "#1d4ed8", color: "#bfdbfe"
+      },
+      bangwon: {
+        name: "방원 (方圓)",
+        desc: "방어력 +60%, 궁시 피해 80% 차단. 적의 돌격을 저지하는 철벽.",
+        atkMod: 0.7, defMod: 1.6, arcRange: 1, arcMod: 0.7, moveBonus: -1,
+        badgeBg: "#047857", color: "#a7f3d0"
+      },
+      bongsi: {
+        name: "봉시 (鋒矢)",
+        desc: "돌격 공격력 +55%, 일기토 발생률 3배! 적장 일격 암살 특화.",
+        atkMod: 1.55, defMod: 0.85, arcRange: 1, arcMod: 0.5, moveBonus: 1,
+        badgeBg: "#c2410c", color: "#ffedd5"
+      },
+      chuhaeng: {
+        name: "추행 (錐行)",
+        desc: "이동력 +2칸 (최고 기동력), 보급창고 우회 기습에 필수.",
+        atkMod: 1.15, defMod: 0.8, arcRange: 1, arcMod: 0.5, moveBonus: 2,
+        badgeBg: "#7e22ce", color: "#f3e8ff"
+      }
+    };
+
+    // 2. 무장 데이터 (호로관 10턴 결전 엔트리)
+    let UNITS = [
+      // [연합군 - 플레이어]
+      {
+        id: "guan_yu", faction: "ally", name: "관우", title: "운장 (雲長)", avatar: "🧔",
+        war: 98, int: 84, lead: 97, chr: 95,
+        troops: 8000, maxTroops: 8000, morale: 95,
+        formation: "gyorin", availableFormations: ["gyorin", "bangwon", "bongsi"],
+        skills: ["분기", "무쌍", "돌격", "일기토"],
+        q: 1, r: 4, moved: false, acted: false
+      },
+      {
+        id: "zhang_fei", faction: "ally", name: "장비", title: "익덕 (翼德)", avatar: "🐯",
+        war: 99, int: 42, lead: 88, chr: 62,
+        troops: 7500, maxTroops: 7500, morale: 100,
+        formation: "bongsi", availableFormations: ["bongsi", "gyorin", "chuhaeng"],
+        skills: ["무쌍", "돌격", "일기토"],
+        q: 1, r: 5, moved: false, acted: false
+      },
+      {
+        id: "liu_bei", faction: "ally", name: "유비", title: "현덕 (玄德)", avatar: "👑",
+        war: 75, int: 78, lead: 80, chr: 99,
+        troops: 6500, maxTroops: 6500, morale: 90,
+        formation: "bangwon", availableFormations: ["bangwon", "anhaeng", "gyorin"],
+        skills: ["수습", "고무", "화시"],
+        q: 0, r: 4, moved: false, acted: false
+      },
+      {
+        id: "zhao_yun", faction: "ally", name: "조운", title: "자룡 (子龍)", avatar: "🐉",
+        war: 97, int: 88, lead: 93, chr: 92,
+        troops: 7000, maxTroops: 7000, morale: 95,
+        formation: "chuhaeng", availableFormations: ["chuhaeng", "gyorin", "anhaeng"],
+        skills: ["기습", "분기", "화시", "돌격"],
+        q: 1, r: 2, moved: false, acted: false
+      },
+
+      // [동탁군 - 적군]
+      {
+        id: "lv_bu", faction: "enemy", name: "여포", title: "비장 (飛將)", avatar: "🏹",
+        war: 100, int: 35, lead: 95, chr: 45, isBoss: true,
+        troops: 10000, maxTroops: 10000, morale: 100,
+        formation: "bongsi", availableFormations: ["bongsi", "gyorin"],
+        skills: ["천하무쌍", "분기", "난사", "돌격"],
+        q: 6, r: 3, moved: false, acted: false
+      },
+      {
+        id: "zhang_liao", faction: "enemy", name: "장료", title: "문원 (文遠)", avatar: "🦅",
+        war: 92, int: 86, lead: 94, chr: 88,
+        troops: 7000, maxTroops: 7000, morale: 90,
+        formation: "gyorin", availableFormations: ["gyorin", "bangwon"],
+        skills: ["돌격", "고무", "화시"],
+        q: 6, r: 4, moved: false, acted: false
+      },
+      {
+        id: "hua_xiong", faction: "enemy", name: "화웅", title: "도독 (都督)", avatar: "🐗",
+        war: 90, int: 48, lead: 83, chr: 56,
+        troops: 6000, maxTroops: 6000, morale: 85,
+        formation: "gyorin", availableFormations: ["gyorin", "bongsi"],
+        skills: ["돌격", "위압"],
+        q: 5, r: 2, moved: false, acted: false
+      },
+      {
+        id: "li_ru", faction: "enemy", name: "이유", title: "군사 (軍師)", avatar: "📜",
+        war: 40, int: 93, lead: 65, chr: 52,
+        troops: 5500, maxTroops: 5500, morale: 80,
+        formation: "anhaeng", availableFormations: ["anhaeng", "bangwon"],
+        skills: ["화계", "혼란", "낙석"],
+        q: 7, r: 2, moved: false, acted: false
+      }
+    ];
+
+    // 3. 전장 그리드 및 지형 설정 (Odd-R Hex Grid)
+    const GRID_COLS = 9;
+    const GRID_ROWS = 7;
+    const HEX_RADIUS = 36;
+    const HEX_W = Math.sqrt(3) * HEX_RADIUS;
+    const HEX_H = 2 * HEX_RADIUS;
+
+    // 지형 매핑
+    // 0: 평지, 1: 숲(화계 쉬움/방어+15%), 2: 산악, 3: 호로관 관문, 4: 적 군량 보급창(우측 상단 8, 3)
+    const MAP_TERRAIN = [
+      [0, 1, 0, 0, 0, 2, 2, 2, 0],
+      [1, 0, 0, 0, 2, 2, 3, 2, 0],
+      [0, 0, 1, 0, 0, 3, 3, 0, 0],
+      [0, 0, 0, 0, 0, 3, 0, 0, 4], // (q:8, r:3) 보급창고!
+      [0, 1, 0, 0, 0, 0, 0, 1, 0],
+      [0, 0, 1, 1, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 1, 0, 0, 0]
+    ];
+
+    // 게임 상태
+    let gameState = {
+      turn: 1,
+      maxTurns: MAX_TURNS,
+      phase: "ally", // 'ally' or 'enemy'
+      weather: "맑음",
+      wind: "남동풍",
+      selectedUnit: null,
+      reachableHexes: [],
+      attackableTargets: [],
+      skillMode: null,
+      soundEnabled: true,
+      fireTiles: [{ q: 4, r: 2, turns: 3 }],
+      supplyBurned: false, // 보급창 함락 여부
+      battleOver: false
+    };
+
+    // 일기토 상태
+    let duelState = {
+      p1: null, p2: null,
+      p1Hp: 100, p2Hp: 100,
+      round: 0
+    };
+
+    const canvas = document.getElementById("battleCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // ==========================================================================
+    // Web Audio 신디사이저
+    // ==========================================================================
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!gameState.soundEnabled) return;
+      try {
+        const actx = getAudioContext();
+        if (actx.state === 'suspended') actx.resume();
+
+        const now = actx.currentTime;
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.connect(gain);
+        gain.connect(actx.destination);
+
+        if (type === 'slash') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(500, now);
+          osc.frequency.exponentialRampToValueAtTime(70, now + 0.16);
+          gain.gain.setValueAtTime(0.45, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+          osc.start(now);
+          osc.stop(now + 0.16);
+        } else if (type === 'arrow') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(900, now);
+          osc.frequency.exponentialRampToValueAtTime(280, now + 0.2);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else if (type === 'fire') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.exponentialRampToValueAtTime(25, now + 0.4);
+          gain.gain.setValueAtTime(0.55, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'fanfare') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(349, now);
+          osc.frequency.setValueAtTime(440, now + 0.09);
+          osc.frequency.setValueAtTime(523, now + 0.18);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'drum') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(120, now);
+          osc.frequency.exponentialRampToValueAtTime(30, now + 0.25);
+          gain.gain.setValueAtTime(0.6, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        }
+      } catch (e) {
+        console.warn("Audio error:", e);
+      }
+    }
+
+    function toggleSound() {
+      gameState.soundEnabled = !gameState.soundEnabled;
+      document.getElementById("soundLabel").innerText = gameState.soundEnabled ? "효과음 ON" : "효과음 OFF";
+      document.getElementById("soundBtn").classList.toggle("opacity-50", !gameState.soundEnabled);
+    }
+
+    // ==========================================================================
+    // 헥스 좌표 연산
+    // ==========================================================================
+    function getHexPixel(q, r) {
+      const x = 52 + q * HEX_W + (r % 2 === 1 ? HEX_W / 2 : 0);
+      const y = 46 + r * (HEX_H * 0.75);
+      return { x, y };
+    }
+
+    function getHexDistance(q1, r1, q2, r2) {
+      const x1 = q1 - (r1 - (r1 & 1)) / 2;
+      const z1 = r1;
+      const y1 = -x1 - z1;
+      const x2 = q2 - (r2 - (r2 & 1)) / 2;
+      const z2 = r2;
+      const y2 = -x2 - z2;
+      return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2), Math.abs(z1 - z2));
+    }
+
+    function findUnitAt(q, r) {
+      return UNITS.find(u => u.q === q && u.r === r && u.troops > 0);
+    }
+
+    // ==========================================================================
+    // 캔버스 렌더링 시스템 (불길 확산 & 헥스 맵)
+    // ==========================================================================
+    function drawHexagon(ctx, x, y, radius, fillColor, strokeColor, lineWidth = 1) {
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 180) * (60 * i - 30);
+        const hx = x + radius * Math.cos(angle);
+        const hy = y + radius * Math.sin(angle);
+        if (i === 0) ctx.moveTo(hx, hy);
+        else ctx.lineTo(hx, hy);
+      }
+      ctx.closePath();
+      if (fillColor) {
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+      }
+      if (strokeColor) {
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+      }
+    }
+
+    function renderBattlefield() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 1. 헥스 타일 렌더링
+      for (let r = 0; r < GRID_ROWS; r++) {
+        for (let q = 0; q < GRID_COLS; q++) {
+          const { x, y } = getHexPixel(q, r);
+          const terrain = MAP_TERRAIN[r][q];
+
+          let tileColor = "#162032";
+          let borderColor = "#334155";
+
+          if (terrain === 1) tileColor = "#14532d"; // 숲
+          else if (terrain === 2) tileColor = "#44403c"; // 산악
+          else if (terrain === 3) tileColor = "#7f1d1d"; // 호로관
+          else if (terrain === 4) tileColor = gameState.supplyBurned ? "#292524" : "#854d0e"; // 보급창
+
+          // 이동/공격 하이라이트
+          const isReachable = gameState.reachableHexes.some(h => h.q === q && h.r === r);
+          if (isReachable) {
+            tileColor = "#065f46";
+            borderColor = "#34d399";
+          }
+
+          const isAttackable = gameState.attackableTargets.some(t => t.q === q && t.r === r);
+          if (isAttackable) {
+            tileColor = "#991b1b";
+            borderColor = "#f87171";
+          }
+
+          const isBurning = gameState.fireTiles.some(f => f.q === q && f.r === r);
+          if (isBurning) {
+            tileColor = "#c2410c";
+          }
+
+          drawHexagon(ctx, x, y, HEX_RADIUS - 1, tileColor, borderColor, isReachable || isAttackable ? 2.5 : 1);
+
+          // 지형 텍스트 라벨
+          ctx.font = "bold 10px sans-serif";
+          ctx.fillStyle = "rgba(255,255,255,0.45)";
+          ctx.textAlign = "center";
+          if (terrain === 1) ctx.fillText("🌲숲", x, y - 16);
+          else if (terrain === 2) ctx.fillText("⛰️산", x, y - 16);
+          else if (terrain === 3) ctx.fillText("🏯호로관", x, y - 16);
+          else if (terrain === 4) ctx.fillText(gameState.supplyBurned ? "💥소실" : "🌾군량고", x, y - 16);
+
+          if (isBurning) {
+            ctx.font = "15px sans-serif";
+            ctx.fillText("🔥", x, y + 18);
+          }
+        }
+      }
+
+      // 2. 부대 렌더링
+      UNITS.forEach(unit => {
+        if (unit.troops <= 0) return;
+        const { x, y } = getHexPixel(unit.q, unit.r);
+        const isSelected = gameState.selectedUnit && gameState.selectedUnit.id === unit.id;
+        const isAlly = unit.faction === "ally";
+
+        // 선택 하이라이트 원
+        if (isSelected) {
+          ctx.beginPath();
+          ctx.arc(x, y, HEX_RADIUS - 4, 0, Math.PI * 2);
+          ctx.strokeStyle = "#facc15";
+          ctx.lineWidth = 3.5;
+          ctx.stroke();
+        }
+
+        // 베이스 원형
+        ctx.beginPath();
+        ctx.arc(x, y, 22, 0, Math.PI * 2);
+        ctx.fillStyle = isAlly ? "#1d4ed8" : (unit.isBoss ? "#7f1d1d" : "#b91c1c");
+        ctx.fill();
+        ctx.strokeStyle = unit.acted ? "#475569" : (isAlly ? "#93c5fd" : "#fca5a5");
+        ctx.lineWidth = unit.isBoss ? 3 : 2;
+        ctx.stroke();
+
+        // 행동 완료 표시 음영
+        if (unit.acted) {
+          ctx.fillStyle = "rgba(0,0,0,0.5)";
+          ctx.beginPath();
+          ctx.arc(x, y, 22, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 아바타
+        ctx.font = "18px serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(unit.avatar, x, y - 2);
+
+        // 무장명
+        ctx.font = "bold 11px sans-serif";
+        ctx.fillStyle = unit.isBoss ? "#fef08a" : "#ffffff";
+        ctx.shadowColor = "#000000";
+        ctx.shadowBlur = 4;
+        ctx.fillText(unit.name, x, y + 14);
+        ctx.shadowBlur = 0;
+
+        // 삼국지 5 진형 배지 표시
+        const formObj = FORMATIONS[unit.formation];
+        if (formObj) {
+          ctx.font = "bold 9px sans-serif";
+          ctx.fillStyle = formObj.color;
+          ctx.fillText(`[${formObj.name.substring(0, 2)}]`, x, y - 18);
+        }
+
+        // 병력 게이지
+        const hpPercent = Math.max(0, unit.troops / unit.maxTroops);
+        const barW = 34;
+        const barH = 4;
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(x - barW / 2, y + 23, barW, barH);
+        ctx.fillStyle = isAlly ? (hpPercent > 0.4 ? "#22c55e" : "#ef4444") : (unit.isBoss ? "#e11d48" : "#f97316");
+        ctx.fillRect(x - barW / 2, y + 23, barW * hpPercent, barH);
+      });
+    }
+
+    // ==========================================================================
+    // 마우스 상호작용
+    // ==========================================================================
+    canvas.addEventListener("click", function(e) {
+      if (gameState.battleOver) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top) * scaleY;
+
+      let closestHex = null;
+      let minDist = 9999;
+      for (let r = 0; r < GRID_ROWS; r++) {
+        for (let q = 0; q < GRID_COLS; q++) {
+          const { x, y } = getHexPixel(q, r);
+          const dist = Math.hypot(mx - x, my - y);
+          if (dist < minDist && dist < HEX_RADIUS) {
+            minDist = dist;
+            closestHex = { q, r };
+          }
+        }
+      }
+
+      if (!closestHex) return;
+      handleHexClick(closestHex.q, closestHex.r);
+    });
+
+    function handleHexClick(q, r) {
+      // 1. 공격/특기 발동 모드
+      if (gameState.skillMode) {
+        const target = gameState.attackableTargets.find(t => t.q === q && t.r === r);
+        if (target) {
+          executeSkillAction(gameState.skillMode, target);
+        } else {
+          logBattle("명령 대상이 올바르지 않아 군령을 철회했습니다.");
+        }
+        clearSkillMode();
+        renderBattlefield();
+        return;
+      }
+
+      // 2. 이동 타일 클릭 시 (이동 실행)
+      const canMove = gameState.reachableHexes.find(h => h.q === q && h.r === r);
+      if (canMove && gameState.selectedUnit && !gameState.selectedUnit.moved) {
+        gameState.selectedUnit.q = q;
+        gameState.selectedUnit.r = r;
+        gameState.selectedUnit.moved = true;
+        gameState.reachableHexes = [];
+
+        // 특수 기믹: 보급창(8, 3) 도달 검사
+        if (q === 8 && r === 3 && !gameState.supplyBurned) {
+          triggerSupplyRaid(gameState.selectedUnit);
+        } else {
+          logBattle(`${gameState.selectedUnit.name} 부대가 진격하여 진형을 잡았습니다.`);
+        }
+
+        playSound('fanfare');
+        updateActionCommands();
+        renderBattlefield();
+        return;
+      }
+
+      // 3. 부대 선택
+      const unit = findUnitAt(q, r);
+      if (unit) {
+        selectUnit(unit);
+      } else {
+        deselectUnit();
+      }
+      renderBattlefield();
+    }
+
+    function selectUnit(unit) {
+      gameState.selectedUnit = unit;
+      updateUnitDetailCard(unit);
+
+      if (unit.faction === "ally" && !unit.moved && !unit.acted && gameState.phase === "ally") {
+        computeMovementRange(unit);
+      } else {
+        gameState.reachableHexes = [];
+      }
+
+      gameState.attackableTargets = [];
+      updateActionCommands();
+    }
+
+    function deselectUnit() {
+      gameState.selectedUnit = null;
+      gameState.reachableHexes = [];
+      gameState.attackableTargets = [];
+      clearSkillMode();
+      document.getElementById("unitName").innerText = "부대를 선택하세요";
+      document.getElementById("unitGeneralTitle").innerText = "-";
+      document.getElementById("unitTroops").innerText = "-";
+      document.getElementById("unitMorale").innerText = "-";
+      document.getElementById("statWar").innerText = "-";
+      document.getElementById("statInt").innerText = "-";
+      document.getElementById("statLead").innerText = "-";
+      document.getElementById("statChr").innerText = "-";
+      document.getElementById("unitFormationBadge").classList.add("hidden");
+      document.getElementById("unitSkillsList").innerHTML = `<span class="text-slate-500">부대를 클릭하십시오</span>`;
+      disableAllCommands();
+    }
+
+    // ==========================================================================
+    // 전략 기믹 1: 보급창고(군량고) 기습 점령 이벤트
+    // ==========================================================================
+    function triggerSupplyRaid(hero) {
+      gameState.supplyBurned = true;
+      logBattle(`🌾💥 [전략 성공!] ${hero.name}이 적의 보급창고를 불태웠습니다! 동탁군 전원 패닉 & 사기 급락!`);
+      playSound('fire');
+
+      // 적 전군 사기 25로 추락 및 병력 25% 이탈
+      UNITS.filter(u => u.faction === "enemy" && u.troops > 0).forEach(enemy => {
+        enemy.morale = Math.max(15, enemy.morale - 45);
+        const lost = Math.floor(enemy.troops * 0.25);
+        enemy.troops -= lost;
+        showDamagePop(enemy.q, enemy.r, `군량상실 -${lost}`);
+      });
+
+      document.getElementById("tacticalAlertText").innerText = "🎉 적 군량고 소실! 10턴 내에 전멸시킬 수 있는 절호의 기회입니다!";
+    }
+
+    // ==========================================================================
+    // 이동 범위 연산 (추행진 기동력 +2 적용)
+    // ==========================================================================
+    function computeMovementRange(unit) {
+      gameState.reachableHexes = [];
+      const form = FORMATIONS[unit.formation];
+      const baseMove = 2 + (form ? form.moveBonus : 0);
+
+      for (let r = 0; r < GRID_ROWS; r++) {
+        for (let q = 0; q < GRID_COLS; q++) {
+          if (q === unit.q && r === unit.r) continue;
+          if (findUnitAt(q, r)) continue;
+
+          const terrain = MAP_TERRAIN[r][q];
+          // 호로관(3) 성벽은 직접 진입 불가 (우회 돌파)
+          if (terrain === 3 && unit.faction === "ally") continue;
+
+          const dist = getHexDistance(unit.q, unit.r, q, r);
+          if (dist <= baseMove) {
+            gameState.reachableHexes.push({ q, r });
+          }
+        }
+      }
+    }
+
+    function updateUnitDetailCard(unit) {
+      document.getElementById("unitName").innerText = unit.name;
+      document.getElementById("unitGeneralTitle").innerText = `${unit.name} (${unit.title})`;
+      document.getElementById("unitAvatar").innerText = unit.avatar;
+      document.getElementById("unitTroops").innerText = unit.troops.toLocaleString();
+      document.getElementById("unitMorale").innerText = unit.morale;
+
+      document.getElementById("statWar").innerText = unit.war;
+      document.getElementById("statInt").innerText = unit.int;
+      document.getElementById("statLead").innerText = unit.lead;
+      document.getElementById("statChr").innerText = unit.chr;
+
+      const fBadge = document.getElementById("unitFormationBadge");
+      const form = FORMATIONS[unit.formation];
+      if (form) {
+        fBadge.innerText = form.name;
+        fBadge.style.backgroundColor = form.badgeBg;
+        fBadge.style.color = form.color;
+        fBadge.classList.remove("hidden");
+      }
+
+      const fTag = document.getElementById("unitFactionBadge");
+      if (unit.faction === "ally") {
+        fTag.innerText = "연합군";
+        fTag.className = "text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-900 text-blue-200 border border-blue-500";
+      } else {
+        fTag.innerText = unit.isBoss ? "총대장(동탁군)" : "동탁군";
+        fTag.className = "text-[10px] px-1.5 py-0.5 rounded font-bold bg-red-950 text-red-200 border border-red-500";
+      }
+
+      const sBox = document.getElementById("unitSkillsList");
+      sBox.innerHTML = unit.skills.map(s => 
+        `<span class="px-1.5 py-0.5 rounded bg-slate-800 text-amber-300 border border-amber-900/60 font-semibold">${s}</span>`
+      ).join("");
+    }
+
+    function updateActionCommands() {
+      const u = gameState.selectedUnit;
+      if (!u || u.faction !== "ally" || u.acted || gameState.phase !== "ally") {
+        disableAllCommands();
+        return;
+      }
+
+      const form = FORMATIONS[u.formation];
+      const adjEnemies = getEnemiesInRange(u, 1);
+      const arcRange = form ? form.arcRange : 1;
+      const arcEnemies = getEnemiesInRange(u, arcRange);
+
+      document.getElementById("btnAttack").disabled = adjEnemies.length === 0;
+      document.getElementById("btnArchery").disabled = arcEnemies.length === 0 || arcRange < 2;
+      document.getElementById("btnFireSkill").disabled = !u.skills.includes("화계") && u.int < 75;
+      document.getElementById("btnChaosSkill").disabled = !u.skills.includes("혼란") && u.int < 80;
+      document.getElementById("btnFlurry").disabled = !u.skills.includes("분기") || adjEnemies.length === 0;
+      document.getElementById("btnFormation").disabled = false;
+      document.getElementById("btnDuel").disabled = adjEnemies.length === 0;
+      document.getElementById("btnWait").disabled = false;
+    }
+
+    function disableAllCommands() {
+      ["btnAttack", "btnArchery", "btnFireSkill", "btnChaosSkill", "btnFlurry", "btnFormation", "btnDuel", "btnWait"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = true;
+      });
+    }
+
+    function getEnemiesInRange(unit, range) {
+      return UNITS.filter(enemy => 
+        enemy.faction !== unit.faction &&
+        enemy.troops > 0 &&
+        getHexDistance(unit.q, unit.r, enemy.q, enemy.r) <= range &&
+        getHexDistance(unit.q, unit.r, enemy.q, enemy.r) > 0
+      );
+    }
+
+    // ==========================================================================
+    // 전투 액션: 일반공격, 안행궁시, 화계(풍향확산), 분기, 혼란
+    // ==========================================================================
+    function onCmdAttack() {
+      const u = gameState.selectedUnit;
+      if (!u) return;
+      gameState.skillMode = 'attack';
+      gameState.attackableTargets = getEnemiesInRange(u, 1);
+      logBattle("공격할 적 부대를 선택하십시오.");
+      renderBattlefield();
+    }
+
+    function onCmdArchery() {
+      const u = gameState.selectedUnit;
+      if (!u) return;
+      const form = FORMATIONS[u.formation];
+      gameState.skillMode = 'archery';
+      gameState.attackableTargets = getEnemiesInRange(u, form.arcRange);
+      logBattle(`🏹 [안행진 일제사격] 사거리 ${form.arcRange}칸 이내의 적을 조준하십시오.`);
+      renderBattlefield();
+    }
+
+    function onCmdFireSkill() {
+      const u = gameState.selectedUnit;
+      if (!u) return;
+      gameState.skillMode = 'fire';
+      gameState.attackableTargets = [];
+      for (let r = 0; r < GRID_ROWS; r++) {
+        for (let q = 0; q < GRID_COLS; q++) {
+          if (getHexDistance(u.q, u.r, q, r) <= 2) {
+            gameState.attackableTargets.push({ q, r });
+          }
+        }
+      }
+      logBattle("🔥 [화계] 바람(남동풍)을 타고 번질 발화 지점을 선택하십시오!");
+      renderBattlefield();
+    }
+
+    function onCmdChaosSkill() {
+      const u = gameState.selectedUnit;
+      if (!u) return;
+      gameState.skillMode = 'chaos';
+      gameState.attackableTargets = getEnemiesInRange(u, 2);
+      logBattle("혼란을 걸 적 부대를 선택하십시오.");
+      renderBattlefield();
+    }
+
+    function onCmdFlurry() {
+      const u = gameState.selectedUnit;
+      if (!u) return;
+      const enemies = getEnemiesInRange(u, 1);
+      if (enemies.length === 0) return;
+
+      logBattle(`⚡ ${u.name}의 [분기(奮起)] 발동! 주변 모든 적군을 일격에 베어냅니다!`);
+      playSound('slash');
+
+      enemies.forEach(target => {
+        const dmg = calculateCombatDamage(u, target, 'flurry');
+        applyDamage(target, dmg);
+      });
+
+      finishUnitAction(u);
+    }
+
+    function executeSkillAction(mode, targetPos) {
+      const u = gameState.selectedUnit;
+      const targetUnit = findUnitAt(targetPos.q, targetPos.r);
+
+      if (mode === 'attack' && targetUnit) {
+        logBattle(`🗡️ ${u.name} 부대가 ${targetUnit.name}에게 돌격을 감행합니다!`);
+        playSound('slash');
+        const dmg = calculateCombatDamage(u, targetUnit, 'melee');
+        applyDamage(targetUnit, dmg);
+
+        if (targetUnit.troops > 0) {
+          const counterDmg = Math.floor(calculateCombatDamage(targetUnit, u, 'melee') * 0.45);
+          applyDamage(u, counterDmg);
+        }
+      } else if (mode === 'archery' && targetUnit) {
+        logBattle(`🏹 ${u.name} 부대의 화살비가 쏟아집니다!`);
+        playSound('arrow');
+        const dmg = calculateCombatDamage(u, targetUnit, 'archery');
+        applyDamage(targetUnit, dmg);
+      } else if (mode === 'fire') {
+        logBattle(`🔥 [대화계] 불길이 거세게 치솟습니다! 남동풍을 타고 번져갑니다.`);
+        playSound('fire');
+        gameState.fireTiles.push({ q: targetPos.q, r: targetPos.r, turns: 3 });
+        if (targetUnit) {
+          applyDamage(targetUnit, 1500);
+          targetUnit.morale = Math.max(10, targetUnit.morale - 20);
+        }
+      } else if (mode === 'chaos' && targetUnit) {
+        const successRate = 55 + (u.int - targetUnit.int) * 2;
+        if (Math.random() * 100 < successRate) {
+          targetUnit.morale = Math.max(10, targetUnit.morale - 30);
+          targetUnit.acted = true;
+          logBattle(`🌀 [혼란 대성공] ${targetUnit.name}의 군심이 무너져 행동 불능이 되었습니다!`);
+          playSound('fanfare');
+        } else {
+          logBattle(`[혼란 실패] ${targetUnit.name}이 계략을 눈치챘습니다.`);
+        }
+      }
+
+      finishUnitAction(u);
+    }
+
+    // 10턴 결전 전용 고속 밸런스 데미지 공식
+    function calculateCombatDamage(attacker, defender, type) {
+      const aForm = FORMATIONS[attacker.formation] || FORMATIONS.gyorin;
+      const dForm = FORMATIONS[defender.formation] || FORMATIONS.gyorin;
+
+      let atkPower = (attacker.war * 0.65 + attacker.lead * 0.35) * (attacker.troops / 4500);
+      let defPower = (defender.lead * 0.65 + defender.war * 0.35) * (defender.troops / 4500);
+
+      if (type === 'archery') {
+        atkPower *= aForm.arcMod;
+        if (defender.formation === 'bangwon') defPower *= 3.0; // 방원진 활 철벽 방어
+      } else {
+        atkPower *= aForm.atkMod;
+        defPower *= dForm.defMod;
+      }
+
+      atkPower *= (attacker.morale / 100);
+
+      // 10턴 내에 승부가 시원하게 나도록 대미지 배율 튜닝 (1.4배)
+      let baseDamage = Math.floor(((atkPower / Math.max(10, defPower)) * 1200 + Math.random() * 300) * 1.4);
+      return Math.max(400, baseDamage);
+    }
+
+    function applyDamage(unit, damage) {
+      unit.troops = Math.max(0, unit.troops - damage);
+      showDamagePop(unit.q, unit.r, `-${damage}`);
+
+      if (unit.troops <= 0) {
+        logBattle(`☠️ [궤멸] 적장 ${unit.name} 부대가 전멸하여 패주했습니다!`);
+        checkVictoryCondition();
+      }
+      renderBattlefield();
+    }
+
+    function showDamagePop(q, r, text) {
+      const { x, y } = getHexPixel(q, r);
+      const container = document.getElementById("damageOverlay");
+      const pop = document.createElement("div");
+      pop.className = "damage-pop text-red-500 font-black";
+      pop.innerText = text;
+      pop.style.left = `${x}px`;
+      pop.style.top = `${y}px`;
+      container.appendChild(pop);
+      setTimeout(() => pop.remove(), 850);
+    }
+
+    function clearSkillMode() {
+      gameState.skillMode = null;
+      gameState.attackableTargets = [];
+    }
+
+    function onCmdWait() {
+      if (gameState.selectedUnit) finishUnitAction(gameState.selectedUnit);
+    }
+
+    function finishUnitAction(unit) {
+      unit.acted = true;
+      unit.moved = true;
+      clearSkillMode();
+      deselectUnit();
+      renderBattlefield();
+      checkAllUnitsActed();
+    }
+
+    // ==========================================================================
+    // 진형 변경 시스템
+    // ==========================================================================
+    function openFormationModal() {
+      const u = gameState.selectedUnit;
+      if (!u) return;
+      const listEl = document.getElementById("formationChoiceList");
+      listEl.innerHTML = "";
+
+      u.availableFormations.forEach(fKey => {
+        const form = FORMATIONS[fKey];
+        const isCurrent = u.formation === fKey;
+        const div = document.createElement("div");
+        div.className = `p-2.5 rounded border cursor-pointer flex justify-between items-center transition ${isCurrent ? 'bg-amber-950 border-yellow-500' : 'bg-slate-900 border-slate-700 hover:border-yellow-600'}`;
+        div.innerHTML = `
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="formation-badge" style="background:${form.badgeBg}; color:${form.color};">${form.name}</span>
+              ${isCurrent ? '<span class="text-[10px] text-yellow-400 font-bold">(현재 진형)</span>' : ''}
+            </div>
+            <div class="text-[11px] text-slate-300 mt-1">${form.desc}</div>
+          </div>
+          <button class="sam5-btn px-2.5 py-1 text-xs rounded" ${isCurrent ? 'disabled' : ''}>
+            ${isCurrent ? '유지' : '변환'}
+          </button>
+        `;
+        div.onclick = () => {
+          if (!isCurrent) {
+            u.formation = fKey;
+            logBattle(`🛡️ ${u.name}이 군세를 정비하여 [${form.name}]으로 진형을 바꾸었습니다!`);
+            playSound('fanfare');
+            closeFormationModal();
+            updateUnitDetailCard(u);
+            finishUnitAction(u);
+          }
+        };
+        listEl.appendChild(div);
+      });
+
+      document.getElementById("formationModal").classList.remove("hidden");
+    }
+
+    function closeFormationModal() {
+      document.getElementById("formationModal").classList.add("hidden");
+    }
+
+    // ==========================================================================
+    // 전략 기믹 2: 일기토(一騎討) 일격필살 시스템
+    // ==========================================================================
+    function onCmdDuel() {
+      const u = gameState.selectedUnit;
+      if (!u) return;
+      const enemies = getEnemiesInRange(u, 1);
+      if (enemies.length === 0) return;
+
+      // 여포가 범위 내에 있으면 우선 대결!
+      const target = enemies.find(e => e.isBoss) || enemies[0];
+      duelState.p1 = u;
+      duelState.p2 = target;
+      duelState.p1Hp = 100;
+      duelState.p2Hp = 100;
+      duelState.round = 1;
+
+      document.getElementById("duelP1Name").innerText = u.name;
+      document.getElementById("duelP1War").innerText = `무력 ${u.war}`;
+      document.getElementById("duelP1Avatar").innerText = u.avatar;
+      document.getElementById("duelP1Hp").style.width = "100%";
+
+      document.getElementById("duelP2Name").innerText = target.name;
+      document.getElementById("duelP2War").innerText = `무력 ${target.war}`;
+      document.getElementById("duelP2Avatar").innerText = target.avatar;
+      document.getElementById("duelP2Hp").style.width = "100%";
+
+      document.getElementById("duelNarrative").innerText = `${u.name}이 청룡언월도/장팔사모를 치켜들며 ${target.name}에게 생사를 건 1:1 결투를 신청했습니다!`;
+      document.getElementById("btnDuelRound").classList.remove("hidden");
+      document.getElementById("btnDuelClose").classList.add("hidden");
+
+      document.getElementById("duelModal").classList.remove("hidden");
+      playSound('fanfare');
+    }
+
+    function progressDuelRound() {
+      const { p1, p2 } = duelState;
+      duelState.round++;
+      playSound('slash');
+
+      const p1Roll = p1.war + Math.floor(Math.random() * 25);
+      const p2Roll = p2.war + Math.floor(Math.random() * 25);
+
+      const logBox = document.getElementById("duelNarrative");
+      const vsIcon = document.getElementById("duelVsIcon");
+      vsIcon.classList.add("clash-anim");
+      setTimeout(() => vsIcon.classList.remove("clash-anim"), 400);
+
+      if (p1Roll >= p2Roll) {
+        const dmg = Math.floor((p1Roll - p2Roll) * 1.8) + 20;
+        duelState.p2Hp = Math.max(0, duelState.p2Hp - dmg);
+        logBox.innerText = `[제${duelState.round}합] ${p1.name}의 일격필살! ${p2.name}에게 ${dmg}의 타격을 입혔습니다!`;
+      } else {
+        const dmg = Math.floor((p2Roll - p1Roll) * 1.8) + 20;
+        duelState.p1Hp = Math.max(0, duelState.p1Hp - dmg);
+        logBox.innerText = `[제${duelState.round}합] ${p2.name}의 거친 방천화극 반격! ${p1.name}이 부상을 입었습니다 (-${dmg})!`;
+      }
+
+      document.getElementById("duelP1Hp").style.width = `${duelState.p1Hp}%`;
+      document.getElementById("duelP2Hp").style.width = `${duelState.p2Hp}%`;
+
+      // 승패 판정
+      if (duelState.p1Hp <= 0 || duelState.p2Hp <= 0 || duelState.round >= 5) {
+        document.getElementById("btnDuelRound").classList.add("hidden");
+        document.getElementById("btnDuelClose").classList.remove("hidden");
+
+        if (duelState.p2Hp <= 0) {
+          logBox.innerText = `🏆 [초대형 전공!] ${p1.name}이 적장 ${p2.name}을 베어 낙마시켰습니다! 적 군세가 완전히 와해되었습니다!`;
+          applyDamage(p2, p2.troops); // 적장 전멸
+          if (p2.isBoss) {
+            // 여포 격파 시 즉시 승리!
+            setTimeout(() => {
+              triggerVictory("일기토 승리! 적 총대장 여포를 꺾고 호로관을 함락시켰습니다!");
+            }, 600);
+          }
+        } else if (duelState.p1Hp <= 0) {
+          logBox.innerText = `💀 ${p1.name}이 패배하여 전선에서 후퇴합니다...`;
+          applyDamage(p1, p1.troops);
+        } else {
+          logBox.innerText = `🤝 5합 동안 결판을 내지 못하고 서로 물러섰습니다.`;
+        }
+      }
+    }
+
+    function closeDuelModal() {
+      document.getElementById("duelModal").classList.add("hidden");
+      if (gameState.selectedUnit) finishUnitAction(gameState.selectedUnit);
+    }
+
+    // ==========================================================================
+    // 10턴 턴 진행 및 화계 풍향 확산 시스템
+    // ==========================================================================
+    function checkAllUnitsActed() {
+      const allDone = UNITS.filter(u => u.faction === "ally" && u.troops > 0).every(u => u.acted);
+      if (allDone) {
+        logBattle("아군 전 부대가 행동을 완료했습니다. [아군 턴 종료] 버튼을 눌러 적군 턴을 진행하십시오.");
+      }
+    }
+
+    function endPlayerTurn() {
+      if (gameState.phase !== "ally" || gameState.battleOver) return;
+      gameState.phase = "enemy";
+      document.getElementById("btnEndTurn").disabled = true;
+      document.getElementById("turnInfo").innerText = `제 ${gameState.turn} / 10 턴 [동탁군 반격 개시]`;
+      logBattle("🚩 동탁군이 북을 울리며 전면 반격을 개시합니다!");
+      playSound('drum');
+
+      setTimeout(() => {
+        runEnemyAI();
+      }, 700);
+    }
+
+    function runEnemyAI() {
+      const enemies = UNITS.filter(u => u.faction === "enemy" && u.troops > 0);
+      let step = 0;
+
+      function executeNextEnemy() {
+        if (step >= enemies.length || gameState.battleOver) {
+          finishFullTurn();
+          return;
+        }
+
+        const enemy = enemies[step];
+        const allies = UNITS.filter(u => u.faction === "ally" && u.troops > 0);
+
+        if (allies.length > 0) {
+          let closestAlly = null;
+          let minDist = 999;
+          allies.forEach(a => {
+            const d = getHexDistance(enemy.q, enemy.r, a.q, a.r);
+            if (d < minDist) {
+              minDist = d;
+              closestAlly = a;
+            }
+          });
+
+          if (minDist === 1) {
+            logBattle(`⚔️ 적장 ${enemy.name}이 ${closestAlly.name}에게 맹공을 퍼붓습니다!`);
+            playSound('slash');
+            const dmg = calculateCombatDamage(enemy, closestAlly, 'melee');
+            applyDamage(closestAlly, dmg);
+          } else {
+            // 아군을 향해 진격
+            const stepQ = enemy.q > closestAlly.q ? enemy.q - 1 : (enemy.q < closestAlly.q ? enemy.q + 1 : enemy.q);
+            const stepR = enemy.r > closestAlly.r ? enemy.r - 1 : (enemy.r < closestAlly.r ? enemy.r + 1 : enemy.r);
+            if (!findUnitAt(stepQ, stepR)) {
+              enemy.q = stepQ;
+              enemy.r = stepR;
+              logBattle(`🏇 적군 ${enemy.name} 부대가 진형을 좁히며 쇄도합니다.`);
+            }
+          }
+        }
+
+        enemy.acted = true;
+        renderBattlefield();
+        step++;
+        setTimeout(executeNextEnemy, 550);
+      }
+
+      executeNextEnemy();
+    }
+
+    // 턴 교대 및 화계 번짐 연산
+    function finishFullTurn() {
+      gameState.turn++;
+
+      // 10턴 초과 시 타임오버 패배 판정!
+      if (gameState.turn > MAX_TURNS) {
+        triggerDefeat("10턴이 경과하여 동탁의 서량 기병 10만 본대가 당도했습니다! 연합군은 퇴로가 끊겨 패주했습니다.");
+        return;
+      }
+
+      gameState.phase = "ally";
+      document.getElementById("btnEndTurn").disabled = false;
+      document.getElementById("turnInfo").innerText = `제 ${gameState.turn} / 10 턴 [연합군 행동]`;
+
+      // 10턴 게이지 업데이트
+      const turnsLeft = MAX_TURNS - gameState.turn + 1;
+      document.getElementById("turnCountdownText").innerText = `${turnsLeft} 턴 남음!`;
+      const percent = (turnsLeft / MAX_TURNS) * 100;
+      const barEl = document.getElementById("turnProgressBar");
+      barEl.style.width = `${percent}%`;
+
+      if (turnsLeft <= 3) {
+        barEl.className = "turn-meter-bar h-full rounded-full bg-red-600 animate-pulse";
+        document.getElementById("turnCountdownText").className = "text-red-500 font-black animate-ping";
+      }
+
+      // 전략 기믹 3: 남동풍을 타고 화계(불길) 확산
+      const newFires = [];
+      gameState.fireTiles.forEach(f => {
+        f.turns--;
+        if (f.turns > 0) {
+          newFires.push(f);
+          // 40% 확률로 남동쪽 (q+1, r) 또는 (q, r+1)로 불길 확산
+          if (Math.random() < 0.45 && f.q + 1 < GRID_COLS) {
+            newFires.push({ q: f.q + 1, r: f.r, turns: 2 });
+          }
+        }
+      });
+      gameState.fireTiles = newFires;
+
+      // 불타는 타일 위의 부대에게 화염 피해
+      gameState.fireTiles.forEach(f => {
+        const u = findUnitAt(f.q, f.r);
+        if (u) {
+          applyDamage(u, 750);
+          logBattle(`🔥 ${u.name} 부대가 불길에 휩싸여 큰 피해를 입었습니다!`);
+        }
+      });
+
+      // 부대 턴 리셋
+      UNITS.forEach(u => {
+        u.moved = false;
+        u.acted = false;
+      });
+
+      logBattle(`제 ${gameState.turn} 턴 시작! 남은 기회는 ${turnsLeft}번입니다.`);
+      deselectUnit();
+      renderBattlefield();
+    }
+
+    // ==========================================================================
+    // 승패 판정 시스템 (10턴 룰)
+    // ==========================================================================
+    function checkVictoryCondition() {
+      const enemiesAlive = UNITS.some(u => u.faction === "enemy" && u.troops > 0);
+      const alliesAlive = UNITS.some(u => u.faction === "ally" && u.troops > 0);
+      const boss = UNITS.find(u => u.isBoss);
+
+      if (boss && boss.troops <= 0) {
+        triggerVictory("동탁군의 총대장 여포가 퇴각했습니다! 적 군세가 붕괴하여 대승을 거두었습니다!");
+      } else if (!enemiesAlive) {
+        triggerVictory("동탁군 전 부대를 궤멸시켰습니다! 천하에 이름을 떨친 완벽한 승리입니다!");
+      } else if (!alliesAlive) {
+        triggerDefeat("연합군 전 부대가 전멸하여 패배했습니다...");
+      }
+    }
+
+    function triggerVictory(msg) {
+      if (gameState.battleOver) return;
+      gameState.battleOver = true;
+      playSound('fanfare');
+      alert(`🎉 [대승리 - 10턴 결전 완료]\n\n${msg}\n소요 턴: ${gameState.turn}턴만에 완벽한 승리를 거두었습니다!`);
+      logBattle(`🏆 대승리! ${msg}`);
+    }
+
+    function triggerDefeat(msg) {
+      if (gameState.battleOver) return;
+      gameState.battleOver = true;
+      playSound('fire');
+      alert(`💀 [작전 실패 - 시간 초과 패배]\n\n${msg}`);
+      logBattle(`통한의 패배: ${msg}`);
+    }
+
+    function restartBattle() {
+      location.reload();
+    }
+
+    function logBattle(msg) {
+      const logEl = document.getElementById("battleLog");
+      logEl.innerText = msg;
+    }
+
+    // ==========================================================================
+    // 초기 실행
+    // ==========================================================================
+    window.addEventListener("DOMContentLoaded", () => {
+      renderBattlefield();
+      deselectUnit();
+    });
+  
+
+</script>
 </body>
 </html>
