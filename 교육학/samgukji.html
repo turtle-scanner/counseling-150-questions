@@ -682,6 +682,9 @@
             <div class="flex-1 gauge-container"><div id="bar-loy" class="gauge-gold" style="width: 60%;"></div></div>
             <span id="val-loy" class="w-16 text-right font-mono text-yellow-300">60</span>
           </div>
+          <div id="loyalty-volunteers-hint" class="text-[10px] text-right px-1 -mt-1 mb-1">
+            <span class="text-amber-300 font-bold">💡 민충 100 달성 시: 의용 지원병 8,000명 합류!</span>
+          </div>
         </div>
 
         <!-- 식량창고 상태 & 원클릭 즉시 100% 완전 복구 버튼 -->
@@ -1291,9 +1294,14 @@
             [삼국지 V 헥스 전술 결전] 10턴 결전: 적 군량고 습격 & 일기토 대승 전략
           </h2>
         </div>
-        <button onclick="closeHexBattle(false)" class="sam5-btn px-3 py-1 rounded text-xs bg-red-900 text-white font-bold border border-red-500">
-          🏳️ 퇴각 (전장 이탈)
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="confirmExitBattleToMap()" class="px-4 py-1.5 rounded text-xs bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-600 hover:to-indigo-600 text-yellow-200 border-2 border-yellow-400 font-black shadow-lg flex items-center gap-1.5 animate-pulse">
+            <span>🗺️</span> <span>전국 지도로 복귀 (퇴각)</span>
+          </button>
+          <button onclick="confirmExitBattleToMap()" class="text-slate-400 hover:text-white font-mono text-sm px-2 py-0.5 border border-slate-600 rounded">
+            ✕
+          </button>
+        </div>
       </div>
 
       <!-- 삼국지 5 실전 바디 임베딩 -->
@@ -1475,10 +1483,13 @@
           </div>
         </div>
 
-        <!-- 턴 종료 버튼 -->
-        <div class="mt-3 pt-2 border-t border-yellow-900/60">
-          <button onclick="endPlayerTurn()" id="btnEndTurn" class="w-full sam5-btn py-2.5 rounded text-xs bg-gradient-to-r from-red-950 via-red-900 to-amber-900 hover:from-red-800 hover:to-amber-800 text-yellow-200 border-yellow-500 font-black shadow-lg flex items-center justify-center gap-1.5">
-            <span>🚩</span> <span>아군 턴 종료 (적군 행동 개시)</span>
+        <!-- 턴 종료 & 지도로 복귀 버튼 바 -->
+        <div class="mt-3 pt-2 border-t border-yellow-900/60 flex items-center gap-2">
+          <button onclick="endPlayerTurn()" id="btnEndTurn" class="flex-1 sam5-btn py-2.5 rounded text-xs bg-gradient-to-r from-red-950 via-red-900 to-amber-900 hover:from-red-800 hover:to-amber-800 text-yellow-200 border-yellow-500 font-black shadow-lg flex items-center justify-center gap-1.5">
+            <span>🚩</span> <span>아군 턴 종료</span>
+          </button>
+          <button onclick="confirmExitBattleToMap()" class="px-3 sam5-btn py-2.5 rounded text-xs bg-blue-950 hover:bg-blue-900 text-cyan-200 hover:text-white border border-cyan-400 font-black shadow flex items-center justify-center gap-1">
+            <span>🗺️</span> <span>지도로 복귀</span>
           </button>
         </div>
       </div>
@@ -2229,6 +2240,24 @@
       document.getElementById('prompt-text').innerText = `${p.id}. ${p.name} (${p.ruler})을 선택했습니다. 명령을 내리십시오.`;
     }
 
+    // ==================== 👥 민충 100 달성 시 의용 지원병 8,000명 집결 시스템 ====================
+    function checkMaxLoyaltyVolunteers(prov) {
+      if (!prov || prov.ruler !== gameState.rulerName) return;
+      if (prov.loyalty >= 100 && !prov.volunteersJoined) {
+        prov.volunteersJoined = true;
+        const rewardSoldiers = 8000;
+        prov.soldiers += rewardSoldiers;
+        playSfx('victory');
+
+        logMessage(`🎉👥 [의용 지원병 8,000명 대거 집결!] ${prov.name}의 백성 충성도(민충)가 100(만점)을 달성하여, 주군의 높은 인덕에 감복한 정예 의용군 8,000명이 스스로 무기를 들고 자원입대했습니다! (병사: +8,000명)`, 'text-emerald-300 font-black text-sm animate-pulse');
+
+        alert(`🎉👥 [선정의 결실 - 의용 지원병 8,000명 대거 집결!]\n\n${prov.name} 백성들의 민충(民忠)이 100(만점)에 도달했습니다!\n\n"유비 주군과 같은 어진 성군을 위해 목숨 바쳐 싸우겠습니다!"\n\n향토 청년들과 정예 의용군 8,000명이 스스로 무기를 들고 군에 자원입대하였습니다!\n\n▶ ${prov.name} 병력: +8,000명 대거 합류!\n▶ 현재 총 병력: ${prov.soldiers.toLocaleString()}명`);
+
+        renderMapPins();
+        updateRightPanel(prov.id);
+      }
+    }
+
     function updateRightPanel(provId) {
       const p = PROVINCES.find(x => x.id === provId);
       if (!p) return;
@@ -2253,6 +2282,20 @@
       document.getElementById('bar-sol').style.width = Math.min(100, (p.soldiers / 40000) * 100) + '%';
       document.getElementById('bar-off').style.width = Math.min(100, (p.officers / 20) * 100) + '%';
       document.getElementById('bar-loy').style.width = p.loyalty + '%';
+      checkMaxLoyaltyVolunteers(p);
+
+      const loyHintEl = document.getElementById('loyalty-volunteers-hint');
+      if (loyHintEl) {
+        if (p.ruler === gameState.rulerName) {
+          if (p.volunteersJoined) {
+            loyHintEl.innerHTML = '<span class="text-emerald-300 font-bold">✨ 민충 100 달성 완료 (의용군 8,000명 참전 완료)</span>';
+          } else {
+            loyHintEl.innerHTML = `<span class="text-amber-300 font-bold animate-pulse">💡 민충 100 달성 시: 정예 의용 지원병 8,000명 즉시 자원입대! (현재: ${p.loyalty}/100)</span>`;
+          }
+        } else {
+          loyHintEl.innerHTML = '';
+        }
+      }
 
       // 12군주 초상화 및 공손찬 얼굴 실시간 정확 매핑
       updateRulerPortraitDisplay(p.ruler);
@@ -3659,12 +3702,20 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
         return;
       }
       myProv.food -= 1000;
-      myProv.loyalty = Math.min(100, myProv.loyalty + 8);
-      myProv.pop = Math.min(800000, myProv.pop + 2000);
+      myProv.loyalty = Math.min(100, myProv.loyalty + 10);
+      myProv.pop = Math.min(800000, myProv.pop + 2500);
       playSfx('build');
+      
+      logMessage(`🌾 [주민 구휼] 곡식 1,000석을 백성들에게 무상 급여하여 민충이 ${myProv.loyalty}/100으로 상승했습니다! (인구 +2,500명)`, 'text-cyan-200 font-bold');
+
+      // 민충 100 도달 시 즉시 지원병 8,000명 집결 체크!
+      checkMaxLoyaltyVolunteers(myProv);
+
       updateRightPanel(myProv.id);
-      logMessage(`🌾 [주민 구휼] 곡식 1,000석을 백성들에게 무상 급여하여 민심(민충)이 8 상승하고 유민들이 유입되었습니다!`, 'text-cyan-200 font-bold');
-      alert(`🌾 [선정 및 구휼]\n\n군량 1,000석을 굶주린 백성들에게 풀어 민심을 크게 얻었습니다!\n- 영지 민충 +8 상승\n- 피난민 유입 (인구 +2,000명)`);
+      
+      if (myProv.loyalty < 100) {
+        alert(`🌾 [선정 및 주민 구휼]\n\n군량 1,000석을 굶주린 백성들에게 풀어 민심을 크게 얻었습니다!\n- 현재 영지 민충: ${myProv.loyalty} / 100 (+10 상승)\n- 피난민 유입 (인구 +2,500명)\n\n💡 민충 100 달성 시: 정예 의용 지원병 8,000명이 대거 자원입대합니다!`);
+      }
     }
 
     function executeDelegate() { closeAllPopups(); alert("📜 [위임] 태수에게 영지 내정 및 방어를 전권 위임합니다."); }
@@ -4021,6 +4072,32 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       resetHexBattlefield(targetProv, fromProv, deployedOfficers);
       openModal('hex-battle-modal');
       logMessage(`⚔️ [전술 결전 돌입] ${fromProv.name}의 아군이 ${targetProv.name}의 ${targetProv.ruler}군을 상대로 10턴 헥스 결전에 돌입했습니다!`, 'text-yellow-300 font-black');
+    }
+
+    // ==================== 🗺️ 헥스 전장 ➔ 전국 지도 안전 복귀 시스템 ====================
+    function confirmExitBattleToMap() {
+      if (confirm("전쟁에서 철수하여 전국 지도로 복귀하시겠습니까?\n(현재 전투가 종료되고 본거지 지도로 안전하게 이동합니다)")) {
+        closeHexBattle(false);
+      }
+    }
+
+    function closeHexBattle(isVictory = false) {
+      closeModal('hex-battle-modal');
+      sam5BattleState.battleOver = true;
+
+      if (isVictory) {
+        if (hexBattleContext.targetProv) {
+          onHexBattleVictory(hexBattleContext.targetProv);
+        } else {
+          renderMapPins();
+          updateRightPanel(gameState.selectedProvId);
+        }
+      } else {
+        logMessage('🐎 [전장 퇴각] 본대로 전군 퇴각하여 전국 지도로 안전하게 복귀했습니다.', 'text-slate-300 font-bold');
+        const returnProvId = (hexBattleContext.fromProv && hexBattleContext.fromProv.id) ? hexBattleContext.fromProv.id : gameState.selectedProvId;
+        updateRightPanel(returnProvId);
+        renderMapPins();
+      }
     }
 
     function restartBattle() {
@@ -5244,12 +5321,13 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       const alliesAlive = UNITS.some(u => u.faction === "ally" && u.troops > 0);
       const boss = UNITS.find(u => u.isBoss);
 
+      const targetRuler = (hexBattleContext.targetProv && hexBattleContext.targetProv.ruler) ? hexBattleContext.targetProv.ruler : '적';
       if (boss && boss.troops <= 0) {
-        triggerVictory("동탁군의 총대장 여포가 퇴각했습니다! 적 군세가 붕괴하여 대승을 거두었습니다!");
+        triggerVictory(`${targetRuler}군의 총대장 ${boss.name}이(가) 퇴각했습니다! 적 군세가 붕괴하여 대승을 거두었습니다!`);
       } else if (!enemiesAlive) {
-        triggerVictory("동탁군 전 부대를 궤멸시켰습니다! 천하에 이름을 떨친 완벽한 승리입니다!");
+        triggerVictory(`${targetRuler}군 전 부대를 궤멸시켰습니다! 천하에 이름을 떨친 완벽한 승리입니다!`);
       } else if (!alliesAlive) {
-        triggerDefeat("연합군 전 부대가 전멸하여 패배했습니다...");
+        triggerDefeat("아군 전 부대가 전멸하여 패배했습니다...");
       }
     }
 
@@ -5257,16 +5335,28 @@ ${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에
       if (sam5BattleState.battleOver) return;
       sam5BattleState.battleOver = true;
       playSound('fanfare');
-      alert(`🎉 [대승리 - 10턴 결전 완료]\n\n${msg}\n소요 턴: ${sam5BattleState.turn}턴만에 완벽한 승리를 거두었습니다!`);
+      
+      const targetName = (hexBattleContext.targetProv && hexBattleContext.targetProv.name) ? hexBattleContext.targetProv.name : '적 영지';
       logBattle(`🏆 대승리! ${msg}`);
+      logMessage(`🎉🏆 [전쟁 대승리!] ${targetName}을(를) 격파하고 완전히 점령했습니다! 전국 지도로 개선 복귀합니다.`, 'text-yellow-300 font-black text-sm');
+
+      alert(`🎉🏆 [대승리 - 10턴 결전 승리!]\n\n${msg}\n소요 턴: ${sam5BattleState.turn}턴만에 완벽한 승리를 거두었습니다!\n\n▶ [확인]을 누르면 전국 지도로 복귀하여 영지를 점령하고 포로를 처분합니다.`);
+      
+      // 즉시 전국 지도로 복귀하며 영지 점령 및 포로 처분 모달 호출!
+      closeHexBattle(true);
     }
 
     function triggerDefeat(msg) {
       if (sam5BattleState.battleOver) return;
       sam5BattleState.battleOver = true;
       playSound('fire');
-      alert(`💀 [작전 실패 - 시간 초과 패배]\n\n${msg}`);
       logBattle(`통한의 패배: ${msg}`);
+      logMessage(`⚠️ [작전 실패] ${msg} 본대로 전군 퇴각하여 전국 지도로 복귀합니다.`, 'text-red-400 font-bold');
+
+      alert(`💀 [작전 실패 - 본대 퇴각]\n\n${msg}\n\n전군 퇴각하여 본진(전국 지도)으로 안전하게 철수합니다.`);
+      
+      // 전국 지도로 안전 복귀!
+      closeHexBattle(false);
     }
 
 
