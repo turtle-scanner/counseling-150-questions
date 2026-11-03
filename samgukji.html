@@ -1146,7 +1146,7 @@
   </div>
 
   <!-- ==================== 5대 슬롯 게임 저장 모달 ==================== -->
-  <div id="save-modal" class="fixed inset-0 modal-backdrop z-50 hidden flex items-center justify-center p-3">
+  <div id="save-modal" class="fixed inset-0 modal-backdrop z-[9999999] hidden flex items-center justify-center p-3">
     <div class="koei-box w-full max-w-xl p-4 rounded shadow-2xl border-4 border-emerald-400 flex flex-col gap-3 max-h-[92vh]">
       <div class="flex items-center justify-between border-b-2 border-emerald-400 pb-2">
         <div class="flex items-center gap-2">
@@ -1188,7 +1188,7 @@
   </div>
 
   <!-- ==================== 5대 슬롯 게임 로드 모달 ==================== -->
-  <div id="load-modal" class="fixed inset-0 modal-backdrop z-50 hidden flex items-center justify-center p-3">
+  <div id="load-modal" class="fixed inset-0 modal-backdrop z-[9999999] hidden flex items-center justify-center p-3">
     <div class="koei-box w-full max-w-xl p-4 rounded shadow-2xl border-4 border-cyan-400 flex flex-col gap-3 max-h-[92vh]">
       <div class="flex items-center justify-between border-b-2 border-cyan-400 pb-2">
         <div class="flex items-center gap-2">
@@ -4312,6 +4312,277 @@ ${promoMsg}
       }
     }
 
+    
+    // ==========================================================================
+    // 💾📂 [삼국지 3] 5대 슬롯 저장 & 불러오기(Save & Load) 완벽 시스템
+    // ==========================================================================
+    let currentSelectedSaveSlot = 1;
+
+    function openSaveModal() {
+      closeAllPopups();
+      playSfx('select');
+      currentSelectedSaveSlot = 1;
+      renderSaveSlots();
+      updateSaveInputBox(1);
+      openModal('save-modal');
+    }
+
+    function renderSaveSlots() {
+      const container = document.getElementById('save-slots-container');
+      if (!container) return;
+
+      let slotsHtml = '';
+      for (let i = 1; i <= 5; i++) {
+        const raw = localStorage.getItem(`sam3_save_slot_${i}`);
+        let slotData = null;
+        if (raw) {
+          try { slotData = JSON.parse(raw); } catch (e) { slotData = null; }
+        }
+
+        const isSelected = (currentSelectedSaveSlot === i);
+        const borderStyle = isSelected ? 'border-2 border-yellow-400 bg-emerald-950/80 shadow-lg' : 'border border-slate-700 bg-slate-900/80 hover:border-slate-500';
+
+        if (slotData) {
+          slotsHtml += `
+            <div onclick="selectSaveSlot(${i})" class="p-3 rounded-lg flex items-center justify-between cursor-pointer transition ${borderStyle}">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded border-2 border-emerald-400 bg-emerald-900/90 flex items-center justify-center text-lg font-black text-yellow-300">
+                  ${i}
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-black text-yellow-300">${slotData.saveTitle || `슬롯 ${i} 세이브`}</span>
+                    <span class="text-[10px] bg-emerald-700 text-white px-1.5 py-0.2 rounded font-bold">보관됨</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 mt-0.5 flex items-center gap-2">
+                    <span>${slotData.gameState.year}년 ${slotData.gameState.month}월</span>
+                    <span>군주: <strong>${slotData.gameState.rulerName}</strong></span>
+                    <span>영지: <strong>${slotData.myProvsCount}개</strong></span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 mt-0.5">저장 일시: ${slotData.savedAt}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="event.stopPropagation(); deleteSaveSlot(${i})" class="text-slate-400 hover:text-red-400 text-xs px-2 py-1 border border-slate-600 rounded bg-slate-800">
+                  🗑️ 삭제
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          slotsHtml += `
+            <div onclick="selectSaveSlot(${i})" class="p-3 rounded-lg flex items-center justify-between cursor-pointer transition border border-dashed border-slate-700 bg-slate-900/40 hover:border-slate-500 ${isSelected ? 'border-2 border-yellow-400 bg-emerald-950/50' : ''}">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded border border-slate-600 bg-slate-800 flex items-center justify-center text-base font-bold text-slate-400">
+                  ${i}
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-slate-400">[빈 슬롯 ${i}] - 저장된 데이터가 없습니다</span>
+                  <span class="text-[11px] text-slate-500">클릭하여 이 슬롯에 저장할 수 있습니다</span>
+                </div>
+              </div>
+              <span class="text-xs text-slate-500">빈 슬롯</span>
+            </div>
+          `;
+        }
+      }
+
+      container.innerHTML = slotsHtml;
+    }
+
+    function selectSaveSlot(slotNum) {
+      currentSelectedSaveSlot = slotNum;
+      playSfx('select');
+      renderSaveSlots();
+      updateSaveInputBox(slotNum);
+    }
+
+    function updateSaveInputBox(slotNum) {
+      const label = document.getElementById('selected-save-slot-label');
+      const input = document.getElementById('save-title-input');
+      if (label) label.innerText = `슬롯 ${slotNum}`;
+
+      if (input) {
+        const raw = localStorage.getItem(`sam3_save_slot_${slotNum}`);
+        if (raw) {
+          try {
+            const data = JSON.parse(raw);
+            input.value = data.saveTitle || '';
+          } catch(e) { input.value = ''; }
+        } else {
+          const myProv = getMyCapital() || PROVINCES[7];
+          input.value = `${gameState.year}년 ${gameState.month}월 ${gameState.rulerName} (${myProv.name} 평정)`;
+        }
+      }
+    }
+
+    function confirmSaveSlot() {
+      const slotNum = currentSelectedSaveSlot;
+      const input = document.getElementById('save-title-input');
+      const title = (input && input.value.trim()) ? input.value.trim() : `${gameState.year}년 ${gameState.month}월 ${gameState.rulerName} 천하통일`;
+
+      const now = new Date();
+      const savedAt = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+
+      const myProvs = PROVINCES.filter(p => p.ruler === gameState.rulerName);
+
+      const saveData = {
+        slot: slotNum,
+        saveTitle: title,
+        savedAt: savedAt,
+        myProvsCount: myProvs.length,
+        gameState: JSON.parse(JSON.stringify(gameState)),
+        PROVINCES: JSON.parse(JSON.stringify(PROVINCES)),
+        MY_OFFICERS: JSON.parse(JSON.stringify(MY_OFFICERS)),
+        ENEMY_OFFICERS_BY_RULER: JSON.parse(JSON.stringify(ENEMY_OFFICERS_BY_RULER))
+      };
+
+      try {
+        localStorage.setItem(`sam3_save_slot_${slotNum}`, JSON.stringify(saveData));
+        playSound('fanfare');
+        logMessage(`💾 [세이브 완료] 슬롯 ${slotNum}에 게임 상태가 성공적으로 저장되었습니다! (${title})`, 'text-emerald-300 font-black');
+        renderSaveSlots();
+        alert(`💾 [게임 저장 완료!]\n\n★ 슬롯: ${slotNum}번\n★ 제목: ${title}\n★ 일시: ${savedAt}\n\n게임 데이터가 안전하게 브라우저 저장소에 보관되었습니다.`);
+      } catch (err) {
+        alert("⚠️ 저장 실패: 브라우저 용량 부족 또는 프라이빗 모드 제한입니다.");
+      }
+    }
+
+    function deleteSaveSlot(slotNum) {
+      if (confirm(`정말로 슬롯 ${slotNum}의 세이브 데이터를 삭제하시겠습니까?`)) {
+        localStorage.removeItem(`sam3_save_slot_${slotNum}`);
+        playSfx('select');
+        renderSaveSlots();
+        updateSaveInputBox(slotNum);
+      }
+    }
+
+    // ==========================================================================
+    // 📂 불러오기 (Load) 시스템
+    // ==========================================================================
+    function openLoadModal() {
+      closeAllPopups();
+      playSfx('select');
+      renderLoadSlots();
+      openModal('load-modal');
+    }
+
+    function renderLoadSlots() {
+      const container = document.getElementById('load-slots-container');
+      if (!container) return;
+
+      let slotsHtml = '';
+      for (let i = 1; i <= 5; i++) {
+        const raw = localStorage.getItem(`sam3_save_slot_${i}`);
+        let slotData = null;
+        if (raw) {
+          try { slotData = JSON.parse(raw); } catch (e) { slotData = null; }
+        }
+
+        if (slotData) {
+          slotsHtml += `
+            <div onclick="loadGameSlot(${i})" class="p-3 rounded-lg flex items-center justify-between cursor-pointer transition border border-cyan-700 bg-slate-900/90 hover:border-cyan-400 hover:bg-cyan-950/70 shadow">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded border-2 border-cyan-400 bg-cyan-950 flex items-center justify-center text-lg font-black text-yellow-300">
+                  ${i}
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-black text-cyan-200">${slotData.saveTitle || `슬롯 ${i} 세이브`}</span>
+                    <span class="text-[10px] bg-cyan-700 text-white px-1.5 py-0.2 rounded font-bold">불러오기 가능</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 mt-0.5 flex items-center gap-2">
+                    <span>${slotData.gameState.year}년 ${slotData.gameState.month}월</span>
+                    <span>군주: <strong>${slotData.gameState.rulerName}</strong></span>
+                    <span>영지: <strong>${slotData.myProvsCount}개</strong></span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 mt-0.5">저장 일시: ${slotData.savedAt}</div>
+                </div>
+              </div>
+              <button class="px-4 py-1.5 bg-gradient-to-r from-cyan-700 to-blue-700 hover:from-cyan-600 hover:to-blue-600 text-white font-black text-xs rounded border border-cyan-300 shadow">
+                📂 로드
+              </button>
+            </div>
+          `;
+        } else {
+          slotsHtml += `
+            <div class="p-3 rounded-lg flex items-center justify-between border border-dashed border-slate-800 bg-slate-900/30 opacity-60">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded border border-slate-700 bg-slate-800 flex items-center justify-center text-base font-bold text-slate-500">
+                  ${i}
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-slate-500">[빈 슬롯 ${i}]</span>
+                  <span class="text-[11px] text-slate-600">저장된 데이터 없음</span>
+                </div>
+              </div>
+              <span class="text-xs text-slate-600">불가</span>
+            </div>
+          `;
+        }
+      }
+
+      container.innerHTML = slotsHtml;
+    }
+
+    function loadGameSlot(slotNum) {
+      const raw = localStorage.getItem(`sam3_save_slot_${slotNum}`);
+      if (!raw) return;
+
+      try {
+        const data = JSON.parse(raw);
+        if (!confirm(`[슬롯 ${slotNum} 불러오기]
+
+★ 제목: ${data.saveTitle}
+★ 저장 일시: ${data.savedAt}
+
+이 게임 상태를 불러오시겠습니까? (현재 진행 중인 상태는 교체됩니다)`)) {
+          return;
+        }
+
+        // 데이터 복원
+        Object.assign(gameState, data.gameState);
+
+        // PROVINCES 복원
+        if (data.PROVINCES && Array.isArray(data.PROVINCES)) {
+          data.PROVINCES.forEach((p, idx) => {
+            if (PROVINCES[idx]) Object.assign(PROVINCES[idx], p);
+          });
+        }
+
+        // MY_OFFICERS 복원
+        if (data.MY_OFFICERS && Array.isArray(data.MY_OFFICERS)) {
+          MY_OFFICERS.length = 0;
+          data.MY_OFFICERS.forEach(o => MY_OFFICERS.push(o));
+        }
+
+        // ENEMY_OFFICERS_BY_RULER 복원
+        if (data.ENEMY_OFFICERS_BY_RULER) {
+          Object.assign(ENEMY_OFFICERS_BY_RULER, data.ENEMY_OFFICERS_BY_RULER);
+        }
+
+        closeModal('load-modal');
+        playSound('fanfare');
+
+        // 전 화면 리프레시
+        renderMapPins();
+        updateMainDisplay();
+        updateRightPanel(gameState.selectedProvId || 8);
+        updateActionPointUI();
+
+        logMessage(`📂 [로드 완료] 슬롯 ${slotNum} (${data.saveTitle}) 데이터를 성공적으로 불러왔습니다!`, 'text-cyan-300 font-black');
+        alert(`📂 [불러오기 완료!]
+
+★ ${data.saveTitle}
+★ 군주: ${gameState.rulerName} | ${gameState.year}년 ${gameState.month}월
+
+게임 데이터를 완벽하게 복원하였습니다!`);
+
+      } catch (err) {
+        alert("⚠️ 데이터를 불러오는 중 오류가 발생했습니다: " + err.message);
+      }
+    }
+
     function openOfficerDeployModal(targetProv, fromProv, isDefense = false) {
       closeAllPopups();
       openWarModal(targetProv ? targetProv.id : null);
@@ -4328,6 +4599,8 @@ ${promoMsg}
       selectedOfficerIds: []
     };
 
+    
+    // ==========================================================================
     function openOfficerDeployModal(targetProv, fromProv, isDefense = false) {
       closeAllPopups();
       playSfx('select');
