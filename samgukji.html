@@ -7,6 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
+    /* 모달 닫힘 상태 확실한 화면 차단 */
+    .hidden {
+      display: none !important;
+      pointer-events: none !important;
+    }
+
     @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&family=Nanum+Gothic+Coding:wght@700&display=swap');
 
     * { box-sizing: border-box; user-select: none; }
@@ -1307,490 +1313,7 @@
 
     </div>
   </div>
-"""
 
-save_modal_target = '  <!-- 5대 슬롯 정밀 저장 모달 -->'
-if save_modal_target in content:
-    content = content.replace(save_modal_target, multiplay_modal_html + '\n\n' + save_modal_target, 1)
-    print("Step 3: multiplay-modal HTML inserted successfully!")
-else:
-    print("Warning: save_modal_target not found!")
-
-# =========================================================================
-# 4. 멀티플레이어 JS 엔진 구현 (PeerJS P2P & Hotseat 로직)
-# =========================================================================
-multiplay_js_code = """
-    // ==========================================================================
-    // 🌐 천하 멀티플레이어 엔진 (PeerJS P2P 실시간 통신 & 로컬 핫시트)
-    // ==========================================================================
-    let peer = null;
-    let peerConnections = []; // 호스트가 연결된 게스트들
-    let hostConn = null; // 게스트가 연결된 호스트
-    let isP2PHost = false;
-    let myPeerId = null;
-    let currentRoomId = null;
-
-    let mpState = {
-      isOnline: false,
-      isHotseat: false,
-      myPlayerId: null,
-      myRuler: '유비',
-      isReady: false,
-      players: [], // { id, name, ruler, isHost, isReady }
-      hotseatRulers: [],
-      currentHotseatIdx: 0
-    };
-
-    function openMultiplayModal() {
-      closeAllPopups();
-      openModal('multiplay-modal');
-      switchMultiplayTab('online');
-
-      // URL에 ?room=SAM-XXXX 파라미터가 있으면 자동 방 참가창에 채워넣기
-      const urlParams = new URLSearchParams(window.location.search);
-      const roomParam = urlParams.get('room');
-      if (roomParam) {
-        document.getElementById('mp-join-room-id').value = roomParam.toUpperCase();
-      }
-    }
-
-    function switchMultiplayTab(tab) {
-      const tabOnline = document.getElementById('tab-mp-online');
-      const tabHotseat = document.getElementById('tab-mp-hotseat');
-      const contentOnline = document.getElementById('mp-online-content');
-      const contentHotseat = document.getElementById('mp-hotseat-content');
-
-      if (tab === 'online') {
-        tabOnline.className = "px-4 py-2 font-black text-xs sm:text-sm rounded-t bg-indigo-900 text-yellow-300 border-t-2 border-l-2 border-r-2 border-indigo-400";
-        tabHotseat.className = "px-4 py-2 font-bold text-xs sm:text-sm rounded-t bg-slate-800 text-slate-300 hover:text-white";
-        contentOnline.classList.remove('hidden');
-        contentHotseat.classList.add('hidden');
-      } else {
-        tabHotseat.className = "px-4 py-2 font-black text-xs sm:text-sm rounded-t bg-purple-900 text-yellow-300 border-t-2 border-l-2 border-r-2 border-purple-400";
-        tabOnline.className = "px-4 py-2 font-bold text-xs sm:text-sm rounded-t bg-slate-800 text-slate-300 hover:text-white";
-        contentHotseat.classList.remove('hidden');
-        contentOnline.classList.add('hidden');
-      }
-    }
-
-    // --------------------------------------------------------------------------
-    // 🌐 [1. PeerJS 온라인 방 개설 (호스트)]
-    // --------------------------------------------------------------------------
-    function createP2PRoom() {
-      if (typeof Peer === 'undefined') {
-        alert("PeerJS 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주십시오.");
-        return;
-      }
-
-      const randomCode = 'SAM3-' + Math.floor(1000 + Math.random() * 9000);
-      currentRoomId = randomCode;
-      isP2PHost = true;
-      mpState.isOnline = true;
-      mpState.myPlayerId = 'P1_HOST';
-      mpState.myRuler = gameState.rulerName || '유비';
-      mpState.isReady = true;
-
-      mpState.players = [{
-        id: mpState.myPlayerId,
-        name: '방장 (' + (gameState.rulerName || '유비') + ')',
-        ruler: mpState.myRuler,
-        isHost: true,
-        isReady: true
-      }];
-
-      peer = new Peer(currentRoomId);
-
-      peer.on('open', (id) => {
-        myPeerId = id;
-        document.getElementById('mp-lobby-entry').classList.add('hidden');
-        document.getElementById('mp-lobby-room').classList.remove('hidden');
-        document.getElementById('mp-display-room-code').innerText = id;
-        document.getElementById('mp-my-role-badge').innerText = "👑 방장";
-
-        renderLobbyPlayers();
-        logMessage(`🌐 [멀티 방 개설] 온라인 대기실 [${id}]이 개설되었습니다! 친구를 초대하십시오.`, 'text-indigo-300 font-black');
-        playSfx('fanfare');
-      });
-
-      peer.on('connection', (conn) => {
-        peerConnections.push(conn);
-
-        conn.on('data', (data) => {
-          handleHostReceivedData(conn, data);
-        });
-
-        conn.on('close', () => {
-          peerConnections = peerConnections.filter(c => c !== conn);
-          mpState.players = mpState.players.filter(p => p.conn !== conn);
-          broadcastLobbyState();
-          renderLobbyPlayers();
-        });
-      });
-
-      peer.on('error', (err) => {
-        console.error('Peer error:', err);
-        alert('방 개설 중 오류가 발생했습니다: ' + err.type);
-      });
-    }
-
-    // --------------------------------------------------------------------------
-    // 🌐 [2. PeerJS 온라인 방 참가 (게스트)]
-    // --------------------------------------------------------------------------
-    function joinP2PRoom() {
-      const inputEl = document.getElementById('mp-join-room-id');
-      const targetRoom = (inputEl.value || '').trim().toUpperCase();
-      if (!targetRoom) {
-        alert("참가할 방 코드를 입력하십시오.");
-        return;
-      }
-
-      if (typeof Peer === 'undefined') {
-        alert("PeerJS 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주십시오.");
-        return;
-      }
-
-      currentRoomId = targetRoom;
-      isP2PHost = false;
-      mpState.isOnline = true;
-      mpState.myPlayerId = 'GUEST_' + Math.floor(Math.random() * 10000);
-      mpState.myRuler = '조조'; // 게스트 기본 군주
-
-      peer = new Peer();
-
-      peer.on('open', (id) => {
-        myPeerId = id;
-        hostConn = peer.connect(targetRoom);
-
-        hostConn.on('open', () => {
-          document.getElementById('mp-lobby-entry').classList.add('hidden');
-          document.getElementById('mp-lobby-room').classList.remove('hidden');
-          document.getElementById('mp-display-room-code').innerText = targetRoom;
-          document.getElementById('mp-my-role-badge').innerText = "⚔️ 참가자";
-          document.getElementById('mp-my-role-badge').className = "text-[10px] px-1.5 py-0.5 rounded bg-amber-600 text-white font-bold";
-
-          // 방장에게 참가 정보 전송
-          hostConn.send({
-            type: 'JOIN_LOBBY',
-            playerId: mpState.myPlayerId,
-            ruler: mpState.myRuler
-          });
-
-          playSfx('build');
-        });
-
-        hostConn.on('data', (data) => {
-          handleGuestReceivedData(data);
-        });
-
-        hostConn.on('close', () => {
-          alert('방장과의 연결이 끊어졌습니다.');
-          leaveP2PRoom();
-        });
-      });
-
-      peer.on('error', (err) => {
-        alert('방에 접속할 수 없습니다. 방 코드를 확인해 주십시오: ' + targetRoom);
-      });
-    }
-
-    // 호스트의 데이터 처리
-    function handleHostReceivedData(conn, data) {
-      if (data.type === 'JOIN_LOBBY') {
-        const availableRulers = ['조조', '손책', '원소', '여포', '마등'];
-        const taken = mpState.players.map(p => p.ruler);
-        const assignedRuler = availableRulers.find(r => !taken.includes(r)) || '조조';
-
-        const newPlayer = {
-          id: data.playerId,
-          name: `참가자 (${assignedRuler})`,
-          ruler: assignedRuler,
-          isHost: false,
-          isReady: false,
-          conn: conn
-        };
-        mpState.players.push(newPlayer);
-
-        appendLobbyChat(`👑 [입장] 새로운 영걸 [${newPlayer.name}] 님이 방에 입장했습니다!`);
-        broadcastLobbyState();
-        renderLobbyPlayers();
-
-      } else if (data.type === 'SET_READY') {
-        const p = mpState.players.find(x => x.id === data.playerId);
-        if (p) p.isReady = data.isReady;
-        broadcastLobbyState();
-        renderLobbyPlayers();
-
-      } else if (data.type === 'CHAT_MSG') {
-        appendLobbyChat(data.sender + ": " + data.msg);
-        peerConnections.forEach(c => c.send(data));
-
-      } else if (data.type === 'SYNC_TURN_ACTION') {
-        // 인게임 턴 동기화 액션
-        applyRemoteAction(data);
-        peerConnections.forEach(c => {
-          if (c !== conn) c.send(data);
-        });
-      }
-    }
-
-    // 게스트의 데이터 처리
-    function handleGuestReceivedData(data) {
-      if (data.type === 'LOBBY_STATE') {
-        mpState.players = data.players;
-        renderLobbyPlayers();
-
-        // 내 군주 확인
-        const me = mpState.players.find(p => p.id === mpState.myPlayerId);
-        if (me) mpState.myRuler = me.ruler;
-
-      } else if (data.type === 'CHAT_MSG') {
-        appendLobbyChat(data.sender + ": " + data.msg);
-
-      } else if (data.type === 'START_GAME') {
-        // 호스트의 게임 시작 신호
-        closeModal('multiplay-modal');
-        logMessage(`🚀 [천하쟁패 개시!] 방장이 멀티플레이 대전을 시작했습니다!`, 'text-yellow-300 font-black text-sm');
-        playSfx('fanfare');
-
-        // 내 군주로 시점 전환
-        if (mpState.myRuler) {
-          const targetProv = PROVINCES.find(p => p.ruler === mpState.myRuler);
-          if (targetProv) {
-            gameState.rulerName = mpState.myRuler;
-            gameState.myCapitalId = targetProv.id;
-            gameState.selectedProvId = targetProv.id;
-            renderMapPins();
-            updateRightPanel(targetProv.id);
-          }
-        }
-
-      } else if (data.type === 'SYNC_TURN_ACTION') {
-        applyRemoteAction(data);
-      }
-    }
-
-    function broadcastLobbyState() {
-      const cleanPlayers = mpState.players.map(p => ({
-        id: p.id,
-        name: p.name,
-        ruler: p.ruler,
-        isHost: p.isHost,
-        isReady: p.isReady
-      }));
-
-      peerConnections.forEach(c => {
-        c.send({
-          type: 'LOBBY_STATE',
-          players: cleanPlayers
-        });
-      });
-    }
-
-    function renderLobbyPlayers() {
-      const container = document.getElementById('mp-players-grid');
-      if (!container) return;
-
-      container.innerHTML = mpState.players.map(p => {
-        const isMe = (p.id === mpState.myPlayerId);
-        return `
-          <div class="p-2.5 rounded border ${p.isReady ? 'bg-emerald-950/70 border-emerald-500' : 'bg-slate-800 border-slate-600'} flex items-center justify-between shadow">
-            <div class="flex items-center gap-2">
-              <span class="text-xl">${p.isHost ? '👑' : '⚔️'}</span>
-              <div class="flex flex-col text-left">
-                <span class="text-xs font-black text-white flex items-center gap-1">
-                  ${p.name} ${isMe ? '<span class="text-[9px] px-1 bg-blue-600 text-white rounded">나</span>' : ''}
-                </span>
-                <span class="text-[10px] text-yellow-300 font-bold">담당 군주: [${p.ruler}]</span>
-              </div>
-            </div>
-            <span class="text-[11px] font-black ${p.isReady ? 'text-emerald-300 animate-pulse' : 'text-slate-400'}">
-              ${p.isReady ? '준비 완료!' : '대기 중...'}
-            </span>
-          </div>
-        `;
-      }).join('');
-
-      // 호스트 전용: 모두 준비되면 게임 시작 버튼 노출
-      const btnStart = document.getElementById('btn-mp-start');
-      const allReady = mpState.players.every(p => p.isReady);
-      if (isP2PHost && btnStart) {
-        if (allReady && mpState.players.length >= 1) {
-          btnStart.classList.remove('hidden');
-        } else {
-          btnStart.classList.add('hidden');
-        }
-      }
-    }
-
-    function togglePlayerReady() {
-      mpState.isReady = !mpState.isReady;
-      const btn = document.getElementById('btn-mp-ready');
-      if (btn) {
-        btn.innerText = mpState.isReady ? "✅ 준비 완료 (해제)" : "⭐ 준비 완료 (Ready)";
-        btn.className = mpState.isReady ? "px-4 py-2 rounded bg-emerald-700 hover:bg-emerald-600 border border-emerald-300 text-white font-black text-xs shadow transition active:scale-95" : "px-4 py-2 rounded bg-amber-600 hover:bg-amber-500 border border-yellow-300 text-white font-black text-xs shadow transition active:scale-95";
-      }
-
-      if (isP2PHost) {
-        const me = mpState.players.find(p => p.id === mpState.myPlayerId);
-        if (me) me.isReady = mpState.isReady;
-        broadcastLobbyState();
-        renderLobbyPlayers();
-      } else if (hostConn) {
-        hostConn.send({
-          type: 'SET_READY',
-          playerId: mpState.myPlayerId,
-          isReady: mpState.isReady
-        });
-      }
-    }
-
-    function copyInviteLink() {
-      const inviteUrl = window.location.origin + window.location.pathname + '?room=' + currentRoomId;
-      navigator.clipboard.writeText(inviteUrl).then(() => {
-        alert(`🔗 [초대 링크 복사 완료!]\n\n카톡이나 메신저로 친구에게 링크를 전달하십시오:\n${inviteUrl}\n\n친구가 링크를 클릭하면 즉시 이 방으로 접속됩니다!`);
-      }).catch(() => {
-        prompt("아래 링크를 복사하여 친구에게 전달하십시오:", inviteUrl);
-      });
-    }
-
-    function sendLobbyChat() {
-      const input = document.getElementById('mp-chat-input');
-      const msg = (input.value || '').trim();
-      if (!msg) return;
-      input.value = '';
-
-      const senderName = isP2PHost ? '방장' : '참가자';
-      appendLobbyChat(`${senderName}: ${msg}`);
-
-      const chatData = {
-        type: 'CHAT_MSG',
-        sender: senderName,
-        msg: msg
-      };
-
-      if (isP2PHost) {
-        peerConnections.forEach(c => c.send(chatData));
-      } else if (hostConn) {
-        hostConn.send(chatData);
-      }
-    }
-
-    function appendLobbyChat(text) {
-      const box = document.getElementById('mp-chat-logs');
-      if (!box) return;
-      const div = document.createElement('div');
-      div.innerText = text;
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function startMultiplayOnlineGame() {
-      if (!isP2PHost) return;
-      peerConnections.forEach(c => {
-        c.send({ type: 'START_GAME' });
-      });
-
-      closeModal('multiplay-modal');
-      logMessage(`🚀 [천하쟁패 개시!] 온라인 멀티플레이 실시간 대전을 시작합니다!`, 'text-yellow-300 font-black text-sm');
-      playSfx('fanfare');
-    }
-
-    function leaveP2PRoom() {
-      if (peer) peer.destroy();
-      peer = null;
-      peerConnections = [];
-      hostConn = null;
-      mpState.isOnline = false;
-      document.getElementById('mp-lobby-entry').classList.remove('hidden');
-      document.getElementById('mp-lobby-room').classList.add('hidden');
-    }
-
-    // --------------------------------------------------------------------------
-    // 👥 [3. 한 기기 핫시트(Hotseat) 다인 대전 엔진]
-    // --------------------------------------------------------------------------
-    function startHotseatGame() {
-      const selectedRulers = [];
-      if (document.getElementById('hs-ruler-liubei').checked) selectedRulers.push('유비');
-      if (document.getElementById('hs-ruler-caocao').checked) selectedRulers.push('조조');
-      if (document.getElementById('hs-ruler-sunce').checked) selectedRulers.push('손책');
-      if (document.getElementById('hs-ruler-yuanshao').checked) selectedRulers.push('원소');
-
-      if (selectedRulers.length < 2) {
-        alert("핫시트 다인 대전을 진행하려면 최소 2명 이상의 군주를 선택해야 합니다!");
-        return;
-      }
-
-      mpState.isHotseat = true;
-      mpState.hotseatRulers = selectedRulers;
-      mpState.currentHotseatIdx = 0;
-
-      closeModal('multiplay-modal');
-
-      const firstRuler = selectedRulers[0];
-      changeRulerTo(firstRuler);
-
-      playSfx('fanfare');
-      alert(`👥 [핫시트 다인 대전 개시!]\n\n▶ 참가 군주: ${selectedRulers.join(', ')} (${selectedRulers.length}인 대전)\n\n첫 번째 순서인 [${firstRuler}] 군주님의 턴입니다!\n\n턴을 넘길 때마다 다음 플레이어에게 화면이 교대로 전환됩니다!`);
-      logMessage(`👥 [핫시트 대전 개시] ${selectedRulers.join(', ')} 군주 간의 천하쟁패가 시작되었습니다!`, 'text-purple-300 font-black text-sm');
-    }
-
-    function nextHotseatTurn() {
-      if (!mpState.isHotseat || mpState.hotseatRulers.length === 0) return;
-
-      mpState.currentHotseatIdx = (mpState.currentHotseatIdx + 1) % mpState.hotseatRulers.length;
-      const nextRuler = mpState.hotseatRulers[mpState.currentHotseatIdx];
-
-      changeRulerTo(nextRuler);
-      playSfx('fanfare');
-
-      alert(`👥 [차례 교대 - ${nextRuler} 군주님의 턴!]\n\n화면을 [${nextRuler}] 플레이어에게 넘겨주십시오!\n\n전략 행동력이 충전되었으며, 명령을 수행하십시오!`);
-      logMessage(`👑 [차례 교대] 이제부터 [${nextRuler}] 군주님의 지휘 차례입니다!`, 'text-yellow-300 font-black');
-    }
-
-    function changeRulerTo(rulerName) {
-      const prov = PROVINCES.find(p => p.ruler === rulerName);
-      if (!prov) return;
-
-      gameState.rulerName = rulerName;
-      gameState.myCapitalId = prov.id;
-      gameState.selectedProvId = prov.id;
-      gameState.actionPoints = getMaxActionPoints();
-
-      renderMapPins();
-      updateRightPanel(prov.id);
-      updateActionPointUI();
-    }
-
-    // 턴 넘김 시 핫시트 차례 교대 연결
-    const origExecuteRest = executeRest;
-    executeRest = function() {
-      origExecuteRest();
-      if (mpState.isHotseat) {
-        setTimeout(() => {
-          nextHotseatTurn();
-        }, 300);
-      }
-    };
-"""
-
-script_end_target = "    // ==========================================================================\n    // 전략 기믹 2: 일기토(一騎討) 일격필살 시스템"
-if script_end_target not in content:
-    # 대체 삽입 위치: 파일 맨 뒤의 </script> 바로 앞
-    idx_script_close = content.rfind("</script>")
-    if idx_script_close != -1:
-        content = content[:idx_script_close] + multiplay_js_code + '\n' + content[idx_script_close:]
-        print("Step 4: Multiplay JS Engine inserted before </script>!")
-    else:
-        print("Warning: </script> tag not found!")
-else:
-    content = content.replace(script_end_target, multiplay_js_code + '\n\n' + script_end_target, 1)
-    print("Step 4: Multiplay JS Engine inserted successfully!")
-
-# 파일 저장
-with open(filePath, 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print("SUCCESS: sam3_update.html successfully updated with Multiplay!")
 
   <!-- ==================== 5대 슬롯 게임 저장 모달 ==================== -->
   <div id="save-modal" class="fixed inset-0 modal-backdrop z-[9999999] hidden flex items-center justify-center p-3">
@@ -4119,11 +3642,22 @@ function executeRest() {
 
     function openModal(id) {
       const el = document.getElementById(id);
-      if (el) el.classList.remove('hidden');
+      if (el) {
+        el.classList.remove('hidden');
+        el.style.display = 'flex';
+      }
     }
     function closeModal(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('hidden');
+      try {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('hidden');
+          el.style.display = 'none';
+          el.style.pointerEvents = 'none';
+        }
+      } catch (err) {
+        console.error('Error closing modal:', err);
+      }
     }
 
     function bindKeyboardShortcuts() {
@@ -7785,6 +7319,1031 @@ ${reason}
       deselectUnit();
     });
   
+
+
+    // ==========================================================================
+    // ⚔️ 군사 메뉴 핸들러 완벽 연결
+    // ==========================================================================
+    function executeRecruit() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (!consumeActionPoint('모병')) return;
+      if (myProv.gold < 300) {
+        alert(`군자금이 부족합니다! (모병 비용: 금 300전 필요, 현재 보유: 금 ${myProv.gold}전)`);
+        refundActionPoint();
+        return;
+      }
+      myProv.gold -= 300;
+      const recruited = 1200 + Math.floor(Math.random() * 800);
+      myProv.soldiers = Math.min(80000, myProv.soldiers + recruited);
+      myProv.morale = Math.max(50, (myProv.morale || 70) - 5); // 신병 모집으로 일시 사기 소폭 감소
+      playSfx('recruit');
+      updateRightPanel(myProv.id);
+      logMessage(`⚔️ [모병 완료] 의용병 ${recruited.toLocaleString()}명을 모병하여 군세를 증강했습니다! (현재 병력: ${myProv.soldiers.toLocaleString()}명)`, 'text-yellow-300 font-bold');
+      alert(`⚔️ [모병 성공]
+
+군자금 300전을 들여 각지의 장정을 모병하였습니다!
+
+▶ 신규 모집 병력: +${recruited.toLocaleString()}명
+▶ 본거지 [${myCapitalName()}] 총 병력: ${myProv.soldiers.toLocaleString()}명`);
+    }
+
+    function executeConscription() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (!consumeActionPoint('징병')) return;
+      const drafted = 2500 + Math.floor(Math.random() * 1000);
+      myProv.soldiers = Math.min(80000, myProv.soldiers + drafted);
+      myProv.order = Math.max(30, (myProv.order || 80) - 10); // 징병으로 치안 소폭 감소
+      playSfx('recruit');
+      updateRightPanel(myProv.id);
+      logMessage(`⚔️ [징병 실시] 영지 전역에서 장정 ${drafted.toLocaleString()}명을 강제 징병했습니다! (치안 -10)`, 'text-amber-400 font-bold');
+      alert(`⚔️ [징병 완수]
+
+영지 내 장정들을 신속히 징발하였습니다!
+
+▶ 징집 병력: +${drafted.toLocaleString()}명
+▶ 본거지 총 병력: ${myProv.soldiers.toLocaleString()}명
+⚠️ 백성들의 원성으로 치안이 다소 하락했습니다.`);
+    }
+
+    function executeShipBuilding() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (!consumeActionPoint('선박건조')) return;
+      if (myProv.gold < 500) {
+        alert("선박 건조를 위한 군비(금 500전)가 부족합니다.");
+        refundActionPoint();
+        return;
+      }
+      myProv.gold -= 500;
+      myProv.ships = (myProv.ships || 10) + 5;
+      playSfx('build');
+      updateRightPanel(myProv.id);
+      logMessage(`⛵ [선박 건조] 대형 누선 5척을 건조하여 수군 전력을 대폭 증강했습니다! (총 선박: ${myProv.ships}척)`, 'text-cyan-300 font-bold');
+      alert(`⛵ [선박 건조 완수]
+
+장강을 건널 대형 전투 누선 5척을 성공적으로 건조하였습니다!
+
+▶ 보유 전투함선: ${myProv.ships}척
+▶ 수상 전장에서 방어력과 기동력이 강화됩니다!`);
+    }
+
+    function openMoveModal() {
+      closeAllPopups();
+      alert("🐎 [군사 이동]\n\n아군 영지 간에 장수와 병력을 이동시킵니다. 지도에서 이동할 본거지 영지를 선택하십시오.");
+    }
+
+    function openTransportModal() {
+      closeAllPopups();
+      alert("🌾 [군량/군자금 수송]\n\n안전한 후방 영지에서 최전방 영지로 금과 군량을 안전하게 수송합니다.");
+    }
+
+    function myCapitalName() {
+      const p = getMyCapital();
+      return p ? p.name : '형주';
+    }
+
+
+
+    // ==================== 🚀 복원된 핵심 커맨드 및 조작 시스템 ====================
+
+    // --- battleActionAttack ---
+function battleActionAttack() {
+      if (!battleData.targetProv) return;
+      playTone(220, 0.2, 'sawtooth', 0.25);
+      battleData.turn++;
+      document.getElementById('battle-turn-count').innerText = `턴: ${battleData.turn} / 10`;
+
+      const myDamage = Math.floor(Math.random() * 25) + 15;
+      battleData.enemyPower = Math.max(0, battleData.enemyPower - myDamage);
+      battleData.enemySoldiers = Math.floor(battleData.targetProv.soldiers * (battleData.enemyPower / 100));
+
+      const enemyDmg = (gameState.difficulty === 'hard') ? Math.floor(Math.random() * 24) + 14 : Math.floor(Math.random() * 18) + 10;
+      battleData.myPower = Math.max(0, battleData.myPower - enemyDmg);
+      const myProv = getMyCapital();
+      battleData.mySoldiers = Math.floor(myProv.soldiers * (battleData.myPower / 100));
+
+      if (Math.random() < 0.35) {
+        battleData.storageHp = Math.max(10, battleData.storageHp - 10);
+        document.getElementById('battle-storage-pct').innerText = `${battleData.storageHp}%`;
+        document.getElementById('battle-storage-bar').style.width = `${battleData.storageHp}%`;
+      }
+
+      document.getElementById('battle-enemy-power-pct').innerText = `${battleData.enemyPower}%`;
+      document.getElementById('battle-enemy-bar').style.width = `${battleData.enemyPower}%`;
+      document.getElementById('battle-enemy-soldiers-txt').innerText = battleData.enemySoldiers.toLocaleString();
+
+      document.getElementById('battle-my-power-pct').innerText = `${battleData.myPower}%`;
+      document.getElementById('battle-my-bar').style.width = `${battleData.myPower}%`;
+      document.getElementById('battle-my-soldiers-txt').innerText = battleData.mySoldiers.toLocaleString();
+
+      logBattleMsg(`⚔️ 아군 총공격! 적군에게 ${myDamage}% 타격 입힘 (적 병력 잔여: ${battleData.enemySoldiers.toLocaleString()})`, 'text-yellow-300');
+
+      if (battleData.enemyPower <= 0) {
+        endBattleVictory();
+      } else if (battleData.myPower <= 0) {
+        endBattleDefeat();
+      }
+    }
+
+    // --- battleActionRaidStorage ---
+function battleActionRaidStorage() {
+      playTone(330, 0.2, 'sawtooth', 0.2);
+      logBattleMsg(`🌾 적의 군량 수송대를 기습하여 적군 사기를 꺾었습니다!`, 'text-emerald-300 font-bold');
+      battleData.enemyPower = Math.max(0, battleData.enemyPower - 20);
+      document.getElementById('battle-enemy-power-pct').innerText = `${battleData.enemyPower}%`;
+      document.getElementById('battle-enemy-bar').style.width = `${battleData.enemyPower}%`;
+      if (battleData.enemyPower <= 0) endBattleVictory();
+    }
+
+    // --- battleActionTrap ---
+function battleActionTrap() {
+      playTone(440, 0.25, 'triangle', 0.2);
+      const success = Math.random() < 0.75;
+      if (success) {
+        const dmg = Math.floor(Math.random() * 30) + 20;
+        battleData.enemyPower = Math.max(0, battleData.enemyPower - dmg);
+        document.getElementById('battle-enemy-power-pct').innerText = `${battleData.enemyPower}%`;
+        document.getElementById('battle-enemy-bar').style.width = `${battleData.enemyPower}%`;
+        logBattleMsg(`🔮 제갈량의 복병 함정 성공! 적군이 대혼란에 빠져 ${dmg}% 궤멸!`, 'text-cyan-300 font-bold');
+        if (battleData.enemyPower <= 0) endBattleVictory();
+      } else {
+        logBattleMsg(`⚠️ 적군이 매복을 간파하고 우회하였습니다!`, 'text-orange-400');
+      }
+    }
+
+    // --- battleStartOfficerDuel ---
+function battleStartOfficerDuel() {
+      if (!battleData.targetProv) return;
+      // 일기토 모달에서 해당 적 영지 적장과 맞붙도록 설정
+      openDuelSelectModal();
+      const provSelect = document.getElementById('duel-enemy-prov-select');
+      if (provSelect) {
+        provSelect.value = battleData.targetProv.id;
+        updateEnemyOfficersList();
+      }
+    }
+
+    // --- clearLogs ---
+function clearLogs() { document.getElementById('game-logs').innerHTML = ''; }
+
+    // --- confirmTrade ---
+function confirmTrade() {
+      closeModal('merchant-modal');
+      logMessage("🤝 [상인 거래] 낙양 거상과의 거래가 성사되었습니다.", 'text-yellow-300 font-bold');
+    }
+
+    // --- duelAction ---
+function duelAction(type) {
+      if (!duelState.inDuel) return;
+      const my = duelState.myOfficer;
+      const enemy = duelState.enemyOfficer;
+
+      duelState.round++;
+      document.getElementById('duel-round-badge').innerText = `제 ${duelState.round} 합`;
+
+      const enemyWar = (gameState.difficulty === 'hard') ? enemy.war + 10 : enemy.war;
+      const enemyInt = (gameState.difficulty === 'hard') ? enemy.int + 8 : enemy.int;
+
+      const enemyActions = ['attack', 'heavy', 'defend'];
+      if (enemyInt >= 70) enemyActions.push('tactic');
+      const enemyChoice = enemyActions[Math.floor(Math.random() * enemyActions.length)];
+
+      let myDmg = 0;
+      let enemyDmg = 0;
+
+      // 1. 플레이어 행동 판정
+      if (type === 'quick') {
+        playTone(480, 0.12, 'sawtooth', 0.2);
+        const hit = Math.random() < 0.90;
+        if (hit) {
+          myDmg = Math.floor((my.war * 0.22) + Math.random() * 10);
+          logDuel(`⚔️ [쾌속 공격] ${my.name}의 정교한 공격 적중! (${enemy.name}에게 ${myDmg} 피해)`, 'text-yellow-300 font-bold');
+        } else {
+          logDuel(`💨 ${my.name}의 공격을 ${enemy.name}이 쳐냈습니다!`, 'text-slate-400');
+        }
+      } else if (type === 'smash') {
+        playTone(320, 0.25, 'sawtooth', 0.3);
+        const hit = Math.random() < 0.65;
+        if (hit) {
+          myDmg = Math.floor((my.war * 0.45) + Math.random() * 15);
+          logDuel(`⚡ [필살 일격 작렬!] ${my.name}의 혼신의 일격이 적장의 갑주를 쪼갰습니다!! (${enemy.name}에게 ${myDmg} 치명타!)`, 'text-red-400 font-black animate-pulse');
+        } else {
+          logDuel(`💨 [필살 실패] ${my.name}의 큰 기술이 빗나가며 틈을 보였습니다!`, 'text-orange-400');
+        }
+      } else if (type === 'defend') {
+        playTone(600, 0.1, 'sine', 0.15);
+        logDuel(`🛡️ [철벽 방어] ${my.name}이 방패와 칼날로 방어 태세를 굳혔습니다!`, 'text-cyan-300 font-bold');
+      } else if (type === 'tactic') {
+        playTone(720, 0.15, 'triangle', 0.2);
+        const diff = my.int - enemyInt;
+        const success = Math.random() * 100 < (50 + diff);
+        if (success) {
+          duelState.enemyConfused = true;
+          myDmg = 22;
+          logDuel(`🧠 [심리 도발 성공!] ${my.name}의 호통에 ${enemy.name}이 혼란에 빠졌습니다! (혼란 피해 22)`, 'text-purple-300 font-black');
+        } else {
+          logDuel(`🗣️ 도발 실패! ${enemy.name}이 냉소를 머금고 반격합니다.`, 'text-slate-400');
+        }
+      } else if (type === 'flee') {
+        duelState.inDuel = false;
+        logDuel(`🐎 [퇴각] ${my.name}이 말머리를 돌려 본진으로 무사히 철수했습니다.`, 'text-slate-300 font-bold');
+        logMessage(`🐎 [일기토 퇴각] ${my.name}이 부상을 입지 않고 무사히 귀환했습니다.`, 'text-slate-300');
+        setTimeout(() => closeModal('duel-modal'), 1200);
+        return;
+      }
+
+      // 2. 적 장수 행동 판정
+      if (duelState.enemyConfused) {
+        logDuel(`😵 [적 혼란] ${enemy.name}은 정신이 혼미하여 행동하지 못했습니다!`, 'text-purple-400');
+        duelState.enemyConfused = false;
+      } else {
+        if (enemyChoice === 'heavy') {
+          if (type === 'defend') {
+            const counter = 18;
+            myDmg += counter;
+            logDuel(`🛡️⚡ [완벽한 방어 & 반격!] ${my.name}이 적장의 강타를 튕겨내며 ${counter}의 반격 피해를 입혔습니다!`, 'text-emerald-300 font-black');
+          } else {
+            enemyDmg = Math.floor((enemyWar * 0.38) + Math.random() * 12);
+            logDuel(`💥 [적장의 맹공!] ${enemy.name}의 묵직한 칼날이 들이닥쳤습니다! (${my.name}에게 ${enemyDmg} 피해)`, 'text-red-400 font-bold');
+          }
+        } else if (enemyChoice === 'attack') {
+          if (type === 'defend') {
+            enemyDmg = Math.floor(((enemyWar * 0.22) + Math.random() * 5) * 0.3);
+            logDuel(`🛡️ [피해 경감] 적의 공격을 방패로 막아내어 피해를 ${enemyDmg}로 최소화했습니다.`, 'text-cyan-300');
+          } else {
+            enemyDmg = Math.floor((enemyWar * 0.22) + Math.random() * 8);
+            logDuel(`⚔️ ${enemy.name}의 검격! (${my.name}에게 ${enemyDmg} 피해)`, 'text-slate-300');
+          }
+        } else if (enemyChoice === 'defend') {
+          logDuel(`🛡️ ${enemy.name}이 뒤로 물러나며 방어 태세를 취했습니다.`, 'text-slate-400');
+          myDmg = Math.floor(myDmg * 0.5);
+        } else {
+          logDuel(`🗣️ ${enemy.name}: '네놈의 목숨줄도 오늘이 끝이다!'`, 'text-red-300');
+        }
+      }
+
+      duelState.enemyHp = Math.max(0, duelState.enemyHp - myDmg);
+      duelState.myHp = Math.max(0, duelState.myHp - enemyDmg);
+
+      document.getElementById('duel-enemy-hp-txt').innerText = `${duelState.enemyHp} / 100`;
+      document.getElementById('duel-enemy-hp-bar').style.width = `${duelState.enemyHp}%`;
+      document.getElementById('duel-my-hp-txt').innerText = `${duelState.myHp} / 100`;
+      document.getElementById('duel-my-hp-bar').style.width = `${duelState.myHp}%`;
+
+      if (duelState.enemyHp <= 0) {
+        duelState.inDuel = false;
+        playSfx('victory');
+        logDuel(`🎉🏆 [일기토 완전 승리!] ${my.name}이 ${enemy.name}을 말 아래로 낙마시키고 생포했습니다!!`, 'text-yellow-300 font-extrabold text-sm');
+        logMessage(`👑 [일기토 대승] ${my.name}이 적장 ${enemy.name}과의 결투에서 대승을 거두었습니다! (금 500전 노획)`, 'text-yellow-300 font-black');
+
+        if (pendingInvasion) {
+          const inv = pendingInvasion;
+          pendingInvasion = null;
+          const myProv = inv.targetProv;
+          myProv.gold += 800;
+          myProv.food += 5000;
+          logMessage(`🎉🛡️ [침공군 완전 격퇴!] ${my.name} 장군이 쳐들어온 ${inv.attackerRuler}군의 선봉장 ${enemy.name}을 베어 적군 ${inv.invasionForce.toLocaleString()}명이 사기를 잃고 패주했습니다! (노획: 금 800전, 군량 5,000석)`, 'text-emerald-300 font-black');
+          alert(`🎉🛡️ [수성 요격 대승!]
+
+${my.name} 장군이 ${inv.attackerRuler}군의 선봉장 ${enemy.name}을 1:1 결투로 베었습니다!
+지휘관을 잃은 적군 ${inv.invasionForce.toLocaleString()}명이 전의를 상실하고 패주하였습니다!
+
+전리품: 금 800전, 군량 5,000석 노획!`);
+          updateRightPanel(myProv.id);
+        } else if (battleData.targetProv) {
+          logMessage(`🚩 [영지 점령] 적장이 일기토에서 격파되어 적군이 총붕괴했습니다! ${battleData.targetProv.name}을 점령했습니다!`, 'text-yellow-300 font-black');
+          alert(`🎉🏆 [일기토 대승리!]\n${my.name}이 적장 ${enemy.name}을 베어 적군이 총붕괴하고 패주했습니다!\n${battleData.targetProv.name}을 완전히 점령하여 아군 영지로 편입했습니다!`);
+          endBattleVictory();
+        } else {
+          const myProv = getMyCapital();
+          myProv.gold += 500;
+          updateRightPanel(myProv.id);
+          alert(`🎉 [일기토 승리] ${my.name}이 적장 ${enemy.name}을 격파했습니다!
+적군의 사기가 곤두박질치고 군자금 500전을 전리품으로 획득했습니다!
+(다음 장수를 골라 또 대결할 수 있습니다)`);
+        }
+        setTimeout(() => closeModal('duel-modal'), 1800);
+      } else if (duelState.myHp <= 0) {
+        duelState.inDuel = false;
+        my.fatigue = 85; // 패배 장수 극심한 탈진
+        logDuel(`💀 [패배] ${my.name}이 부상을 입고 휘하 장졸들의 호위를 받으며 긴급 철수했습니다!`, 'text-red-500 font-black');
+        logMessage(`⚠️ [일기토 패배] ${my.name}이 결투 중 부상을 입고 후퇴했습니다. (탈진: 피로도 85%)`, 'text-red-400');
+        
+        if (pendingInvasion) {
+          const inv = pendingInvasion;
+          pendingInvasion = null;
+          const target = inv.targetProv;
+          const loss = Math.floor(target.soldiers * 0.25);
+          target.soldiers = Math.max(500, target.soldiers - loss);
+          target.defense = Math.max(10, target.defense - 10);
+          logMessage(`⚠️ [방어선 돌파] ${my.name} 장군이 패배하여 ${inv.attackerRuler}군이 ${target.name}으로 난입했습니다! (병사 ${loss.toLocaleString()}명 손실)`, 'text-red-400 font-black');
+          alert(`⚠️ [방어선 돌파!]
+${my.name} 장군이 부상을 입고 후퇴하면서 ${inv.attackerRuler}군에게 수성 피해를 입었습니다!`);
+          updateRightPanel(target.id);
+        } else {
+          alert(`⚠️ ${my.name}이 부상을 입고 후퇴했습니다! 다른 장수를 골라 재도전하십시오.`);
+        }
+        setTimeout(() => closeModal('duel-modal'), 1800);
+      }
+    }
+
+    // --- executeAlliance ---
+function executeAlliance() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      const nonAllies = PROVINCES.filter(p => p.ruler !== gameState.rulerName && !gameState.allies.includes(p.ruler));
+      if (nonAllies.length === 0) {
+        alert('이미 천하의 모든 군벌과 동맹 관계이거나 적이 없습니다.');
+        return;
+      }
+      const target = nonAllies[0];
+      if (myProv.gold < 300) {
+        alert('외교 동맹 예물로 금 300전이 필요합니다.');
+        return;
+      }
+      myProv.gold -= 300;
+      gameState.allies.push(target.ruler);
+      playSfx('victory');
+      logMessage(`🤝 [동맹 체결 성공] ${target.ruler}군과 피의 맹약을 맺었습니다! (전쟁 시 연합군 지원)`, 'text-cyan-300 font-extrabold');
+      alert(`🤝 [동맹 체결]\n${target.ruler}과의 동맹이 성사되었습니다!\n이제 전장에 청색으로 표시되며 전쟁 시 연합군이 가세합니다.`);
+      renderMapPins();
+      updateRightPanel(myProv.id);
+    }
+
+    // --- executeAppoint ---
+function executeAppoint() { closeAllPopups(); alert(`📜 [임명] 영지의 태수 및 군사를 재배치 임명합니다.`); }
+
+    // --- executeBreakAlliance ---
+function executeBreakAlliance() { closeAllPopups(); gameState.allies = []; alert('모든 군벌과의 동맹을 파기했습니다.'); renderMapPins(); }
+
+    // --- executeCommerceDev ---
+function executeCommerceDev() {
+      closeAllPopups();
+      const p = getMyCapital();
+      if (p.gold < 120) { alert('상업 투자금 120전이 필요합니다.'); return; }
+      p.gold -= 120; p.pop += 4000;
+      playSfx('build');
+      logMessage(`💰 [상업 투자] 저잣거리를 번영시켜 인구 4,000명 유입!`, 'text-yellow-300 font-bold');
+      updateRightPanel(p.id);
+    }
+
+    // --- executeConfiscate ---
+function executeConfiscate() { closeAllPopups(); alert(`⚠️ [몰수] 장수가 소지한 보물이나 관직을 회수합니다.`); }
+
+    // --- executeDelegate ---
+function executeDelegate() { closeAllPopups(); alert(`📜 [위임] 태수에게 영지 내정 및 방어를 전권 위임합니다.`); }
+
+    // --- executeDirectOrder ---
+function executeDirectOrder() { closeAllPopups(); alert(`📜 [명령] 각 장수에게 개별 특별 임무를 하달합니다.`); }
+
+    // --- executeEmergencyTax ---
+function executeEmergencyTax() {
+      closeAllPopups();
+      openTaxRateModal();
+    }
+
+    // --- executeFireOfficer ---
+function executeFireOfficer() { closeAllPopups(); alert(`⚠️ [해고] 장수를 관직에서 면직시킵니다.`); }
+
+    // --- executeFloodControl ---
+function executeFloodControl() {
+      closeAllPopups();
+      const p = getMyCapital();
+      if (p.gold < 150) { alert('치수 자금 150전이 필요합니다.'); return; }
+      p.gold -= 150; p.defense = Math.min(100, p.defense + 10);
+      playSfx('build');
+      logMessage(`🌊 [치수 완료] 제방을 정비하여 성벽 방어력 +10 상승!`, 'text-cyan-300 font-bold');
+      updateRightPanel(p.id);
+    }
+
+    // --- executeHeal ---
+function executeHeal() {
+      closeAllPopups();
+      MY_OFFICERS.forEach(o => {
+        o.hp = 100;
+        o.fatigue = 0;
+      });
+      playSound('fanfare');
+      logMessage("💊 [명의 화타 치료] 아군 전 장수의 부상과 피로도가 100% 완치되었습니다!", 'text-emerald-300 font-black');
+      alert(`💊 [화타 명의 진료 완료!]\n\n아군 전 장수의 체력 100% 회복 및 피로도 0% 완치!`);
+    }
+
+    // --- executeHireOfficer ---
+function executeHireOfficer() {
+      closeAllPopups();
+      alert(`📜 [장수 등용] 영지 내 미관료 인재 또는 포로로 잡힌 적장을 등용합니다. (전쟁 승리 시 포로 등용 모달 지원)`);
+    }
+
+    // --- executeJointOperation ---
+function executeJointOperation() { closeAllPopups(); alert('동맹군과 함께 협공할 목표 주를 지정하여 침공할 수 있습니다.'); }
+
+    // --- executeLandDev ---
+function executeLandDev() {
+      closeAllPopups();
+      const p = getMyCapital();
+      if (p.gold < 100) { alert('개발 자금 100전이 필요합니다.'); return; }
+      p.gold -= 100; p.food += 2500; p.loyalty = Math.min(100, p.loyalty + 3);
+      playSfx('build');
+      logMessage(`🌾 [개간 완료] ${p.name}의 농토를 확장하여 군량 2,500석 증가 (민심 +3)`, 'text-emerald-300 font-bold');
+      updateRightPanel(p.id);
+    }
+
+    // --- executeRelief ---
+function executeRelief() {
+      if (!consumeActionPoint('주민 구휼')) return;
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (myProv.food < 1000) {
+        alert(`⚠️ 구휼을 위한 군량이 부족합니다! (군량 1,000석 필요)`);
+        return;
+      }
+      myProv.food -= 1000;
+      myProv.loyalty = Math.min(100, myProv.loyalty + 10);
+      myProv.pop = Math.min(800000, myProv.pop + 2500);
+      playSfx('build');
+      
+      logMessage(`🌾 [주민 구휼] 곡식 1,000석을 백성들에게 무상 급여하여 민충이 ${myProv.loyalty}/100으로 상승했습니다! (인구 +2,500명)`, 'text-cyan-200 font-bold');
+
+      // 민충 100 도달 시 즉시 지원병 8,000명 집결 체크!
+      checkMaxLoyaltyVolunteers(myProv);
+
+      updateRightPanel(myProv.id);
+      
+      if (myProv.loyalty < 100) {
+        alert(`🌾 [선정 및 주민 구휼]\n\n군량 1,000석을 굶주린 백성들에게 풀어 민심을 크게 얻었습니다!\n- 현재 영지 민충: ${myProv.loyalty} / 100 (+10 상승)\n- 피난민 유입 (인구 +2,500명)\n\n💡 민충 100 달성 시: 정예 의용 지원병 8,000명이 대거 자원입대합니다!`);
+      }
+    }
+
+    // --- executeSearchOfficer ---
+function executeSearchOfficer() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      playSfx('select');
+      const foundNames = ['방통 (봉추)', '서서 (원직)', '마량 (백미)', '간옹 (헌화)', '미축 (자중)'];
+      const picked = foundNames[Math.floor(Math.random() * foundNames.length)];
+      logMessage(`🔍 [장수 수색] ${myProv.name} 일대에서 재야의 현사 '${picked}'을(를) 탐문 발견했습니다!`, 'text-yellow-300 font-bold');
+      alert(`🔍 [인재 탐문!]\n\n${myProv.name}의 산야에서 은거 중이던 현사 [${picked}]을(를) 찾아내었습니다!\n군주의 덕망에 이끌려 조만간 출사를 약속했습니다.`);
+    }
+
+    // --- executeStratagem ---
+function executeStratagem(type) {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (myProv.gold < 150) {
+        alert('계략을 실행하려면 군자금 150전이 필요합니다.');
+        return;
+      }
+      playSfx('war');
+      myProv.gold -= 150;
+      updateRightPanel(myProv.id);
+
+      const stratNames = ['', '매복의 독', '적중작적', '위서의심', '이호경식', '구호탄랑'];
+      const targetProv = PROVINCES.find(p => p.ruler !== gameState.rulerName && p.ruler !== '미점령') || PROVINCES[3];
+
+      const successRate = (gameState.difficulty === 'hard') ? 0.55 : 0.70;
+      const success = Math.random() < successRate;
+      if (success) {
+        targetProv.loyalty = Math.max(20, targetProv.loyalty - 18);
+        targetProv.defense = Math.max(20, targetProv.defense - 12);
+        logMessage(`🔮 [계략 성공: ${stratNames[type]}] ${targetProv.name} (${targetProv.ruler})에 계략이 적중하여 민심(-18)과 방어력(-12)을 크게 와해시켰습니다!`, 'text-purple-300 font-bold');
+        alert(`🔮 [${stratNames[type]} 성공!]\n${targetProv.name}의 적 진영에 내분이 일어나 수비 태세가 크게 무너졌습니다!`);
+      } else {
+        logMessage(`⚠️ [계략 간파] ${targetProv.name}의 적 군사가 계략을 사전에 간파하여 실패했습니다.`, 'text-orange-400');
+        alert(`⚠️ 적 군사가 계략을 간파하여 무위로 돌아갔습니다.`);
+      }
+      updateRightPanel(targetProv.id);
+    }
+
+    // --- executeTraining ---
+function executeTraining() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (myProv.gold < 100) { alert('군사 훈련을 위한 군비(금 100전)가 부족합니다.'); return; }
+      myProv.gold -= 100;
+      myProv.soldiers = Math.min(50000, myProv.soldiers + 200);
+      playSfx('build');
+      
+      // 🔥 병사 경험치 대량 획득 및 레벨업 체크!
+      addTroopExp(180);
+      
+      logMessage(`⚔️ [군사 훈련] 아군 전 부대가 강도 높은 훈련을 실시했습니다! (병사 경험치 +180 EXP)`, 'text-cyan-300 font-bold');
+      updateRightPanel(myProv.id);
+    }
+
+    // --- executeTreasureSearch ---
+function executeTreasureSearch() {
+      closeAllPopups();
+      if (!consumeActionPoint('보물 수색')) return;
+      const myProv = getMyCapital();
+      const roll = Math.random();
+      if (roll < 0.6) {
+        playSound('fanfare');
+        logMessage(`🏆✨ [보물 발견!] ${myProv.name} 고분에서 고대 보검을 발굴했습니다! (국고 금 +300전)`, 'text-yellow-300 font-black');
+        myProv.gold += 300;
+        updateRightPanel(myProv.id);
+      } else {
+        logMessage(`🔍 [수색 완료] ${myProv.name} 명산대천을 수색하였으나 특이사항이 없습니다.`, 'text-slate-300 font-bold');
+      }
+    }
+
+    // --- executeWander ---
+function executeWander() {
+      closeAllPopups();
+      alert(`🚩 [방랑군 거병]\n\n현재 유비군은 웅대한 본거지를 거느린 정규 군벌이므로 방랑할 필요가 없습니다. 천하통일에 매진하십시오!`);
+    }
+
+    // --- handleInvasionDefend ---
+function handleInvasionDefend() {
+      closeModal('invasion-alert-modal');
+      if (!pendingInvasion) return;
+      const { attackerRuler, fromProv, targetProv, invasionForce } = pendingInvasion;
+      openOfficerDeployModal(targetProv, fromProv, true);
+    }
+
+    // --- handleInvasionDuel ---
+function handleInvasionDuel() {
+      closeModal('invasion-alert-modal');
+      if (!pendingInvasion) return;
+      const { attackerRuler, fromProv, targetProv } = pendingInvasion;
+      openDuelSelectModal(fromProv ? fromProv.id : null, attackerRuler);
+      logMessage(`⚔️ [장수 출진 요격] 침공해온 ${attackerRuler}군 지휘부를 1:1로 격파하기 위해 결투를 개시합니다!`, 'text-yellow-300 font-bold');
+    }
+
+    // --- handleInvasionHexBattle ---
+function handleInvasionHexBattle() {
+      closeModal('invasion-alert-modal');
+      if (!pendingInvasion) return;
+      const { attackerRuler, targetProv, fromProv } = pendingInvasion;
+      openOfficerDeployModal(targetProv, fromProv, true);
+      logMessage(`🚩 [10턴 헥스 요격] 침공해온 ${attackerRuler}군에 맞서 출전 장수를 편성합니다!`, 'text-yellow-300 font-black');
+    }
+
+    // --- openDuelSelectModal ---
+function openDuelSelectModal(targetProvId = null, specificRuler = null) {
+      closeAllPopups();
+      const myContainer = document.getElementById('duel-my-officer-list');
+      myContainer.innerHTML = '';
+
+      // 피로도 반영 렌더링
+      MY_OFFICERS.forEach((off, idx) => {
+        if (off.fatigue === undefined) off.fatigue = 0;
+        const isExhausted = (off.fatigue >= 70);
+        const isSelected = (idx === selectedMyOfficerIdx);
+        const item = document.createElement('div');
+        item.className = `p-2 rounded border text-xs flex flex-col justify-between transition ${
+          isExhausted
+            ? 'bg-slate-900 border-red-900/60 opacity-50 cursor-not-allowed'
+            : (isSelected ? 'bg-amber-900 border-yellow-300 ring-2 ring-yellow-400 cursor-pointer' : 'bg-blue-900/60 border-blue-600 hover:bg-blue-800 cursor-pointer')
+        }`;
+        
+        let fatigueBadge = `<span class="text-[10px] ${off.fatigue >= 70 ? 'text-red-400 font-black' : (off.fatigue >= 35 ? 'text-amber-300' : 'text-emerald-300')}">피로 ${off.fatigue}%</span>`;
+        if (isExhausted) fatigueBadge += ` <span class="text-[9px] text-red-500 font-bold">[탈진]</span>`;
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between font-bold text-white">
+            <span class="flex items-center gap-1">${off.icon} ${off.name}</span>
+            ${fatigueBadge}
+          </div>
+          <div class="text-[11px] text-yellow-300 mt-1">무력: <strong>${off.war}</strong> | 지력: ${off.int}</div>
+          <div class="text-[10px] text-slate-300">${off.title}</div>
+        `;
+        if (!isExhausted) {
+          item.onclick = () => {
+            selectedMyOfficerIdx = idx;
+            openDuelSelectModal(targetProvId, specificRuler);
+          };
+        } else {
+          item.onclick = () => {
+            alert(`⚠️ [출전 불가] ${off.name}은(는) 피로도(${off.fatigue}%)가 너무 높아 1:1 결투에 나설 수 없습니다! (휴양 필요)`);
+          };
+        }
+        myContainer.appendChild(item);
+      });
+
+      // 선택된 장수가 탈진이면 쾌조 장수로 자동 선택
+      if (MY_OFFICERS[selectedMyOfficerIdx] && MY_OFFICERS[selectedMyOfficerIdx].fatigue >= 70) {
+        const ableIdx = MY_OFFICERS.findIndex(o => (o.fatigue || 0) < 70);
+        if (ableIdx !== -1) selectedMyOfficerIdx = ableIdx;
+      }
+
+      // 목표 적 영지 셀렉트박스 설정
+      const provSelect = document.getElementById('duel-enemy-prov-select');
+      provSelect.innerHTML = '';
+
+      let targetRuler = specificRuler;
+      if (pendingInvasion) {
+        targetRuler = pendingInvasion.attackerRuler;
+        if (!targetProvId && pendingInvasion.fromProv) targetProvId = pendingInvasion.fromProv.id;
+      }
+
+      const enemies = PROVINCES.filter(p => p.ruler !== gameState.rulerName);
+      enemies.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.innerText = `${p.id}. ${p.name} (${p.ruler}령)`;
+        if (targetProvId && p.id === targetProvId) opt.selected = true;
+        else if (!targetProvId && targetRuler && p.ruler === targetRuler) opt.selected = true;
+        provSelect.appendChild(opt);
+      });
+
+      if (targetProvId) {
+        provSelect.value = targetProvId;
+      } else if (targetRuler) {
+        const matched = enemies.find(p => p.ruler === targetRuler);
+        if (matched) provSelect.value = matched.id;
+      }
+
+      updateEnemyOfficersList(targetRuler);
+
+      // 모달 제목 텍스트 반영
+      const modalHeaderTitle = document.querySelector('#duel-select-modal h2');
+      if (modalHeaderTitle) {
+        if (pendingInvasion) {
+          modalHeaderTitle.innerText = `⚔️ [방어 요격 결투] ${pendingInvasion.attackerRuler}군 침공 요격!`;
+        } else {
+          modalHeaderTitle.innerText = `⚔️ 1:1 장수 진검승부 (일기토 결투)`;
+        }
+      }
+
+      openModal('duel-select-modal');
+    }
+
+    // --- openInfoModal ---
+function openInfoModal() {
+      closeAllPopups();
+      const myProv = getMyCapital();
+      if (myProv.gold < 100) {
+        alert('정보 첩보를 입수하려면 금 100전이 필요합니다.');
+        return;
+      }
+      playSfx('build');
+      myProv.gold -= 100;
+      updateRightPanel(myProv.id);
+      renderInfoTable('sol');
+      openModal('info-modal');
+      logMessage('🔍 [정보 첩보] 금 100전을 들여 천하 13주의 최신 군사/경제 동향을 정찰했습니다.', 'text-yellow-300');
+    }
+
+    // --- openQuestModal ---
+function openQuestModal() {
+      closeAllPopups();
+      alert(`📜 [헌제 칙명 퀘스트]
+
+황제 폐하의 밀조:
+'역적들을 토벌하고 낙양 황궁을 수복하여 한실의 부흥을 이룩하라!'
+
+▶ 목표: 13개 주 천하통일 달성
+▶ 보상: 유비 황제 즉위식 & 개국공신 논공행상`);
+    }
+
+    // --- openReorganizeModal ---
+function openReorganizeModal() {
+      closeAllPopups();
+      updateReorganizeModalUI();
+      openModal('reorganize-modal');
+    }
+
+    // --- openTaxRateModal ---
+function openTaxRateModal() {
+      closeAllPopups();
+      if (!consumeActionPoint('세율 조정')) return;
+      const myProv = getMyCapital();
+      myProv.civilians = Math.max(50, (myProv.civilians || 80) - 5);
+      myProv.gold += 350;
+      playSound('fanfare');
+      logMessage(`💰 [세수 징수] 특별 세수를 징수하여 금 350전을 국고에 납입했습니다. (민충 -5)`, 'text-yellow-300 font-bold');
+      updateRightPanel(myProv.id);
+      alert(`💰 [세율 조정 완료]\n\n세율을 40%로 조정하여 국고에 금 350전이 입고되었습니다.`);
+    }
+
+    // --- openTradeModal ---
+function openTradeModal() {
+      closeAllPopups();
+      if (!consumeActionPoint('상인 무역')) return;
+      openModal('merchant-modal');
+    }
+
+    // --- openTreasureModal ---
+function openTreasureModal() {
+      closeAllPopups();
+      const treasuresList = Object.values(LEGENDARY_TREASURES).map(t => `
+        <div class="p-2.5 bg-slate-900 border border-amber-500/60 rounded-lg flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">${t.icon}</span>
+            <div>
+              <div class="font-black text-amber-300 text-sm">${t.name}</div>
+              <div class="text-xs text-slate-300">${t.effect}</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">${t.desc}</div>
+            </div>
+          </div>
+          <span class="px-2 py-1 rounded bg-amber-950 border border-yellow-400 text-yellow-300 font-bold text-xs">보유중</span>
+        </div>
+      `).join('');
+
+      alert(`🏆 [천하 5대 전설의 보물 도감]
+
+1. 🐎 적토마: 무력 +5, 이동력 +2칸
+2. 🐉 청룡언월도: 무력 +10, 통솔 +6 (일기토 118)
+3. ⚡ 장팔사모: 무력 +9, 분기 2.5배 (일기토 117)
+4. 👑 전국옥새: 매력 100, 민충 100 영구 유지
+5. 📜 손자병법서: 지력 +10, 통솔 +10, 계략 100% 명중`);
+    }
+
+    // --- renderInfoTable ---
+function renderInfoTable(type) {
+      gameState.currentInfoTab = type;
+      const thead = document.getElementById('info-table-head');
+      const tbody = document.getElementById('info-table-body');
+      tbody.innerHTML = '';
+
+      if (type === 'sol') {
+        thead.innerHTML = `
+          <th class="p-2">주 번호 및 이름</th>
+          <th class="p-2">지배 군주</th>
+          <th class="p-2">수비 태수</th>
+          <th class="p-2 text-right">상비군 (병력)</th>
+          <th class="p-2 text-right">성벽 방어</th>
+        `;
+        PROVINCES.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = p.ruler === gameState.rulerName ? 'bg-emerald-950/60 font-bold text-yellow-200' : 'hover:bg-blue-900/40';
+          tr.innerHTML = `
+            <td class="p-2">${p.id}. ${p.name}</td>
+            <td class="p-2 font-bold">${p.ruler}</td>
+            <td class="p-2 text-slate-300">${p.leader}</td>
+            <td class="p-2 text-right text-red-300">${p.soldiers.toLocaleString()}명</td>
+            <td class="p-2 text-right text-cyan-300">${p.defense}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else if (type === 'eco') {
+        thead.innerHTML = `
+          <th class="p-2">주 번호 및 이름</th>
+          <th class="p-2">군주</th>
+          <th class="p-2 text-right">인구수</th>
+          <th class="p-2 text-right">보유 금</th>
+          <th class="p-2 text-right">군량 (석)</th>
+        `;
+        PROVINCES.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = p.ruler === gameState.rulerName ? 'bg-emerald-950/60 font-bold text-yellow-200' : 'hover:bg-blue-900/40';
+          tr.innerHTML = `
+            <td class="p-2">${p.id}. ${p.name}</td>
+            <td class="p-2 font-bold">${p.ruler}</td>
+            <td class="p-2 text-right text-white">${p.pop.toLocaleString()}</td>
+            <td class="p-2 text-right text-yellow-300">${p.gold.toLocaleString()}</td>
+            <td class="p-2 text-right text-emerald-300">${p.food.toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else {
+        thead.innerHTML = `
+          <th class="p-2">주 번호 및 이름</th>
+          <th class="p-2">군주</th>
+          <th class="p-2">책사 군사</th>
+          <th class="p-2 text-right">장수 수</th>
+          <th class="p-2 text-right">민심 충성도</th>
+        `;
+        PROVINCES.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = p.ruler === gameState.rulerName ? 'bg-emerald-950/60 font-bold text-yellow-200' : 'hover:bg-blue-900/40';
+          tr.innerHTML = `
+            <td class="p-2">${p.id}. ${p.name}</td>
+            <td class="p-2 font-bold">${p.ruler}</td>
+            <td class="p-2 text-cyan-300">${p.advisor}</td>
+            <td class="p-2 text-right text-white">${p.officers}명</td>
+            <td class="p-2 text-right text-yellow-300">${p.loyalty}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    // --- reorganizeSoldiers ---
+function reorganizeSoldiers(mode) {
+      const myProv = getMyCapital();
+      playSfx('select');
+      if (mode === 'even') {
+        logMessage(`⚖️ [병력 재편성] ${myProv.name}의 총 병력 ${myProv.soldiers.toLocaleString()}명을 전 장수에게 균등 배분했습니다!`, 'text-cyan-300 font-bold');
+        alert(`⚖️ [균등 재편성 완료]
+
+총 병력 ${myProv.soldiers.toLocaleString()}명을 각 부대에 고르게 나누어 전선의 안정성을 높였습니다!`);
+      } else {
+        logMessage(`⚡ [선봉 집중 재편성] 관우·장비 등 최강 무력 장수에게 병력 60%를 집중 배치했습니다!`, 'text-yellow-300 font-black');
+        alert(`⚡ [선봉 맹장 집중 재편성 완료]
+
+적진 돌파를 위해 선봉 맹장에게 정예 병력 60%를 집중 배치했습니다!
+(전쟁 시 돌파력 대폭 상승)`);
+      }
+      closeModal('reorganize-modal');
+    }
+
+    // --- retreatFromBattleModal ---
+function retreatFromBattleModal() {
+      if (confirm('전투에서 퇴각하시겠습니까?')) {
+        closeModal('battle-modal');
+        logMessage('🏳️ 군대를 수습하여 본진으로 퇴각하였습니다.', 'text-slate-400');
+      }
+    }
+
+    // --- selectScenario ---
+function selectScenario(scenNum) {
+      alert(`🚩 [시나리오 ${scenNum} 선택]\n\n영웅집결 & 난세의 영웅들 시나리오가 활성화되었습니다.`);
+    }
+
+    // --- toggleBGM ---
+function toggleBGM() {
+      closeAllPopups();
+      if (!gameState.audioCtx) {
+        try { gameState.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+      }
+      gameState.bgmPlaying = !gameState.bgmPlaying;
+      const statusEl = document.getElementById('bgm-status');
+      const iconEl = document.getElementById('bgm-icon');
+
+      if (gameState.bgmPlaying) {
+        if (statusEl) statusEl.innerText = '재생 중';
+        if (iconEl) iconEl.innerText = '🔊';
+        document.getElementById('bgm-btn').className = 'px-2 py-1 text-xs font-bold rounded bg-emerald-700 hover:bg-emerald-600 text-yellow-100 border border-emerald-400 flex items-center gap-1 shadow';
+        playRetroBgmLoop();
+      } else {
+        if (statusEl) statusEl.innerText = '정지됨';
+        if (iconEl) iconEl.innerText = '🎵';
+        document.getElementById('bgm-btn').className = 'px-2 py-1 text-xs font-bold rounded bg-amber-700 hover:bg-amber-600 text-yellow-100 border border-yellow-400 flex items-center gap-1 shadow';
+        if (gameState.bgmTimer) { clearInterval(gameState.bgmTimer); gameState.bgmTimer = null; }
+      }
+    }
+
+
+    function onCmdAmbushSkill() {
+      if (!isMyTurn || isHexGameOver) return;
+      const unit = hexBattleContext.units.find(u => u.id === selectedHexUnitId && u.side === 'player' && !u.hasActed);
+      if (!unit) { alert('행동 가능한 아군 부대를 먼저 선택하십시오.'); return; }
+      logMessage(`🌿 [매복 병법] ${unit.name} 부대가 숲 지형에 은밀히 매복하여 방어력을 200% 상승시키고 적을 기습합니다!`, 'text-emerald-400 font-bold');
+      playSfx('build');
+      unit.def *= 2;
+      unit.hasActed = true;
+      renderHexBattleMap();
+      renderHexActionUI();
+    }
+
+
+    // ==================== 🎮 마우스 및 키보드 통합 컨트롤 시스템 ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      initKeyboardAndMouseControls();
+    });
+
+    function initKeyboardAndMouseControls() {
+      // 키보드 단축키 (0~9, d, w, t, c, r, m, ESC, Space, Enter)
+      document.addEventListener('keydown', (e) => {
+        // 인풋이나 텍스트에어리어 입력 중일 때는 제외
+        if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+        const key = e.key;
+        console.log('Keyboard Pressed:', key);
+
+        // ESC: 모든 팝업 및 열려있는 모달 닫기
+        if (key === 'Escape') {
+          closeAllPopups();
+          document.querySelectorAll('.modal-backdrop, [id$="-modal"]').forEach(el => {
+            if (!el.classList.contains('hidden')) {
+              el.classList.add('hidden');
+              el.style.display = 'none';
+              el.style.pointerEvents = 'none';
+            }
+          });
+          return;
+        }
+
+        // 0: 휴양 (턴 종료 및 행동력 완충)
+        if (key === '0') {
+          e.preventDefault();
+          executeRest();
+          return;
+        }
+
+        // 1: 군사 팝업 토글
+        if (key === '1') {
+          e.preventDefault();
+          togglePopup(null, 'popup-military');
+          return;
+        }
+
+        // 2: 인사 팝업 토글
+        if (key === '2') {
+          e.preventDefault();
+          togglePopup(null, 'popup-personnel');
+          return;
+        }
+
+        // 3: 외교 팝업 토글
+        if (key === '3') {
+          e.preventDefault();
+          togglePopup(null, 'popup-diplomacy');
+          return;
+        }
+
+        // 4: 정보 모달 열기
+        if (key === '4') {
+          e.preventDefault();
+          openInfoModal();
+          return;
+        }
+
+        // 5: 개발 팝업 토글
+        if (key === '5') {
+          e.preventDefault();
+          togglePopup(null, 'popup-develop');
+          return;
+        }
+
+        // 6: 상인 팝업 토글
+        if (key === '6') {
+          e.preventDefault();
+          togglePopup(null, 'popup-merchant');
+          return;
+        }
+
+        // 7: 특별 팝업 토글
+        if (key === '7') {
+          e.preventDefault();
+          togglePopup(null, 'popup-special');
+          return;
+        }
+
+        // 8: 계략 팝업 토글
+        if (key === '8') {
+          e.preventDefault();
+          togglePopup(null, 'popup-stratagem');
+          return;
+        }
+
+        // 9: 기능 팝업 토글
+        if (key === '9') {
+          e.preventDefault();
+          togglePopup(null, 'popup-system');
+          return;
+        }
+
+        // D 또는 d: 장수 골라 1:1 결투 즉시 열기
+        if (key === 'd' || key === 'D') {
+          e.preventDefault();
+          openDuelSelectModal();
+          return;
+        }
+
+        // W 또는 w: 전쟁 모달 즉시 열기
+        if (key === 'w' || key === 'W') {
+          e.preventDefault();
+          openWarModal();
+          return;
+        }
+
+        // T 또는 t: 군사 훈련 즉시 실행
+        if (key === 't' || key === 'T') {
+          e.preventDefault();
+          executeTraining();
+          return;
+        }
+
+        // C 또는 c: 징병 실행
+        if (key === 'c' || key === 'C') {
+          e.preventDefault();
+          executeConscription();
+          return;
+        }
+
+        // R 또는 r: 모병 실행
+        if (key === 'r' || key === 'R') {
+          e.preventDefault();
+          executeRecruit();
+          return;
+        }
+
+        // M 또는 m: 배경음악 및 효과음 토글
+        if (key === 'm' || key === 'M') {
+          e.preventDefault();
+          toggleBGM();
+          return;
+        }
+      });
+    }
+
+    // togglePopup 함수가 이벤트 없이(null) 호출되어도 안전하게 작동하도록 보강
+    const origTogglePopup = window.togglePopup || togglePopup;
+    function togglePopup(e, id) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      const popup = document.getElementById(id);
+      if (!popup) return;
+      const isOpen = popup.classList.contains('show');
+      closeAllPopups();
+      if (!isOpen) {
+        popup.classList.add('show');
+        playSfx('select');
+      }
+    }
 
 </script>
 
