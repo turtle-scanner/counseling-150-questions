@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>삼국지 3 (三國志 III) 황제의 결단 - 정통 팝업 & 1:1 장수 결투 & 적군 침공 AI & 난이도 상중하</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&family=Nanum+Gothic+Coding:wght@700&display=swap');
 
@@ -538,7 +539,17 @@
 
     <!-- 우측 보조 컨트롤 바 -->
     <div class="flex items-center gap-1.5 flex-nowrap">
-      <button onclick="openDuelSelectModal()" class="px-2 py-1 text-xs font-black rounded bg-red-700 hover:bg-red-600 text-yellow-100 border border-yellow-300 flex items-center gap-1 shadow animate-pulse">
+      <!-- 🌐 멀티플레이 (온라인 P2P & 로컬 핫시트 다인 대전) -->
+      <button onclick="openMultiplayModal()" class="px-2.5 py-1 text-xs font-black rounded bg-gradient-to-r from-indigo-700 via-purple-700 to-indigo-800 hover:from-indigo-600 hover:to-purple-600 text-yellow-300 border-2 border-yellow-400 flex items-center gap-1 shadow-lg animate-pulse">
+        <span>🌐</span> 멀티플레이 (다인 대전)
+      </button>
+
+      <!-- 📚 임용고시 문제은행 바로가기 -->
+      <a href="counseling_exam.html" class="px-2 py-1 text-xs font-bold rounded bg-slate-800 hover:bg-slate-700 text-cyan-200 border border-cyan-400 flex items-center gap-1 shadow">
+        <span>📚</span> 문제은행
+      </a>
+
+      <button onclick="openDuelSelectModal()"  class="px-2 py-1 text-xs font-black rounded bg-red-700 hover:bg-red-600 text-yellow-100 border border-yellow-300 flex items-center gap-1 shadow animate-pulse">
         <span>⚔️</span> 장수 1:1 결투
       </button>
       <button id="bgm-btn" onclick="toggleBGM()" class="px-2 py-1 text-xs font-bold rounded bg-amber-700 hover:bg-amber-600 text-yellow-100 border border-yellow-400 flex items-center gap-1 shadow">
@@ -1155,6 +1166,631 @@
       </div>
     </div>
   </div>
+
+  <!-- ==========================================================================
+       🌐 천하 멀티플레이어 대전 모달 (온라인 실시간 P2P & 로컬 핫시트)
+       ========================================================================== -->
+  <div id="multiplay-modal" class="fixed inset-0 modal-backdrop z-[999999] hidden flex items-center justify-center p-3">
+    <div class="koei-box w-full max-w-2xl p-4 sm:p-5 rounded-xl shadow-2xl border-4 border-yellow-400 bg-slate-950 flex flex-col gap-3 max-h-[95vh] overflow-y-auto">
+      
+      <!-- 상단 헤더 -->
+      <div class="flex items-center justify-between border-b-2 border-yellow-500/80 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🌐</span>
+          <h2 class="text-base sm:text-lg font-black text-yellow-300 text-pixel flex items-center gap-2">
+            천하 멀티플레이 (온라인 실시간 P2P & 핫시트 다인 대전)
+          </h2>
+        </div>
+        <button onclick="closeModal('multiplay-modal')" class="text-slate-400 hover:text-white text-base px-2 py-0.5 border border-slate-600 rounded">&times;</button>
+      </div>
+
+      <!-- 모드 탭 (1. 온라인 실시간 대전 / 2. 한 기기 로컬 핫시트) -->
+      <div class="flex border-b border-slate-700 gap-1">
+        <button id="tab-mp-online" onclick="switchMultiplayTab('online')" class="px-4 py-2 font-black text-xs sm:text-sm rounded-t bg-indigo-900 text-yellow-300 border-t-2 border-l-2 border-r-2 border-indigo-400">
+          🌐 온라인 실시간 대전 (WebRTC P2P)
+        </button>
+        <button id="tab-mp-hotseat" onclick="switchMultiplayTab('hotseat')" class="px-4 py-2 font-bold text-xs sm:text-sm rounded-t bg-slate-800 text-slate-300 hover:text-white">
+          👥 한 기기 2~4인 대전 (핫시트 모드)
+        </button>
+      </div>
+
+      <!-- ==================== 1. 온라인 실시간 대전 탭 컨텐츠 ==================== -->
+      <div id="mp-online-content" class="flex flex-col gap-3">
+        
+        <!-- 방 만들기 / 방 참가 버튼 바 -->
+        <div id="mp-lobby-entry" class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-slate-900/90 rounded-lg border border-slate-700">
+          <!-- 호스트 방 만들기 -->
+          <div class="flex flex-col gap-2 p-3 rounded bg-blue-950/60 border border-blue-600/70 text-left">
+            <span class="text-xs font-black text-blue-300 flex items-center gap-1">👑 방 만들기 (호스트)</span>
+            <span class="text-[11px] text-slate-300 leading-relaxed">내가 방장이 되어 친구들을 초대하고 천하쟁패를 지휘합니다.</span>
+            <button onclick="createP2PRoom()" class="mt-auto px-4 py-2 rounded bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 border border-yellow-300 text-white font-black text-xs shadow transition active:scale-95">
+              🚀 새로운 방 개설하기
+            </button>
+          </div>
+
+          <!-- 게스트 방 참가하기 -->
+          <div class="flex flex-col gap-2 p-3 rounded bg-amber-950/60 border border-amber-600/70 text-left">
+            <span class="text-xs font-black text-amber-300 flex items-center gap-1">⚔️ 방 참가하기 (게스트)</span>
+            <span class="text-[11px] text-slate-300 leading-relaxed">친구가 공유해 준 6자리 방 코드를 입력하여 입장합니다.</span>
+            <div class="flex gap-1.5 mt-auto">
+              <input type="text" id="mp-join-room-id" placeholder="방 코드 입력 (예: SAM-7821)" class="w-full px-2 py-1.5 bg-black border border-amber-500 rounded text-xs text-yellow-200 font-bold uppercase text-center" />
+              <button onclick="joinP2PRoom()" class="px-3 py-1.5 rounded bg-gradient-to-r from-amber-700 to-red-700 hover:from-amber-600 hover:to-red-600 border border-yellow-300 text-white font-black text-xs whitespace-nowrap shadow active:scale-95 transition">
+                참가
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 방 생성/참가 후 대기실 로비 화면 -->
+        <div id="mp-lobby-room" class="hidden flex flex-col gap-3 p-3 bg-slate-900 rounded-lg border-2 border-indigo-500">
+          <!-- 상단 방 정보 & 초대 링크 복사 -->
+          <div class="flex flex-wrap items-center justify-between gap-2 p-2 bg-indigo-950/80 rounded border border-indigo-400">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-300">방 코드:</span>
+              <span id="mp-display-room-code" class="text-sm font-black text-yellow-300 px-2 py-0.5 bg-black rounded border border-yellow-400 tracking-wider">SAM-XXXX</span>
+              <span id="mp-my-role-badge" class="text-[10px] px-1.5 py-0.5 rounded bg-blue-600 text-white font-bold">👑 방장</span>
+            </div>
+            <button onclick="copyInviteLink()" class="px-3 py-1 rounded bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs border border-emerald-300 flex items-center gap-1 shadow active:scale-95 transition">
+              🔗 카톡 초대링크 복사
+            </button>
+          </div>
+
+          <!-- 참가자 명단 및 군주 선택 그리드 (최대 4인) -->
+          <div class="flex flex-col gap-1 text-left">
+            <span class="text-xs font-bold text-slate-300">👥 참가자 및 담당 군주 (최대 4명)</span>
+            <div id="mp-players-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+              <!-- 플레이어 카드들이 동적으로 생성됨 -->
+            </div>
+          </div>
+
+          <!-- 로비 실시간 채팅 박스 -->
+          <div class="flex flex-col gap-1 text-left mt-1">
+            <span class="text-xs font-bold text-slate-300">💬 실시간 군영 회의 (채팅)</span>
+            <div id="mp-chat-logs" class="h-28 overflow-y-auto bg-black/80 p-2 rounded border border-slate-700 text-[11px] text-slate-200 flex flex-col gap-1">
+              <div class="text-slate-400">군영 대기실에 입장했습니다. 군주를 선택하고 준비를 완료하십시오!</div>
+            </div>
+            <div class="flex gap-1.5 mt-1">
+              <input type="text" id="mp-chat-input" placeholder="메시지 입력..." class="w-full px-2 py-1 bg-slate-800 border border-slate-600 rounded text-xs text-white" onkeydown="if(event.key==='Enter') sendLobbyChat()" />
+              <button onclick="sendLobbyChat()" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded border border-indigo-400">전송</button>
+            </div>
+          </div>
+
+          <!-- 하단 액션 버튼 바 -->
+          <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-700">
+            <button id="btn-mp-ready" onclick="togglePlayerReady()" class="px-4 py-2 rounded bg-amber-600 hover:bg-amber-500 border border-yellow-300 text-white font-black text-xs shadow transition active:scale-95">
+              ⭐ 준비 완료 (Ready)
+            </button>
+            <button id="btn-mp-start" onclick="startMultiplayOnlineGame()" class="hidden px-6 py-2 rounded bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 border-2 border-yellow-300 text-white font-black text-xs shadow-xl transition active:scale-95 animate-bounce">
+              🚀 천하쟁패 실시간 대전 개시!
+            </button>
+            <button onclick="leaveP2PRoom()" class="px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-600">
+              퇴장
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 2. 한 기기 로컬 핫시트 탭 컨텐츠 ==================== -->
+      <div id="mp-hotseat-content" class="hidden flex flex-col gap-3 p-3 bg-slate-900 rounded-lg border border-slate-700 text-left">
+        <div class="p-2.5 rounded bg-purple-950/60 border border-purple-500/70 text-xs text-slate-200 leading-relaxed">
+          <span class="text-purple-300 font-black">👥 한 기기 핫시트(Hotseat) 다인 대전이란?</span><br>
+          인터넷 연결 없이도, **한 대의 컴퓨터나 태블릿에서 친구/가족과 2~4명이 모여 앉아 턴마다 교대로 군주를 조작**하며 천하를 다투는 정통 코에이 삼국지 방식의 대전 모드입니다!
+        </div>
+
+        <span class="text-xs font-bold text-yellow-300">👑 플레이어가 직접 지휘할 군주를 선택하십시오 (2~4명 선택):</span>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <label class="flex items-center gap-2 p-2 rounded bg-slate-800 border border-slate-600 cursor-pointer hover:bg-slate-700">
+            <input type="checkbox" id="hs-ruler-liubei" value="유비" checked class="w-4 h-4 text-blue-600" />
+            <span class="text-xs font-bold text-blue-300">유비 (형주)</span>
+          </label>
+          <label class="flex items-center gap-2 p-2 rounded bg-slate-800 border border-slate-600 cursor-pointer hover:bg-slate-700">
+            <input type="checkbox" id="hs-ruler-caocao" value="조조" checked class="w-4 h-4 text-blue-600" />
+            <span class="text-xs font-bold text-red-300">조조 (사례/연주)</span>
+          </label>
+          <label class="flex items-center gap-2 p-2 rounded bg-slate-800 border border-slate-600 cursor-pointer hover:bg-slate-700">
+            <input type="checkbox" id="hs-ruler-sunce" value="손책" class="w-4 h-4 text-blue-600" />
+            <span class="text-xs font-bold text-amber-300">손책 (양주)</span>
+          </label>
+          <label class="flex items-center gap-2 p-2 rounded bg-slate-800 border border-slate-600 cursor-pointer hover:bg-slate-700">
+            <input type="checkbox" id="hs-ruler-yuanshao" value="원소" class="w-4 h-4 text-blue-600" />
+            <span class="text-xs font-bold text-emerald-300">원소 (기주/청주)</span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-700">
+          <button onclick="startHotseatGame()" class="px-6 py-2 rounded bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 border-2 border-yellow-300 text-white font-black text-xs shadow-xl active:scale-95 transition">
+            👥 핫시트 다인 대전 시작!
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+"""
+
+save_modal_target = '  <!-- 5대 슬롯 정밀 저장 모달 -->'
+if save_modal_target in content:
+    content = content.replace(save_modal_target, multiplay_modal_html + '\n\n' + save_modal_target, 1)
+    print("Step 3: multiplay-modal HTML inserted successfully!")
+else:
+    print("Warning: save_modal_target not found!")
+
+# =========================================================================
+# 4. 멀티플레이어 JS 엔진 구현 (PeerJS P2P & Hotseat 로직)
+# =========================================================================
+multiplay_js_code = """
+    // ==========================================================================
+    // 🌐 천하 멀티플레이어 엔진 (PeerJS P2P 실시간 통신 & 로컬 핫시트)
+    // ==========================================================================
+    let peer = null;
+    let peerConnections = []; // 호스트가 연결된 게스트들
+    let hostConn = null; // 게스트가 연결된 호스트
+    let isP2PHost = false;
+    let myPeerId = null;
+    let currentRoomId = null;
+
+    let mpState = {
+      isOnline: false,
+      isHotseat: false,
+      myPlayerId: null,
+      myRuler: '유비',
+      isReady: false,
+      players: [], // { id, name, ruler, isHost, isReady }
+      hotseatRulers: [],
+      currentHotseatIdx: 0
+    };
+
+    function openMultiplayModal() {
+      closeAllPopups();
+      openModal('multiplay-modal');
+      switchMultiplayTab('online');
+
+      // URL에 ?room=SAM-XXXX 파라미터가 있으면 자동 방 참가창에 채워넣기
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get('room');
+      if (roomParam) {
+        document.getElementById('mp-join-room-id').value = roomParam.toUpperCase();
+      }
+    }
+
+    function switchMultiplayTab(tab) {
+      const tabOnline = document.getElementById('tab-mp-online');
+      const tabHotseat = document.getElementById('tab-mp-hotseat');
+      const contentOnline = document.getElementById('mp-online-content');
+      const contentHotseat = document.getElementById('mp-hotseat-content');
+
+      if (tab === 'online') {
+        tabOnline.className = "px-4 py-2 font-black text-xs sm:text-sm rounded-t bg-indigo-900 text-yellow-300 border-t-2 border-l-2 border-r-2 border-indigo-400";
+        tabHotseat.className = "px-4 py-2 font-bold text-xs sm:text-sm rounded-t bg-slate-800 text-slate-300 hover:text-white";
+        contentOnline.classList.remove('hidden');
+        contentHotseat.classList.add('hidden');
+      } else {
+        tabHotseat.className = "px-4 py-2 font-black text-xs sm:text-sm rounded-t bg-purple-900 text-yellow-300 border-t-2 border-l-2 border-r-2 border-purple-400";
+        tabOnline.className = "px-4 py-2 font-bold text-xs sm:text-sm rounded-t bg-slate-800 text-slate-300 hover:text-white";
+        contentHotseat.classList.remove('hidden');
+        contentOnline.classList.add('hidden');
+      }
+    }
+
+    // --------------------------------------------------------------------------
+    // 🌐 [1. PeerJS 온라인 방 개설 (호스트)]
+    // --------------------------------------------------------------------------
+    function createP2PRoom() {
+      if (typeof Peer === 'undefined') {
+        alert("PeerJS 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주십시오.");
+        return;
+      }
+
+      const randomCode = 'SAM3-' + Math.floor(1000 + Math.random() * 9000);
+      currentRoomId = randomCode;
+      isP2PHost = true;
+      mpState.isOnline = true;
+      mpState.myPlayerId = 'P1_HOST';
+      mpState.myRuler = gameState.rulerName || '유비';
+      mpState.isReady = true;
+
+      mpState.players = [{
+        id: mpState.myPlayerId,
+        name: '방장 (' + (gameState.rulerName || '유비') + ')',
+        ruler: mpState.myRuler,
+        isHost: true,
+        isReady: true
+      }];
+
+      peer = new Peer(currentRoomId);
+
+      peer.on('open', (id) => {
+        myPeerId = id;
+        document.getElementById('mp-lobby-entry').classList.add('hidden');
+        document.getElementById('mp-lobby-room').classList.remove('hidden');
+        document.getElementById('mp-display-room-code').innerText = id;
+        document.getElementById('mp-my-role-badge').innerText = "👑 방장";
+
+        renderLobbyPlayers();
+        logMessage(`🌐 [멀티 방 개설] 온라인 대기실 [${id}]이 개설되었습니다! 친구를 초대하십시오.`, 'text-indigo-300 font-black');
+        playSfx('fanfare');
+      });
+
+      peer.on('connection', (conn) => {
+        peerConnections.push(conn);
+
+        conn.on('data', (data) => {
+          handleHostReceivedData(conn, data);
+        });
+
+        conn.on('close', () => {
+          peerConnections = peerConnections.filter(c => c !== conn);
+          mpState.players = mpState.players.filter(p => p.conn !== conn);
+          broadcastLobbyState();
+          renderLobbyPlayers();
+        });
+      });
+
+      peer.on('error', (err) => {
+        console.error('Peer error:', err);
+        alert('방 개설 중 오류가 발생했습니다: ' + err.type);
+      });
+    }
+
+    // --------------------------------------------------------------------------
+    // 🌐 [2. PeerJS 온라인 방 참가 (게스트)]
+    // --------------------------------------------------------------------------
+    function joinP2PRoom() {
+      const inputEl = document.getElementById('mp-join-room-id');
+      const targetRoom = (inputEl.value || '').trim().toUpperCase();
+      if (!targetRoom) {
+        alert("참가할 방 코드를 입력하십시오.");
+        return;
+      }
+
+      if (typeof Peer === 'undefined') {
+        alert("PeerJS 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주십시오.");
+        return;
+      }
+
+      currentRoomId = targetRoom;
+      isP2PHost = false;
+      mpState.isOnline = true;
+      mpState.myPlayerId = 'GUEST_' + Math.floor(Math.random() * 10000);
+      mpState.myRuler = '조조'; // 게스트 기본 군주
+
+      peer = new Peer();
+
+      peer.on('open', (id) => {
+        myPeerId = id;
+        hostConn = peer.connect(targetRoom);
+
+        hostConn.on('open', () => {
+          document.getElementById('mp-lobby-entry').classList.add('hidden');
+          document.getElementById('mp-lobby-room').classList.remove('hidden');
+          document.getElementById('mp-display-room-code').innerText = targetRoom;
+          document.getElementById('mp-my-role-badge').innerText = "⚔️ 참가자";
+          document.getElementById('mp-my-role-badge').className = "text-[10px] px-1.5 py-0.5 rounded bg-amber-600 text-white font-bold";
+
+          // 방장에게 참가 정보 전송
+          hostConn.send({
+            type: 'JOIN_LOBBY',
+            playerId: mpState.myPlayerId,
+            ruler: mpState.myRuler
+          });
+
+          playSfx('build');
+        });
+
+        hostConn.on('data', (data) => {
+          handleGuestReceivedData(data);
+        });
+
+        hostConn.on('close', () => {
+          alert('방장과의 연결이 끊어졌습니다.');
+          leaveP2PRoom();
+        });
+      });
+
+      peer.on('error', (err) => {
+        alert('방에 접속할 수 없습니다. 방 코드를 확인해 주십시오: ' + targetRoom);
+      });
+    }
+
+    // 호스트의 데이터 처리
+    function handleHostReceivedData(conn, data) {
+      if (data.type === 'JOIN_LOBBY') {
+        const availableRulers = ['조조', '손책', '원소', '여포', '마등'];
+        const taken = mpState.players.map(p => p.ruler);
+        const assignedRuler = availableRulers.find(r => !taken.includes(r)) || '조조';
+
+        const newPlayer = {
+          id: data.playerId,
+          name: `참가자 (${assignedRuler})`,
+          ruler: assignedRuler,
+          isHost: false,
+          isReady: false,
+          conn: conn
+        };
+        mpState.players.push(newPlayer);
+
+        appendLobbyChat(`👑 [입장] 새로운 영걸 [${newPlayer.name}] 님이 방에 입장했습니다!`);
+        broadcastLobbyState();
+        renderLobbyPlayers();
+
+      } else if (data.type === 'SET_READY') {
+        const p = mpState.players.find(x => x.id === data.playerId);
+        if (p) p.isReady = data.isReady;
+        broadcastLobbyState();
+        renderLobbyPlayers();
+
+      } else if (data.type === 'CHAT_MSG') {
+        appendLobbyChat(data.sender + ": " + data.msg);
+        peerConnections.forEach(c => c.send(data));
+
+      } else if (data.type === 'SYNC_TURN_ACTION') {
+        // 인게임 턴 동기화 액션
+        applyRemoteAction(data);
+        peerConnections.forEach(c => {
+          if (c !== conn) c.send(data);
+        });
+      }
+    }
+
+    // 게스트의 데이터 처리
+    function handleGuestReceivedData(data) {
+      if (data.type === 'LOBBY_STATE') {
+        mpState.players = data.players;
+        renderLobbyPlayers();
+
+        // 내 군주 확인
+        const me = mpState.players.find(p => p.id === mpState.myPlayerId);
+        if (me) mpState.myRuler = me.ruler;
+
+      } else if (data.type === 'CHAT_MSG') {
+        appendLobbyChat(data.sender + ": " + data.msg);
+
+      } else if (data.type === 'START_GAME') {
+        // 호스트의 게임 시작 신호
+        closeModal('multiplay-modal');
+        logMessage(`🚀 [천하쟁패 개시!] 방장이 멀티플레이 대전을 시작했습니다!`, 'text-yellow-300 font-black text-sm');
+        playSfx('fanfare');
+
+        // 내 군주로 시점 전환
+        if (mpState.myRuler) {
+          const targetProv = PROVINCES.find(p => p.ruler === mpState.myRuler);
+          if (targetProv) {
+            gameState.rulerName = mpState.myRuler;
+            gameState.myCapitalId = targetProv.id;
+            gameState.selectedProvId = targetProv.id;
+            renderMapPins();
+            updateRightPanel(targetProv.id);
+          }
+        }
+
+      } else if (data.type === 'SYNC_TURN_ACTION') {
+        applyRemoteAction(data);
+      }
+    }
+
+    function broadcastLobbyState() {
+      const cleanPlayers = mpState.players.map(p => ({
+        id: p.id,
+        name: p.name,
+        ruler: p.ruler,
+        isHost: p.isHost,
+        isReady: p.isReady
+      }));
+
+      peerConnections.forEach(c => {
+        c.send({
+          type: 'LOBBY_STATE',
+          players: cleanPlayers
+        });
+      });
+    }
+
+    function renderLobbyPlayers() {
+      const container = document.getElementById('mp-players-grid');
+      if (!container) return;
+
+      container.innerHTML = mpState.players.map(p => {
+        const isMe = (p.id === mpState.myPlayerId);
+        return `
+          <div class="p-2.5 rounded border ${p.isReady ? 'bg-emerald-950/70 border-emerald-500' : 'bg-slate-800 border-slate-600'} flex items-center justify-between shadow">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">${p.isHost ? '👑' : '⚔️'}</span>
+              <div class="flex flex-col text-left">
+                <span class="text-xs font-black text-white flex items-center gap-1">
+                  ${p.name} ${isMe ? '<span class="text-[9px] px-1 bg-blue-600 text-white rounded">나</span>' : ''}
+                </span>
+                <span class="text-[10px] text-yellow-300 font-bold">담당 군주: [${p.ruler}]</span>
+              </div>
+            </div>
+            <span class="text-[11px] font-black ${p.isReady ? 'text-emerald-300 animate-pulse' : 'text-slate-400'}">
+              ${p.isReady ? '준비 완료!' : '대기 중...'}
+            </span>
+          </div>
+        `;
+      }).join('');
+
+      // 호스트 전용: 모두 준비되면 게임 시작 버튼 노출
+      const btnStart = document.getElementById('btn-mp-start');
+      const allReady = mpState.players.every(p => p.isReady);
+      if (isP2PHost && btnStart) {
+        if (allReady && mpState.players.length >= 1) {
+          btnStart.classList.remove('hidden');
+        } else {
+          btnStart.classList.add('hidden');
+        }
+      }
+    }
+
+    function togglePlayerReady() {
+      mpState.isReady = !mpState.isReady;
+      const btn = document.getElementById('btn-mp-ready');
+      if (btn) {
+        btn.innerText = mpState.isReady ? "✅ 준비 완료 (해제)" : "⭐ 준비 완료 (Ready)";
+        btn.className = mpState.isReady ? "px-4 py-2 rounded bg-emerald-700 hover:bg-emerald-600 border border-emerald-300 text-white font-black text-xs shadow transition active:scale-95" : "px-4 py-2 rounded bg-amber-600 hover:bg-amber-500 border border-yellow-300 text-white font-black text-xs shadow transition active:scale-95";
+      }
+
+      if (isP2PHost) {
+        const me = mpState.players.find(p => p.id === mpState.myPlayerId);
+        if (me) me.isReady = mpState.isReady;
+        broadcastLobbyState();
+        renderLobbyPlayers();
+      } else if (hostConn) {
+        hostConn.send({
+          type: 'SET_READY',
+          playerId: mpState.myPlayerId,
+          isReady: mpState.isReady
+        });
+      }
+    }
+
+    function copyInviteLink() {
+      const inviteUrl = window.location.origin + window.location.pathname + '?room=' + currentRoomId;
+      navigator.clipboard.writeText(inviteUrl).then(() => {
+        alert(`🔗 [초대 링크 복사 완료!]\n\n카톡이나 메신저로 친구에게 링크를 전달하십시오:\n${inviteUrl}\n\n친구가 링크를 클릭하면 즉시 이 방으로 접속됩니다!`);
+      }).catch(() => {
+        prompt("아래 링크를 복사하여 친구에게 전달하십시오:", inviteUrl);
+      });
+    }
+
+    function sendLobbyChat() {
+      const input = document.getElementById('mp-chat-input');
+      const msg = (input.value || '').trim();
+      if (!msg) return;
+      input.value = '';
+
+      const senderName = isP2PHost ? '방장' : '참가자';
+      appendLobbyChat(`${senderName}: ${msg}`);
+
+      const chatData = {
+        type: 'CHAT_MSG',
+        sender: senderName,
+        msg: msg
+      };
+
+      if (isP2PHost) {
+        peerConnections.forEach(c => c.send(chatData));
+      } else if (hostConn) {
+        hostConn.send(chatData);
+      }
+    }
+
+    function appendLobbyChat(text) {
+      const box = document.getElementById('mp-chat-logs');
+      if (!box) return;
+      const div = document.createElement('div');
+      div.innerText = text;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function startMultiplayOnlineGame() {
+      if (!isP2PHost) return;
+      peerConnections.forEach(c => {
+        c.send({ type: 'START_GAME' });
+      });
+
+      closeModal('multiplay-modal');
+      logMessage(`🚀 [천하쟁패 개시!] 온라인 멀티플레이 실시간 대전을 시작합니다!`, 'text-yellow-300 font-black text-sm');
+      playSfx('fanfare');
+    }
+
+    function leaveP2PRoom() {
+      if (peer) peer.destroy();
+      peer = null;
+      peerConnections = [];
+      hostConn = null;
+      mpState.isOnline = false;
+      document.getElementById('mp-lobby-entry').classList.remove('hidden');
+      document.getElementById('mp-lobby-room').classList.add('hidden');
+    }
+
+    // --------------------------------------------------------------------------
+    // 👥 [3. 한 기기 핫시트(Hotseat) 다인 대전 엔진]
+    // --------------------------------------------------------------------------
+    function startHotseatGame() {
+      const selectedRulers = [];
+      if (document.getElementById('hs-ruler-liubei').checked) selectedRulers.push('유비');
+      if (document.getElementById('hs-ruler-caocao').checked) selectedRulers.push('조조');
+      if (document.getElementById('hs-ruler-sunce').checked) selectedRulers.push('손책');
+      if (document.getElementById('hs-ruler-yuanshao').checked) selectedRulers.push('원소');
+
+      if (selectedRulers.length < 2) {
+        alert("핫시트 다인 대전을 진행하려면 최소 2명 이상의 군주를 선택해야 합니다!");
+        return;
+      }
+
+      mpState.isHotseat = true;
+      mpState.hotseatRulers = selectedRulers;
+      mpState.currentHotseatIdx = 0;
+
+      closeModal('multiplay-modal');
+
+      const firstRuler = selectedRulers[0];
+      changeRulerTo(firstRuler);
+
+      playSfx('fanfare');
+      alert(`👥 [핫시트 다인 대전 개시!]\n\n▶ 참가 군주: ${selectedRulers.join(', ')} (${selectedRulers.length}인 대전)\n\n첫 번째 순서인 [${firstRuler}] 군주님의 턴입니다!\n\n턴을 넘길 때마다 다음 플레이어에게 화면이 교대로 전환됩니다!`);
+      logMessage(`👥 [핫시트 대전 개시] ${selectedRulers.join(', ')} 군주 간의 천하쟁패가 시작되었습니다!`, 'text-purple-300 font-black text-sm');
+    }
+
+    function nextHotseatTurn() {
+      if (!mpState.isHotseat || mpState.hotseatRulers.length === 0) return;
+
+      mpState.currentHotseatIdx = (mpState.currentHotseatIdx + 1) % mpState.hotseatRulers.length;
+      const nextRuler = mpState.hotseatRulers[mpState.currentHotseatIdx];
+
+      changeRulerTo(nextRuler);
+      playSfx('fanfare');
+
+      alert(`👥 [차례 교대 - ${nextRuler} 군주님의 턴!]\n\n화면을 [${nextRuler}] 플레이어에게 넘겨주십시오!\n\n전략 행동력이 충전되었으며, 명령을 수행하십시오!`);
+      logMessage(`👑 [차례 교대] 이제부터 [${nextRuler}] 군주님의 지휘 차례입니다!`, 'text-yellow-300 font-black');
+    }
+
+    function changeRulerTo(rulerName) {
+      const prov = PROVINCES.find(p => p.ruler === rulerName);
+      if (!prov) return;
+
+      gameState.rulerName = rulerName;
+      gameState.myCapitalId = prov.id;
+      gameState.selectedProvId = prov.id;
+      gameState.actionPoints = getMaxActionPoints();
+
+      renderMapPins();
+      updateRightPanel(prov.id);
+      updateActionPointUI();
+    }
+
+    // 턴 넘김 시 핫시트 차례 교대 연결
+    const origExecuteRest = executeRest;
+    executeRest = function() {
+      origExecuteRest();
+      if (mpState.isHotseat) {
+        setTimeout(() => {
+          nextHotseatTurn();
+        }, 300);
+      }
+    };
+"""
+
+script_end_target = "    // ==========================================================================\n    // 전략 기믹 2: 일기토(一騎討) 일격필살 시스템"
+if script_end_target not in content:
+    # 대체 삽입 위치: 파일 맨 뒤의 </script> 바로 앞
+    idx_script_close = content.rfind("</script>")
+    if idx_script_close != -1:
+        content = content[:idx_script_close] + multiplay_js_code + '\n' + content[idx_script_close:]
+        print("Step 4: Multiplay JS Engine inserted before </script>!")
+    else:
+        print("Warning: </script> tag not found!")
+else:
+    content = content.replace(script_end_target, multiplay_js_code + '\n\n' + script_end_target, 1)
+    print("Step 4: Multiplay JS Engine inserted successfully!")
+
+# 파일 저장
+with open(filePath, 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("SUCCESS: sam3_update.html successfully updated with Multiplay!")
 
   <!-- ==================== 5대 슬롯 게임 저장 모달 ==================== -->
   <div id="save-modal" class="fixed inset-0 modal-backdrop z-[9999999] hidden flex items-center justify-center p-3">
@@ -6095,6 +6731,475 @@ ${hero.name} 부대가 적의 후방 군량고를 기습하여 잿더미로 만�
     function closeFormationModal() {
       document.getElementById("formationModal").classList.add("hidden");
     }
+
+
+    // ==========================================================================
+    // 🌐 천하 멀티플레이어 엔진 (PeerJS P2P 실시간 통신 & 로컬 핫시트)
+    // ==========================================================================
+    let peer = null;
+    let peerConnections = []; // 호스트가 연결된 게스트들
+    let hostConn = null; // 게스트가 연결된 호스트
+    let isP2PHost = false;
+    let myPeerId = null;
+    let currentRoomId = null;
+
+    let mpState = {
+      isOnline: false,
+      isHotseat: false,
+      myPlayerId: null,
+      myRuler: '유비',
+      isReady: false,
+      players: [], // { id, name, ruler, isHost, isReady }
+      hotseatRulers: [],
+      currentHotseatIdx: 0
+    };
+
+    function openMultiplayModal() {
+      closeAllPopups();
+      openModal('multiplay-modal');
+      switchMultiplayTab('online');
+
+      // URL에 ?room=SAM-XXXX 파라미터가 있으면 자동 방 참가창에 채워넣기
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get('room');
+      if (roomParam) {
+        document.getElementById('mp-join-room-id').value = roomParam.toUpperCase();
+      }
+    }
+
+    function switchMultiplayTab(tab) {
+      const tabOnline = document.getElementById('tab-mp-online');
+      const tabHotseat = document.getElementById('tab-mp-hotseat');
+      const contentOnline = document.getElementById('mp-online-content');
+      const contentHotseat = document.getElementById('mp-hotseat-content');
+
+      if (tab === 'online') {
+        tabOnline.className = "px-4 py-2 font-black text-xs sm:text-sm rounded-t bg-indigo-900 text-yellow-300 border-t-2 border-l-2 border-r-2 border-indigo-400";
+        tabHotseat.className = "px-4 py-2 font-bold text-xs sm:text-sm rounded-t bg-slate-800 text-slate-300 hover:text-white";
+        contentOnline.classList.remove('hidden');
+        contentHotseat.classList.add('hidden');
+      } else {
+        tabHotseat.className = "px-4 py-2 font-black text-xs sm:text-sm rounded-t bg-purple-900 text-yellow-300 border-t-2 border-l-2 border-r-2 border-purple-400";
+        tabOnline.className = "px-4 py-2 font-bold text-xs sm:text-sm rounded-t bg-slate-800 text-slate-300 hover:text-white";
+        contentHotseat.classList.remove('hidden');
+        contentOnline.classList.add('hidden');
+      }
+    }
+
+    // --------------------------------------------------------------------------
+    // 🌐 [1. PeerJS 온라인 방 개설 (호스트)]
+    // --------------------------------------------------------------------------
+    function createP2PRoom() {
+      if (typeof Peer === 'undefined') {
+        alert("PeerJS 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주십시오.");
+        return;
+      }
+
+      const randomCode = 'SAM3-' + Math.floor(1000 + Math.random() * 9000);
+      currentRoomId = randomCode;
+      isP2PHost = true;
+      mpState.isOnline = true;
+      mpState.myPlayerId = 'P1_HOST';
+      mpState.myRuler = gameState.rulerName || '유비';
+      mpState.isReady = true;
+
+      mpState.players = [{
+        id: mpState.myPlayerId,
+        name: '방장 (' + (gameState.rulerName || '유비') + ')',
+        ruler: mpState.myRuler,
+        isHost: true,
+        isReady: true
+      }];
+
+      peer = new Peer(currentRoomId);
+
+      peer.on('open', (id) => {
+        myPeerId = id;
+        document.getElementById('mp-lobby-entry').classList.add('hidden');
+        document.getElementById('mp-lobby-room').classList.remove('hidden');
+        document.getElementById('mp-display-room-code').innerText = id;
+        document.getElementById('mp-my-role-badge').innerText = "👑 방장";
+
+        renderLobbyPlayers();
+        logMessage(`🌐 [멀티 방 개설] 온라인 대기실 [${id}]이 개설되었습니다! 친구를 초대하십시오.`, 'text-indigo-300 font-black');
+        playSfx('fanfare');
+      });
+
+      peer.on('connection', (conn) => {
+        peerConnections.push(conn);
+
+        conn.on('data', (data) => {
+          handleHostReceivedData(conn, data);
+        });
+
+        conn.on('close', () => {
+          peerConnections = peerConnections.filter(c => c !== conn);
+          mpState.players = mpState.players.filter(p => p.conn !== conn);
+          broadcastLobbyState();
+          renderLobbyPlayers();
+        });
+      });
+
+      peer.on('error', (err) => {
+        console.error('Peer error:', err);
+        alert('방 개설 중 오류가 발생했습니다: ' + err.type);
+      });
+    }
+
+    // --------------------------------------------------------------------------
+    // 🌐 [2. PeerJS 온라인 방 참가 (게스트)]
+    // --------------------------------------------------------------------------
+    function joinP2PRoom() {
+      const inputEl = document.getElementById('mp-join-room-id');
+      const targetRoom = (inputEl.value || '').trim().toUpperCase();
+      if (!targetRoom) {
+        alert("참가할 방 코드를 입력하십시오.");
+        return;
+      }
+
+      if (typeof Peer === 'undefined') {
+        alert("PeerJS 라이브러리를 불러오는 중입니다. 잠시 후 다시 시도해 주십시오.");
+        return;
+      }
+
+      currentRoomId = targetRoom;
+      isP2PHost = false;
+      mpState.isOnline = true;
+      mpState.myPlayerId = 'GUEST_' + Math.floor(Math.random() * 10000);
+      mpState.myRuler = '조조'; // 게스트 기본 군주
+
+      peer = new Peer();
+
+      peer.on('open', (id) => {
+        myPeerId = id;
+        hostConn = peer.connect(targetRoom);
+
+        hostConn.on('open', () => {
+          document.getElementById('mp-lobby-entry').classList.add('hidden');
+          document.getElementById('mp-lobby-room').classList.remove('hidden');
+          document.getElementById('mp-display-room-code').innerText = targetRoom;
+          document.getElementById('mp-my-role-badge').innerText = "⚔️ 참가자";
+          document.getElementById('mp-my-role-badge').className = "text-[10px] px-1.5 py-0.5 rounded bg-amber-600 text-white font-bold";
+
+          // 방장에게 참가 정보 전송
+          hostConn.send({
+            type: 'JOIN_LOBBY',
+            playerId: mpState.myPlayerId,
+            ruler: mpState.myRuler
+          });
+
+          playSfx('build');
+        });
+
+        hostConn.on('data', (data) => {
+          handleGuestReceivedData(data);
+        });
+
+        hostConn.on('close', () => {
+          alert('방장과의 연결이 끊어졌습니다.');
+          leaveP2PRoom();
+        });
+      });
+
+      peer.on('error', (err) => {
+        alert('방에 접속할 수 없습니다. 방 코드를 확인해 주십시오: ' + targetRoom);
+      });
+    }
+
+    // 호스트의 데이터 처리
+    function handleHostReceivedData(conn, data) {
+      if (data.type === 'JOIN_LOBBY') {
+        const availableRulers = ['조조', '손책', '원소', '여포', '마등'];
+        const taken = mpState.players.map(p => p.ruler);
+        const assignedRuler = availableRulers.find(r => !taken.includes(r)) || '조조';
+
+        const newPlayer = {
+          id: data.playerId,
+          name: `참가자 (${assignedRuler})`,
+          ruler: assignedRuler,
+          isHost: false,
+          isReady: false,
+          conn: conn
+        };
+        mpState.players.push(newPlayer);
+
+        appendLobbyChat(`👑 [입장] 새로운 영걸 [${newPlayer.name}] 님이 방에 입장했습니다!`);
+        broadcastLobbyState();
+        renderLobbyPlayers();
+
+      } else if (data.type === 'SET_READY') {
+        const p = mpState.players.find(x => x.id === data.playerId);
+        if (p) p.isReady = data.isReady;
+        broadcastLobbyState();
+        renderLobbyPlayers();
+
+      } else if (data.type === 'CHAT_MSG') {
+        appendLobbyChat(data.sender + ": " + data.msg);
+        peerConnections.forEach(c => c.send(data));
+
+      } else if (data.type === 'SYNC_TURN_ACTION') {
+        // 인게임 턴 동기화 액션
+        applyRemoteAction(data);
+        peerConnections.forEach(c => {
+          if (c !== conn) c.send(data);
+        });
+      }
+    }
+
+    // 게스트의 데이터 처리
+    function handleGuestReceivedData(data) {
+      if (data.type === 'LOBBY_STATE') {
+        mpState.players = data.players;
+        renderLobbyPlayers();
+
+        // 내 군주 확인
+        const me = mpState.players.find(p => p.id === mpState.myPlayerId);
+        if (me) mpState.myRuler = me.ruler;
+
+      } else if (data.type === 'CHAT_MSG') {
+        appendLobbyChat(data.sender + ": " + data.msg);
+
+      } else if (data.type === 'START_GAME') {
+        // 호스트의 게임 시작 신호
+        closeModal('multiplay-modal');
+        logMessage(`🚀 [천하쟁패 개시!] 방장이 멀티플레이 대전을 시작했습니다!`, 'text-yellow-300 font-black text-sm');
+        playSfx('fanfare');
+
+        // 내 군주로 시점 전환
+        if (mpState.myRuler) {
+          const targetProv = PROVINCES.find(p => p.ruler === mpState.myRuler);
+          if (targetProv) {
+            gameState.rulerName = mpState.myRuler;
+            gameState.myCapitalId = targetProv.id;
+            gameState.selectedProvId = targetProv.id;
+            renderMapPins();
+            updateRightPanel(targetProv.id);
+          }
+        }
+
+      } else if (data.type === 'SYNC_TURN_ACTION') {
+        applyRemoteAction(data);
+      }
+    }
+
+    function broadcastLobbyState() {
+      const cleanPlayers = mpState.players.map(p => ({
+        id: p.id,
+        name: p.name,
+        ruler: p.ruler,
+        isHost: p.isHost,
+        isReady: p.isReady
+      }));
+
+      peerConnections.forEach(c => {
+        c.send({
+          type: 'LOBBY_STATE',
+          players: cleanPlayers
+        });
+      });
+    }
+
+    function renderLobbyPlayers() {
+      const container = document.getElementById('mp-players-grid');
+      if (!container) return;
+
+      container.innerHTML = mpState.players.map(p => {
+        const isMe = (p.id === mpState.myPlayerId);
+        return `
+          <div class="p-2.5 rounded border ${p.isReady ? 'bg-emerald-950/70 border-emerald-500' : 'bg-slate-800 border-slate-600'} flex items-center justify-between shadow">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">${p.isHost ? '👑' : '⚔️'}</span>
+              <div class="flex flex-col text-left">
+                <span class="text-xs font-black text-white flex items-center gap-1">
+                  ${p.name} ${isMe ? '<span class="text-[9px] px-1 bg-blue-600 text-white rounded">나</span>' : ''}
+                </span>
+                <span class="text-[10px] text-yellow-300 font-bold">담당 군주: [${p.ruler}]</span>
+              </div>
+            </div>
+            <span class="text-[11px] font-black ${p.isReady ? 'text-emerald-300 animate-pulse' : 'text-slate-400'}">
+              ${p.isReady ? '준비 완료!' : '대기 중...'}
+            </span>
+          </div>
+        `;
+      }).join('');
+
+      // 호스트 전용: 모두 준비되면 게임 시작 버튼 노출
+      const btnStart = document.getElementById('btn-mp-start');
+      const allReady = mpState.players.every(p => p.isReady);
+      if (isP2PHost && btnStart) {
+        if (allReady && mpState.players.length >= 1) {
+          btnStart.classList.remove('hidden');
+        } else {
+          btnStart.classList.add('hidden');
+        }
+      }
+    }
+
+    function togglePlayerReady() {
+      mpState.isReady = !mpState.isReady;
+      const btn = document.getElementById('btn-mp-ready');
+      if (btn) {
+        btn.innerText = mpState.isReady ? "✅ 준비 완료 (해제)" : "⭐ 준비 완료 (Ready)";
+        btn.className = mpState.isReady ? "px-4 py-2 rounded bg-emerald-700 hover:bg-emerald-600 border border-emerald-300 text-white font-black text-xs shadow transition active:scale-95" : "px-4 py-2 rounded bg-amber-600 hover:bg-amber-500 border border-yellow-300 text-white font-black text-xs shadow transition active:scale-95";
+      }
+
+      if (isP2PHost) {
+        const me = mpState.players.find(p => p.id === mpState.myPlayerId);
+        if (me) me.isReady = mpState.isReady;
+        broadcastLobbyState();
+        renderLobbyPlayers();
+      } else if (hostConn) {
+        hostConn.send({
+          type: 'SET_READY',
+          playerId: mpState.myPlayerId,
+          isReady: mpState.isReady
+        });
+      }
+    }
+
+    function copyInviteLink() {
+      const inviteUrl = window.location.origin + window.location.pathname + '?room=' + currentRoomId;
+      navigator.clipboard.writeText(inviteUrl).then(() => {
+        alert(`🔗 [초대 링크 복사 완료!]
+
+카톡이나 메신저로 친구에게 링크를 전달하십시오:
+${inviteUrl}
+
+친구가 링크를 클릭하면 즉시 이 방으로 접속됩니다!`);
+      }).catch(() => {
+        prompt("아래 링크를 복사하여 친구에게 전달하십시오:", inviteUrl);
+      });
+    }
+
+    function sendLobbyChat() {
+      const input = document.getElementById('mp-chat-input');
+      const msg = (input.value || '').trim();
+      if (!msg) return;
+      input.value = '';
+
+      const senderName = isP2PHost ? '방장' : '참가자';
+      appendLobbyChat(`${senderName}: ${msg}`);
+
+      const chatData = {
+        type: 'CHAT_MSG',
+        sender: senderName,
+        msg: msg
+      };
+
+      if (isP2PHost) {
+        peerConnections.forEach(c => c.send(chatData));
+      } else if (hostConn) {
+        hostConn.send(chatData);
+      }
+    }
+
+    function appendLobbyChat(text) {
+      const box = document.getElementById('mp-chat-logs');
+      if (!box) return;
+      const div = document.createElement('div');
+      div.innerText = text;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function startMultiplayOnlineGame() {
+      if (!isP2PHost) return;
+      peerConnections.forEach(c => {
+        c.send({ type: 'START_GAME' });
+      });
+
+      closeModal('multiplay-modal');
+      logMessage(`🚀 [천하쟁패 개시!] 온라인 멀티플레이 실시간 대전을 시작합니다!`, 'text-yellow-300 font-black text-sm');
+      playSfx('fanfare');
+    }
+
+    function leaveP2PRoom() {
+      if (peer) peer.destroy();
+      peer = null;
+      peerConnections = [];
+      hostConn = null;
+      mpState.isOnline = false;
+      document.getElementById('mp-lobby-entry').classList.remove('hidden');
+      document.getElementById('mp-lobby-room').classList.add('hidden');
+    }
+
+    // --------------------------------------------------------------------------
+    // 👥 [3. 한 기기 핫시트(Hotseat) 다인 대전 엔진]
+    // --------------------------------------------------------------------------
+    function startHotseatGame() {
+      const selectedRulers = [];
+      if (document.getElementById('hs-ruler-liubei').checked) selectedRulers.push('유비');
+      if (document.getElementById('hs-ruler-caocao').checked) selectedRulers.push('조조');
+      if (document.getElementById('hs-ruler-sunce').checked) selectedRulers.push('손책');
+      if (document.getElementById('hs-ruler-yuanshao').checked) selectedRulers.push('원소');
+
+      if (selectedRulers.length < 2) {
+        alert("핫시트 다인 대전을 진행하려면 최소 2명 이상의 군주를 선택해야 합니다!");
+        return;
+      }
+
+      mpState.isHotseat = true;
+      mpState.hotseatRulers = selectedRulers;
+      mpState.currentHotseatIdx = 0;
+
+      closeModal('multiplay-modal');
+
+      const firstRuler = selectedRulers[0];
+      changeRulerTo(firstRuler);
+
+      playSfx('fanfare');
+      alert(`👥 [핫시트 다인 대전 개시!]
+
+▶ 참가 군주: ${selectedRulers.join(', ')} (${selectedRulers.length}인 대전)
+
+첫 번째 순서인 [${firstRuler}] 군주님의 턴입니다!
+
+턴을 넘길 때마다 다음 플레이어에게 화면이 교대로 전환됩니다!`);
+      logMessage(`👥 [핫시트 대전 개시] ${selectedRulers.join(', ')} 군주 간의 천하쟁패가 시작되었습니다!`, 'text-purple-300 font-black text-sm');
+    }
+
+    function nextHotseatTurn() {
+      if (!mpState.isHotseat || mpState.hotseatRulers.length === 0) return;
+
+      mpState.currentHotseatIdx = (mpState.currentHotseatIdx + 1) % mpState.hotseatRulers.length;
+      const nextRuler = mpState.hotseatRulers[mpState.currentHotseatIdx];
+
+      changeRulerTo(nextRuler);
+      playSfx('fanfare');
+
+      alert(`👥 [차례 교대 - ${nextRuler} 군주님의 턴!]
+
+화면을 [${nextRuler}] 플레이어에게 넘겨주십시오!
+
+전략 행동력이 충전되었으며, 명령을 수행하십시오!`);
+      logMessage(`👑 [차례 교대] 이제부터 [${nextRuler}] 군주님의 지휘 차례입니다!`, 'text-yellow-300 font-black');
+    }
+
+    function changeRulerTo(rulerName) {
+      const prov = PROVINCES.find(p => p.ruler === rulerName);
+      if (!prov) return;
+
+      gameState.rulerName = rulerName;
+      gameState.myCapitalId = prov.id;
+      gameState.selectedProvId = prov.id;
+      gameState.actionPoints = getMaxActionPoints();
+
+      renderMapPins();
+      updateRightPanel(prov.id);
+      updateActionPointUI();
+    }
+
+    // 턴 넘김 시 핫시트 차례 교대 연결
+    const origExecuteRest = executeRest;
+    executeRest = function() {
+      origExecuteRest();
+      if (mpState.isHotseat) {
+        setTimeout(() => {
+          nextHotseatTurn();
+        }, 300);
+      }
+    };
+
 
     // ==========================================================================
     // 전략 기믹 2: 일기토(一騎討) 일격필살 시스템
