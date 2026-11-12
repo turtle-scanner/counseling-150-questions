@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2027학년도 공립 중등임용시험 - 교육학·전공상담 초격차 CBT 실전 고사장</title>
+<title>2027학년도 공립 중등임용시험 - 교육학·전공상담 초격차 CBT 실전 고사장 (TTS & 셔플 & 리포트)</title>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -21,6 +21,7 @@
   --accent-emerald: #10b981;
   --accent-rose: #f43f5e;
   --accent-purple: #c084fc;
+  --font-scale: 1;
 }
 
 /* B4 시험지 종이 질감 모드 */
@@ -70,7 +71,7 @@ body.b4-paper-mode .kice-exam-header {
 }
 
 .header-inner {
-  max-width: 1520px;
+  max-width: 1560px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -117,7 +118,7 @@ body.b4-paper-mode .examinee-tag {
   border-color: #1e3a8a;
 }
 
-/* ================= 30분 타이머 & 타자속도(WPM) ================= */
+/* ================= 30분 타이머 & 타자속도 & ASMR ================= */
 .timer-container {
   display: flex;
   align-items: center;
@@ -172,7 +173,6 @@ body.b4-paper-mode .btn-timer {
   border-color: #9ca3af;
 }
 
-/* 타자 속도 WPM 배지 */
 .wpm-badge {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
@@ -184,7 +184,6 @@ body.b4-paper-mode .btn-timer {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-/* 화이트 노이즈 ASMR 버튼 */
 .btn-asmr {
   background: #1e293b;
   border: 1px solid #334155;
@@ -203,17 +202,42 @@ body.b4-paper-mode .btn-timer {
   color: var(--accent-blue);
 }
 
+/* 폰트 크기 조절기 */
+.font-scale-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: #0d1525;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border-kice);
+}
+body.b4-paper-mode .font-scale-ctrl {
+  background: #dbd4c0;
+}
+.btn-font-scale {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 2px 5px;
+}
+.btn-font-scale:hover { color: var(--accent-blue); }
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .btn-kice {
   background: #131c2e;
   color: #e2e8f0;
   border: 1px solid #2a3a54;
-  padding: 5px 11px;
+  padding: 5px 10px;
   border-radius: 6px;
   font-size: 0.78rem;
   font-weight: 700;
@@ -237,7 +261,7 @@ body.b4-paper-mode .btn-kice {
 
 /* ================= 3대 교시 탭 & 필터 바 ================= */
 .sub-bar {
-  max-width: 1520px;
+  max-width: 1560px;
   margin: 12px auto 0;
   padding: 0 24px;
   display: flex;
@@ -279,7 +303,8 @@ body.b4-paper-mode .period-tabs {
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .filter-btn {
@@ -300,7 +325,7 @@ body.b4-paper-mode .period-tabs {
 
 /* 네비게이션 띠 */
 .nav-strip {
-  max-width: 1520px;
+  max-width: 1560px;
   margin: 10px auto 0;
   padding: 0 24px;
   display: flex;
@@ -341,7 +366,7 @@ body.b4-paper-mode .nav-pill {
 
 /* ================= 문항 카드 ================= */
 main {
-  max-width: 1520px;
+  max-width: 1560px;
   margin: 16px auto 0;
   padding: 0 24px;
   display: flex;
@@ -396,18 +421,12 @@ main {
 .type-pill.fillin { background: rgba(192, 132, 252, 0.15); color: #d8b4fe; border: 1px solid #9333ea; }
 .type-pill.essay { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid #0284c7; }
 
-.q-score-tag {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
 .q-card-body {
   padding: 18px;
 }
 
 .q-question-text {
-  font-size: 1.05rem;
+  font-size: calc(1.05rem * var(--font-scale));
   font-weight: 700;
   margin-bottom: 14px;
   line-height: 1.5;
@@ -422,7 +441,7 @@ main {
   border-radius: 6px;
   padding: 16px 20px;
   margin-bottom: 16px;
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--font-scale));
   line-height: 1.8;
   white-space: pre-line;
   font-family: 'Noto Sans KR', sans-serif;
@@ -437,7 +456,7 @@ main {
   border-radius: 6px;
   padding: 12px 18px;
   margin-bottom: 18px;
-  font-size: 0.88rem;
+  font-size: calc(0.88rem * var(--font-scale));
   line-height: 1.6;
   white-space: pre-line;
 }
@@ -448,7 +467,7 @@ body.b4-paper-mode .instructions-box {
   color: var(--accent-gold);
 }
 
-/* 키워드 태그 목록 */
+/* 키워드 태그 */
 .kw-tags-strip {
   display: flex;
   gap: 6px;
@@ -518,7 +537,7 @@ body.b4-paper-mode .kw-pill {
   border-radius: 6px;
   padding: 0 16px;
   color: #f8fafc;
-  font-size: 1.05rem;
+  font-size: calc(1.05rem * var(--font-scale));
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   line-height: 40px;
   resize: vertical;
@@ -581,7 +600,7 @@ body.b4-paper-mode .chip-item {
   border-radius: 6px;
   padding: 0 16px;
   color: #fef08a;
-  font-size: 1.05rem;
+  font-size: calc(1.05rem * var(--font-scale));
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   line-height: 40px;
   white-space: pre-line;
@@ -639,10 +658,57 @@ body.b4-paper-mode .scoring-eval-bar {
   color: var(--accent-gold);
 }
 
-/* ================= B4 정규 인쇄 전용 스타일 ================= */
+/* ================= 종합 성적표 모달 ================= */
+#report-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.modal-box {
+  background: #131c2e;
+  border: 2px solid #38bdf8;
+  border-radius: 12px;
+  max-width: 650px;
+  width: 100%;
+  padding: 24px;
+  color: #f8fafc;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #38bdf8;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #22314d;
+  padding-bottom: 10px;
+}
+.report-row {
+  margin-bottom: 12px;
+}
+.report-bar-wrap {
+  background: #0a0f1d;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.report-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #10b981);
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+/* ================= B4 정규 인쇄 ================= */
 @media print {
   body { background: #fff !important; color: #000 !important; }
-  .kice-exam-header, .sub-bar, .nav-strip, .scoring-eval-bar, .header-actions, .btn-sheet-mini, #toast { display: none !important; }
+  .kice-exam-header, .sub-bar, .nav-strip, .scoring-eval-bar, .header-actions, .btn-sheet-mini, #toast, #report-modal { display: none !important; }
   main { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
   .q-card { border: 2px solid #000 !important; box-shadow: none !important; margin-bottom: 20px !important; page-break-inside: avoid; }
   .q-card-head { background: #f0f0f0 !important; color: #000 !important; border-bottom: 1px solid #000 !important; }
@@ -692,12 +758,20 @@ body.b4-paper-mode .scoring-eval-bar {
       <button class="btn-asmr" id="btn-asmr" onclick="toggleASMR()">연필소리 OFF</button>
     </div>
 
+    <div class="font-scale-ctrl">
+      <button class="btn-font-scale" onclick="adjustFont(-0.05)">A-</button>
+      <span style="font-size:0.75rem; color:var(--text-muted);">글꼴</span>
+      <button class="btn-font-scale" onclick="adjustFont(0.05)">A+</button>
+    </div>
+
     <div class="header-actions">
       <button class="btn-kice" onclick="togglePaperMode()" id="btn-paper-mode">B4 시험지 모드</button>
       <button class="btn-kice" onclick="toggleBlankMode()" id="btn-blank-mode">백지 테스트 모드</button>
       <button class="btn-kice" onclick="toggleAllMasks()" id="btn-toggle-all">모범답안 가리기</button>
-      <button class="btn-kice" onclick="window.print()">B4 양식 인쇄</button>
-      <button class="btn-kice accent" onclick="exportAnswers()">답안지 최종 제출 (TXT)</button>
+      <button class="btn-kice" onclick="shuffleCurrentPeriod()" id="btn-shuffle">랜덤 셔플</button>
+      <button class="btn-kice" onclick="openReportModal()">종합 성적표</button>
+      <button class="btn-kice" onclick="window.print()">B4 인쇄</button>
+      <button class="btn-kice accent" onclick="exportAnswers()">답안 최종 제출 (TXT)</button>
     </div>
   </div>
 </header>
@@ -721,6 +795,17 @@ body.b4-paper-mode .scoring-eval-bar {
 
 <main id="exam-cards-container"></main>
 
+<!-- 종합 성적표 모달 -->
+<div id="report-modal">
+  <div class="modal-box">
+    <div class="modal-title">🏆 2027학년도 KICE CBT 종합 성취도 진단 리포트</div>
+    <div id="report-content"></div>
+    <div style="text-align: right; margin-top: 20px;">
+      <button class="btn-kice accent" onclick="closeReportModal()">확인 완료</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast">알림</div>
 
 <script>
@@ -733,9 +818,11 @@ let allMasked = false;
 let isPaperMode = false;
 let isBlankMode = false;
 let showOnlyBookmarks = false;
+let isShuffled = false;
+let currentFontScale = 1.0;
 let bookmarks = JSON.parse(localStorage.getItem('kice_bookmarks') || '{}');
 
-// 타자 속도 (WPM) 계산 변수
+// 타자 속도 (WPM)
 let totalTypedChars = 0;
 let typingStartTime = null;
 
@@ -744,33 +831,46 @@ let timerSeconds = 30 * 60;
 let timerInterval = null;
 let isTimerRunning = true;
 
-// Web Audio API 기반 연필 사각거리는 화이트 노이즈 ASMR 생성기
+// Web Audio API ASMR & 만점 차임벨 효과음
 let audioCtx = null;
 let noiseNode = null;
 let isAsmrOn = false;
 
+function playSuccessChime() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+    osc.frequency.setValueAtTime(880.00, audioCtx.currentTime + 0.1); // A5
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.6);
+  } catch(e) {}
+}
+
 function toggleASMR() {
-  if (!isAsmrOn) {
-    startASMR();
-  } else {
-    stopASMR();
-  }
+  if (!isAsmrOn) startASMR();
+  else stopASMR();
 }
 
 function startASMR() {
   try {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const bufferSize = audioCtx.sampleRate * 2;
     const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.015; // 부드러운 핑크빛 백색소음
+      data[i] = (Math.random() * 2 - 1) * 0.015;
     }
     noiseNode = audioCtx.createBufferSource();
     noiseNode.buffer = buffer;
     noiseNode.loop = true;
     
-    // 로우패스 필터로 부드러운 종이 사각거리는 느낌 연출
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.value = 1200;
@@ -798,6 +898,27 @@ function stopASMR() {
   const btn = document.getElementById('btn-asmr');
   btn.textContent = '연필소리 OFF';
   btn.classList.remove('on');
+}
+
+// TTS 실시간 음성 낭독
+function speakAnswer(text) {
+  if (!('speechSynthesis' in window)) {
+    showToast('이 브라우저는 음성 낭독을 지원하지 않습니다.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const clean = text.replace(/\n/g, ' ').replace(/[㉠㉡㉢]/g, '');
+  const uttr = new SpeechSynthesisUtterance(clean);
+  uttr.lang = 'ko-KR';
+  uttr.rate = 0.95; // 명확하고 차분한 낭독 속도
+  window.speechSynthesis.speak(uttr);
+  showToast('KICE 모범답안 음성 낭독을 시작합니다.');
+}
+
+function adjustFont(delta) {
+  currentFontScale = Math.max(0.85, Math.min(1.35, currentFontScale + delta));
+  document.documentElement.style.setProperty('--font-scale', currentFontScale);
+  showToast(`글꼴 크기: ${Math.round(currentFontScale * 100)}%`);
 }
 
 function startTimer() {
@@ -874,6 +995,15 @@ function toggleBookmark(key) {
   showToast(bookmarks[key] ? '북마크에 추가되었습니다.' : '북마크가 해제되었습니다.');
 }
 
+function shuffleCurrentPeriod() {
+  isShuffled = !isShuffled;
+  document.getElementById('btn-shuffle').textContent = isShuffled ? '원래 순서로' : '랜덤 셔플';
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  showToast(isShuffled ? '문항이 무작위로 셔플되었습니다.' : '정상 순서로 복원되었습니다.');
+}
+
 function init() {
   renderNav();
   renderCards();
@@ -884,6 +1014,8 @@ function init() {
 
 function switchPeriod(p) {
   currentPeriod = p;
+  isShuffled = false;
+  document.getElementById('btn-shuffle').textContent = '랜덤 셔플';
   document.getElementById('tab-btn-PED').classList.toggle('active', p === 'PED');
   document.getElementById('tab-btn-A').classList.toggle('active', p === 'A');
   document.getElementById('tab-btn-B').classList.toggle('active', p === 'B');
@@ -894,8 +1026,9 @@ function switchPeriod(p) {
 }
 
 function getList() {
+  let list = [];
   if (currentPeriod === 'PED') {
-    return dataPED.map(item => ({
+    list = dataPED.map(item => ({
       num: item.num,
       title: `[${item.domain} ${item.num}번] ${item.title} - ${item.concept}`,
       type: '교육학 논술',
@@ -905,8 +1038,14 @@ function getList() {
       answer: item.model_answer.join('\n'),
       keywords: item.keywords
     }));
+  } else {
+    list = currentPeriod === 'A' ? dataA : dataB;
   }
-  return currentPeriod === 'A' ? dataA : dataB;
+
+  if (isShuffled) {
+    list = [...list].sort(() => Math.random() - 0.5);
+  }
+  return list;
 }
 
 function renderNav() {
@@ -964,7 +1103,6 @@ function renderCards() {
         .replace(/㉢/g, ' [    ㉢    ] ');
     }
 
-    // 키워드 태그 파싱
     const kwList = q.keywords || extractKeywords(q.answer);
 
     card.innerHTML = `
@@ -1010,6 +1148,7 @@ function renderCards() {
             <div class="sheet-col-header">
               <span>KICE 100% 만점 공식 모범답안</span>
               <div>
+                <button class="btn-sheet-mini" onclick="speakAnswer(\`${escapeHtml(q.answer)}\`)">음성 듣기 🎧</button>
                 <button class="btn-sheet-mini" onclick="toggleMask('${currentPeriod}', ${q.num})">가리기/보기</button>
                 <button class="btn-sheet-mini" onclick="copyModelAnswer('${currentPeriod}', ${q.num})">복사</button>
               </div>
@@ -1094,19 +1233,25 @@ function handleInput(period, num) {
     });
   }
 
-  // 실시간 루브릭 채점 판정
+  // 실시간 루브릭 채점 판정 및 만점 차임벨 효과음
+  const wasPerfect = evalScore.getAttribute('data-perfect') === 'true';
   if (text.trim().length === 0) {
     evalScore.textContent = '판정 대기';
     evalScore.style.color = 'var(--accent-gold)';
+    evalScore.setAttribute('data-perfect', 'false');
   } else if (hasOverflow) {
     evalScore.textContent = '경고: 한 줄에 45자를 초과하여 실제 시험지 칸을 벗어납니다!';
     evalScore.style.color = 'var(--accent-rose)';
+    evalScore.setAttribute('data-perfect', 'false');
   } else if (validLineCount === 4) {
     evalScore.textContent = '★ 4줄 B4 규격 100% 만점 일치! (4.0 / 4.0)';
     evalScore.style.color = 'var(--accent-emerald)';
+    evalScore.setAttribute('data-perfect', 'true');
+    if (!wasPerfect) playSuccessChime(); // 최초 만점 달성 시 차임벨 울림
   } else {
     evalScore.textContent = `현재 ${lines.length}줄 작성 중 (규격 일치 ${validLineCount}줄)`;
     evalScore.style.color = 'var(--accent-blue)';
+    evalScore.setAttribute('data-perfect', 'false');
   }
 
   localStorage.setItem('kice_real_cbt_' + key, text);
@@ -1163,6 +1308,61 @@ function copyModelAnswer(period, num) {
   if (q && q.answer) {
     navigator.clipboard.writeText(q.answer).then(() => showToast('모범답안이 복사되었습니다!'));
   }
+}
+
+// 종합 성적표 모달 오픈
+function openReportModal() {
+  const modal = document.getElementById('report-modal');
+  const container = document.getElementById('report-content');
+  
+  const periods = [
+    { id: 'PED', name: '1교시 교육학 논술', total: dataPED.length },
+    { id: 'A', name: '2교시 전공 A형', total: dataA.length },
+    { id: 'B', name: '3교시 전공 B형', total: dataB.length }
+  ];
+
+  let html = '';
+  let grandTotal = 0;
+  let grandDone = 0;
+
+  periods.forEach(p => {
+    let done = 0;
+    for (let i = 1; i <= p.total; i++) {
+      const val = localStorage.getItem('kice_real_cbt_' + p.id + i) || '';
+      if (val.trim().length >= 20) done++;
+    }
+    grandTotal += p.total;
+    grandDone += done;
+    const rate = Math.round((done / p.total) * 100);
+
+    html += `
+      <div class="report-row">
+        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.9rem;">
+          <span>${p.name}</span>
+          <span style="color:#38bdf8;">${done} / ${p.total} 문항 (${rate}%)</span>
+        </div>
+        <div class="report-bar-wrap">
+          <div class="report-bar-fill" style="width: ${rate}%%"></div>
+        </div>
+      </div>
+    `;
+  });
+
+  const totalRate = Math.round((grandDone / grandTotal) * 100);
+  html = `
+    <div style="background:#0b1220; padding:16px; border-radius:8px; margin-bottom:16px; text-align:center;">
+      <div style="font-size:0.9rem; color:#94a3b8;">전과목 종합 타이핑 완성도</div>
+      <div style="font-size:2rem; font-weight:900; color:#fbbf24; margin:4px 0;">${totalRate}점 / 100점</div>
+      <div style="font-size:0.85rem; color:#34d399;">총 ${grandTotal}문항 중 ${grandDone}문항 완벽 인출 달성!</div>
+    </div>
+  ` + html;
+
+  container.innerHTML = html;
+  modal.style.display = 'flex';
+}
+
+function closeReportModal() {
+  document.getElementById('report-modal').style.display = 'none';
 }
 
 function exportWrongNotes() {
