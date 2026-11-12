@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2027학년도 공립 중등학교교사 임용후보자 선정경쟁시험 - 전문상담 실전 CBT 고사장</title>
+<title>2027학년도 공립 중등학교교사 임용후보자 선정경쟁시험 - 전문상담 초실전 CBT 고사장</title>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-kice-dark: #0a0f1d;
+  --bg-main: #0a0f1d;
   --bg-card: #121929;
   --bg-card-header: #182238;
   --bg-passage: #0b1220;
@@ -23,16 +23,34 @@
   --accent-purple: #c084fc;
 }
 
+/* B4 시험지 종이 질감 모드 변수 */
+body.b4-paper-mode {
+  --bg-main: #18191c;
+  --bg-card: #e8e3d5;
+  --bg-card-header: #dbd4c0;
+  --bg-passage: #f3efe6;
+  --border-kice: #8c826e;
+  --border-kice-focus: #1e3a8a;
+  --text-main: #111827;
+  --text-sub: #374151;
+  --text-muted: #4b5563;
+  --accent-blue: #1e40af;
+  --accent-gold: #b45309;
+  --accent-emerald: #047857;
+  --accent-rose: #b91c1c;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background-color: var(--bg-kice-dark);
+  background-color: var(--bg-main);
   color: var(--text-main);
   line-height: 1.6;
   min-height: 100vh;
   padding-bottom: 90px;
   user-select: text;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* ================= KICE 실전 고사장 상단 헤더 ================= */
@@ -43,24 +61,28 @@ body {
   background: rgba(10, 15, 29, 0.98);
   backdrop-filter: blur(12px);
   border-bottom: 2px solid #1e3a5f;
-  padding: 12px 24px;
+  padding: 10px 24px;
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
+}
+body.b4-paper-mode .kice-exam-header {
+  background: rgba(220, 215, 200, 0.98);
+  border-bottom: 2px solid #8c826e;
 }
 
 .header-inner {
-  max-width: 1440px;
+  max-width: 1460px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 12px;
 }
 
 .brand-section {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .kice-seal {
@@ -75,46 +97,54 @@ body {
 }
 
 .exam-main-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: #f8fafc;
 }
 
 .examinee-tag {
   color: #38bdf8;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   background: rgba(56, 189, 248, 0.1);
   padding: 3px 8px;
   border-radius: 4px;
   border: 1px solid rgba(56, 189, 248, 0.3);
 }
+body.b4-paper-mode .examinee-tag {
+  color: #1e3a8a;
+  background: rgba(30, 58, 138, 0.1);
+  border-color: #1e3a8a;
+}
 
-/* ================= 90분 실전 스톱워치 타이머 ================= */
+/* 90분 실전 스톱워치 타이머 */
 .timer-container {
   display: flex;
   align-items: center;
   gap: 10px;
   background: #091322;
   border: 1px solid #1e3a5f;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 8px;
+}
+body.b4-paper-mode .timer-container {
+  background: #fdfbf7;
+  border-color: #8c826e;
 }
 
 .timer-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-sub);
   font-weight: 600;
 }
 
 .timer-digits {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--accent-gold);
   letter-spacing: 1px;
-  min-width: 95px;
+  min-width: 90px;
   text-align: center;
 }
 
@@ -132,32 +162,40 @@ body {
   background: #1e293b;
   border: 1px solid #334155;
   color: #cbd5e1;
-  font-size: 0.75rem;
-  padding: 4px 8px;
+  font-size: 0.72rem;
+  padding: 3px 7px;
   border-radius: 4px;
   cursor: pointer;
 }
-.btn-timer:hover { background: #334155; color: #fff; }
+body.b4-paper-mode .btn-timer {
+  background: #e2dcd0;
+  color: #1f2937;
+  border-color: #9ca3af;
+}
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn-kice {
   background: #131c2e;
   color: #e2e8f0;
   border: 1px solid #2a3a54;
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 6px;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
+body.b4-paper-mode .btn-kice {
+  background: #fdfbf7;
+  color: #1f2937;
+  border-color: #8c826e;
+}
 .btn-kice:hover {
-  background: #1c273e;
   border-color: var(--accent-blue);
   color: var(--accent-blue);
 }
@@ -167,10 +205,10 @@ body {
   color: #fff;
 }
 
-/* ================= 탭 & 진행상황 바 ================= */
+/* ================= 탭 & 컨트롤 바 ================= */
 .sub-bar {
-  max-width: 1440px;
-  margin: 14px auto 0;
+  max-width: 1460px;
+  margin: 12px auto 0;
   padding: 0 24px;
   display: flex;
   justify-content: space-between;
@@ -187,11 +225,14 @@ body {
   border-radius: 8px;
   border: 1px solid var(--border-kice);
 }
+body.b4-paper-mode .period-tabs {
+  background: #dbd4c0;
+}
 
 .period-tab-btn {
-  padding: 7px 16px;
+  padding: 6px 15px;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 800;
   border: none;
   cursor: pointer;
@@ -222,11 +263,15 @@ body {
   border-radius: 999px;
   font-weight: 800;
 }
+body.b4-paper-mode .badge-count {
+  background: #fdfbf7;
+  border-color: #8c826e;
+}
 
-/* 문항 빠른 이동 바 */
+/* 네비게이션 띠 */
 .nav-strip {
-  max-width: 1440px;
-  margin: 12px auto 0;
+  max-width: 1460px;
+  margin: 10px auto 0;
   padding: 0 24px;
   display: flex;
   gap: 6px;
@@ -238,13 +283,17 @@ body {
   background: #101726;
   border: 1px solid var(--border-kice);
   color: var(--text-sub);
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 5px;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s;
+}
+body.b4-paper-mode .nav-pill {
+  background: #e5ded0;
+  border-color: #a39985;
 }
 .nav-pill:hover {
   border-color: var(--accent-blue);
@@ -258,8 +307,8 @@ body {
 
 /* ================= 문항 카드 ================= */
 main {
-  max-width: 1440px;
-  margin: 18px auto 0;
+  max-width: 1460px;
+  margin: 16px auto 0;
   padding: 0 24px;
   display: flex;
   flex-direction: column;
@@ -271,12 +320,13 @@ main {
   border: 1px solid var(--border-kice);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  transition: all 0.2s;
 }
 
 .q-card-head {
   background: var(--bg-card-header);
-  padding: 12px 20px;
+  padding: 10px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -308,43 +358,43 @@ main {
 }
 
 .q-card-body {
-  padding: 20px;
+  padding: 18px;
 }
 
 .q-question-text {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #f8fafc;
   margin-bottom: 14px;
   line-height: 1.5;
   font-family: 'Nanum Myeongjo', serif;
 }
 
-/* 실전 기출 지문 박스 */
+/* 지문 박스 */
 .passage-wrapper {
   background: var(--bg-passage);
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border-kice);
   border-left: 4px solid var(--accent-blue);
   border-radius: 6px;
   padding: 16px 20px;
   margin-bottom: 16px;
   font-size: 0.95rem;
   line-height: 1.8;
-  color: #e2e8f0;
   white-space: pre-line;
   font-family: 'Noto Sans KR', sans-serif;
 }
 
 .instructions-box {
-  background: #0d1422;
-  border: 1px dashed #334155;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed var(--border-kice);
   border-radius: 6px;
   padding: 12px 18px;
   margin-bottom: 18px;
   font-size: 0.88rem;
   line-height: 1.6;
-  color: #cbd5e1;
   white-space: pre-line;
+}
+body.b4-paper-mode .instructions-box {
+  background: #eae5d7;
 }
 .instructions-box strong {
   color: var(--accent-gold);
@@ -379,14 +429,13 @@ main {
   color: var(--text-sub);
 }
 
-/* 왼쪽: 수험생 B4 실전 4줄 답안지 (40px 정확한 밑줄) */
+/* 왼쪽: 수험생 B4 실전 4줄 답안지 (정밀 40px 밑줄) */
 .b4-typing-sheet {
   width: 100%;
   flex: 1;
   min-height: 170px;
   background-color: #070d18;
-  /* B4 시험지 4줄 밑줄 가이드선 */
-  background-image: linear-gradient(to bottom, transparent 39px, rgba(56, 189, 248, 0.35) 40px);
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(56, 189, 248, 0.38) 40px);
   background-size: 100% 40px;
   background-attachment: local;
   border: 1px solid #1e3a5f;
@@ -401,26 +450,47 @@ main {
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+body.b4-paper-mode .b4-typing-sheet {
+  background-color: #faf8f3;
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(30, 58, 138, 0.4) 40px);
+  border-color: #8c826e;
+  color: #111827;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.15);
+}
 
 .b4-typing-sheet:focus {
   border-color: var(--accent-blue);
   box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
 }
 
-.char-badge {
+/* 줄별 글자 수 실시간 가이드 칩 */
+.line-status-chip {
   font-size: 0.75rem;
-  color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 700;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
 }
-.char-badge.ok {
+.chip-item {
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: #1e293b;
+  color: #94a3b8;
+}
+body.b4-paper-mode .chip-item {
+  background: #dbd4c0;
+  color: #374151;
+}
+.chip-item.perfect {
+  background: rgba(16, 185, 129, 0.2);
   color: var(--accent-emerald);
-  font-weight: 800;
+  border: 1px solid var(--accent-emerald);
 }
 
-/* 오른쪽: KICE 공인 100% 모범답안 (동일한 40px 골드 밑줄) */
+/* 오른쪽: KICE 공인 100% 모범답안 */
 .b4-answer-sheet {
   background-color: #091322;
-  background-image: linear-gradient(to bottom, transparent 39px, rgba(251, 191, 36, 0.28) 40px);
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(251, 191, 36, 0.3) 40px);
   background-size: 100% 40px;
   background-attachment: local;
   border: 1px solid #1e3a5f;
@@ -435,6 +505,13 @@ main {
   user-select: text;
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
 }
+body.b4-paper-mode .b4-answer-sheet {
+  background-color: #faf5eb;
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(180, 83, 9, 0.35) 40px);
+  border-color: #8c826e;
+  color: #92400e;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.15);
+}
 
 .b4-answer-sheet.masked {
   filter: blur(5px);
@@ -442,7 +519,7 @@ main {
   cursor: pointer;
 }
 
-/* 토글 및 복사 버튼 */
+/* 미니 액션 버튼 */
 .btn-sheet-mini {
   background: #1e293b;
   border: 1px solid #334155;
@@ -452,7 +529,34 @@ main {
   border-radius: 4px;
   cursor: pointer;
 }
+body.b4-paper-mode .btn-sheet-mini {
+  background: #e2dcd0;
+  color: #1f2937;
+  border-color: #9ca3af;
+}
 .btn-sheet-mini:hover { background: #38bdf8; color: #000; }
+
+/* 실시간 실전 칼채점 패널 */
+.scoring-eval-bar {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #0d1422;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+body.b4-paper-mode .scoring-eval-bar {
+  background: #eae4d5;
+  border-color: #8c826e;
+}
+
+.eval-score-text {
+  font-weight: 800;
+  color: var(--accent-gold);
+}
 
 #toast {
   position: fixed;
@@ -481,21 +585,22 @@ main {
   <div class="header-inner">
     <div class="brand-section">
       <span class="kice-seal">KICE 실전 CBT</span>
-      <h1 class="exam-main-title">2027학년도 공립 중등학교교사 임용후보자 선정경쟁시험 - 전문상담</h1>
+      <h1 class="exam-main-title">2027학년도 공립 중등 전문상담교사 임용시험</h1>
       <span class="examinee-tag">수험생: 변귀섭 대표님</span>
     </div>
 
-    <!-- 90분 실전 스톱워치 타이머 -->
+    <!-- 30분 스톱워치 타이머 -->
     <div class="timer-container">
-      <span class="timer-label">잔여 시험시간</span>
-      <span class="timer-digits" id="timer-display">90:00</span>
+      <span class="timer-label">잔여 시간</span>
+      <span class="timer-digits" id="timer-display">30:00</span>
       <button class="btn-timer" onclick="toggleTimer()" id="btn-timer-toggle">일시정지</button>
-      <button class="btn-timer" onclick="resetTimer()">90분 리셋</button>
+      <button class="btn-timer" onclick="resetTimer()">30분 리셋</button>
     </div>
 
     <div class="header-actions">
+      <button class="btn-kice" onclick="togglePaperMode()" id="btn-paper-mode">B4 시험지 모드</button>
       <button class="btn-kice" onclick="toggleAllMasks()" id="btn-toggle-all">모범답안 전체 가리기</button>
-      <button class="btn-kice" onclick="clearCurrentAnswers()">현재 답안지 비우기</button>
+      <button class="btn-kice" onclick="clearCurrentAnswers()">현재 답안 비우기</button>
       <button class="btn-kice accent" onclick="exportAnswers()">답안지 최종 제출 (TXT)</button>
     </div>
   </div>
@@ -507,7 +612,7 @@ main {
     <button class="period-tab-btn" id="tab-btn-B" onclick="switchPeriod('B')">3교시 전공 B형 (11문항 / 40점)</button>
   </div>
   <div class="status-badge">
-    <span>실전 작성 완료율:</span>
+    <span>실전 답안 작성 완료:</span>
     <span class="badge-count" id="progress-count">0 / 12 문항 완료</span>
   </div>
 </div>
@@ -524,9 +629,10 @@ const dataB = [{"id": "B1", "num": 1, "type": "기입형", "score": 2, "title": 
 
 let currentPeriod = 'A';
 let allMasked = false;
+let isPaperMode = false;
 
-// 90분 스톱워치 제어 (90분 = 5400초)
-let timerSeconds = 90 * 60;
+// 30분 스톱워치 (5400초)
+let timerSeconds = 30 * 60;
 let timerInterval = null;
 let isTimerRunning = true;
 
@@ -548,7 +654,7 @@ function updateTimerUI() {
   const s = timerSeconds % 60;
   const el = document.getElementById('timer-display');
   el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-  el.classList.toggle('warning', timerSeconds < 600); // 10분 미만 시 붉은 점멸
+  el.classList.toggle('warning', timerSeconds < 300);
 }
 
 function toggleTimer() {
@@ -565,13 +671,20 @@ function toggleTimer() {
 }
 
 function resetTimer() {
-  timerSeconds = 90 * 60;
+  timerSeconds = 30 * 60;
   updateTimerUI();
   if (!isTimerRunning) {
     startTimer();
     isTimerRunning = true;
     document.getElementById('btn-timer-toggle').textContent = '일시정지';
   }
+}
+
+function togglePaperMode() {
+  isPaperMode = !isPaperMode;
+  document.body.classList.toggle('b4-paper-mode', isPaperMode);
+  document.getElementById('btn-paper-mode').textContent = isPaperMode ? 'CBT 다크 모드' : 'B4 시험지 모드';
+  showToast(isPaperMode ? '실전 B4 시험지 질감 모드로 전환되었습니다.' : 'CBT 다크 모드로 전환되었습니다.');
 }
 
 function init() {
@@ -646,23 +759,25 @@ function renderCards() {
         ${q.instructions ? `<div class="instructions-box"><strong>&lt;작성 방법 및 출제 조건&gt;</strong><br>${escapeHtml(q.instructions)}</div>` : ''}
 
         <div class="sheet-grid">
-          <!-- Left: 실전 4줄 수험생 답안지 -->
+          <!-- Left: 수험생 B4 실전 4줄 답안지 -->
           <div class="sheet-col">
             <div class="sheet-col-header">
-              <span>수험생 실전 답안지 (B4 규격 4줄 가이드선)</span>
-              <span class="char-badge" id="badge-${currentPeriod}${q.num}">0자 작성</span>
+              <span>수험생 실전 답안지 (B4 4줄 가이드라인)</span>
+              <div class="line-status-chip" id="chip-box-${currentPeriod}${q.num}">
+                <span class="chip-item">총 0자</span>
+              </div>
             </div>
             <textarea 
               class="b4-typing-sheet" 
               id="ta-${currentPeriod}${q.num}" 
-              placeholder="실전 시험지처럼 한 줄당 38~45자 규격으로 정교하게 타이핑해 보세요..."
+              placeholder="실전 B4 답안지처럼 줄당 38~45자 규격으로 타이핑해 보세요..."
               oninput="handleInput('${currentPeriod}', ${q.num})"></textarea>
           </div>
 
           <!-- Right: KICE 100% 모범답안 -->
           <div class="sheet-col">
             <div class="sheet-col-header">
-              <span>KICE 100% 만점 공식 모범답안 (동일 규격 대조선)</span>
+              <span>KICE 100% 만점 공식 모범답안 (동일 대조선)</span>
               <div>
                 <button class="btn-sheet-mini" onclick="toggleMask('${currentPeriod}', ${q.num})">가리기/보기</button>
                 <button class="btn-sheet-mini" onclick="copyModelAnswer('${currentPeriod}', ${q.num})">복사</button>
@@ -670,6 +785,12 @@ function renderCards() {
             </div>
             <div class="b4-answer-sheet" id="ans-${currentPeriod}${q.num}">${escapeHtml(q.answer)}</div>
           </div>
+        </div>
+
+        <!-- 실시간 칼채점 가이드 바 -->
+        <div class="scoring-eval-bar">
+          <span>줄당 권장 규격: <strong>공백 포함 38~45자</strong> (총 4줄 완료 시 만점)</span>
+          <span class="eval-score-text" id="eval-score-${currentPeriod}${q.num}">판정 대기</span>
         </div>
       </div>
     `;
@@ -680,16 +801,41 @@ function renderCards() {
 
 function handleInput(period, num) {
   const ta = document.getElementById('ta-' + period + num);
-  const badge = document.getElementById('badge-' + period + num);
   const text = ta.value;
-  const len = text.length;
-  badge.textContent = len + '자 작성';
-  badge.classList.toggle('ok', len >= 20);
+  const lines = text.split('\n');
+  const chipBox = document.getElementById('chip-box-' + period + num);
+  const evalScore = document.getElementById('eval-score-' + period + num);
+
+  // 줄별 실시간 글자수 분석
+  let chipsHtml = `<span class="chip-item">총 ${text.length}자</span>`;
+  let validLineCount = 0;
+
+  lines.forEach((l, idx) => {
+    if (idx < 4) {
+      const len = l.length;
+      const isOk = (len >= 38 && len <= 45);
+      if (isOk) validLineCount++;
+      chipsHtml += `<span class="chip-item ${isOk ? 'perfect' : ''}">${idx+1}줄:${len}자</span>`;
+    }
+  });
+  chipBox.innerHTML = chipsHtml;
+
+  // 칼채점 점수 피드백
+  if (text.trim().length === 0) {
+    evalScore.textContent = '판정 대기';
+    evalScore.style.color = 'var(--accent-gold)';
+  } else if (validLineCount === 4) {
+    evalScore.textContent = '★ 4줄 B4 규격 100% 만점 일치! (4.0 / 4.0)';
+    evalScore.style.color = 'var(--accent-emerald)';
+  } else {
+    evalScore.textContent = `현재 ${lines.length}줄 작성 중 (규격 일치 ${validLineCount}줄)`;
+    evalScore.style.color = 'var(--accent-blue)';
+  }
 
   localStorage.setItem('kice_real_cbt_' + period + num, text);
 
   const pill = document.getElementById('nav-pill-' + period + num);
-  if (pill) pill.classList.toggle('done', len >= 20);
+  if (pill) pill.classList.toggle('done', text.length >= 20);
 
   updateProgress();
 }
@@ -748,8 +894,10 @@ function clearCurrentAnswers() {
     localStorage.removeItem('kice_real_cbt_' + currentPeriod + q.num);
     const ta = document.getElementById('ta-' + currentPeriod + q.num);
     if (ta) ta.value = '';
-    const badge = document.getElementById('badge-' + currentPeriod + q.num);
-    if (badge) { badge.textContent = '0자 작성'; badge.classList.remove('ok'); }
+    const chipBox = document.getElementById('chip-box-' + currentPeriod + q.num);
+    if (chipBox) chipBox.innerHTML = '<span class="chip-item">총 0자</span>';
+    const evalScore = document.getElementById('eval-score-' + currentPeriod + q.num);
+    if (evalScore) { evalScore.textContent = '판정 대기'; evalScore.style.color = 'var(--accent-gold)'; }
     const pill = document.getElementById('nav-pill-' + currentPeriod + q.num);
     if (pill) pill.classList.remove('done');
   });
@@ -760,7 +908,7 @@ function clearCurrentAnswers() {
 function exportAnswers() {
   const items = getList();
   let txt = `=======================================================================\n`;
-  txt += `[2027학년도 공립 중등학교교사 임용후보자 선정경쟁시험 전문상담 ${currentPeriod}형 답안지]\n`;
+  txt += `[2027학년도 공립 중등 전문상담교사 임용후보자 선정경쟁시험 ${currentPeriod}형 답안지]\n`;
   txt += `수험자: 변귀섭 대표님 | 제출일시: ${new Date().toLocaleString()}\n`;
   txt += `=======================================================================\n\n`;
 
