@@ -343,18 +343,23 @@ main {
 .typing-area {
   width: 100%;
   flex: 1;
-  min-height: 160px;
-  background: var(--bg-input);
+  min-height: 170px;
+  background-color: var(--bg-input);
+  /* 실전 B4 답안지 4줄 밑줄 가이드라인 */
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(56, 189, 248, 0.28) 40px);
+  background-size: 100% 40px;
+  background-attachment: local;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 14px 16px;
+  padding: 0 16px;
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
-  line-height: 1.7;
+  line-height: 40px;
   resize: vertical;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .typing-area:focus {
@@ -434,14 +439,17 @@ main {
 }
 
 .answer-body {
-  font-size: 0.92rem;
-  line-height: 1.7;
+  font-size: 1.05rem;
+  line-height: 40px;
   color: #e2e8f0;
   white-space: pre-line;
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 12px;
-  border-radius: 6px;
+  background-color: rgba(9, 19, 34, 0.7);
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(251, 191, 36, 0.25) 40px);
+  background-size: 100% 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid #1e3a5f;
   flex: 1;
   user-select: text;
 }
