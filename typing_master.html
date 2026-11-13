@@ -259,6 +259,51 @@ body.b4-paper-mode .btn-kice {
   color: #fff;
 }
 
+
+/* 회차별 N회독 선택기 & 전체 지우기 버튼 */
+.round-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #0d1525;
+  border: 1px solid var(--border-kice);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+body.b4-paper-mode .round-selector-group {
+  background: #dbd4c0;
+}
+.round-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-sub);
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.round-btn:hover {
+  color: var(--accent-blue);
+}
+.round-btn.active {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #fff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.btn-kice.danger {
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #fda4af;
+}
+.btn-kice.danger:hover {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: var(--accent-rose);
+  color: var(--accent-rose);
+}
+
 /* ================= 3대 교시 탭 & 필터 바 ================= */
 .sub-bar {
   max-width: 1560px;
@@ -764,6 +809,14 @@ body.b4-paper-mode .scoring-eval-bar {
       <button class="btn-font-scale" onclick="adjustFont(0.05)">A+</button>
     </div>
 
+    <!-- 하루 3회독 실전 회차 선택기 (1회차, 2회차, 3회차 독립 저장) -->
+    <div class="round-selector-group">
+      <span style="font-size:0.75rem; color:var(--accent-gold); font-weight:800; margin-right:2px;">오늘의 회독:</span>
+      <button class="round-btn active" id="round-btn-1" onclick="switchPracticeRound(1)">1회독</button>
+      <button class="round-btn" id="round-btn-2" onclick="switchPracticeRound(2)">2회독</button>
+      <button class="round-btn" id="round-btn-3" onclick="switchPracticeRound(3)">3회독</button>
+    </div>
+
     <div class="header-actions">
       <button class="btn-kice" onclick="togglePaperMode()" id="btn-paper-mode">B4 시험지 모드</button>
       <button class="btn-kice" onclick="toggleBlankMode()" id="btn-blank-mode">백지 테스트 모드</button>
@@ -771,6 +824,8 @@ body.b4-paper-mode .scoring-eval-bar {
       <button class="btn-kice" onclick="shuffleCurrentPeriod()" id="btn-shuffle">랜덤 셔플</button>
       <button class="btn-kice" onclick="openReportModal()">종합 성적표</button>
       <button class="btn-kice" onclick="window.print()">B4 인쇄</button>
+      <button class="btn-kice danger" onclick="clearCurrentAnswers()">현재 교시 비우기</button>
+      <button class="btn-kice danger" onclick="clearAllPracticeRoundAnswers()">★ 오늘 전체 지우기 (초기화)</button>
       <button class="btn-kice accent" onclick="exportAnswers()">답안 최종 제출 (TXT)</button>
     </div>
   </div>
@@ -1004,12 +1059,81 @@ function shuffleCurrentPeriod() {
   showToast(isShuffled ? '문항이 무작위로 셔플되었습니다.' : '정상 순서로 복원되었습니다.');
 }
 
+
+// 하루 3회독 시스템 변수 (currentRound: 1, 2, 3)
+let currentRound = parseInt(localStorage.getItem('kice_current_round') || '1', 10);
+
+function getRoundKeyPrefix() {
+  return `kice_r${currentRound}_`;
+}
+
+function switchPracticeRound(roundNum) {
+  currentRound = roundNum;
+  localStorage.setItem('kice_current_round', currentRound);
+  for (let r = 1; r <= 3; r++) {
+    const el = document.getElementById('round-btn-' + r);
+    if (el) el.classList.toggle('active', r === currentRound);
+  }
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateProgress();
+  showToast(`[오늘의 ${currentRound}회독] 답안지로 전환되었습니다.`);
+}
+
+function clearCurrentAnswers() {
+  if (!confirm(`현재 [${currentPeriod}형]의 작성 답안을 모두 지우고 새로 연습하시겠습니까?`)) return;
+  const items = getList();
+  const prefix = getRoundKeyPrefix();
+  items.forEach(q => {
+    const key = currentPeriod + q.num;
+    localStorage.removeItem(prefix + key);
+    const ta = document.getElementById('ta-' + key);
+    if (ta) ta.value = '';
+    const chipBox = document.getElementById('chip-box-' + key);
+    if (chipBox) chipBox.innerHTML = '<span class="chip-item">총 0자</span>';
+    const evalScore = document.getElementById('eval-score-' + key);
+    if (evalScore) { evalScore.textContent = '판정 대기'; evalScore.style.color = 'var(--accent-gold)'; }
+    const pill = document.getElementById('nav-pill-' + key);
+    if (pill) pill.classList.remove('done');
+  });
+  updateProgress();
+  showToast(`[${currentPeriod}형] 답안이 깨끗하게 초기화되었습니다.`);
+}
+
+function clearAllPracticeRoundAnswers() {
+  const msg = `정말 [오늘의 ${currentRound}회독] 전체 답안지(1교시 교육학 + 2교시 A형 + 3교시 B형)를 깨끗하게 비우고 새로 시작하시겠습니까?`;
+  if (!confirm(msg)) return;
+
+  const prefix = getRoundKeyPrefix();
+  // Clear all localStorage keys starting with this round's prefix
+  const keysToRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(prefix)) {
+      keysToRemove.push(k);
+    }
+  }
+  keysToRemove.forEach(k => localStorage.removeItem(k));
+
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateProgress();
+  resetTimer();
+  showToast(`[오늘의 ${currentRound}회독] 전과목 답안지가 1초 만에 백지 초기화되었습니다! (30분 타이머 리셋)`);
+}
+
 function init() {
   renderNav();
   renderCards();
   loadSavedAnswers();
   updateProgress();
   startTimer();
+  for (let r = 1; r <= 3; r++) {
+    const el = document.getElementById('round-btn-' + r);
+    if (el) el.classList.toggle('active', r === currentRound);
+  }
 }
 
 function switchPeriod(p) {
@@ -1260,7 +1384,7 @@ function handleInput(period, num) {
     evalScore.setAttribute('data-perfect', 'false');
   }
 
-  localStorage.setItem('kice_real_cbt_' + key, text);
+  localStorage.setItem(getRoundKeyPrefix() + key, text);
 
   const pill = document.getElementById('nav-pill-' + key);
   if (pill) pill.classList.toggle('done', text.length >= 20);
@@ -1272,7 +1396,7 @@ function updateProgress() {
   const items = getList();
   let done = 0;
   items.forEach(q => {
-    const saved = localStorage.getItem('kice_real_cbt_' + currentPeriod + q.num);
+    const saved = localStorage.getItem(getRoundKeyPrefix() + currentPeriod + q.num);
     if (saved && saved.trim().length >= 20) done++;
   });
   document.getElementById('progress-count').textContent = `${done} / ${items.length} 완료`;
@@ -1282,7 +1406,7 @@ function loadSavedAnswers() {
   const items = getList();
   items.forEach(q => {
     const key = currentPeriod + q.num;
-    const saved = localStorage.getItem('kice_real_cbt_' + key);
+    const saved = localStorage.getItem(getRoundKeyPrefix() + key);
     if (saved) {
       const ta = document.getElementById('ta-' + key);
       if (ta) {
@@ -1334,7 +1458,7 @@ function openReportModal() {
   periods.forEach(p => {
     let done = 0;
     for (let i = 1; i <= p.total; i++) {
-      const val = localStorage.getItem('kice_real_cbt_' + p.id + i) || '';
+      const val = localStorage.getItem(getRoundKeyPrefix() + p.id + i) || '';
       if (val.trim().length >= 20) done++;
     }
     grandTotal += p.total;
@@ -1380,7 +1504,7 @@ function exportWrongNotes() {
 
   items.forEach(q => {
     const key = currentPeriod + q.num;
-    const ans = localStorage.getItem('kice_real_cbt_' + key) || '';
+    const ans = localStorage.getItem(getRoundKeyPrefix() + key) || '';
     const isBm = !!bookmarks[key];
     if (isBm || ans.length < 20) {
       txt += `[★ 제${q.num}문 - ${q.type}] ${q.title}\n`;
@@ -1408,7 +1532,7 @@ function exportAnswers() {
 
   items.forEach(q => {
     const key = currentPeriod + q.num;
-    const ans = localStorage.getItem('kice_real_cbt_' + key) || '(미작성)';
+    const ans = localStorage.getItem(getRoundKeyPrefix() + key) || '(미작성)';
     txt += `[제${q.num}문 - ${q.type} (${q.score}점)]\n`;
     txt += `문제: ${q.title}\n`;
     txt += `수험생 작성 답안:\n${ans}\n\n`;
