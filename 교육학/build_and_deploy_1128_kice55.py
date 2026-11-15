@@ -1397,6 +1397,7 @@ body.b4-paper-mode .scoring-eval-bar {{
       <button class="btn-timer" onclick="toggleTimer()" id="btn-timer-toggle">일시정지</button>
       <button class="btn-timer" onclick="resetTimer()">30분 리셋</button>
       <span class="wpm-badge" id="wpm-display">0 타/분</span>
+      <span class="wpm-badge" id="combo-display" style="color:#fbbf24; border-color:#f59e0b; background:rgba(245,158,11,0.15);">🔥 0 COMBO</span>
       <button class="btn-asmr" id="btn-asmr" onclick="toggleASMR()">🔔 시험장 소리·멘트 OFF</button>
       <select class="broadcast-select" id="exam-broadcast-select" onchange="playSelectedBroadcast(this.value)">
         <option value="">📢 시험장 방송 멘트 선택...</option>
@@ -1424,6 +1425,9 @@ body.b4-paper-mode .scoring-eval-bar {{
     <div class="header-actions">
       <button class="btn-kice btn-kw-blank-main" onclick="toggleKeywordBlankMode()" id="btn-kw-blank">🎯 핵심키워드 빈칸 만들기</button>
       <button class="btn-kice" onclick="toggleCases8Mode()" id="btn-cases8-mode" style="border-color:#38bdf8; color:#38bdf8; font-weight:800;">⚡ 경우의 수 8개 ON</button>
+      <button class="btn-kice" onclick="toggleSingleFocusMode()" id="btn-single-focus" style="border-color:#c084fc; color:#e9d5ff; font-weight:800;">🔍 1문제 집중 모드 OFF</button>
+      <button class="btn-kice" onclick="toggleRadioMode()" id="btn-radio" style="border-color:#34d399; color:#6ee7b7; font-weight:800;">📻 연속 자동낭독 OFF</button>
+      <button class="btn-kice" onclick="openPedBuilderModal()" style="border-color:#fbbf24; color:#fde047; font-weight:800;">🏛️ 1교시 논술 자동조립기</button>
       <button class="btn-kice" onclick="togglePaperMode()" id="btn-paper-mode">B4 시험지 모드</button>
       <button class="btn-kice" onclick="toggleAllMasks()" id="btn-toggle-all">백지연습(정답 가리기)</button>
       <button class="btn-kice" onclick="shuffleCurrentPeriod()" id="btn-shuffle">랜덤 셔플</button>
@@ -1445,6 +1449,7 @@ body.b4-paper-mode .scoring-eval-bar {{
     <button class="period-tab-btn" id="tab-btn-B" onclick="switchPeriod('B')">3교시 전공 B형 실전 (11제)</button>
   </div>
   <div class="filter-group">
+    <button class="filter-btn" id="btn-incomplete-filter" onclick="toggleIncompleteFilter()" style="border-color:#f43f5e; color:#fda4af;">🔥 미완료 문항만 보기</button>
     <button class="filter-btn" id="btn-bookmark-filter" onclick="toggleBookmarkFilter()">북마크(★) 모아보기</button>
     <button class="filter-btn" onclick="exportWrongNotes()">단권화 노트 다운</button>
     <div class="status-badge">
@@ -1481,6 +1486,49 @@ body.b4-paper-mode .scoring-eval-bar {{
   </div>
 </div>
 
+<!-- 1교시 교육학 논술 만능 플랫폼 1초 자동조립기 모달 -->
+<div id="ped-builder-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; padding:20px;">
+  <div class="modal-box" style="max-width:920px; max-height:92vh; overflow-y:auto; border-color:#10b981;">
+    <div class="modal-title" style="color:#34d399; display:flex; justify-content:space-between; align-items:center;">
+      <span>🏛️ [변귀섭 대표님 전용] 1교시 교육학 논술 만능 플랫폼 1초 자동조립기</span>
+      <button class="btn-sheet-mini" onclick="closePedBuilderModal()">닫기 ✕</button>
+    </div>
+    <div style="font-size:0.86rem; color:#94a3b8; margin-bottom:12px;">
+      문제지의 <strong>(대주제)</strong>와 4대 영역 출제 이론을 선택하면, 대표님의 시그니처 서론(<code>미래 교육환경 속에서 ~ 화제가 대두되고 있다</code>) · 본론(<code>이처럼 교사가 ~</code>) · 결론(<code>든든한 버팀목이자 교육 안내자 및 성장 촉진자</code>)과 4줄 핵심 정답이 <strong>20점 만점 풀세트 논술문</strong>으로 즉시 결합됩니다!
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+      <div style="grid-column:1 / -1;">
+        <label style="font-size:0.8rem; color:#fde047; font-weight:800;">📌 시험지 (대주제) 입력:</label>
+        <input type="text" id="pb-theme" value="학생 맞춤형 교육 혁신과 교사의 수석 역량" oninput="generatePedFullEssay()" style="width:100%; margin-top:4px; padding:8px 12px; background:#090d16; border:1px solid #10b981; border-radius:6px; color:#fff; font-weight:700;">
+      </div>
+      <div>
+        <label style="font-size:0.78rem; color:#38bdf8; font-weight:800;">① 교육과정 영역 선택:</label>
+        <select id="pb-sel-curr" onchange="generatePedFullEssay()" style="width:100%; margin-top:4px; padding:7px; background:#090d16; border:1px solid #334155; border-radius:6px; color:#fff;"></select>
+      </div>
+      <div>
+        <label style="font-size:0.78rem; color:#38bdf8; font-weight:800;">② 교육방법 영역 선택:</label>
+        <select id="pb-sel-meth" onchange="generatePedFullEssay()" style="width:100%; margin-top:4px; padding:7px; background:#090d16; border:1px solid #334155; border-radius:6px; color:#fff;"></select>
+      </div>
+      <div>
+        <label style="font-size:0.78rem; color:#38bdf8; font-weight:800;">③ 교육평가 영역 선택:</label>
+        <select id="pb-sel-eval" onchange="generatePedFullEssay()" style="width:100%; margin-top:4px; padding:7px; background:#090d16; border:1px solid #334155; border-radius:6px; color:#fff;"></select>
+      </div>
+      <div>
+        <label style="font-size:0.78rem; color:#38bdf8; font-weight:800;">④ 교육행정 영역 선택:</label>
+        <select id="pb-sel-adm" onchange="generatePedFullEssay()" style="width:100%; margin-top:4px; padding:7px; background:#090d16; border:1px solid #334155; border-radius:6px; color:#fff;"></select>
+      </div>
+    </div>
+    <textarea id="pb-output" readonly style="width:100%; height:360px; background:#070b12; border:1px solid #10b981; border-radius:8px; padding:14px; color:#fde047; font-size:0.95rem; line-height:1.75; font-family:'Noto Sans KR', sans-serif;"></textarea>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+      <span id="pb-char-info" style="font-size:0.84rem; color:#34d399; font-weight:800;">총 28줄 (서론 4줄 + 본론 20줄 + 결론 4줄)</span>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-kice" style="border-color:#38bdf8; color:#38bdf8;" onclick="speakPedFullEssay()">🎧 완성된 논술문 전체 음성 듣기</button>
+        <button class="btn-kice accent" onclick="copyPedFullEssay()">📋 완성된 논술문 복사</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast">알림</div>
 
 <script>
@@ -1497,6 +1545,12 @@ let isPaperMode = false;
 let isBlankMode = false;
 let showCases8 = true;
 let showOnlyBookmarks = false;
+let showOnlyIncomplete = false;
+let isSingleFocusMode = false;
+let singleFocusIdx = 0;
+let isRadioPlaying = false;
+let radioIndex = 0;
+let comboCount = 0;
 let isShuffled = false;
 let currentFontScale = 1.0;
 let bookmarks = JSON.parse(localStorage.getItem('kice_bookmarks') || '{{}}');
@@ -1512,6 +1566,16 @@ let noiseNode = null;
 let examHallTimer = null;
 let isAsmrOn = false;
 
+function incrementCombo() {{
+  comboCount++;
+  const el = document.getElementById('combo-display');
+  if (el) {{
+    el.textContent = `🔥 ${{comboCount}} COMBO!`;
+    el.style.transform = 'scale(1.18)';
+    setTimeout(() => {{ el.style.transform = 'scale(1)'; }}, 180);
+  }}
+}}
+
 function ensureAudioCtx() {{
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -1519,6 +1583,7 @@ function ensureAudioCtx() {{
 }}
 
 function playSuccessChime() {{
+  incrementCombo();
   try {{
     const ctx = ensureAudioCtx();
     const osc = ctx.createOscillator();
@@ -1536,6 +1601,7 @@ function playSuccessChime() {{
 }}
 
 function playMiniHitSound() {{
+  incrementCombo();
   try {{
     const ctx = ensureAudioCtx();
     const osc = ctx.createOscillator();
@@ -1868,8 +1934,208 @@ function togglePaperMode() {{
 function toggleBookmarkFilter() {{
   showOnlyBookmarks = !showOnlyBookmarks;
   document.getElementById('btn-bookmark-filter').classList.toggle('active', showOnlyBookmarks);
+  singleFocusIdx = 0;
   renderCards();
   loadSavedAnswers();
+}}
+
+function toggleIncompleteFilter() {{
+  showOnlyIncomplete = !showOnlyIncomplete;
+  const btn = document.getElementById('btn-incomplete-filter');
+  if (btn) {{
+    btn.classList.toggle('active', showOnlyIncomplete);
+    btn.textContent = showOnlyIncomplete ? '🔥 미완료만 보기 ON' : '🔥 미완료 문항만 보기';
+  }}
+  singleFocusIdx = 0;
+  renderCards();
+  loadSavedAnswers();
+  showToast(showOnlyIncomplete
+    ? '🔥 아직 완료하지 않은 문항만 모아서 보여줍니다! 하나씩 격파해 보세요!'
+    : '전체 문항 보기로 복귀했습니다.');
+}}
+
+function toggleSingleFocusMode() {{
+  isSingleFocusMode = !isSingleFocusMode;
+  singleFocusIdx = 0;
+  const btn = document.getElementById('btn-single-focus');
+  if (btn) {{
+    btn.classList.toggle('active', isSingleFocusMode);
+    btn.textContent = isSingleFocusMode ? '🔍 1문제 집중 모드 ON' : '🔍 1문제 집중 모드 OFF';
+  }}
+  renderCards();
+  loadSavedAnswers();
+  showToast(isSingleFocusMode
+    ? '🔍 ADHD 초집중 모드: 화면에 딱 1문제만 크게 표시합니다! (◀ 이전 / 다음 ▶ 이동)'
+    : '전체 스크롤 모드로 전환되었습니다.');
+}}
+
+function stepSingleCard(delta) {{
+  let items = getFilteredItems();
+  if (items.length === 0) return;
+  singleFocusIdx = (singleFocusIdx + delta + items.length) % items.length;
+  renderCards();
+  loadSavedAnswers();
+}}
+
+function toggleRadioMode() {{
+  if (isRadioPlaying) {{
+    isRadioPlaying = false;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    const btn = document.getElementById('btn-radio');
+    if (btn) btn.textContent = '📻 연속 자동낭독 OFF';
+    showToast('연속 자동낭독이 중지되었습니다.');
+    return;
+  }}
+  if (!('speechSynthesis' in window)) {{
+    showToast('이 브라우저는 음성 합성을 지원하지 않습니다.');
+    return;
+  }}
+  isRadioPlaying = true;
+  radioIndex = 0;
+  const btn = document.getElementById('btn-radio');
+  if (btn) btn.textContent = '📻 연속 자동낭독 ON (중지하려면 클릭)';
+  showToast('📻 현재 목록의 전 문항 핵심 키워드 & 4줄 정답 연속 자동낭독을 시작합니다!');
+  playNextRadioCard();
+}}
+
+function playNextRadioCard() {{
+  if (!isRadioPlaying) return;
+  const items = getFilteredItems();
+  if (radioIndex >= items.length) {{
+    isRadioPlaying = false;
+    const btn = document.getElementById('btn-radio');
+    if (btn) btn.textContent = '📻 연속 자동낭독 OFF';
+    showToast('🏆 현재 목록의 모든 문항 연속 낭독이 완료되었습니다!');
+    return;
+  }}
+  const q = items[radioIndex];
+  const key = currentPeriod + q.num;
+  const card = document.getElementById('card-' + key);
+  if (card) card.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+
+  const kwStr = (q.keywords || []).join(', ');
+  const script = `${{q.title}}. 핵심 키워드: ${{kwStr}}. 4줄 만점 정답. ${{(q.lines || []).join(' ')}}`;
+  window.speechSynthesis.cancel();
+  const uttr = new SpeechSynthesisUtterance(script);
+  uttr.lang = 'ko-KR';
+  uttr.rate = 0.98;
+  uttr.onend = () => {{
+    if (!isRadioPlaying) return;
+    radioIndex++;
+    setTimeout(playNextRadioCard, 700);
+  }};
+  window.speechSynthesis.speak(uttr);
+}}
+
+function openPedBuilderModal() {{
+  const modal = document.getElementById('ped-builder-modal');
+  if (!modal) return;
+  const currItems = dataKICE55.filter(x => x.domain === '교육과정');
+  const methItems = dataKICE55.filter(x => x.domain === '교육방법');
+  const evalItems = dataKICE55.filter(x => x.domain === '교육평가');
+  const admItems = dataKICE55.filter(x => x.domain === '교육행정');
+
+  const fillSel = (selId, arr) => {{
+    const sel = document.getElementById(selId);
+    if (!sel || sel.options.length > 0) return;
+    arr.forEach(item => {{
+      const opt = document.createElement('option');
+      opt.value = item.id;
+      opt.textContent = `[#${{String(item.id).padStart(2, '0')}}] ${{item.title}}`;
+      sel.appendChild(opt);
+    }});
+  }};
+  fillSel('pb-sel-curr', currItems);
+  fillSel('pb-sel-meth', methItems);
+  fillSel('pb-sel-eval', evalItems);
+  fillSel('pb-sel-adm', admItems);
+  generatePedFullEssay();
+  modal.style.display = 'flex';
+}}
+
+function closePedBuilderModal() {{
+  const modal = document.getElementById('ped-builder-modal');
+  if (modal) modal.style.display = 'none';
+}}
+
+function generatePedFullEssay() {{
+  const theme = (document.getElementById('pb-theme')?.value || '학생 맞춤형 교육 혁신과 교사의 수석 역량').trim();
+  const getById = (selId, fallbackId) => {{
+    const id = parseInt(document.getElementById(selId)?.value || fallbackId, 10);
+    return dataKICE55.find(x => x.id === id) || dataKICE55[0];
+  }};
+  const cItem = getById('pb-sel-curr', 1);
+  const mItem = getById('pb-sel-meth', 11);
+  const eItem = getById('pb-sel-eval', 16);
+  const aItem = getById('pb-sel-adm', 19);
+
+  const getClosing = (item, fallback) => {{
+    if (item.ped_platform && item.ped_platform[1]) return item.ped_platform[1].text;
+    return fallback;
+  }};
+
+  const essayLines = [
+    `[서론: 변귀섭 대표님 만능 서론 플랫폼]`,
+    `최근 급변하는 미래 교육환경 속에서 '${{theme}}'에 대한 화제가 대두되고 있다.`,
+    `이러한 패러다임에 맞춰 교사는 단편적 지식 전달이 아닌 역량을 함양해야 한다.`,
+    `여기에서는 제시문에 나온 교사들의 대화를 통해 '${{theme}}' 방안을 살펴본다.`,
+    `교육과정, 교육방법, 교육평가, 교육행정의 4가지 측면에서 논하고자 한다.`,
+    ``,
+    `[본론 1: 교육과정 - ${{cItem.title}}]`,
+    `첫째, 교육과정 측면에서 ${{cItem.lines[0]}}`,
+    `${{cItem.lines[1]}}`,
+    `${{cItem.lines[2]}}`,
+    `${{cItem.lines[3]}}`,
+    `${{getClosing(cItem, '이처럼 교사가 교육과정에서 핵심 원리를 쓰면 미래형 교육 혁신이 실현된다.')}}`,
+    ``,
+    `[본론 2: 교육방법 - ${{mItem.title}}]`,
+    `둘째, 교육방법 측면에서 ${{mItem.lines[0]}}`,
+    `${{mItem.lines[1]}}`,
+    `${{mItem.lines[2]}}`,
+    `${{mItem.lines[3]}}`,
+    `${{getClosing(mItem, '이처럼 교사가 교육방법에서 핵심 전략을 쓰면 신개념 수업 혁신이 실현된다.')}}`,
+    ``,
+    `[본론 3: 교육평가 - ${{eItem.title}}]`,
+    `셋째, 교육평가 측면에서 ${{eItem.lines[0]}}`,
+    `${{eItem.lines[1]}}`,
+    `${{eItem.lines[2]}}`,
+    `${{eItem.lines[3]}}`,
+    `${{getClosing(eItem, '이처럼 교사가 교육평가에서 핵심 평가를 쓰면 전인적 성장 평가가 실현된다.')}}`,
+    ``,
+    `[본론 4: 교육행정 - ${{aItem.title}}]`,
+    `넷째, 교육행정 측면에서 ${{aItem.lines[0]}}`,
+    `${{aItem.lines[1]}}`,
+    `${{aItem.lines[2]}}`,
+    `${{aItem.lines[3]}}`,
+    `${{getClosing(aItem, '이처럼 교사가 교육행정에서 협력 문화를 쓰면 교사의 수석 역량이 증진된다.')}}`,
+    ``,
+    `[결론: 변귀섭 대표님 만능 결론 플랫폼]`,
+    `지금까지 '${{theme}}'를 교육과정, 교육방법, 교육평가, 교육행정에서 살펴보았다.`,
+    `다가오는 미래 교육이 성공하려면 무엇보다 교사의 인식과 실천이 중요하다.`,
+    `따라서 교사는 끊임없는 자기 연찬과 동료 교사와의 협업으로 성장해야 한다.`,
+    `또한 학생들에게 든든한 버팀목이자 교육 안내자 및 성장 촉진자가 되어야 한다.`
+  ];
+
+  const out = document.getElementById('pb-output');
+  const fullTxt = essayLines.join('\\n');
+  if (out) out.value = fullTxt;
+  const info = document.getElementById('pb-char-info');
+  if (info) info.textContent = `총 28문장 완벽 결합 (${{fullTxt.length}}자 / 20점 만점 규격 100% 충족)`;
+}}
+
+function copyPedFullEssay() {{
+  const out = document.getElementById('pb-output');
+  if (out && out.value) {{
+    navigator.clipboard.writeText(out.value).then(() => showToast('🏛️ 완성된 1교시 교육학 20점 만점 논술문이 복사되었습니다!'));
+  }}
+}}
+
+function speakPedFullEssay() {{
+  const out = document.getElementById('pb-output');
+  if (out && out.value) {{
+    const clean = out.value.replace(/\\[.*?\\]/g, '');
+    speakAnswer(clean);
+  }}
 }}
 
 function toggleBookmark(key) {{
@@ -2089,17 +2355,46 @@ function renderNav() {{
   }});
 }}
 
-function renderCards() {{
-  const container = document.getElementById('exam-cards-container');
+function getFilteredItems() {{
   let items = getList();
   if (showOnlyBookmarks) {{
     items = items.filter(q => !!bookmarks[currentPeriod + q.num]);
   }}
+  if (showOnlyIncomplete) {{
+    items = items.filter(q => {{
+      const key = currentPeriod + q.num;
+      const pill = document.getElementById('nav-pill-' + key);
+      if (pill && pill.classList.contains('done')) return false;
+      const saved = savedAnswers[key] || '';
+      const linesArr = q.lines || q.answer.split('\\n');
+      return saved.trim().length < Math.floor(linesArr.join('').length * 0.6);
+    }});
+  }}
+  return items;
+}}
+
+function renderCards() {{
+  const container = document.getElementById('exam-cards-container');
+  let items = getFilteredItems();
   container.innerHTML = '';
 
   if (items.length === 0) {{
-    container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted);">조건에 해당하는 문항이 없습니다.</div>';
+    container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted); font-weight:700;">🎉 조건에 해당하는 문항이 없습니다 (모두 완료되었거나 북마크가 없습니다)!</div>';
     return;
+  }}
+
+  if (isSingleFocusMode) {{
+    if (singleFocusIdx >= items.length) singleFocusIdx = items.length - 1;
+    if (singleFocusIdx < 0) singleFocusIdx = 0;
+    const navBar = document.createElement('div');
+    navBar.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, rgba(16,185,129,0.18), rgba(59,130,246,0.18)); border:2px solid #10b981; border-radius:12px; padding:10px 16px; margin-bottom:16px;';
+    navBar.innerHTML = `
+      <button class="btn-tool" onclick="stepSingleCard(-1)" style="background:#0f172a; border-color:#10b981; color:#6ee7b7; font-weight:800;">◀ 이전 문제 (Alt+←)</button>
+      <div style="font-weight:900; color:#ecfdf5; font-size:0.95rem;">🔍 [ADHD 1문제 초집중 모드] 현재 <span style="color:#fde047;">${{singleFocusIdx + 1}}</span> / 총 ${{items.length}}문제</div>
+      <button class="btn-tool" onclick="stepSingleCard(1)" style="background:#0f172a; border-color:#10b981; color:#6ee7b7; font-weight:800;">다음 문제 (Alt+→) ▶</button>
+    `;
+    container.appendChild(navBar);
+    items = [items[singleFocusIdx]];
   }}
 
   items.forEach((q, cardIdx) => {{
@@ -2386,6 +2681,7 @@ function handleCase8Input(period, num, cIdx, silent) {{
   }}
   if (isSolved && !wasSolved && !silent) {{
     playMiniHitSound();
+    if (typeof incrementCombo === 'function') incrementCombo();
   }}
   updateCases8Counter(period, num, q.cases8.length);
 }}
@@ -2538,6 +2834,7 @@ function handlePedPlatInput(period, num, pIdx, silent) {{
   }}
   if (isOk && !wasOk && !silent) {{
     playMiniHitSound();
+    if (typeof incrementCombo === 'function') incrementCombo();
   }}
 }}
 
@@ -2718,7 +3015,12 @@ function evaluateCard(period, num) {{
       badge.className = 'lbl-char-badge' + (isOk ? ' ok' : (isOver ? ' over' : ''));
     }}
     if (inp) {{
+      const wasLineOk = inp.classList.contains('line-ok');
       inp.classList.toggle('line-ok', isOk);
+      if (isOk && !wasLineOk) {{
+        playMiniHitSound();
+        if (typeof incrementCombo === 'function') incrementCombo();
+      }}
     }}
 
     // 핵심키워드 빈칸 모드일 때 타이핑한 줄의 빈칸 실시간 오픈!
