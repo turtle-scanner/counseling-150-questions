@@ -1147,43 +1147,53 @@ body.b4-paper-mode .cases8-header {{
 }}
 .cases8-grid {{
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px 12px;
-}}
-@media (max-width: 960px) {{
-  .cases8-grid {{
-    grid-template-columns: 1fr;
-  }}
+  grid-template-columns: 1fr;
+  gap: 10px;
 }}
 .case8-item {{
-  background: rgba(9, 14, 26, 0.85);
+  background: rgba(9, 14, 26, 0.88);
   border: 1px solid #1e293b;
-  border-left: 3px solid var(--accent-gold);
-  border-radius: 6px;
-  padding: 7px 10px;
+  border-left: 4px solid var(--accent-gold);
+  border-radius: 8px;
+  padding: 11px 14px;
   transition: all 0.15s;
 }}
 body.b4-paper-mode .case8-item {{
   background: #f8f5ec;
   border-color: #b5ab96;
 }}
+.case8-item.solved,
 .case8-item.case-ok {{
   border-color: var(--accent-emerald);
-  border-left: 4px solid var(--accent-emerald);
-  background: rgba(16, 185, 129, 0.11);
+  border-left: 5px solid var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.12);
 }}
 .case8-q-row {{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 6px;
-  font-size: calc(0.82rem * var(--font-scale));
-  color: #cbd5e1;
-  margin-bottom: 5px;
-  font-weight: 600;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: calc(0.9rem * var(--font-scale));
+  color: #e2e8f0;
+  margin-bottom: 8px;
+  font-weight: 700;
+}}
+.case8-target-ans {{
+  font-size: calc(0.9rem * var(--font-scale));
+  font-weight: 800;
+  color: #fde047;
+  background: rgba(251, 191, 36, 0.14);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 4px 10px;
+  border-radius: 5px;
 }}
 body.b4-paper-mode .case8-q-row {{
   color: #1f2937;
+}}
+body.b4-paper-mode .case8-target-ans {{
+  color: #78350f;
+  background: rgba(180, 83, 9, 0.14);
 }}
 .case8-ans-row {{
   display: flex;
@@ -1191,30 +1201,28 @@ body.b4-paper-mode .case8-q-row {{
   gap: 8px;
 }}
 .case8-target {{
-  font-size: calc(0.86rem * var(--font-scale));
+  font-size: calc(0.9rem * var(--font-scale));
   font-weight: 800;
   color: #fef08a;
   background: rgba(251, 191, 36, 0.12);
   border: 1px solid rgba(251, 191, 36, 0.35);
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 5px;
-  white-space: nowrap;
-  max-width: 52%;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }}
 body.b4-paper-mode .case8-target {{
   color: #78350f;
   background: rgba(180, 83, 9, 0.12);
 }}
 .case8-input {{
-  flex: 1;
+  display: block;
+  width: 100%;
   background: #050a14;
   border: 1px solid #283a58;
-  border-radius: 5px;
-  padding: 5px 10px;
+  border-left: 3px solid var(--accent-blue);
+  border-radius: 6px;
+  padding: 9px 14px;
   color: #fff;
-  font-size: calc(0.86rem * var(--font-scale));
+  font-size: calc(0.96rem * var(--font-scale));
   font-weight: 700;
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   outline: none;
