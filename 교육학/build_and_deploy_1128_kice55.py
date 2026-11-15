@@ -209,7 +209,7 @@ html_content = f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -251,6 +251,10 @@ body.b4-paper-mode {{
 }}
 
 * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+button, input, textarea, select {{
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}}
 
 body {{
   font-family: 'Noto Sans KR', sans-serif;
@@ -1499,6 +1503,86 @@ body.b4-paper-mode .scoring-eval-bar {{
   background: linear-gradient(90deg, #0284c7, #10b981);
   width: 0%;
   transition: width 0.5s ease;
+}}
+
+/* ================= 태블릿(아이패드·갤럭시탭) 및 모바일 완벽 대응 ================= */
+@media (max-width: 1180px) {{
+  .kice-exam-header {{
+    position: static;
+    padding: 10px 12px;
+  }}
+  .exam-main-title {{
+    font-size: 1rem;
+  }}
+  .header-actions {{
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    gap: 6px;
+  }}
+  .sub-bar, .kice55-filter-bar, .nav-strip {{
+    padding: 8px 12px;
+  }}
+  .period-tabs, .kice55-filter-bar, .nav-strip {{
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }}
+  .btn-kice, .period-tab-btn, .k55-cat-btn, .filter-btn, .nav-pill, .btn-timer, .btn-asmr {{
+    min-height: 38px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }}
+  .k55-search-input {{
+    min-width: 220px;
+    flex-shrink: 0;
+  }}
+  main {{
+    padding: 12px;
+  }}
+  .q-card-head {{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 14px;
+  }}
+  .q-card-body {{
+    padding: 12px 14px;
+  }}
+  .lbl-target-line {{
+    font-size: 0.96rem;
+    padding: 8px 10px;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }}
+  .lbl-input-wrap {{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+  }}
+  .lbl-char-badge {{
+    align-self: flex-end;
+    padding: 3px 8px;
+  }}
+  /* iOS/iPadOS Safari 입력창 포커스 시 자동 확대(Zoom) 방지: 16px 이상 유지 */
+  .lbl-input, .case8-input, .quiz-input, .b4-typing-sheet, .k55-search-input, #pb-theme {{
+    font-size: 16px !important;
+    min-height: 44px;
+  }}
+  .sheet-grid {{
+    grid-template-columns: 1fr !important;
+  }}
+  .modal-box {{
+    width: 96vw !important;
+    max-height: 90vh;
+    padding: 16px !important;
+  }}
+  #ped-builder-modal div[style*="grid-template-columns:1fr 1fr"] {{
+    grid-template-columns: 1fr !important;
+  }}
 }}
 
 @media print {{
@@ -2952,6 +3036,7 @@ function renderCards() {{
 
     container.appendChild(card);
   }});
+  if (typeof applyTabletInputAttrs === 'function') applyTabletInputAttrs();
 }}
 
 function extractKeywords(ans) {{
@@ -3613,9 +3698,20 @@ function escapeHtml(str) {{
     .replace(/"/g, '&quot;');
 }}
 
+function applyTabletInputAttrs() {{
+  document.querySelectorAll('input[type="text"], textarea').forEach(el => {{
+    el.setAttribute('autocapitalize', 'off');
+    el.setAttribute('autocorrect', 'off');
+    el.setAttribute('autocomplete', 'off');
+    el.setAttribute('spellcheck', 'false');
+    if (el.tagName === 'INPUT') el.setAttribute('enterkeyhint', 'next');
+  }});
+}}
+
 function init() {{
   renderNav();
   renderCards();
+  applyTabletInputAttrs();
   loadSavedAnswers();
   updateProgress();
   startTimer();
@@ -3623,6 +3719,12 @@ function init() {{
     const el = document.getElementById('round-btn-' + r);
     if (el) el.classList.toggle('active', r === currentRound);
   }}
+  // 태블릿(iOS/Android) 첫 터치 시 오디오 컨텍스트 자동 활성화
+  const unlockAudioOnce = () => {{
+    try {{ ensureAudioCtx(); }} catch(e) {{}}
+    window.removeEventListener('touchstart', unlockAudioOnce);
+  }};
+  window.addEventListener('touchstart', unlockAudioOnce, {{ passive: true }});
 }}
 
 window.addEventListener('keydown', (e) => {{
