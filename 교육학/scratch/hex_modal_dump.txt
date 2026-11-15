@@ -1,0 +1,27 @@
+id="hex-battle-modal" class="fixed inset-0 modal-backdrop z-[99999] hidden flex flex-col items-center justify-center p-2 bg-black/90">
+    <div class="koei-box w-full max-w-6xl p-2.5 rounded shadow-2xl border-4 border-yellow-500 max-h-[96vh] flex flex-col overflow-y-auto">
+      
+      <!-- 상단 헤더 및 후퇴 버튼 -->
+      <div class="flex items-center justify-between border-b-2 border-yellow-600 pb-1.5 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⚔️</span>
+          <h2 id="hex-modal-title" class="text-base font-black text-yellow-300 text-pixel">
+            [삼국지 V 헥스 전술 결전] 10턴 결전: 적 군량고 습격 & 일기토 대승 전략
+          </h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="confirmExitBattleToMap()" class="px-4 py-1.5 rounded text-xs bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-600 hover:to-indigo-600 text-yellow-200 border-2 border-yellow-400 font-black shadow-lg flex items-center gap-1.5 animate-pulse">
+            <span>🗺️</span> <span>전국 지도로 복귀 (퇴각)</span>
+          </button>
+          <button onclick="confirmExitBattleToMap()" class="text-slate-400 hover:text-white font-mono text-sm px-2 py-0.5 border border-slate-600 rounded">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- 삼국지 5 실전 바디 임베딩 -->
+      <div id="sam5-container" class="w-full flex-1">
+        <body class="p-2 md:p-3 min-h-screen flex flex-col justify-between">
+
+  <!-- 상단 상태바 & 10턴 긴장감 게이지 HUD -->
+  <header class

@@ -1,0 +1,17 @@
+: 15000,
+      storageHp: 100
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupIntroFaces(); updateTroopLevelUI();
+      openModal('intro-ruler-select-modal');
+      renderMapPins();
+      updateRightPanel(gameState.selectedProvId);
+      setupRulerPortraits();
+      bindKeyboardShortcuts();
+      updateDifficultyUI();
+      logMessage('🎮 삼국지 3 팝업 & 1:1 장수 결투 & 적군 침공 AI 에디션 가동!', 'text-emerald-400 font-bold');
+    });
+
+    function setupRulerPortraits() {
+      const p 

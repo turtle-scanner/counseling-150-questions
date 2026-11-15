@@ -1,0 +1,16 @@
+function checkVictoryCondition() {
+      const enemiesAlive = UNITS.some(u => u.faction === "enemy" && u.troops > 0);
+      const alliesAlive = UNITS.some(u => u.faction === "ally" && u.troops > 0);
+      const boss = UNITS.find(u => u.isBoss);
+
+      const targetRuler = (hexBattleContext.targetProv && hexBattleContext.targetProv.ruler) ? hexBattleContext.targetProv.ruler : '적';
+      if (boss && boss.troops <= 0) {
+        triggerVictory(`${targetRuler}군의 총대장 ${boss.name}이(가) 퇴각했습니다! 적 군세가 붕괴하여 대승을 거두었습니다!`);
+      } else if (!enemiesAlive) {
+        triggerVictory(`${targetRuler}군 전 부대를 궤멸시켰습니다! 천하에 이름을 떨친 완벽한 승리입니다!`);
+      } else if (!alliesAlive) {
+        triggerDefeat("아군 전 부대가 전멸하여 패배했습니다...");
+      }
+    }
+
+    

@@ -1,0 +1,43 @@
+function renderMapPins() {
+      const container = document.getElementById('map-pins-layer');
+      container.innerHTML = '';
+
+      PROVINCES.forEach(p => {
+        const pin = document.createElement('div');
+        pin.className = 'map-pin';
+        pin.id = 'pin-' + p.id;
+        pin.style.left = p.x + '%';
+        pin.style.top = p.y + '%';
+
+        const isMine = (p.ruler === gameState.rulerName);
+        const isAlly = gameState.allies.includes(p.ruler);
+        const isSelected = (p.id === gameState.selectedProvId);
+
+        let badgeClass = 'bg-red-950/90 border-red-400 text-red-200';
+        let icon = '⚔️';
+        if (isMine) {
+          badgeClass = 'bg-emerald-800 border-yellow-300 text-yellow-200';
+          icon = '🚩';
+        } else if (isAlly) {
+          badgeClass = 'bg-sky-800 border-cyan-300 text-cyan-200';
+          icon = '🤝';
+        }
+        if (isSelected) badgeClass += ' pin-selected ring-2 ring-yellow-400';
+
+        pin.innerHTML = `
+          <div class="pin-badge ${badgeClass}">
+            <span>${icon}</span>
+            <span>${p.id}. ${p.name}</span>
+            <span class="text-[9px] opacity-80">(${p.ruler})</span>
+          </div>
+        `;
+        pin.onclick = (e) => { e.stopPropagation(); selectProvince(p.id); };
+        container.appendChild(pin);
+      });
+    }
+
+    function selectProvince(provId) {
+      gameState.selectedProvId = provId;
+      renderMapPins();
+      updateRightPanel(provId);
+      const p = PROVINCES.find(x => x.

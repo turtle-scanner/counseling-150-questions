@@ -1,0 +1,2770 @@
+# -*- coding: utf-8 -*-
+import json
+import os
+import shutil
+
+# Load the validated 55 KICE 4-line items
+with open("kice_55_4lines_master.json", "r", encoding="utf-8") as f:
+    kice55_data = json.load(f)
+
+# Load existing all_exam_master_data.json for PED(16), A(12), B(11)
+with open("all_exam_master_data.json", "r", encoding="utf-8") as f:
+    exam_master = json.load(f)
+
+data_ped = exam_master["pedagogy"]
+data_a = exam_master["counselingA"]
+data_b = exam_master["counselingB"]
+
+# Build Universal 4-Line Templates (만점 만능 템플릿 4선)
+templates_data = [
+    {
+        "id": 1,
+        "domain": "1교시 교육학 만능틀",
+        "title": "[만점 템플릿 1] 1교시 교육학 논술 만능 서론 2줄 + 만능 결론 2줄 템플릿",
+        "concept": "어떤 교육학 논술 주제가 출제되어도 1초 만에 시작하고 끝맺는 20점 만점 황금 틀",
+        "keywords": ["학습자 중심의 맞춤형 교육", "교육과정과 수업 및 평가와 행정", "전인적 성장과 잠재력 계발", "학교 혁신"],
+        "lines": [
+            "미래 사회의 변화에 발맞추어 학습자 중심의 맞춤형 교육 혁신이 절실히 요구된다.",
+            "이를 실현하기 위해 제시된 교육과정과 수업 및 평가와 행정의 핵심 방안을 논한다.",
+            "학교 현장의 모든 교육 활동은 학생의 전인적 성장과 잠재력 계발로 수렴되어야 한다.",
+            "이처럼 교사가 전문성과 책무성을 발휘한다면 참된 배움의 학교 혁신이 실현될 것이다."
+        ],
+        "line_blanks": [
+            ["학습자 중심의 맞춤형 교육"],
+            ["교육과정과 수업 및 평가와 행정"],
+            ["전인적 성장과 잠재력 계발"],
+            ["전문성과 책무성", "학교 혁신"]
+        ],
+        "quiz_q": "교육학 논술 마지막 줄에 반드시 들어가야 하는 교사 실천 종결 공식은?",
+        "quiz_a": "이처럼 교사가 ~한다면 ~이 실현될 것이다"
+    },
+    {
+        "id": 2,
+        "domain": "전공상담 감별진단 만능틀",
+        "title": "[만점 템플릿 2] 2·3교시 DSM-5-TR 감별진단 및 행동치료 개입 4줄 만능 템플릿",
+        "concept": "진단명 1:1 대조 ➔ 결정적 감별 기준 ➔ 자아 동질/이질 기제 ➔ 노출 치료 개입의 4줄 공식",
+        "keywords": ["공식 진단명", "결정적인 감별 기준", "자아 이질적 특성", "불안이 자연 소거"],
+        "lines": [
+            "사례에 나타난 1번 내담자의 공식 진단명은 갑이며 2번은 을로 각각 감별한다.",
+            "두 장애를 임상적으로 구별하는 가장 결정적인 감별 기준은 핵심 증상의 유무이다.",
+            "갑은 증상을 비합리적인 것으로 여겨 고통스러워하는 자아 이질적 특성을 나타낸다.",
+            "두려운 자극에 직면하게 하고 회피 반응을 차단하여 불안이 자연 소거되도록 돕는다."
+        ],
+        "line_blanks": [
+            ["공식 진단명"],
+            ["결정적인 감별 기준", "핵심 증상의 유무"],
+            ["자아 이질적 특성"],
+            ["회피 반응을 차단", "불안이 자연 소거"]
+        ],
+        "quiz_q": "DSM-5-TR 감별진단 서술형 1번째 줄과 2번째 줄에 각각 들어가야 할 핵심 요소는?",
+        "quiz_a": "공식 진단명, 결정적인 감별 기준"
+    },
+    {
+        "id": 3,
+        "domain": "전공상담 이론·가족 만능틀",
+        "title": "[만점 템플릿 3] 2·3교시 상담이론 및 가족치료 사례개념화 4줄 만능 템플릿",
+        "concept": "부적응 원인 개념화 ➔ 상담자 태도(중립성·공감) ➔ 지금-여기 기법 ➔ 자아 통합 및 분화",
+        "keywords": ["역기능적 가족 경계선", "정서적 중립성", "지금 여기의 갈등", "자기분화와 심리적 유연성"],
+        "lines": [
+            "내담자의 심리적 부적응은 왜곡된 신념 체계와 역기능적 가족 경계선에서 비롯된다.",
+            "상담자는 어느 한쪽에도 치우치지 않는 정서적 중립성과 공감적 수용 태도를 지킨다.",
+            "상담실 안에서 지금 여기의 갈등과 억압된 감정을 직접 직면하고 탐색하도록 돕는다.",
+            "소외된 내면의 감정을 통합하고 자율적인 자기분화와 심리적 유연성을 회복시킨다."
+        ],
+        "line_blanks": [
+            ["왜곡된 신념 체계", "역기능적 가족 경계선"],
+            ["정서적 중립성", "공감적 수용"],
+            ["지금 여기의 갈등"],
+            ["자기분화", "심리적 유연성"]
+        ],
+        "quiz_q": "상담이론 및 가족치료 개입에서 내담자의 무의식적 갈등과 감정을 다루는 시공간적 초점은?",
+        "quiz_a": "지금-여기(Here and Now)"
+    },
+    {
+        "id": 4,
+        "domain": "전공상담 검사·위기 만능틀",
+        "title": "[만점 템플릿 4] 2·3교시 심리검사 해석 및 자살·학폭 위기개입 4줄 만능 템플릿",
+        "concept": "과부하 프로파일 해석 ➔ 지금-여기 즉각 사정 ➔ 비밀보장 예외 통보 ➔ 안전계획서 및 연계",
+        "keywords": ["심리적 과부하 상태", "자살 충동과 계획", "비밀보장의 예외", "안전계획서와 전문 의료기관"],
+        "lines": [
+            "검사 결과 가용 자원에 비해 스트레스 자극이 훨씬 큰 심리적 과부하 상태를 보인다.",
+            "즉각적인 생명 위협을 파악하기 위해 지금 여기에서의 자살 충동과 계획을 묻는다.",
+            "자살 및 폭력 위기는 비밀보장의 예외 사안이므로 보호자에게 사실을 즉각 알린다.",
+            "위기관리위원회를 소집하고 안전계획서를 작성하며 전문 의료기관으로 긴급 연계한다."
+        ],
+        "line_blanks": [
+            ["심리적 과부하 상태"],
+            ["지금 여기", "자살 충동과 계획"],
+            ["비밀보장의 예외"],
+            ["위기관리위원회", "안전계획서", "전문 의료기관"]
+        ],
+        "quiz_q": "자살 및 생명 위협 위기 시 상담자가 법적·윤리적으로 반드시 발동해야 하는 원칙은?",
+        "quiz_a": "비밀보장의 예외"
+    }
+]
+
+html_content = f"""<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>2027학년도 11.28 임용고시 결전 - 55개 KICE 핵심키워드 4줄 정답 & 만점 템플릿 타이핑 마스터</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {{
+  --bg-main: #0a0f1d;
+  --bg-card: #121929;
+  --bg-card-header: #182238;
+  --bg-passage: #0b1220;
+  --border-kice: #22314d;
+  --border-kice-focus: #38bdf8;
+  --text-main: #f1f5f9;
+  --text-sub: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #38bdf8;
+  --accent-gold: #fbbf24;
+  --accent-emerald: #10b981;
+  --accent-rose: #f43f5e;
+  --accent-purple: #c084fc;
+  --font-scale: 1;
+}}
+
+body.b4-paper-mode {{
+  --bg-main: #18191c;
+  --bg-card: #e8e3d5;
+  --bg-card-header: #dbd4c0;
+  --bg-passage: #f3efe6;
+  --border-kice: #8c826e;
+  --border-kice-focus: #1e3a8a;
+  --text-main: #111827;
+  --text-sub: #374151;
+  --text-muted: #4b5563;
+  --accent-blue: #1e40af;
+  --accent-gold: #b45309;
+  --accent-emerald: #047857;
+  --accent-rose: #b91c1c;
+}}
+
+* {{ box-sizing: border-box; margin: 0; padding: 0; }}
+
+body {{
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-bottom: 90px;
+  user-select: text;
+  transition: background-color 0.3s, color 0.3s;
+}}
+
+.kice-exam-header {{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 15, 29, 0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid #1e3a5f;
+  padding: 10px 24px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
+}}
+body.b4-paper-mode .kice-exam-header {{
+  background: rgba(220, 215, 200, 0.98);
+  border-bottom: 2px solid #8c826e;
+}}
+
+.header-inner {{
+  max-width: 1560px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}}
+
+.brand-section {{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}}
+
+.kice-seal {{
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  border: 1px solid #fbbf24;
+}}
+
+.exam-main-title {{
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}}
+
+.examinee-tag {{
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}}
+body.b4-paper-mode .examinee-tag {{
+  color: #1e3a8a;
+  background: rgba(30, 58, 138, 0.1);
+  border-color: #1e3a8a;
+}}
+
+.timer-container {{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #091322;
+  border: 1px solid #1e3a5f;
+  padding: 4px 12px;
+  border-radius: 8px;
+}}
+body.b4-paper-mode .timer-container {{
+  background: #fdfbf7;
+  border-color: #8c826e;
+}}
+
+.timer-label {{
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  font-weight: 600;
+}}
+
+.timer-digits {{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  letter-spacing: 1px;
+  min-width: 75px;
+  text-align: center;
+}}
+.timer-digits.warning {{
+  color: var(--accent-rose);
+  animation: pulse-warn 1s infinite alternate;
+}}
+
+@keyframes pulse-warn {{
+  from {{ opacity: 1; }}
+  to {{ opacity: 0.4; }}
+}}
+
+.btn-timer {{
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+}}
+body.b4-paper-mode .btn-timer {{
+  background: #e2dcd0;
+  color: #1f2937;
+  border-color: #9ca3af;
+}}
+
+.wpm-badge {{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}}
+
+.btn-asmr {{
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  font-size: 0.75rem;
+  padding: 5px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}}
+.btn-asmr.on {{
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}}
+
+.font-scale-ctrl {{
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: #0d1525;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border-kice);
+}}
+body.b4-paper-mode .font-scale-ctrl {{
+  background: #dbd4c0;
+}}
+.btn-font-scale {{
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 2px 5px;
+}}
+.btn-font-scale:hover {{ color: var(--accent-blue); }}
+
+.header-actions {{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}}
+
+.btn-kice {{
+  background: #131c2e;
+  color: #e2e8f0;
+  border: 1px solid #2a3a54;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}}
+body.b4-paper-mode .btn-kice {{
+  background: #fdfbf7;
+  color: #1f2937;
+  border-color: #8c826e;
+}}
+.btn-kice:hover {{
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}}
+.btn-kice.accent {{
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  border: none;
+  color: #fff;
+}}
+
+.round-selector-group {{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #0d1525;
+  border: 1px solid var(--border-kice);
+  padding: 3px 8px;
+  border-radius: 6px;
+}}
+body.b4-paper-mode .round-selector-group {{
+  background: #dbd4c0;
+}}
+.round-btn {{
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-sub);
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}}
+.round-btn:hover {{ color: var(--accent-blue); }}
+.round-btn.active {{
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #fff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}}
+
+.btn-kice.danger {{
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #fda4af;
+}}
+.btn-kice.danger:hover {{
+  background: rgba(244, 63, 94, 0.2);
+  border-color: var(--accent-rose);
+  color: var(--accent-rose);
+}}
+
+.sub-bar {{
+  max-width: 1560px;
+  margin: 12px auto 0;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}}
+
+.period-tabs {{
+  display: flex;
+  gap: 6px;
+  background: #0d1525;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-kice);
+  flex-wrap: wrap;
+}}
+body.b4-paper-mode .period-tabs {{
+  background: #dbd4c0;
+}}
+
+.period-tab-btn {{
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-sub);
+  transition: all 0.2s;
+}}
+.period-tab-btn.active {{
+  background: linear-gradient(135deg, #1e3a8a, #0284c7);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45);
+}}
+.period-tab-btn.highlight-tab {{
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fde68a;
+}}
+.period-tab-btn.highlight-tab.active {{
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff;
+  border-color: #fbbf24;
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.5);
+}}
+
+/* 55선 세부 카테고리 필터 바 */
+.kice55-filter-bar {{
+  max-width: 1560px;
+  margin: 10px auto 0;
+  padding: 10px 24px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}}
+.k55-cat-btn {{
+  background: #101726;
+  border: 1px solid var(--border-kice);
+  color: var(--text-sub);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}}
+body.b4-paper-mode .k55-cat-btn {{
+  background: #e5ded0;
+  border-color: #a39985;
+}}
+.k55-cat-btn.active {{
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}}
+.k55-search-input {{
+  margin-left: auto;
+  background: #080d18;
+  border: 1px solid var(--border-kice);
+  color: var(--text-main);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  min-width: 260px;
+}}
+body.b4-paper-mode .k55-search-input {{
+  background: #faf8f3;
+  color: #111827;
+}}
+
+.filter-group {{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}}
+
+.filter-btn {{
+  background: transparent;
+  border: 1px solid var(--border-kice);
+  color: var(--text-sub);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}}
+.filter-btn.active {{
+  background: rgba(251, 191, 36, 0.2);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  font-weight: 800;
+}}
+
+.nav-strip {{
+  max-width: 1560px;
+  margin: 8px auto 0;
+  padding: 0 24px 6px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+}}
+
+.nav-pill {{
+  background: #101726;
+  border: 1px solid var(--border-kice);
+  color: var(--text-sub);
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}}
+body.b4-paper-mode .nav-pill {{
+  background: #e5ded0;
+  border-color: #a39985;
+}}
+.nav-pill:hover {{
+  border-color: var(--accent-blue);
+  color: #fff;
+}}
+.nav-pill.done {{
+  border-color: var(--accent-emerald);
+  color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.08);
+}}
+.nav-pill.bookmarked {{
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}}
+
+main {{
+  max-width: 1560px;
+  margin: 14px auto 0;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}}
+
+.q-card {{
+  background: var(--bg-card);
+  border: 1px solid var(--border-kice);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  transition: all 0.2s;
+}}
+
+.q-card-head {{
+  background: var(--bg-card-header);
+  padding: 10px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-kice);
+  flex-wrap: wrap;
+  gap: 8px;
+}}
+
+.q-num-title {{
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}}
+
+.bookmark-star {{
+  cursor: pointer;
+  font-size: 1.15rem;
+  color: #4b5563;
+  transition: transform 0.2s, color 0.2s;
+}}
+.bookmark-star.active {{
+  color: var(--accent-gold);
+  transform: scale(1.15);
+}}
+
+.type-pill {{
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+}}
+.type-pill.fillin {{ background: rgba(192, 132, 252, 0.15); color: #d8b4fe; border: 1px solid #9333ea; }}
+.type-pill.essay {{ background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid #0284c7; }}
+.type-pill.k55 {{ background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid #f59e0b; }}
+
+.q-card-body {{
+  padding: 18px;
+}}
+
+.q-question-text {{
+  font-size: calc(1.08rem * var(--font-scale));
+  font-weight: 800;
+  margin-bottom: 10px;
+  line-height: 1.45;
+  color: var(--text-main);
+}}
+
+.concept-banner {{
+  background: rgba(56, 189, 248, 0.08);
+  border-left: 4px solid var(--accent-blue);
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: calc(0.9rem * var(--font-scale));
+  color: var(--text-sub);
+  margin-bottom: 12px;
+  font-weight: 600;
+}}
+
+.passage-wrapper {{
+  background: var(--bg-passage);
+  border: 1px solid var(--border-kice);
+  border-left: 4px solid var(--accent-blue);
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  font-size: calc(0.94rem * var(--font-scale));
+  line-height: 1.75;
+  white-space: pre-line;
+}}
+
+.instructions-box {{
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed var(--border-kice);
+  border-radius: 6px;
+  padding: 12px 18px;
+  margin-bottom: 14px;
+  font-size: calc(0.88rem * var(--font-scale));
+  line-height: 1.6;
+  white-space: pre-line;
+}}
+body.b4-paper-mode .instructions-box {{
+  background: #eae5d7;
+}}
+.instructions-box strong {{
+  color: var(--accent-gold);
+}}
+
+/* 키워드 태그 */
+.kw-tags-strip {{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  align-items: center;
+}}
+.kw-label-tag {{
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+}}
+.kw-pill {{
+  font-size: calc(0.82rem * var(--font-scale));
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #0f172a;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  color: #fde68a;
+  font-weight: 700;
+  transition: all 0.2s;
+}}
+body.b4-paper-mode .kw-pill {{
+  background: #dbd4c0;
+  color: #78350f;
+  border-color: #b45309;
+}}
+.kw-pill.detected {{
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--accent-emerald);
+  color: #6ee7b7;
+  font-weight: 900;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+}}
+
+/* ================= 1줄씩 손가락으로 보고 바로 따라치기 박스 ================= */
+.line-by-line-box {{
+  background: #09101d;
+  border: 1px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}}
+body.b4-paper-mode .line-by-line-box {{
+  background: #f5f0e4;
+  border-color: #8c826e;
+}}
+.lbl-header {{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-kice);
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+}}
+.lbl-row {{
+  margin-bottom: 12px;
+}}
+.lbl-row:last-child {{
+  margin-bottom: 0;
+}}
+.lbl-target-line {{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: calc(1.02rem * var(--font-scale));
+  font-weight: 600;
+  letter-spacing: 0px;
+  color: #fef08a;
+  margin-bottom: 4px;
+  padding: 8px 14px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.22);
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
+  transition: filter 0.2s;
+}}
+.lbl-target-line.masked-hint {{
+  filter: blur(7px);
+  cursor: pointer;
+}}
+.lbl-target-line.masked-hint:hover {{
+  filter: blur(0);
+}}
+.kw-blank-slot {{
+  display: inline;
+  background: rgba(56, 189, 248, 0.22);
+  color: transparent;
+  border-bottom: 2px dashed #38bdf8;
+  border-radius: 3px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.18s;
+}}
+.kw-blank-slot:hover,
+.kw-blank-slot.revealed {{
+  color: #fef08a;
+  background: rgba(251, 191, 36, 0.25);
+  border-bottom: 2px solid var(--accent-gold);
+}}
+.kw-blank-slot.solved {{
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.28);
+  border-bottom: 2px solid #10b981;
+}}
+.broadcast-select {{
+  background: #131c2e;
+  color: #fde68a;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}}
+.btn-kw-blank-main {{
+  background: rgba(16, 185, 129, 0.16) !important;
+  border: 1px solid #10b981 !important;
+  color: #6ee7b7 !important;
+  font-weight: 800 !important;
+}}
+.btn-kw-blank-main.active {{
+  background: #10b981 !important;
+  color: #051b11 !important;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+}}
+body.b4-paper-mode .lbl-target-line {{
+  color: #78350f;
+  background: rgba(180, 83, 9, 0.1);
+}}
+.lbl-input-wrap {{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}}
+.lbl-input {{
+  flex: 1;
+  background: #050a14;
+  border: 1px solid #283a58;
+  border-left: 3px solid var(--accent-blue);
+  border-radius: 6px;
+  padding: 8px 14px;
+  color: #ffffff;
+  font-size: calc(1.02rem * var(--font-scale));
+  font-weight: 600;
+  letter-spacing: 0px;
+  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
+  outline: none;
+  transition: all 0.15s;
+}}
+.lbl-input::placeholder {{
+  color: rgba(148, 163, 184, 0.28);
+  font-weight: 600;
+  letter-spacing: 0px;
+}}
+body.b4-paper-mode .lbl-input {{
+  background: #ffffff;
+  color: #111827;
+  border-color: #9ca3af;
+}}
+.lbl-input:focus {{
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+}}
+.lbl-input.line-ok {{
+  border-color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.08);
+}}
+.lbl-char-badge {{
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-width: 95px;
+  text-align: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #162033;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+}}
+body.b4-paper-mode .lbl-char-badge {{
+  background: #dbd4c0;
+  color: #374151;
+}}
+.lbl-char-badge.ok {{
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--accent-emerald);
+  border: 1px solid var(--accent-emerald);
+}}
+.lbl-char-badge.over {{
+  background: rgba(244, 63, 94, 0.2);
+  color: var(--accent-rose);
+  border: 1px solid var(--accent-rose);
+}}
+
+/* 족집게 퀴즈 & 핵심키워드 손가락 타이핑 박스 */
+.cases8-box {{
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.07) 0%, rgba(15, 23, 42, 0.7) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}}
+body.b4-paper-mode .cases8-box {{
+  background: #ede7d6;
+  border-color: #047857;
+}}
+.cases8-header {{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #34d399;
+}}
+body.b4-paper-mode .cases8-header {{
+  color: #047857;
+}}
+.cases8-grid {{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+}}
+@media (max-width: 960px) {{
+  .cases8-grid {{
+    grid-template-columns: 1fr;
+  }}
+}}
+.case8-item {{
+  background: rgba(9, 14, 26, 0.85);
+  border: 1px solid #1e293b;
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 6px;
+  padding: 7px 10px;
+  transition: all 0.15s;
+}}
+body.b4-paper-mode .case8-item {{
+  background: #f8f5ec;
+  border-color: #b5ab96;
+}}
+.case8-item.case-ok {{
+  border-color: var(--accent-emerald);
+  border-left: 4px solid var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.11);
+}}
+.case8-q-row {{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  font-size: calc(0.82rem * var(--font-scale));
+  color: #cbd5e1;
+  margin-bottom: 5px;
+  font-weight: 600;
+}}
+body.b4-paper-mode .case8-q-row {{
+  color: #1f2937;
+}}
+.case8-ans-row {{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}}
+.case8-target {{
+  font-size: calc(0.86rem * var(--font-scale));
+  font-weight: 800;
+  color: #fef08a;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 4px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  max-width: 52%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}}
+body.b4-paper-mode .case8-target {{
+  color: #78350f;
+  background: rgba(180, 83, 9, 0.12);
+}}
+.case8-input {{
+  flex: 1;
+  background: #050a14;
+  border: 1px solid #283a58;
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: #fff;
+  font-size: calc(0.86rem * var(--font-scale));
+  font-weight: 700;
+  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
+  outline: none;
+}}
+body.b4-paper-mode .case8-input {{
+  background: #fff;
+  color: #111827;
+  border-color: #9ca3af;
+}}
+.case8-input:focus {{
+  border-color: var(--accent-blue);
+}}
+.case8-input.match {{
+  border-color: var(--accent-emerald);
+  color: #6ee7b7;
+}}
+
+.quiz-typing-box {{
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: rgba(56, 189, 248, 0.06);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+}}
+.quiz-q-text {{
+  font-size: calc(0.92rem * var(--font-scale));
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 8px;
+}}
+body.b4-paper-mode .quiz-q-text {{
+  color: #1f2937;
+}}
+.quiz-a-row {{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}}
+.quiz-target-badge {{
+  background: rgba(251, 191, 36, 0.18);
+  border: 1px solid var(--accent-gold);
+  color: #fef08a;
+  font-weight: 800;
+  font-size: calc(0.9rem * var(--font-scale));
+  padding: 6px 12px;
+  border-radius: 6px;
+}}
+body.b4-paper-mode .quiz-target-badge {{
+  color: #78350f;
+  background: rgba(180, 83, 9, 0.15);
+}}
+.quiz-input {{
+  flex: 1;
+  min-width: 220px;
+  background: #050a14;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: #fff;
+  font-size: calc(0.95rem * var(--font-scale));
+  font-weight: 700;
+}}
+body.b4-paper-mode .quiz-input {{
+  background: #fff;
+  color: #111827;
+}}
+.quiz-input.match {{
+  border-color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+}}
+
+/* 좌우 2분할 실전 B4 답안지 */
+.sheet-grid {{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}}
+
+@media (max-width: 1024px) {{
+  .sheet-grid {{
+    grid-template-columns: 1fr;
+  }}
+}}
+
+.sheet-col {{
+  display: flex;
+  flex-direction: column;
+}}
+
+.sheet-col-header {{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}}
+
+.b4-typing-sheet {{
+  width: 100%;
+  flex: 1;
+  min-height: 170px;
+  background-color: #070d18;
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(56, 189, 248, 0.38) 40px);
+  background-size: 100% 40px;
+  background-attachment: local;
+  border: 1px solid #1e3a5f;
+  border-radius: 6px;
+  padding: 0 16px;
+  color: #f8fafc;
+  font-size: calc(1.05rem * var(--font-scale));
+  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
+  line-height: 40px;
+  resize: vertical;
+  outline: none;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}}
+body.b4-paper-mode .b4-typing-sheet {{
+  background-color: #faf8f3;
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(30, 58, 138, 0.4) 40px);
+  border-color: #8c826e;
+  color: #111827;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.15);
+}}
+.b4-typing-sheet:focus {{
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}}
+.b4-typing-sheet.error-overflow {{
+  border-color: var(--accent-rose) !important;
+}}
+
+.line-status-chip {{
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}}
+.chip-item {{
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: #1e293b;
+  color: #94a3b8;
+}}
+body.b4-paper-mode .chip-item {{
+  background: #dbd4c0;
+  color: #374151;
+}}
+.chip-item.perfect {{
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--accent-emerald);
+  border: 1px solid var(--accent-emerald);
+}}
+.chip-item.overflow {{
+  background: rgba(244, 63, 94, 0.25);
+  color: var(--accent-rose);
+  border: 1px solid var(--accent-rose);
+}}
+
+.b4-answer-sheet {{
+  background-color: #091322;
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(251, 191, 36, 0.3) 40px);
+  background-size: 100% 40px;
+  background-attachment: local;
+  border: 1px solid #1e3a5f;
+  border-radius: 6px;
+  padding: 0 16px;
+  color: #fef08a;
+  font-size: calc(1.05rem * var(--font-scale));
+  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
+  line-height: 40px;
+  white-space: pre-line;
+  flex: 1;
+  user-select: text;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+}}
+body.b4-paper-mode .b4-answer-sheet {{
+  background-color: #faf5eb;
+  background-image: linear-gradient(to bottom, transparent 39px, rgba(180, 83, 9, 0.35) 40px);
+  border-color: #8c826e;
+  color: #92400e;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.15);
+}}
+.b4-answer-sheet.masked {{
+  filter: blur(5px);
+  user-select: none;
+  cursor: pointer;
+}}
+
+.btn-sheet-mini {{
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+}}
+body.b4-paper-mode .btn-sheet-mini {{
+  background: #e2dcd0;
+  color: #1f2937;
+  border-color: #9ca3af;
+}}
+.btn-sheet-mini:hover {{ background: #38bdf8; color: #000; }}
+
+.scoring-eval-bar {{
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #0d1422;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}}
+body.b4-paper-mode .scoring-eval-bar {{
+  background: #eae4d5;
+  border-color: #8c826e;
+}}
+.eval-score-text {{
+  font-weight: 800;
+  color: var(--accent-gold);
+}}
+
+#report-modal {{
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}}
+.modal-box {{
+  background: #131c2e;
+  border: 2px solid #38bdf8;
+  border-radius: 12px;
+  max-width: 650px;
+  width: 100%;
+  padding: 24px;
+  color: #f8fafc;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}}
+.modal-title {{
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #38bdf8;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #22314d;
+  padding-bottom: 10px;
+}}
+.report-row {{
+  margin-bottom: 12px;
+}}
+.report-bar-wrap {{
+  background: #0a0f1d;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 4px;
+}}
+.report-bar-fill {{
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #10b981);
+  width: 0%;
+  transition: width 0.5s ease;
+}}
+
+@media print {{
+  body {{ background: #fff !important; color: #000 !important; }}
+  .kice-exam-header, .sub-bar, .kice55-filter-bar, .nav-strip, .scoring-eval-bar, .header-actions, .btn-sheet-mini, #toast, #report-modal {{ display: none !important; }}
+  main {{ max-width: 100% !important; margin: 0 !important; padding: 0 !important; }}
+  .q-card {{ border: 2px solid #000 !important; box-shadow: none !important; margin-bottom: 20px !important; page-break-inside: avoid; }}
+  .q-card-head {{ background: #f0f0f0 !important; color: #000 !important; border-bottom: 1px solid #000 !important; }}
+  .b4-typing-sheet, .b4-answer-sheet {{ background: #fff !important; border: 1px solid #000 !important; color: #000 !important; }}
+}}
+
+#toast {{
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #10b981;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  transform: translateY(10px);
+  z-index: 9999;
+}}
+#toast.show {{ opacity: 1; transform: translateY(0); }}
+</style>
+</head>
+<body>
+
+<header class="kice-exam-header">
+  <div class="header-inner">
+    <div class="brand-section">
+      <span class="kice-seal">11.28 결전 마스터</span>
+      <h1 class="exam-main-title">2027 임용 만점 템플릿 & 55개 KICE 핵심키워드 4줄 정답 타이핑</h1>
+      <span class="examinee-tag">수험자: 변귀섭 대표님</span>
+    </div>
+
+    <div class="timer-container">
+      <span class="timer-label">잔여 시간</span>
+      <span class="timer-digits" id="timer-display">30:00</span>
+      <button class="btn-timer" onclick="toggleTimer()" id="btn-timer-toggle">일시정지</button>
+      <button class="btn-timer" onclick="resetTimer()">30분 리셋</button>
+      <span class="wpm-badge" id="wpm-display">0 타/분</span>
+      <button class="btn-asmr" id="btn-asmr" onclick="toggleASMR()">🔔 시험장 소리·멘트 OFF</button>
+      <select class="broadcast-select" id="exam-broadcast-select" onchange="playSelectedBroadcast(this.value)">
+        <option value="">📢 시험장 방송 멘트 선택...</option>
+        <option value="START">🔔 [본령] 시험 시작 타종 & 방송 멘트</option>
+        <option value="PRE5">🔔 [예비령] 시험 시작 5분 전 유의사항 멘트</option>
+        <option value="WARN10">🔔 [예고령] 시험 종료 10분 전 점검 멘트</option>
+        <option value="END">🔔 [종료령] 시험 종료 타종 & 제출 멘트</option>
+        <option value="CHEER">🏆 [특별방송] 변귀섭 대표님 최종합격 멘트</option>
+      </select>
+    </div>
+
+    <div class="font-scale-ctrl">
+      <button class="btn-font-scale" onclick="adjustFont(-0.05)">A-</button>
+      <span style="font-size:0.75rem; color:var(--text-muted);">글꼴</span>
+      <button class="btn-font-scale" onclick="adjustFont(0.05)">A+</button>
+    </div>
+
+    <div class="round-selector-group">
+      <span style="font-size:0.75rem; color:var(--accent-gold); font-weight:800; margin-right:2px;">오늘의 회독:</span>
+      <button class="round-btn active" id="round-btn-1" onclick="switchPracticeRound(1)">1회독</button>
+      <button class="round-btn" id="round-btn-2" onclick="switchPracticeRound(2)">2회독</button>
+      <button class="round-btn" id="round-btn-3" onclick="switchPracticeRound(3)">3회독</button>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-kice btn-kw-blank-main" onclick="toggleKeywordBlankMode()" id="btn-kw-blank">🎯 핵심키워드 빈칸 만들기</button>
+      <button class="btn-kice" onclick="toggleCases8Mode()" id="btn-cases8-mode" style="border-color:#38bdf8; color:#38bdf8; font-weight:800;">⚡ 경우의 수 8개 ON</button>
+      <button class="btn-kice" onclick="togglePaperMode()" id="btn-paper-mode">B4 시험지 모드</button>
+      <button class="btn-kice" onclick="toggleAllMasks()" id="btn-toggle-all">백지연습(정답 가리기)</button>
+      <button class="btn-kice" onclick="shuffleCurrentPeriod()" id="btn-shuffle">랜덤 셔플</button>
+      <button class="btn-kice" onclick="openReportModal()">종합 성적표</button>
+      <button class="btn-kice" onclick="window.print()">B4 인쇄</button>
+      <button class="btn-kice danger" onclick="clearCurrentAnswers()">현재 탭 비우기</button>
+      <button class="btn-kice danger" onclick="clearAllPracticeRoundAnswers()">★ 오늘 전체 지우기</button>
+      <button class="btn-kice accent" onclick="exportAnswers()">답안 제출 (TXT)</button>
+    </div>
+  </div>
+</header>
+
+<div class="sub-bar">
+  <div class="period-tabs">
+    <button class="period-tab-btn highlight-tab active" id="tab-btn-KICE55" onclick="switchPeriod('KICE55')">🔥 11.28 결전: 55개 KICE 키워드 4줄 정답 (55선)</button>
+    <button class="period-tab-btn highlight-tab" id="tab-btn-TEMPLATE" onclick="switchPeriod('TEMPLATE')">🎯 임용 만점 4줄 만능 템플릿 (4선)</button>
+    <button class="period-tab-btn" id="tab-btn-PED" onclick="switchPeriod('PED')">1교시 교육학 실전 (16제)</button>
+    <button class="period-tab-btn" id="tab-btn-A" onclick="switchPeriod('A')">2교시 전공 A형 실전 (12제)</button>
+    <button class="period-tab-btn" id="tab-btn-B" onclick="switchPeriod('B')">3교시 전공 B형 실전 (11제)</button>
+  </div>
+  <div class="filter-group">
+    <button class="filter-btn" id="btn-bookmark-filter" onclick="toggleBookmarkFilter()">북마크(★) 모아보기</button>
+    <button class="filter-btn" onclick="exportWrongNotes()">단권화 노트 다운</button>
+    <div class="status-badge">
+      <span class="badge-count" id="progress-count" style="font-weight:900; color:var(--accent-emerald);">0 완료</span>
+    </div>
+  </div>
+</div>
+
+<!-- 55개 KICE 핵심키워드 전용 영역 필터 및 실시간 검색 -->
+<div class="kice55-filter-bar" id="kice55-filter-bar">
+  <button class="k55-cat-btn active" onclick="setK55Category('ALL', this)">전체 55선 (01~55)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('PED20', this)">1교시 교육학 20선 (01~20)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('COUNSEL35', this)">2·3교시 전공상담 35선 (21~55)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('DSM-5-TR 감별진단', this)">DSM-5-TR 감별 (11선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('심리검사', this)">심리검사 (4선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('가족치료', this)">가족치료 (4선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('상담이론', this)">상담이론·성격 (12선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('진로·다문화·위기', this)">진로·다문화·위기·학폭 (4선)</button>
+  <input type="text" class="k55-search-input" id="k55-search-input" placeholder="🔍 KICE 키워드·학자명·장애명 즉시 검색..." oninput="renderNav(); renderCards(); loadSavedAnswers();">
+</div>
+
+<div class="nav-strip" id="nav-strip"></div>
+
+<main id="exam-cards-container"></main>
+
+<div id="report-modal">
+  <div class="modal-box">
+    <div class="modal-title">🏆 2027학년도 11.28 임용 결전 종합 성취도 리포트</div>
+    <div id="report-content"></div>
+    <div style="text-align: right; margin-top: 20px;">
+      <button class="btn-kice accent" onclick="closeReportModal()">확인 완료</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast">알림</div>
+
+<script>
+const dataKICE55 = {json.dumps(kice55_data, ensure_ascii=False)};
+const dataTEMPLATE = {json.dumps(templates_data, ensure_ascii=False)};
+const dataPED = {json.dumps(data_ped, ensure_ascii=False)};
+const dataA = {json.dumps(data_a, ensure_ascii=False)};
+const dataB = {json.dumps(data_b, ensure_ascii=False)};
+
+let currentPeriod = 'KICE55';
+let currentK55Cat = 'ALL';
+let allMasked = false;
+let isPaperMode = false;
+let isBlankMode = false;
+let showCases8 = true;
+let showOnlyBookmarks = false;
+let isShuffled = false;
+let currentFontScale = 1.0;
+let bookmarks = JSON.parse(localStorage.getItem('kice_bookmarks') || '{{}}');
+
+let totalTypedChars = 0;
+let typingStartTime = null;
+let timerSeconds = 30 * 60;
+let timerInterval = null;
+let isTimerRunning = true;
+
+let audioCtx = null;
+let noiseNode = null;
+let examHallTimer = null;
+let isAsmrOn = false;
+
+function ensureAudioCtx() {{
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}}
+
+function playSuccessChime() {{
+  try {{
+    const ctx = ensureAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+    osc.frequency.setValueAtTime(880.00, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.6);
+  }} catch(e) {{}}
+}}
+
+function playMiniHitSound() {{
+  try {{
+    const ctx = ensureAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(659.25, ctx.currentTime);
+    osc.frequency.setValueAtTime(987.77, ctx.currentTime + 0.06);
+    gain.gain.setValueAtTime(0.10, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.25);
+  }} catch(e) {{}}
+}}
+
+function playPenStrokeSound() {{
+  if (!isAsmrOn) return;
+  try {{
+    const ctx = ensureAudioCtx();
+    const dur = 0.035;
+    const bufSize = Math.floor(ctx.sampleRate * dur);
+    const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {{
+      const env = Math.sin((i / bufSize) * Math.PI);
+      data[i] = (Math.random() * 2 - 1) * 0.04 * env;
+    }}
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 2400 + Math.random() * 600;
+    filter.Q.value = 1.8;
+    src.connect(filter);
+    filter.connect(ctx.destination);
+    src.start();
+  }} catch(e) {{}}
+}}
+
+function playPaperTurnSound() {{
+  try {{
+    const ctx = ensureAudioCtx();
+    const dur = 0.38;
+    const bufSize = Math.floor(ctx.sampleRate * dur);
+    const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {{
+      const env = Math.sin((i / bufSize) * Math.PI);
+      data[i] = (Math.random() * 2 - 1) * 0.03 * env;
+    }}
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(900, ctx.currentTime);
+    filter.frequency.linearRampToValueAtTime(2200, ctx.currentTime + 0.2);
+    filter.frequency.linearRampToValueAtTime(700, ctx.currentTime + dur);
+    src.connect(filter);
+    filter.connect(ctx.destination);
+    src.start();
+  }} catch(e) {{}}
+}}
+
+// 실제 임용고시 고사장 4음 차임벨 (딩~ 동~ 댕~ 동~ : G4 - B4 - D5 - G5)
+function playExamChime(onDone) {{
+  try {{
+    const ctx = ensureAudioCtx();
+    const notes = [392.00, 493.88, 587.33, 783.99];
+    const startTimes = [0, 0.48, 0.96, 1.44];
+    notes.forEach((freq, idx) => {{
+      const t = ctx.currentTime + startTimes[idx];
+      const osc = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc2.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t);
+      osc2.frequency.setValueAtTime(freq * 2, t);
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(0.18, t + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.95);
+      osc.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc2.start(t);
+      osc.stop(t + 1.0);
+      osc2.stop(t + 1.0);
+    }});
+    if (onDone) setTimeout(onDone, 2300);
+  }} catch(e) {{
+    if (onDone) onDone();
+  }}
+}}
+
+const EXAM_BROADCAST_SCRIPTS = {{
+  start: "안내 말씀 드립니다. 지금부터 2027학년도 공립 중등학교 교사 임용후보자 선정경쟁시험을 시작하겠습니다. 수험생 여러분께서는 문제지의 문항 수와 인쇄 상태를 확인하시고, B4 답안지 작성 규격에 맞추어 침착하게 답안을 작성해 주시기 바랍니다.",
+  prep: "수험생 여러분께 안내 말씀 드립니다. 본령 타종 5분 전입니다. 수험표와 신분증을 책상 좌측 상단에 놓아주시고, 컴퓨터용 사인펜과 흑색 필기구 외의 물품은 가방에 넣어 정리해 주시기 바랍니다.",
+  warn10: "안내 말씀 드립니다. 시험 종료 10분 전입니다. 수험생 여러분께서는 작성하신 답안지의 누락 여부와 글자 수 규격을 다시 한번 확인해 주시기 바랍니다.",
+  end: "시험 종료령이 울렸습니다. 수험생 여러분께서는 즉시 필기구를 내려놓으시고, 답안지를 오른쪽에, 문제지를 왼쪽에 놓아주시기 바랍니다. 감독관의 지시가 있을 때까지 자리에서 일어나지 마십시오.",
+  cheer: "안내 말씀 드립니다. 수험번호 1번 변귀섭 대표님, 지금까지 손끝에 새긴 55개 KICE 핵심 키워드와 440개 경우의 수가 오늘 시험지에서 100퍼센트 그대로 출제됩니다. 끝까지 침착하게 작성하시어 2027학년도 인천 전문상담교사 최종 합격을 진심으로 축하드립니다."
+}};
+
+function playSelectedBroadcast(val) {{
+  if (!val) return;
+  const script = EXAM_BROADCAST_SCRIPTS[val];
+  if (!script) return;
+  showToast('🔔 [고사장 방송] ' + script.slice(0, 42) + '...');
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  playExamChime(() => {{
+    if ('speechSynthesis' in window) {{
+      const uttr = new SpeechSynthesisUtterance(script);
+      uttr.lang = 'ko-KR';
+      uttr.rate = 0.93;
+      uttr.pitch = 0.98;
+      window.speechSynthesis.speak(uttr);
+    }}
+  }});
+  const sel = document.getElementById('exam-broadcast-select');
+  if (sel) sel.value = '';
+}}
+
+function toggleASMR() {{
+  if (!isAsmrOn) startASMR();
+  else stopASMR();
+}}
+
+function startASMR() {{
+  try {{
+    const ctx = ensureAudioCtx();
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {{
+      data[i] = (Math.random() * 2 - 1) * 0.012;
+    }}
+    noiseNode = ctx.createBufferSource();
+    noiseNode.buffer = buffer;
+    noiseNode.loop = true;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 950;
+    noiseNode.connect(filter);
+    filter.connect(ctx.destination);
+    noiseNode.start();
+    isAsmrOn = true;
+
+    // 주기적인 실제 고사장 시험지 넘기는 소리 & 주변 수험생 필기 소리 연출
+    if (examHallTimer) clearInterval(examHallTimer);
+    examHallTimer = setInterval(() => {{
+      if (!isAsmrOn) return;
+      if (Math.random() < 0.45) {{
+        playPaperTurnSound();
+      }} else {{
+        for (let s = 0; s < 3; s++) {{
+          setTimeout(() => playPenStrokeSound(), s * 110);
+        }}
+      }}
+    }}, 6500);
+
+    const btn = document.getElementById('btn-asmr');
+    if (btn) {{
+      btn.textContent = '🔔 시험장 소리·멘트 ON';
+      btn.classList.add('on');
+    }}
+    // 시작 즉시 고사장 본령 타종 + 시작 안내 방송 송출
+    playSelectedBroadcast('start');
+  }} catch(e) {{
+    showToast('오디오를 재생할 수 없습니다.');
+  }}
+}}
+
+function stopASMR() {{
+  if (noiseNode) {{
+    try {{ noiseNode.stop(); noiseNode.disconnect(); }} catch(e) {{}}
+    noiseNode = null;
+  }}
+  if (examHallTimer) {{
+    clearInterval(examHallTimer);
+    examHallTimer = null;
+  }}
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  isAsmrOn = false;
+  const btn = document.getElementById('btn-asmr');
+  if (btn) {{
+    btn.textContent = '🔔 시험장 소리·멘트 OFF';
+    btn.classList.remove('on');
+  }}
+  showToast('시험장 현장음 및 방송이 종료되었습니다.');
+}}
+
+function toggleKeywordBlankMode() {{
+  isBlankMode = !isBlankMode;
+  const btn = document.getElementById('btn-kw-blank');
+  if (btn) {{
+    btn.classList.toggle('active', isBlankMode);
+    btn.textContent = isBlankMode ? '🎯 핵심키워드 빈칸 ON (클릭·타이핑 시 열림)' : '🎯 핵심키워드 빈칸 만들기';
+  }}
+  renderCards();
+  loadSavedAnswers();
+  showToast(isBlankMode
+    ? '🎯 핵심키워드 빈칸 모드가 켜졌습니다! 빈칸에 마우스를 올리거나 아래에 타이핑하면 정답이 열립니다.'
+    : '핵심키워드 전체 보기 모드로 전환되었습니다.');
+}}
+
+function toggleCases8Mode() {{
+  showCases8 = !showCases8;
+  const btn = document.getElementById('btn-cases8-mode');
+  if (btn) {{
+    btn.classList.toggle('active', showCases8);
+    btn.textContent = showCases8 ? '⚡ 경우의 수 8개 ON' : '⚡ 경우의 수 8개 OFF';
+  }}
+  renderCards();
+  loadSavedAnswers();
+  showToast(showCases8
+    ? '⚡ ADHD 도파민 연타 모드: 나올 수 있는 경우의 수 8개(총 440개)가 표시됩니다!'
+    : '경우의 수 8개 박스를 접고 4줄 답안지만 표시합니다.');
+}}
+
+function isKeywordSolvedInText(kw, typedText) {{
+  if (!typedText || !kw) return false;
+  if (typedText.includes(kw)) return true;
+  const noParen = kw.replace(/\\(.*?\\)/g, '').trim();
+  if (noParen.length >= 2 && typedText.includes(noParen)) return true;
+  const parts = noParen.split(/[·/\\s,]+/).filter(x => x.length >= 2);
+  if (parts.length > 0 && parts.every(p => typedText.includes(p))) return true;
+  return false;
+}}
+
+function formatTextWithBlanks(text, blanks, typedText) {{
+  if (!text) return '';
+  if (!isBlankMode || !blanks || blanks.length === 0) {{
+    return escapeHtml(text);
+  }}
+  const uniq = [...new Set(blanks.filter(b => b && b.trim().length > 0))].sort((a, b) => b.length - a.length);
+  let safeHtml = escapeHtml(text);
+  uniq.forEach((kw, idx) => {{
+    const escKw = escapeHtml(kw);
+    const solved = isKeywordSolvedInText(kw, typedText || '');
+    const cls = 'kw-blank-slot' + (solved ? ' solved' : '');
+    const token = `__KW_SLOT_${{idx}}__`;
+    safeHtml = safeHtml.split(escKw).join(token);
+    safeHtml = safeHtml.split(token).join(
+      `<span class="${{cls}}" data-kw="${{escKw}}" onclick="this.classList.toggle('revealed')" title="클릭하거나 아래 입력창에 키워드를 타이핑하면 열립니다">${{escKw}}</span>`
+    );
+  }});
+  return safeHtml;
+}}
+
+function speakAnswer(text) {{
+  if (!('speechSynthesis' in window)) {{
+    showToast('이 브라우저는 음성 낭독을 지원하지 않습니다.');
+    return;
+  }}
+  window.speechSynthesis.cancel();
+  const clean = text.replace(/\\n/g, ' ').replace(/[㉠㉡㉢]/g, '');
+  const uttr = new SpeechSynthesisUtterance(clean);
+  uttr.lang = 'ko-KR';
+  uttr.rate = 0.95;
+  window.speechSynthesis.speak(uttr);
+  showToast('KICE 모범답안 음성 낭독을 시작합니다.');
+}}
+
+function adjustFont(delta) {{
+  currentFontScale = Math.max(0.85, Math.min(1.35, currentFontScale + delta));
+  document.documentElement.style.setProperty('--font-scale', currentFontScale);
+  showToast(`글꼴 크기: ${{Math.round(currentFontScale * 100)}}%`);
+}}
+
+function startTimer() {{
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {{
+    if (timerSeconds > 0) {{
+      timerSeconds--;
+      updateTimerUI();
+      if (timerSeconds === 600 && isAsmrOn) {{
+        playSelectedBroadcast('warn10');
+      }}
+    }} else {{
+      clearInterval(timerInterval);
+      playSelectedBroadcast('end');
+      alert("🔔 시험 종료령이 울렸습니다! 작성하신 답안지를 최종 점검해 주세요.");
+    }}
+  }}, 1000);
+}}
+
+function updateTimerUI() {{
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  el.classList.toggle('warning', timerSeconds < 300);
+}}
+
+function toggleTimer() {{
+  const btn = document.getElementById('btn-timer-toggle');
+  if (isTimerRunning) {{
+    clearInterval(timerInterval);
+    isTimerRunning = false;
+    btn.textContent = '계속';
+  }} else {{
+    startTimer();
+    isTimerRunning = true;
+    btn.textContent = '일시정지';
+  }}
+}}
+
+function resetTimer() {{
+  timerSeconds = 30 * 60;
+  updateTimerUI();
+  if (!isTimerRunning) {{
+    startTimer();
+    isTimerRunning = true;
+    document.getElementById('btn-timer-toggle').textContent = '일시정지';
+  }}
+}}
+
+function togglePaperMode() {{
+  isPaperMode = !isPaperMode;
+  document.body.classList.toggle('b4-paper-mode', isPaperMode);
+  document.getElementById('btn-paper-mode').textContent = isPaperMode ? 'CBT 다크 모드' : 'B4 시험지 모드';
+}}
+
+function toggleBookmarkFilter() {{
+  showOnlyBookmarks = !showOnlyBookmarks;
+  document.getElementById('btn-bookmark-filter').classList.toggle('active', showOnlyBookmarks);
+  renderCards();
+  loadSavedAnswers();
+}}
+
+function toggleBookmark(key) {{
+  bookmarks[key] = !bookmarks[key];
+  localStorage.setItem('kice_bookmarks', JSON.stringify(bookmarks));
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  showToast(bookmarks[key] ? '북마크에 추가되었습니다.' : '북마크가 해제되었습니다.');
+}}
+
+function shuffleCurrentPeriod() {{
+  isShuffled = !isShuffled;
+  document.getElementById('btn-shuffle').textContent = isShuffled ? '원래 순서로' : '랜덤 셔플';
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  showToast(isShuffled ? '문항이 무작위로 셔플되었습니다.' : '정상 순서로 복원되었습니다.');
+}}
+
+let currentRound = parseInt(localStorage.getItem('kice_current_round') || '1', 10);
+
+function getRoundKeyPrefix() {{
+  return `kice_r${{currentRound}}_`;
+}}
+
+function switchPracticeRound(roundNum) {{
+  currentRound = roundNum;
+  localStorage.setItem('kice_current_round', currentRound);
+  for (let r = 1; r <= 3; r++) {{
+    const el = document.getElementById('round-btn-' + r);
+    if (el) el.classList.toggle('active', r === currentRound);
+  }}
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateProgress();
+  showToast(`[오늘의 ${{currentRound}}회독] 답안지로 전환되었습니다.`);
+}}
+
+function setK55Category(cat, btnEl) {{
+  currentK55Cat = cat;
+  document.querySelectorAll('.k55-cat-btn').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateProgress();
+}}
+
+function clearCurrentAnswers() {{
+  if (!confirm(`현재 탭의 작성 답안을 모두 지우고 새로 연습하시겠습니까?`)) return;
+  const items = getList();
+  const prefix = getRoundKeyPrefix();
+  items.forEach(q => {{
+    const key = currentPeriod + q.num;
+    localStorage.removeItem(prefix + key);
+    localStorage.removeItem(prefix + key + '_quiz');
+    for (let i = 0; i < 6; i++) {{
+      localStorage.removeItem(prefix + key + '_L' + i);
+    }}
+    for (let c = 0; c < 8; c++) {{
+      localStorage.removeItem(prefix + key + '_C' + c);
+    }}
+  }});
+  renderNav();
+  renderCards();
+  updateProgress();
+  showToast(`현재 탭 답안이 깨끗하게 초기화되었습니다.`);
+}}
+
+function clearAllPracticeRoundAnswers() {{
+  const msg = `정말 [오늘의 ${{currentRound}}회독] 전체 답안지를 깨끗하게 비우고 새로 시작하시겠습니까?`;
+  if (!confirm(msg)) return;
+  const prefix = getRoundKeyPrefix();
+  const keysToRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {{
+    const k = localStorage.key(i);
+    if (k && k.startsWith(prefix)) keysToRemove.push(k);
+  }}
+  keysToRemove.forEach(k => localStorage.removeItem(k));
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateProgress();
+  resetTimer();
+  showToast(`[오늘의 ${{currentRound}}회독] 전과목 답안지가 1초 만에 백지 초기화되었습니다!`);
+}}
+
+function switchPeriod(p) {{
+  currentPeriod = p;
+  isShuffled = false;
+  document.getElementById('btn-shuffle').textContent = '랜덤 셔플';
+  ['KICE55', 'TEMPLATE', 'PED', 'A', 'B'].forEach(tabId => {{
+    const btn = document.getElementById('tab-btn-' + tabId);
+    if (btn) btn.classList.toggle('active', tabId === p);
+  }});
+  const filterBar = document.getElementById('kice55-filter-bar');
+  if (filterBar) filterBar.style.display = (p === 'KICE55') ? 'flex' : 'none';
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateProgress();
+}}
+
+function getList() {{
+  let list = [];
+  if (currentPeriod === 'KICE55') {{
+    const query = (document.getElementById('k55-search-input')?.value || '').trim().toLowerCase();
+    list = dataKICE55.filter(item => {{
+      if (currentK55Cat === 'PED20' && item.part !== 'PED20') return false;
+      if (currentK55Cat === 'COUNSEL35' && item.part !== 'COUNSEL35') return false;
+      if (!['ALL', 'PED20', 'COUNSEL35'].includes(currentK55Cat) && item.domain !== currentK55Cat) return false;
+      if (query) {{
+        const casesStr = (item.cases8 || []).map(c => c.q + ' ' + c.a).join(' ');
+        const hay = (item.title + ' ' + item.concept + ' ' + item.keywords.join(' ') + ' ' + item.lines.join(' ') + ' ' + item.quiz_a + ' ' + casesStr).toLowerCase();
+        if (!hay.includes(query)) return false;
+      }}
+      return true;
+    }}).map(item => ({{
+      num: item.id,
+      title: `[#${{String(item.id).padStart(2, '0')}} ${{item.domain}}] ${{item.title}}`,
+      concept: item.concept,
+      type: item.part === 'PED20' ? '교육학 4줄정답' : '전공상담 4줄정답',
+      score: 4,
+      content: '',
+      instructions: '',
+      lines: item.lines,
+      line_blanks: item.line_blanks || [],
+      cases8: item.cases8 || [],
+      answer: item.lines.join('\\n'),
+      keywords: item.keywords,
+      quiz_q: item.quiz_q,
+      quiz_a: item.quiz_a,
+      isFourLineMode: true
+    }}));
+  }} else if (currentPeriod === 'TEMPLATE') {{
+    list = dataTEMPLATE.map(item => ({{
+      num: item.id,
+      title: item.title,
+      concept: item.concept,
+      type: item.domain,
+      score: 4,
+      content: '',
+      instructions: '',
+      lines: item.lines,
+      line_blanks: item.line_blanks || [],
+      cases8: item.cases8 || [],
+      answer: item.lines.join('\\n'),
+      keywords: item.keywords,
+      quiz_q: item.quiz_q,
+      quiz_a: item.quiz_a,
+      isFourLineMode: true
+    }}));
+  }} else if (currentPeriod === 'PED') {{
+    list = dataPED.map(item => ({{
+      num: item.num,
+      title: `[${{item.domain}} ${{item.num}}번] ${{item.title}} - ${{item.concept}}`,
+      type: '교육학 논술',
+      score: 4,
+      content: item.sub_questions.map((sq, i) => `${{i+1}}. ${{sq}}`).join('\\n'),
+      instructions: '<작성 방법 및 채점 루브릭>\\n' + item.rubric.map(r => '○ ' + r).join('\\n'),
+      lines: item.model_answer,
+      line_blanks: [],
+      cases8: [],
+      answer: item.model_answer.join('\\n'),
+      keywords: item.keywords,
+      isFourLineMode: false
+    }}));
+  }} else {{
+    const raw = currentPeriod === 'A' ? dataA : dataB;
+    list = raw.map(item => ({{
+      ...item,
+      lines: item.answer ? item.answer.split('\\n') : [],
+      line_blanks: [],
+      cases8: [],
+      isFourLineMode: item.type !== '기입형'
+    }}));
+  }}
+
+  if (isShuffled) {{
+    list = [...list].sort(() => Math.random() - 0.5);
+  }}
+  return list;
+}}
+
+function renderNav() {{
+  const nav = document.getElementById('nav-strip');
+  const items = getList();
+  nav.innerHTML = '';
+  items.forEach(item => {{
+    const key = currentPeriod + item.num;
+    const pill = document.createElement('button');
+    pill.className = 'nav-pill';
+    pill.id = 'nav-pill-' + key;
+    const isBm = !!bookmarks[key];
+    const labelNum = currentPeriod === 'KICE55' ? '#' + String(item.num).padStart(2, '0') : (currentPeriod + item.num + '번');
+    pill.textContent = (isBm ? '★ ' : '') + labelNum;
+    if (isBm) pill.classList.add('bookmarked');
+
+    pill.onclick = () => {{
+      const card = document.getElementById('card-' + key);
+      if (card) {{
+        card.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+        const firstInput = document.getElementById(`case8-in-${{key}}-0`) || document.getElementById(`lbl-in-${{key}}-0`) || document.getElementById('ta-' + key);
+        if (firstInput) firstInput.focus();
+      }}
+    }};
+    nav.appendChild(pill);
+  }});
+}}
+
+function renderCards() {{
+  const container = document.getElementById('exam-cards-container');
+  let items = getList();
+  if (showOnlyBookmarks) {{
+    items = items.filter(q => !!bookmarks[currentPeriod + q.num]);
+  }}
+  container.innerHTML = '';
+
+  if (items.length === 0) {{
+    container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted);">조건에 해당하는 문항이 없습니다.</div>';
+    return;
+  }}
+
+  items.forEach((q, cardIdx) => {{
+    const key = currentPeriod + q.num;
+    const isBm = !!bookmarks[key];
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + key;
+
+    const badgeCls = q.type === '기입형' ? 'fillin' : (currentPeriod === 'KICE55' || currentPeriod === 'TEMPLATE' ? 'k55' : 'essay');
+    const kwList = q.keywords || extractKeywords(q.answer);
+    const linesArr = q.lines || q.answer.split('\\n');
+    const isPed6 = (currentPeriod === 'PED');
+    const minC = isPed6 ? 50 : 38;
+    const maxC = isPed6 ? 60 : 45;
+
+    // [ADHD 도파민 8연타] 나올 수 있는 경우의 수 8개 그리드 생성
+    let cases8Html = '';
+    if (showCases8 && q.cases8 && q.cases8.length > 0) {{
+      const itemsHtml = q.cases8.map((c, cIdx) => {{
+        const targetBadgeHtml = formatTextWithBlanks(c.a, [c.a], '');
+        return `
+          <div class="case8-item" id="case8-box-${{key}}-${{cIdx}}">
+            <div class="case8-q-row">
+              <span class="case8-q-label">${{escapeHtml(c.q)}}</span>
+              <span class="case8-target-ans" id="case8-target-${{key}}-${{cIdx}}">${{targetBadgeHtml}}</span>
+            </div>
+            <input type="text"
+              class="case8-input"
+              id="case8-in-${{key}}-${{cIdx}}"
+              placeholder="${{escapeHtml(c.a)}} (보고 치기 / Enter 다음)"
+              oninput="handleCase8Input('${{currentPeriod}}', ${{q.num}}, ${{cIdx}})"
+              onkeydown="handleCase8Keydown(event, '${{key}}', ${{cIdx}}, ${{q.cases8.length}})">
+          </div>
+        `;
+      }}).join('');
+
+      cases8Html = `
+        <div class="cases8-box">
+          <div class="cases8-header">
+            <div class="cases8-title">
+              <span>⚡ [ADHD 도파민 스피드 인출] 시험에 나올 수 있는 경우의 수 8개 (짧게 핵심만 치고 Enter!)</span>
+              <span class="cases8-badge-count" id="cases8-count-${{key}}">0 / ${{q.cases8.length}} 격파</span>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-sheet-mini" onclick="fillAllCases8ForCard('${{currentPeriod}}', ${{q.num}})">8개 자동채우기</button>
+              <button class="btn-sheet-mini" onclick="clearCases8ForCard('${{currentPeriod}}', ${{q.num}})">8개 비우기</button>
+            </div>
+          </div>
+          <div class="cases8-grid">
+            ${{itemsHtml}}
+          </div>
+        </div>
+      `;
+    }}
+
+    // 1줄씩 보고 따라치기 HTML 생성 (핵심키워드 빈칸 모드 연동 & 1:1 가로 길이 일치)
+    let lineByLineHtml = '';
+    if (linesArr.length >= 4) {{
+      const rowsHtml = linesArr.map((ln, idx) => {{
+        const lineBlanks = (q.line_blanks && q.line_blanks[idx] && q.line_blanks[idx].length > 0)
+          ? q.line_blanks[idx]
+          : kwList;
+        const targetLineInner = formatTextWithBlanks(ln, lineBlanks, '');
+        return `
+        <div class="lbl-row">
+          <div class="lbl-target-line" id="lbl-target-${{key}}-${{idx}}">
+            <span class="lbl-target-text" id="lbl-target-text-${{key}}-${{idx}}">${{targetLineInner}}</span>
+            <span style="font-size:0.78rem; color:var(--accent-blue); flex-shrink:0;">${{ln.length}}자</span>
+          </div>
+          <div class="lbl-input-wrap">
+            <input type="text"
+              class="lbl-input"
+              id="lbl-in-${{key}}-${{idx}}"
+              placeholder="${{isBlankMode ? '위의 파란색 빈칸 키워드가 포함된 문장을 완성하세요 (Enter 다음 줄)...' : escapeHtml(ln)}}"
+              oninput="handleLineByLineInput('${{currentPeriod}}', ${{q.num}}, ${{idx}}, ${{linesArr.length}})"
+              onkeydown="handleLineKeydown(event, '${{key}}', ${{idx}}, ${{linesArr.length}}, ${{cardIdx}})">
+            <span class="lbl-char-badge" id="lbl-badge-${{key}}-${{idx}}">0자 / ${{minC}}~${{maxC}}자</span>
+          </div>
+        </div>
+      `;
+      }}).join('');
+
+      lineByLineHtml = `
+        <div class="line-by-line-box">
+          <div class="lbl-header">
+            <span>⌨️ [B4 실전 4줄 답안지] 문장 길이 1:1 맞춤 따라치기 ${{(isBlankMode ? '(🎯 핵심키워드 빈칸 모드 ON)' : '(Enter 키로 다음 줄 즉시 이동)')}}</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-sheet-mini" style="border-color:#38bdf8; color:#38bdf8;" onclick="fillSkeletonForCard('${{currentPeriod}}', ${{q.num}})" title="조사·서술어 뼈대는 미리 채워두고 핵심키워드 자리만 직접 채워 넣습니다">✏️ 빈칸 뼈대만 입력창에 넣기</button>
+              <button class="btn-sheet-mini" onclick="fillAllLinesForCard('${{currentPeriod}}', ${{q.num}})">모범정답 자동채우기</button>
+            </div>
+          </div>
+          ${{rowsHtml}}
+        </div>
+      `;
+    }}
+
+    // 족집게 핵심키워드 퀴즈 박스
+    let quizHtml = '';
+    if (q.quiz_q && q.quiz_a) {{
+      const quizTargetHtml = formatTextWithBlanks(q.quiz_a, [q.quiz_a], '');
+      quizHtml = `
+        <div class="quiz-typing-box">
+          <div class="quiz-q-text">🎯 <strong>[족집게 1순위 대표 키워드 인출]</strong> ${{escapeHtml(q.quiz_q)}}</div>
+          <div class="quiz-a-row">
+            <span class="quiz-target-badge" id="quiz-target-${{key}}">정식 키워드 정답: ${{quizTargetHtml}}</span>
+            <input type="text"
+              class="quiz-input"
+              id="quiz-in-${{key}}"
+              placeholder="왼쪽 노란색 KICE 정식 키워드를 보고 그대로 타이핑하세요 (Enter 치면 다음 문제로 이동)..."
+              oninput="handleQuizInputByCard('${{currentPeriod}}', ${{q.num}})"
+              onkeydown="handleQuizKeydown(event, ${{cardIdx}})">
+          </div>
+        </div>
+      `;
+    }}
+
+    card.innerHTML = `
+      <div class="q-card-head">
+        <div class="q-num-title">
+          <span class="bookmark-star ${{isBm ? 'active' : ''}}" onclick="toggleBookmark('${{key}}')">★</span>
+          <span>#${{String(q.num).padStart(2, '0')}}</span>
+          <span class="type-pill ${{badgeCls}}">${{escapeHtml(q.type)}}</span>
+          <span style="color:#fff;">${{escapeHtml(q.title)}}</span>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn-sheet-mini" onclick="toggleKeywordBlankMode()" title="모든 문장의 핵심 채점 키워드를 빈칸으로 만듭니다">🎯 빈칸 모드 ${{isBlankMode ? 'ON' : 'OFF'}}</button>
+          <button class="btn-sheet-mini" onclick="speakCardAnswer('${{currentPeriod}}', ${{q.num}})">음성 듣기 🎧</button>
+          <span class="q-score-tag" style="font-weight:800; color:var(--accent-gold);">[${{q.score}}점 만점]</span>
+        </div>
+      </div>
+
+      <div class="q-card-body">
+        ${{q.concept ? `<div class="concept-banner">💡 <strong>핵심 요약:</strong> ${{escapeHtml(q.concept)}}</div>` : ''}}
+        ${{q.content ? `<div class="passage-wrapper">${{escapeHtml(q.content)}}</div>` : ''}}
+        ${{q.instructions ? `<div class="instructions-box"><strong>&lt;작성 방법 및 채점 기준&gt;</strong><br>${{escapeHtml(q.instructions)}}</div>` : ''}}
+
+        <!-- KICE 정식 채점 키워드 배지 바 -->
+        <div class="kw-tags-strip" id="kw-tags-${{key}}">
+          <span class="kw-label-tag">🔑 KICE 정식 채점 키워드:</span>
+          ${{kwList.map((kw, idx) => `<span class="kw-pill" id="kw-${{key}}-${{idx}}">${{formatTextWithBlanks(kw, [kw], '')}}</span>`).join('')}}
+        </div>
+
+        <!-- [ADHD 맞춤] 나올 수 있는 경우의 수 8개 스피드 인출 구역 -->
+        ${{cases8Html}}
+
+        <!-- 1줄씩 보고 따라치기 구역 -->
+        ${{lineByLineHtml}}
+
+        <!-- 족집게 핵심키워드 따라치기 구역 -->
+        ${{quizHtml}}
+
+        <!-- B4 실전 4줄 답안지 통합 구역 -->
+        <div class="sheet-grid" style="margin-top: 14px;">
+          <div class="sheet-col">
+            <div class="sheet-col-header">
+              <span>📄 B4 실전 통합 답안지 (${{isPed6 ? '6줄 50~60자' : '4줄 38~45자'}} 자동 연동)</span>
+              <div class="line-status-chip" id="chip-box-${{key}}">
+                <span class="chip-item">총 0자</span>
+              </div>
+            </div>
+            <textarea 
+              class="b4-typing-sheet" 
+              id="ta-${{key}}" 
+              style="min-height: ${{isPed6 ? '250px' : '170px'}};"
+              placeholder="${{isPed6 ? '위 1~6줄 입력창에 타이핑하거나 이곳에 직접 6줄로 타이핑하세요...' : '위 1~4줄 입력창에 타이핑하거나 이곳에 직접 4줄(38~45자)로 타이핑하세요...'}}"
+              oninput="handleTextareaInput('${{currentPeriod}}', ${{q.num}})"></textarea>
+          </div>
+
+          <div class="sheet-col">
+            <div class="sheet-col-header">
+              <span>🏆 KICE 100% 만점 공식 4줄 정답지</span>
+              <div>
+                <button class="btn-sheet-mini" onclick="toggleMask('${{currentPeriod}}', ${{q.num}})">가리기/보기</button>
+                <button class="btn-sheet-mini" onclick="copyModelAnswer('${{currentPeriod}}', ${{q.num}})">정답 복사</button>
+              </div>
+            </div>
+            <div class="b4-answer-sheet" id="ans-${{key}}" style="min-height: ${{isPed6 ? '250px' : '170px'}};">${{escapeHtml(q.answer)}}</div>
+          </div>
+        </div>
+
+        <div class="scoring-eval-bar">
+          <span>B4 답안지 규격: <strong>${{isPed6 ? '공백 포함 줄당 50~60자 (총 6줄)' : '공백 포함 줄당 38~45자 (총 4줄 만점)'}}</strong></span>
+          <span class="eval-score-text" id="eval-score-${{key}}">판정 대기</span>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  }});
+}}
+
+function extractKeywords(ans) {{
+  if (!ans) return [];
+  const lines = ans.split('\\n');
+  const kws = [];
+  lines.forEach(l => {{
+    const words = l.split(/[,\\s]+/);
+    words.forEach(w => {{
+      if (w.length >= 3 && !['들어갈', '공식', '명칭은', '정식', '있으며', '위해', '통해'].includes(w)) {{
+        if (!kws.includes(w) && kws.length < 5) kws.push(w);
+      }}
+    }});
+  }});
+  return kws;
+}}
+
+function handleCase8Keydown(e, key, cIdx, totalCases) {{
+  if (e.key === 'Enter') {{
+    e.preventDefault();
+    if (cIdx + 1 < totalCases) {{
+      const nextCaseInp = document.getElementById(`case8-in-${{key}}-${{cIdx + 1}}`);
+      if (nextCaseInp) nextCaseInp.focus();
+    }} else {{
+      const firstLineInp = document.getElementById(`lbl-in-${{key}}-0`);
+      if (firstLineInp) firstLineInp.focus();
+    }}
+  }}
+}}
+
+function handleCase8Input(period, num, cIdx, silent) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q || !q.cases8 || !q.cases8[cIdx]) return;
+  const key = period + num;
+  const inp = document.getElementById(`case8-in-${{key}}-${{cIdx}}`);
+  const box = document.getElementById(`case8-box-${{key}}-${{cIdx}}`);
+  const targetEl = document.getElementById(`case8-target-${{key}}-${{cIdx}}`);
+  if (!inp) return;
+
+  const val = inp.value.trim();
+  localStorage.setItem(getRoundKeyPrefix() + key + '_C' + cIdx, val);
+  if (!silent) playPenStrokeSound();
+
+  const targetAns = q.cases8[cIdx].a;
+  const isSolved = val.length >= 1 && isKeywordSolvedInText(targetAns, val);
+  const wasSolved = inp.classList.contains('match');
+
+  inp.classList.toggle('match', isSolved);
+  if (box) box.classList.toggle('solved', isSolved);
+  if (targetEl) {{
+    targetEl.innerHTML = formatTextWithBlanks(targetAns, [targetAns], isSolved ? targetAns : val);
+  }}
+  if (isSolved && !wasSolved && !silent) {{
+    playMiniHitSound();
+  }}
+  updateCases8Counter(period, num, q.cases8.length);
+}}
+
+function updateCases8Counter(period, num, totalCases) {{
+  const key = period + num;
+  let solvedCount = 0;
+  for (let i = 0; i < totalCases; i++) {{
+    const inp = document.getElementById(`case8-in-${{key}}-${{i}}`);
+    if (inp && inp.classList.contains('match')) solvedCount++;
+  }}
+  const badge = document.getElementById(`cases8-count-${{key}}`);
+  if (badge) {{
+    badge.textContent = solvedCount === totalCases
+      ? `🏆 ${{solvedCount}} / ${{totalCases}} 완벽 격파!`
+      : `${{solvedCount}} / ${{totalCases}} 격파`;
+    badge.style.color = solvedCount === totalCases ? '#34d399' : '#fde047';
+  }}
+}}
+
+function fillAllCases8ForCard(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q || !q.cases8) return;
+  const key = period + num;
+  q.cases8.forEach((c, cIdx) => {{
+    const inp = document.getElementById(`case8-in-${{key}}-${{cIdx}}`);
+    if (inp) {{
+      inp.value = c.a;
+      handleCase8Input(period, num, cIdx, true);
+    }}
+  }});
+  playSuccessChime();
+  showToast('⚡ 경우의 수 8개 핵심 키워드가 모두 채워졌습니다!');
+}}
+
+function clearCases8ForCard(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q || !q.cases8) return;
+  const key = period + num;
+  q.cases8.forEach((c, cIdx) => {{
+    const inp = document.getElementById(`case8-in-${{key}}-${{cIdx}}`);
+    if (inp) {{
+      inp.value = '';
+      handleCase8Input(period, num, cIdx, true);
+    }}
+  }});
+  showToast('경우의 수 8개 입력창을 비웠습니다.');
+}}
+
+function fillSkeletonForCard(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q) return;
+  const key = period + num;
+  const lines = q.lines || q.answer.split('\\n');
+  const kwList = q.keywords || extractKeywords(q.answer);
+
+  lines.forEach((ln, idx) => {{
+    const blanks = (q.line_blanks && q.line_blanks[idx] && q.line_blanks[idx].length > 0)
+      ? q.line_blanks[idx]
+      : kwList;
+    let skel = ln;
+    const sorted = [...new Set(blanks)].sort((a, b) => b.length - a.length);
+    sorted.forEach(kw => {{
+      const mask = '□'.repeat(kw.length);
+      skel = skel.split(kw).join(mask);
+    }});
+    const inp = document.getElementById(`lbl-in-${{key}}-${{idx}}`);
+    if (inp) {{
+      inp.value = skel;
+      localStorage.setItem(getRoundKeyPrefix() + key + '_L' + idx, skel);
+    }}
+  }});
+  const ta = document.getElementById('ta-' + key);
+  if (ta) {{
+    const combined = [];
+    for (let i = 0; i < lines.length; i++) {{
+      combined.push(document.getElementById(`lbl-in-${{key}}-${{i}}`)?.value || '');
+    }}
+    ta.value = combined.join('\\n');
+  }}
+  evaluateCard(period, num);
+  const firstInp = document.getElementById(`lbl-in-${{key}}-0`);
+  if (firstInp) firstInp.focus();
+  showToast('✏️ 문장 뼈대가 입력되었습니다! □□□ 자리만 핵심 키워드로 바꿔 치세요.');
+}}
+
+function handleLineKeydown(e, key, idx, totalLines, cardIdx) {{
+  if (e.key === 'Enter') {{
+    e.preventDefault();
+    if (idx + 1 < totalLines) {{
+      const nextEl = document.getElementById(`lbl-in-${{key}}-${{idx + 1}}`);
+      if (nextEl) nextEl.focus();
+    }} else {{
+      const quizEl = document.getElementById(`quiz-in-${{key}}`);
+      if (quizEl) quizEl.focus();
+      else focusNextCardFirstLine(cardIdx);
+    }}
+  }}
+}}
+
+function handleQuizKeydown(e, cardIdx) {{
+  if (e.key === 'Enter') {{
+    e.preventDefault();
+    focusNextCardFirstLine(cardIdx);
+  }}
+}}
+
+function focusNextCardFirstLine(cardIdx) {{
+  const items = getList();
+  if (cardIdx + 1 < items.length) {{
+    const nextQ = items[cardIdx + 1];
+    const nextKey = currentPeriod + nextQ.num;
+    const nextCard = document.getElementById('card-' + nextKey);
+    if (nextCard) nextCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+    const nextInp = document.getElementById(`case8-in-${{nextKey}}-0`) || document.getElementById(`lbl-in-${{nextKey}}-0`) || document.getElementById('ta-' + nextKey);
+    if (nextInp) setTimeout(() => nextInp.focus(), 180);
+  }}
+}}
+
+function handleLineByLineInput(period, num, lineIdx, totalLines) {{
+  playPenStrokeSound();
+  const key = period + num;
+  const combinedLines = [];
+  for (let i = 0; i < totalLines; i++) {{
+    const inp = document.getElementById(`lbl-in-${{key}}-${{i}}`);
+    const val = inp ? inp.value : '';
+    combinedLines.push(val);
+    localStorage.setItem(getRoundKeyPrefix() + key + '_L' + i, val);
+  }}
+  const ta = document.getElementById('ta-' + key);
+  if (ta) {{
+    ta.value = combinedLines.join('\\n');
+  }}
+  evaluateCard(period, num);
+}}
+
+function handleTextareaInput(period, num) {{
+  playPenStrokeSound();
+  const key = period + num;
+  const ta = document.getElementById('ta-' + key);
+  if (!ta) return;
+  const lines = ta.value.split('\\n');
+  for (let i = 0; i < 6; i++) {{
+    const inp = document.getElementById(`lbl-in-${{key}}-${{i}}`);
+    if (inp) {{
+      inp.value = lines[i] || '';
+      localStorage.setItem(getRoundKeyPrefix() + key + '_L' + i, inp.value);
+    }}
+  }}
+  evaluateCard(period, num);
+}}
+
+function fillAllLinesForCard(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q) return;
+  const key = period + num;
+  const lines = q.lines || q.answer.split('\\n');
+  lines.forEach((ln, idx) => {{
+    const inp = document.getElementById(`lbl-in-${{key}}-${{idx}}`);
+    if (inp) {{
+      inp.value = ln;
+      localStorage.setItem(getRoundKeyPrefix() + key + '_L' + idx, ln);
+    }}
+  }});
+  const ta = document.getElementById('ta-' + key);
+  if (ta) ta.value = lines.join('\\n');
+  evaluateCard(period, num);
+  showToast('4줄 모범정답이 자동 입력되었습니다.');
+}}
+
+function speakCardAnswer(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (q && q.answer) speakAnswer(q.answer);
+}}
+
+function handleQuizInputByCard(period, num) {{
+  playPenStrokeSound();
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (q && q.quiz_a) handleQuizInput(period + num, q.quiz_a);
+}}
+
+function handleQuizInput(key, targetAns) {{
+  const el = document.getElementById('quiz-in-' + key);
+  if (!el) return;
+  const val = el.value.trim();
+  localStorage.setItem(getRoundKeyPrefix() + key + '_quiz', val);
+  const isOk = val.length >= 2 && isKeywordSolvedInText(targetAns, val);
+  el.classList.toggle('match', isOk);
+  const quizTarget = document.getElementById('quiz-target-' + key);
+  if (quizTarget) {{
+    quizTarget.innerHTML = '정식 키워드 정답: ' + formatTextWithBlanks(targetAns, [targetAns], isOk ? targetAns : val);
+  }}
+}}
+
+function evaluateCard(period, num) {{
+  const key = period + num;
+  const ta = document.getElementById('ta-' + key);
+  if (!ta) return;
+  const text = ta.value;
+  const lines = text.split('\\n');
+  const chipBox = document.getElementById('chip-box-' + key);
+  const evalScore = document.getElementById('eval-score-' + key);
+
+  if (!typingStartTime) typingStartTime = Date.now();
+  totalTypedChars += 1;
+  const elapsedMin = (Date.now() - typingStartTime) / 60000;
+  if (elapsedMin > 0.05) {{
+    const wpm = Math.round(totalTypedChars / elapsedMin);
+    document.getElementById('wpm-display').textContent = wpm + ' 타/분';
+  }}
+
+  const isPed = (period === 'PED');
+  const targetLines = isPed ? 6 : 4;
+  const minChars = isPed ? 50 : 38;
+  const maxChars = isPed ? 60 : 45;
+
+  let chipsHtml = `<span class="chip-item">총 ${{text.length}}자</span>`;
+  let validLineCount = 0;
+  let hasOverflow = false;
+
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  const kwList = q ? (q.keywords || extractKeywords(q.answer)) : [];
+  const modelLines = q ? (q.lines || q.answer.split('\\n')) : [];
+
+  for (let idx = 0; idx < targetLines; idx++) {{
+    const l = lines[idx] || '';
+    const len = l.length;
+    const isNotSkeleton = !l.includes('□');
+    const isOk = (len >= minChars && len <= maxChars && isNotSkeleton);
+    const isOver = len > maxChars;
+    if (isOk) validLineCount++;
+    if (isOver) hasOverflow = true;
+    chipsHtml += `<span class="chip-item ${{isOk ? 'perfect' : (isOver ? 'overflow' : '')}}">${{idx+1}}줄:${{len}}자</span>`;
+
+    // Update 1-line badge & input border
+    const badge = document.getElementById(`lbl-badge-${{key}}-${{idx}}`);
+    const inp = document.getElementById(`lbl-in-${{key}}-${{idx}}`);
+    if (badge) {{
+      badge.textContent = `${{len}}자 / ${{minC_str(minChars, maxChars)}}`;
+      badge.className = 'lbl-char-badge' + (isOk ? ' ok' : (isOver ? ' over' : ''));
+    }}
+    if (inp) {{
+      inp.classList.toggle('line-ok', isOk);
+    }}
+
+    // 핵심키워드 빈칸 모드일 때 타이핑한 줄의 빈칸 실시간 오픈!
+    if (q && modelLines[idx]) {{
+      const targetTextEl = document.getElementById(`lbl-target-text-${{key}}-${{idx}}`);
+      if (targetTextEl) {{
+        const lineBlanks = (q.line_blanks && q.line_blanks[idx] && q.line_blanks[idx].length > 0)
+          ? q.line_blanks[idx]
+          : kwList;
+        targetTextEl.innerHTML = formatTextWithBlanks(modelLines[idx], lineBlanks, l);
+      }}
+    }}
+  }}
+  chipBox.innerHTML = chipsHtml;
+  ta.classList.toggle('error-overflow', hasOverflow);
+
+  if (q) {{
+    kwList.forEach((kw, idx) => {{
+      const el = document.getElementById(`kw-${{key}}-${{idx}}`);
+      if (el) {{
+        const isDetected = isKeywordSolvedInText(kw, text);
+        el.classList.toggle('detected', isDetected);
+        el.innerHTML = formatTextWithBlanks(kw, [kw], isDetected ? kw : text);
+      }}
+    }});
+  }}
+
+  const wasPerfect = evalScore.getAttribute('data-perfect') === 'true';
+  if (text.trim().length === 0) {{
+    evalScore.textContent = '판정 대기';
+    evalScore.style.color = 'var(--accent-gold)';
+    evalScore.setAttribute('data-perfect', 'false');
+  }} else if (hasOverflow) {{
+    evalScore.textContent = `경고: 한 줄에 ${{maxChars}}자를 초과하여 실제 시험지 칸을 벗어납니다!`;
+    evalScore.style.color = 'var(--accent-rose)';
+    evalScore.setAttribute('data-perfect', 'false');
+  }} else if (validLineCount === targetLines) {{
+    evalScore.textContent = `★ ${{targetLines}}줄 B4 규격 100% 만점 일치! (4.0 / 4.0)`;
+    evalScore.style.color = 'var(--accent-emerald)';
+    evalScore.setAttribute('data-perfect', 'true');
+    if (!wasPerfect) playSuccessChime();
+  }} else {{
+    evalScore.textContent = `현재 작성 중 (규격 일치 ${{validLineCount}}줄 / 목표 ${{targetLines}}줄)`;
+    evalScore.style.color = 'var(--accent-blue)';
+    evalScore.setAttribute('data-perfect', 'false');
+  }}
+
+  localStorage.setItem(getRoundKeyPrefix() + key, text);
+  const pill = document.getElementById('nav-pill-' + key);
+  if (pill) pill.classList.toggle('done', text.trim().length >= 20);
+  updateProgress();
+}}
+
+function minC_str(minC, maxC) {{
+  return `${{minC}}~${{maxC}}자`;
+}}
+
+function updateProgress() {{
+  const items = getList();
+  let done = 0;
+  items.forEach(q => {{
+    const saved = localStorage.getItem(getRoundKeyPrefix() + currentPeriod + q.num);
+    if (saved && saved.trim().length >= 20) done++;
+  }});
+  document.getElementById('progress-count').textContent = `${{done}} / ${{items.length}} 완료`;
+}}
+
+function loadSavedAnswers() {{
+  const items = getList();
+  const prefix = getRoundKeyPrefix();
+  items.forEach(q => {{
+    const key = currentPeriod + q.num;
+    const saved = localStorage.getItem(prefix + key);
+    if (saved) {{
+      const ta = document.getElementById('ta-' + key);
+      if (ta) {{
+        ta.value = saved;
+        const lines = saved.split('\\n');
+        lines.forEach((ln, idx) => {{
+          const inp = document.getElementById(`lbl-in-${{key}}-${{idx}}`);
+          if (inp) inp.value = ln;
+        }});
+        evaluateCard(currentPeriod, q.num);
+      }}
+    }}
+    if (q.cases8 && q.cases8.length > 0) {{
+      q.cases8.forEach((c, cIdx) => {{
+        const savedC = localStorage.getItem(prefix + key + '_C' + cIdx);
+        if (savedC !== null) {{
+          const cInp = document.getElementById(`case8-in-${{key}}-${{cIdx}}`);
+          if (cInp) {{
+            cInp.value = savedC;
+            handleCase8Input(currentPeriod, q.num, cIdx, true);
+          }}
+        }}
+      }});
+    }}
+    const savedQuiz = localStorage.getItem(prefix + key + '_quiz');
+    if (savedQuiz && q.quiz_a) {{
+      const qEl = document.getElementById('quiz-in-' + key);
+      if (qEl) {{
+        qEl.value = savedQuiz;
+        handleQuizInput(key, q.quiz_a);
+      }}
+    }}
+  }});
+}}
+
+function toggleMask(period, num) {{
+  const el = document.getElementById('ans-' + period + num);
+  if (el) el.classList.toggle('masked');
+}}
+
+function toggleAllMasks() {{
+  allMasked = !allMasked;
+  const items = getList();
+  items.forEach(q => {{
+    const el = document.getElementById('ans-' + currentPeriod + q.num);
+    if (el) el.classList.toggle('masked', allMasked);
+  }});
+  document.querySelectorAll('.lbl-target-line').forEach(el => {{
+    el.classList.toggle('masked-hint', allMasked);
+  }});
+  document.getElementById('btn-toggle-all').textContent = allMasked ? '전체 정답 보기' : '백지연습(정답 가리기)';
+}}
+
+function copyModelAnswer(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (q && q.answer) {{
+    navigator.clipboard.writeText(q.answer).then(() => showToast('4줄 만점 정답이 복사되었습니다!'));
+  }}
+}}
+
+function openReportModal() {{
+  const modal = document.getElementById('report-modal');
+  const container = document.getElementById('report-content');
+  const periods = [
+    {{ id: 'KICE55', name: '🔥 11.28 결전 55개 KICE 키워드 4줄 정답', total: dataKICE55.length }},
+    {{ id: 'TEMPLATE', name: '🎯 임용 만점 4줄 만능 템플릿', total: dataTEMPLATE.length }},
+    {{ id: 'PED', name: '1교시 교육학 논술 (16제)', total: dataPED.length }},
+    {{ id: 'A', name: '2교시 전공 A형 (12제)', total: dataA.length }},
+    {{ id: 'B', name: '3교시 전공 B형 (11제)', total: dataB.length }}
+  ];
+
+  let html = '';
+  let grandTotal = 0;
+  let grandDone = 0;
+
+  periods.forEach(p => {{
+    let done = 0;
+    for (let i = 1; i <= p.total; i++) {{
+      const val = localStorage.getItem(getRoundKeyPrefix() + p.id + i) || '';
+      if (val.trim().length >= 20) done++;
+    }}
+    grandTotal += p.total;
+    grandDone += done;
+    const rate = Math.round((done / p.total) * 100);
+
+    html += `
+      <div class="report-row">
+        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.9rem;">
+          <span>${{p.name}}</span>
+          <span style="color:#38bdf8;">${{done}} / ${{p.total}} 완료 (${{rate}}%)</span>
+        </div>
+        <div class="report-bar-wrap">
+          <div class="report-bar-fill" style="width: ${{rate}}%"></div>
+        </div>
+      </div>
+    `;
+  }});
+
+  const totalRate = Math.round((grandDone / grandTotal) * 100);
+  html = `
+    <div style="background:#0b1220; padding:16px; border-radius:8px; margin-bottom:16px; text-align:center;">
+      <div style="font-size:0.9rem; color:#94a3b8;">전과목 종합 타이핑 달성도</div>
+      <div style="font-size:2rem; font-weight:900; color:#fbbf24; margin:4px 0;">${{totalRate}}점 / 100점</div>
+      <div style="font-size:0.85rem; color:#34d399;">총 ${{grandTotal}}문항 중 ${{grandDone}}문항 인출 달성!</div>
+    </div>
+  ` + html;
+
+  container.innerHTML = html;
+  modal.style.display = 'flex';
+}}
+
+function closeReportModal() {{
+  document.getElementById('report-modal').style.display = 'none';
+}}
+
+function exportWrongNotes() {{
+  const items = getList();
+  let txt = `=======================================================================\\n`;
+  txt += `[2027학년도 11.28 임용 변귀섭 대표님 55개 KICE 핵심키워드 4줄 정답 요약노트]\\n`;
+  txt += `생성일시: ${{new Date().toLocaleString()}}\\n`;
+  txt += `=======================================================================\\n\\n`;
+
+  items.forEach(q => {{
+    txt += `[#${{String(q.num).padStart(2, '0')}} ${{q.type}}] ${{q.title}}\\n`;
+    if (q.keywords) txt += `🔑 핵심 키워드: ${{q.keywords.join(', ')}}\\n`;
+    txt += `[KICE 공인 4줄 만점 정답]\\n${{q.answer}}\\n\\n`;
+    txt += `-----------------------------------------------------------------------\\n\\n`;
+  }});
+
+  const blob = new Blob([txt], {{ type: 'text/plain;charset=utf-8' }});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `2027_임용_${{currentPeriod}}_4줄만점정답_단권화노트.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('4줄 만점 정답 단권화 노트가 다운로드되었습니다!');
+}}
+
+function exportAnswers() {{
+  const items = getList();
+  let txt = `=======================================================================\\n`;
+  txt += `[2027학년도 공립 중등임용시험 ${{currentPeriod}} 답안지]\\n`;
+  txt += `수험자: 변귀섭 대표님 | 제출일시: ${{new Date().toLocaleString()}}\\n`;
+  txt += `=======================================================================\\n\\n`;
+
+  items.forEach(q => {{
+    const key = currentPeriod + q.num;
+    const ans = localStorage.getItem(getRoundKeyPrefix() + key) || '(미작성)';
+    txt += `[#${{q.num}} - ${{q.type}} (${{q.score}}점)] ${{q.title}}\\n`;
+    txt += `작성 답안:\\n${{ans}}\\n\\n`;
+    txt += `-----------------------------------------------------------------------\\n\\n`;
+  }});
+
+  const blob = new Blob([txt], {{ type: 'text/plain;charset=utf-8' }});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `2027_임용_${{currentPeriod}}_변귀섭대표님_답안지.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('실전 답안지가 다운로드되었습니다!');
+}}
+
+function showToast(msg) {{
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}}
+
+function escapeHtml(str) {{
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}}
+
+function init() {{
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateProgress();
+  startTimer();
+  for (let r = 1; r <= 3; r++) {{
+    const el = document.getElementById('round-btn-' + r);
+    if (el) el.classList.toggle('active', r === currentRound);
+  }}
+}}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
+"""
+
+# Write to all target HTML files in both root and 교육학 folder
+target_paths = [
+    "2027_전문상담_AB형_타이핑_마스터_웹앱.html",
+    "index.html",
+    "exam_master_2027.html",
+    "2027_KICE_전문상담_핵심키워드_55제_다크모드.html",
+    os.path.join("..", "index.html"),
+    os.path.join("..", "typing_master.html"),
+    os.path.join("..", "exam_master_2027.html"),
+    os.path.join("..", "2027_dark_55_keywords.html"),
+]
+
+for p in target_paths:
+    with open(p, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    print(f"Written: {p} ({len(html_content)} bytes)")

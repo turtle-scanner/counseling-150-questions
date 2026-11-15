@@ -1,0 +1,304 @@
+File length: 95236
+--- PRINT CSS SNIPPET ---
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 10mm 12mm 10mm;
+  }
+  
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 9pt !important;
+    line-height: 1.45 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .app-header,
+  .control-bar,
+  .progress-wrap,
+  .tool-group,
+  .timer-widget,
+  .quick-nav,
+  .notice-banner,
+  .no-print,
+  #blind-toggle-btn,
+  .search-box,
+  #top55-filters,
+  .char-count-badge,
+  .memorize-chk,
+  .print-modal-overlay,
+  .answer-box-header {
+    display: none !important;
+  }
+
+  main.content-area {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Print Section Scopes */
+  body.print-scope-full #sec-top55 {
+    display: none !important;
+  }
+  body.print-scope-full #sec-pedagogy,
+  body.print-scope-full #sec-qa,
+  body.print-scope-full #sec-qb {
+    display: block !important;
+  }
+  body.print-scope-full #sec-qa,
+  body.print-scope-full #sec-qb {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  body.print-scope-top55 #sec-top55 {
+    display: block !important;
+  }
+  body.print-scope-top55 #sec-pedagogy,
+  body.print-scope-top55 #sec-qa,
+  body.print-scope-top55 #sec-qb {
+    display: none !important;
+  }
+
+  body.print-scope-current .tab-section:not(.active) {
+    display: none !important;
+  }
+  body.print-scope-current .tab-section.active {
+    display: block !important;
+  }
+
+  /* Formal Print Page Header */
+  .print-page-header {
+    display: block !important;
+    border-bottom: 2px solid #0f172a !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 12px !important;
+    page-break-after: avoid !important;
+  }
+  .print-page-header h2 {
+    font-size: 13pt !important;
+    font-weight: 900 !important;
+    color: #0f172a !important;
+    margin: 0 0 2px 0 !important;
+  }
+  .print-page-header p {
+    font-size: 8.5pt !important;
+    color: #475569 !important;
+    margin: 0 !important;
+  }
+
+  /* Full Question Cards on Paper */
+  .exam-full-card {
+    background: #ffffff !important;
+    border: 1px solid #94a3b8 !important;
+    border-radius: 4px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 12px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .exam-split-grid {
+    display: block !important;
+  }
+  .exam-left-col {
+    width: 100% !important;
+  }
+  .exam-right-col {
+    width: 100% !important;
+    margin-top: 8px !important;
+  }
+
+  .exam-case-box {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-left: 3px solid #0284c7 !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    font-size: 9pt !important;
+    line-height: 1.5 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+  }
+
+  .exam-instructions {
+    background: #fefce8 !important;
+    color: #713f12 !important;
+    border: 1px solid #fde047 !important;
+    border-left: 3px solid #ca8a04 !important;
+    border-radius: 4px !important;
+    padding: 6px 10px !important;
+    margin-top: 6px !important;
+    font-size: 8.5pt !important;
+    line-height: 1.4 !important;
+  }
+  .exam-instructions strong {
+    color: #713f12 !important;
+  }
+
+  .e
+
+--- PRINT JS SNIPPET ---
+executePrint()">
+        <span>🖨️</span> A4 인쇄 시작 (미리보기)
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div class="control-bar" id="control-bar">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="이론명, 학자명, 키워드 실시간 검색..." oninput="handleSearch()">
+  </div>
+
+  <div class="tool-group" id="top55-filters">
+    <button class="tool-btn active-toggle" onclick="filterTop55('all', this)">전체 55개</button>
+    <button class="tool-btn" onclick="filterTop55('pedagogy', this)">교육학 20선</button>
+    <button class="tool-btn" onclick="filterTop55('counseling', this)">전공상담 35선</button>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-text">
+    <span id="progress-label">암기 완료: 0 / 55개 (0%)</span>
+    <span>한국교육과정평가원(KICE) 7개년 정식 공인 키워드 100% 탑재</span>
+  </div>
+</div>
+
+<main class="content-area">
+
+  <!-- ==================== TAB 1: TOP 55 COMPACT DRILL ==================== -->
+  <section class="tab-section active" id="sec-top55">
+    <div class="print-page-header">
+      <h2>2027 KICE 중등임용 전문상담 & 교육학 영구동결 핵심 55선 암기장</h2>
+      <p>한국교육과정평가원(KICE) 7개년 기출 검증 공인 키워드 100% 수록 | 2열 콤팩트 스피드 암기</p>
+    </div>
+    <div class="notice-banner">
+      <div>
+        <h3>⚡ 2027 KICE 영구 동결 55개 핵심 출제 풀 스피드 마스터</h3>
+        <p>기출 7개년 전수 분석 완료! 우측 상단 '키워드 가리기'를 켜고 능동적 인출(Active Recall) 훈련을 진행하세요.</p>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--gold); font-weight: 700;">
+        교육학 20선 + 전공상담 35선 = 총 55개
+      </div>
+    </div>
+
+    <div class="card-grid" id="top55-grid"></div>
+  </section>
+
+  <!-- ==================== TAB 2: PEDAGOGY ESSAY ==================== -->
+  <section class="tab-section" id="sec-pedagogy">
+    <div class="print-page-header">
+      <h2>2027학년도 중등교사 임용후보자 선정경쟁시험</h2>
+      <p>1교시 교육학 논술 [배점 20점 만점 / 시험시간 60분]</p>
+    </div>
+    <div class="notice-banner">
+      <div>
+        <h3>🎓 1교시 교육학 논술 모의고사 [총점 20점 만점 / 16개 세부 소문항 규격]</h3>
+        <p>2026 소진 이론 완전 배제! 2027 0순위 4대 영역(교육과정·교육방법·교육평가·교육행정) 16개 세부 발문 실전 시험지</p>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--sky); font-weight: 700;">
+        시험 시간: 60분 (B4 답안지 1페이지)
+      </div>
+    </div>
+
+    <div class="exam-full-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="font-size:1.15rem; color:#fff;" id="ped-title"></h2>
+        <span class="badge badge-score">20점 만점</span>
+      </div>
+      
+      <div class="exam-case-box" id="ped-case"></div>
+
+      <div class="exam-instructions">
+        <strong>&lt;작성 방법 및 채점 지침&gt;</strong>
+        <ul>
+          <li>논술의 내용: 교육과정(4점), 교육방법(4점), 교육평가(4점), 교육행정(4점) 총 16점</li>
+          <li>논술의 구성 및 표현: 논술의 체계(서론·본론·결론 결속성) 및 분량·맞춤법 4점</li>
+          <li>반드시 KICE 공인 용어로 서술하고, B4 답안지 기준 1줄당 38~45자 규격을 준수할 것.</li>
+        </ul>
+      </div>
+
+      <div id="ped-domain-cards"></div>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 3: SPECIALTY A ==================== -->
+  <section class="tab-section" id="sec-qa">
+    <div class="print-page-header">
+      <h2>2027학년도 중등교사 임용후보자 선정경쟁시험</h2>
+      <p>2교시 전공상담 A형 [12문항 40점 만점 / 시험시간 90분]</p>
+    </div>
+    <div class="notice-banner">
+      <div>
+        <h3>📘 2교시 전공상담 A형 실전 모의고사 [12문항 / 40점 만점]</h3>
+        <p>기입형 1~4번 (각 2점) + 서술형 5~12번 (각 4점). 답안을 입력하면 하단에 KICE 4점 만점 모범답안이 즉시 열립니다.</p>
+      </div>
+      <div style="fo
+
+--- PRINT JS SNIPPET ---
+executePrint() {
+  const scopeEl = document.querySelector('input[name="print-scope"]:checked');
+  const scope = scopeEl ? scopeEl.value : 'full';
+  const includeAnswers = document.getElementById('print-opt-answers').checked;
+  const includeUser = document.getElementById('print-opt-user').checked;
+
+  // Sync all user inputs to print-written-text boxes
+  if (rawData.pedagogy && rawData.pedagogy.domains) {
+    rawData.pedagogy.domains.forEach(d => {
+      const ta = document.getElementById('ped-input-' + d.id);
+      const pu = document.getElementById('ped-print-user-' + d.id);
+      if (ta && pu) pu.innerText = ta.value || '';
+    });
+  }
+
+  ['A', 'B'].forEach(type => {
+    const list = (type === 'A') ? rawData.questions_a : rawData.questions_b;
+    if (list) {
+      list.forEach(q => {
+        const ta = document.getElementById('input-' + type + '-' + q.num);
+        const pu = document.getElementById('print-user-' + type + '-' + q.num);
+        if (ta && pu) pu.innerText = ta.value || '';
+      });
+    }
+  });
+
+  // Apply print classes to body
+  document.body.classList.remove('print-scope-full', 'print-scope-current', 'print-scope-top55', 'print-with-answers', 'print-with-user');
+
+  document.body.classList.add('print-scope-' + scope);
+  if (includeAnswers) document.body.classList.add('print-with-answers');
+  if (includeUser) document.body.classList.add('print-with-user');
+
+  closePrintModal();
+
+  setTimeout(() => {
+    window.print();
+  }, 150);
+}
+
+// Reset print classes after printing
+window.addEventListener('afterprint', () => {
+  document.body.classList.remove('print-scope-full', 'print-scope-current', 'print-scope-top55', 'print-with-answers', 'print-with-user');
+});
+
+</script>
+</body>
+</html>
+

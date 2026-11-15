@@ -1,0 +1,32 @@
+function updateRightPanel(provId) {
+      const p = PROVINCES.find(x => x.id === provId);
+      if (!p) return;
+
+      document.getElementById('map-selected-name').innerText = `${p.id}. ${p.name} (${p.ruler})`;
+      document.getElementById('panel-city-title').innerText = `${p.id}. ${p.name}`;
+      document.getElementById('panel-ruler-name').innerText = p.ruler;
+      document.getElementById('panel-governor').innerText = p.leader;
+      document.getElementById('panel-advisor').innerText = p.advisor;
+      document.getElementById('panel-defense').innerText = p.defense;
+
+      document.getElementById('val-pop').innerText = p.pop.toLocaleString();
+      document.getElementById('val-gold').innerText = p.gold.toLocaleString();
+      document.getElementById('val-food').innerText = p.food.toLocaleString();
+      document.getElementById('val-sol').innerText = p.soldiers.toLocaleString();
+      document.getElementById('val-off').innerText = p.officers;
+      document.getElementById('val-loy').innerText = p.loyalty;
+
+      document.getElementById('bar-pop').style.width = Math.min(100, (p.pop / 600000) * 100) + '%';
+      document.getElementById('bar-gold').style.width = Math.min(100, (p.gold / 6000) * 100) + '%';
+      document.getElementById('bar-food').style.width = Math.min(100, (p.food / 60000) * 100) + '%';
+      document.getElementById('bar-sol').style.width = Math.min(100, (p.soldiers / 40000) * 100) + '%';
+      document.getElementById('bar-off').style.width = Math.min(100, (p.officers / 20) * 100) + '%';
+      document.getElementById('bar-loy').style.width = p.loyalty + '%';
+
+      // 12군주 초상화 및 공손찬 얼굴 실시간 정확 매핑
+      updateRulerPortraitDisplay(p.ruler);
+
+      document.getElementById('rate-rice-sell').innerText = gameState.rates.riceSell;
+      document.getElementById('rate-rice-buy').innerText = gameState.rates.riceBuy;
+      document.getElementById('rate-crossbow').innerText = gameState.rates.crossbow;
+      document.getElementById('rate-heavy-bow').innerText = g

@@ -1,0 +1,274 @@
+<body class="p-2 md:p-3 min-h-screen flex flex-col justify-between">
+
+  <!-- 상단 상태바 & 10턴 긴장감 게이지 HUD -->
+  <header class="koei-frame p-3 rounded-lg mb-2 flex flex-col md:flex-row justify-between items-center gap-3">
+    
+    <!-- 좌측 타이틀 & 시나리오 -->
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded border-2 border-yellow-500 overflow-hidden bg-slate-900 flex items-center justify-center text-2xl shadow-lg">
+        ⚔️
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xl font-black text-yellow-300">삼국지 V (三國志 V)</span>
+          <span class="text-xs bg-red-950 text-amber-300 px-2 py-0.5 rounded border border-red-600 font-extrabold animate-pulse">
+            🔥 10턴 결전 룰
+          </span>
+        </div>
+        <div class="text-xs text-slate-300 flex items-center gap-3 mt-1">
+          <span>기후: <strong id="weatherText" class="text-blue-300">맑음 ☀️</strong></span>
+          <span>풍향: <strong id="windText" class="text-emerald-300">남동풍 ⇲ (화계 번짐)</strong></span>
+          <span>전황: <strong id="turnInfo" class="text-yellow-300">제 1 / 10 턴 [연합군 행동]</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 중앙 10턴 카운트다운 타이머 바 -->
+    <div class="w-full md:w-64 flex flex-col gap-1">
+      <div class="flex justify-between text-xs font-bold">
+        <span class="text-slate-300">동탁 10만 증원군 도착까지:</span>
+        <span id="turnCountdownText" class="text-yellow-400 font-black">10 턴 남음</span>
+      </div>
+      <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden border border-yellow-600/80 p-0.5 shadow-inner">
+        <div id="turnProgressBar" class="turn-meter-bar h-full rounded-full bg-gradient-to-r from-emerald-500 via-yellow-500 to-red-500 w-full"></div>
+      </div>
+    </div>
+
+    <!-- 우측 오디오 제어 & 리셋 -->
+    <div class="flex items-center gap-2">
+      <button onclick="toggleSound()" id="soundBtn" class="sam5-btn px-3 py-1.5 rounded text-xs flex items-center gap-1">
+        <span>🔊</span> <span id="soundLabel">효과음 ON</span>
+      </button>
+      <button onclick="restartBattle()" class="sam5-btn px-3 py-1.5 rounded text-xs bg-slate-800 text-amber-200">
+        🔄 전장 초기화
+      </button>
+    </div>
+  </header>
+
+  <!-- 전략 브리핑 미션 HUD 박스 -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2 text-xs">
+    <div class="koei-card p-2 rounded flex items-center gap-2 border-l-4 border-l-red-500">
+      <span class="text-base">🎯</span>
+      <div>
+        <strong class="text-yellow-300 block">승리 전략 1 (단기결전)</strong>
+        <span class="text-slate-300">관우·장비로 여포에게 <strong>일기토</strong> 신청 승리 시 즉시 대승!</span>
+      </div>
+    </div>
+    <div class="koei-card p-2 rounded flex items-center gap-2 border-l-4 border-l-amber-500">
+      <span class="text-base">🌾</span>
+      <div>
+        <strong class="text-yellow-300 block">승리 전략 2 (보급로 절단)</strong>
+        <span class="text-slate-300">조운(추행진)으로 적 후방 <strong>보급창고</strong> 점령 시 적 전군 패닉!</span>
+      </div>
+    </div>
+    <div class="koei-card p-2 rounded flex items-center gap-2 border-l-4 border-l-blue-500">
+      <span class="text-base">🔥</span>
+      <div>
+        <strong class="text-yellow-300 block">승리 전략 3 (화계 & 진형)</strong>
+        <span class="text-slate-300">남동풍을 타고 번지는 <strong>화계 + 안행진 궁시</strong>로 10턴 내 궤멸!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 메인 전장 레이아웃 -->
+  <main class="grid grid-cols-1 lg:grid-cols-4 gap-2 flex-1">
+    
+    <!-- 좌측/중앙: 헥스(Hex) 전장 캔버스 (3열 차지) -->
+    <div class="lg:col-span-3 koei-frame p-2 rounded-lg flex flex-col items-center justify-center relative overflow-hidden bg-black/60 shadow-2xl">
+      <div class="w-full flex justify-between items-center px-2 py-1 text-xs text-amber-300 font-bold border-b border-yellow-800/60 mb-1">
+        <span>⚔️ 헥스 전장 (좌클릭: 부대 선택 / 이동 타일 클릭 / 적군 타격)</span>
+        <span class="text-yellow-400 font-extrabold" id="tacticalAlertText">💡 조운의 기동력을 이용해 적의 보급고를 노려보세요!</span>
+      </div>
+      
+      <!-- 캔버스 컨테이너 -->
+      <div class="relative w-full flex items-center justify-center">
+        <canvas id="battleCanvas" width="920" height="560" class="rounded border border-amber-900/80 cursor-pointer max-w-full h-auto bg-[#0a0f1d]"></canvas>
+        <div id="damageOverlay" class="absolute inset-0 pointer-events-none"></div>
+      </div>
+
+      <!-- 전술 진형 상성 팁 -->
+      <div class="w-full mt-1.5 grid grid-cols-2 md:grid-cols-5 gap-1.5 text-[11px] text-slate-300 px-2 py-1 bg-slate-950/80 rounded border border-slate-800">
+        <div><strong class="text-red-400">어린(魚鱗):</strong> 평지 돌격 +35%</div>
+        <div><strong class="text-blue-400">안행(雁行):</strong> 원거리 궁시(사거리3)</div>
+        <div><strong class="text-emerald-400">방원(方圓):</strong> 방어 1위, 활 차단</div>
+        <div><strong class="text-orange-400">봉시(鋒矢):</strong> 돌파 & 일기토 2배</div>
+        <div><strong class="text-purple-400">추행(錐行):</strong> 이동력 +2칸 (기습)</div>
+      </div>
+    </div>
+
+    <!-- 우측: 부대 정보 & 삼국지 5 특화 군령창 (1열 차지) -->
+    <div class="lg:col-span-1 flex flex-col gap-2">
+      
+      <!-- 선택된 무장 상세 카드 -->
+      <div class="koei-frame p-2.5 rounded-lg flex flex-col gap-1.5">
+        <div class="border-b border-yellow-700 pb-1 flex justify-between items-center">
+          <span class="text-xs text-yellow-300 font-extrabold">무장 정밀 상태</span>
+          <span id="unitFactionBadge" class="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-900 text-blue-200 border border-blue-500">연합군</span>
+        </div>
+
+        <div id="unitDetailBox" class="flex gap-2.5 items-center">
+          <div id="unitAvatar" class="w-14 h-14 rounded border-2 border-yellow-500 bg-slate-900 flex items-center justify-center text-3xl shadow">
+            ⚔️
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <span id="unitName" class="text-sm font-black text-amber-200">부대를 선택하세요</span>
+              <span id="unitFormationBadge" class="formation-badge hidden">어린</span>
+            </div>
+            <div class="text-[11px] text-slate-300 mt-0.5" id="unitGeneralTitle">-</div>
+            <div class="text-xs text-yellow-400 font-bold mt-0.5">
+              병력: <span id="unitTroops" class="text-white">-</span> / 사기: <span id="unitMorale" class="text-emerald-400">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4대 능력치 -->
+        <div class="grid grid-cols-4 gap-1 text-center bg-slate-950/90 p-1 rounded border border-slate-800 text-[11px]">
+          <div><span class="text-slate-400 block text-[10px]">무력</span><strong id="statWar" class="text-red-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">지력</span><strong id="statInt" class="text-blue-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">통솔</span><strong id="statLead" class="text-yellow-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">매력</span><strong id="statChr" class="text-purple-400">-</strong></div>
+        </div>
+
+        <!-- 무장 보유 특기 리스트 -->
+        <div class="mt-0.5">
+          <div class="text-[10px] text-slate-400 mb-0.5">보유 특기(特技):</div>
+          <div id="unitSkillsList" class="flex flex-wrap gap-1 text-[10px]">
+            <span class="text-slate-500">부대를 클릭하십시오</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 코에이 삼국지 5 정통 군사 명령 패널 -->
+      <div class="koei-frame p-2.5 rounded-lg flex-1 flex flex-col justify-between">
+        <div>
+          <div class="border-b border-yellow-700 pb-1 mb-2 flex justify-between items-center">
+            <span class="text-xs text-yellow-300 font-extrabold">전술 군령 (軍令)</span>
+            <span id="actionPoints" class="text-[10px] text-amber-400 font-bold">10턴 결전 모드</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1.5">
+            <button id="btnAttack" onclick="onCmdAttack()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🗡️</span> <span>근접 공격</span>
+            </button>
+            <button id="btnArchery" onclick="onCmdArchery()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🏹</span> <span>안행 궁시</span>
+            </button>
+            <button id="btnFireSkill" onclick="onCmdFireSkill()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🔥</span> <span>화계 (풍향확산)</span>
+            </button>
+            <button id="btnChaosSkill" onclick="onCmdChaosSkill()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🌀</span> <span>혼란 계략</span>
+            </button>
+            <button id="btnFlurry" onclick="onCmdFlurry()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>⚡</span> <span>분기 (광역타격)</span>
+            </button>
+            <button id="btnFormation" onclick="openFormationModal()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🛡️</span> <span>진형 변경</span>
+            </button>
+            <button id="btnDuel" onclick="onCmdDuel()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1 text-red-300 font-black border-red-500" disabled>
+              <span>⚔️</span> <span>일기토 (일격필살)</span>
+            </button>
+            <button id="btnWait" onclick="onCmdWait()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1 bg-slate-900" disabled>
+              <span>⏸️</span> <span>행동 완료</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 턴 종료 버튼 -->
+        <div class="mt-3 pt-2 border-t border-yellow-900/60">
+          <button onclick="endPlayerTurn()" id="btnEndTurn" class="w-full sam5-btn py-2.5 rounded text-xs bg-gradient-to-r from-red-950 via-red-900 to-amber-900 hover:from-red-800 hover:to-amber-800 text-yellow-200 border-yellow-500 font-black shadow-lg flex items-center justify-center gap-1.5">
+            <span>🚩</span> <span>아군 턴 종료 (적군 행동 개시)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 하단 전투 실황 중계 로그 -->
+  <footer class="koei-frame p-2 rounded-lg mt-2 flex items-center gap-2">
+    <div class="text-xs text-yellow-400 font-black whitespace-nowrap">📜 전황 일지:</div>
+    <div id="battleLog" class="text-xs text-slate-200 flex-1 truncate font-medium">
+      [10턴 결전] 10턴 이내에 여포를 일기토로 꺾거나, 보급고를 태워 동탁군을 섬멸하십시오!
+    </div>
+  </footer>
+
+  <!-- 진형 변경 팝업 모달 -->
+  <div id="formationModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div class="koei-frame max-w-md w-full p-4 rounded-lg shadow-2xl">
+      <div class="flex justify-between items-center border-b border-yellow-600 pb-2 mb-3">
+        <h3 class="text-sm font-black text-yellow-300 flex items-center gap-1">
+          <span>🛡️</span> 삼국지 5 진형(陣形) 선택
+        </h3>
+        <button onclick="closeFormationModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-3">
+        진형을 변환하면 10턴 결전의 형세를 바꿀 수 있습니다. 전황에 맞추어 공격·방어·궁시·기동을 선택하십시오.
+      </p>
+
+      <div class="grid grid-cols-1 gap-2" id="formationChoiceList">
+        <!-- JS로 동적 생성 -->
+      </div>
+
+      <div class="mt-4 flex justify-end">
+        <button onclick="closeFormationModal()" class="sam5-btn px-4 py-1.5 rounded text-xs">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 일기토(一騎討) 컷신 모달 -->
+  <div id="duelModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
+    <div class="koei-frame max-w-lg w-full p-5 rounded-lg border-2 border-red-600 shadow-2xl text-center">
+      <div class="text-red-500 font-black text-xl mb-1 tracking-widest flex items-center justify-center gap-2">
+        <span>⚔️</span> 一 騎 討 (일기토) <span>⚔️</span>
+      </div>
+      <div class="text-xs text-yellow-300 mb-3" id="duelSubtitle">적장의 목을 베면 즉시 적 군세가 와해되어 승리합니다!</div>
+
+      <!-- 결투 대치 화면 -->
+      <div class="flex justify-around items-center my-3 bg-slate-950 p-4 rounded border border-yellow-900/80">
+        <!-- 아군 무장 -->
+        <div class="flex flex-col items-center">
+          <div id="duelP1Avatar" class="w-16 h-16 rounded-full border-2 border-blue-500 bg-slate-800 flex items-center justify-center text-3xl shadow-lg">
+            🧔
+          </div>
+          <span id="duelP1Name" class="text-sm font-black text-blue-300 mt-2">관우</span>
+          <span id="duelP1War" class="text-xs text-red-400 font-bold">무력 98</span>
+          <div class="w-24 bg-slate-700 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-600">
+            <div id="duelP1Hp" class="bg-blue-500 h-full w-full transition-all duration-300"></div>
+          </div>
+        </div>
+
+        <div class="text-3xl font-black text-yellow-400 clash-anim" id="duelVsIcon">VS</div>
+
+        <!-- 적군 무장 -->
+        <div class="flex flex-col items-center">
+          <div id="duelP2Avatar" class="w-16 h-16 rounded-full border-2 border-red-500 bg-slate-800 flex items-center justify-center text-3xl shadow-lg">
+            🏹
+          </div>
+          <span id="duelP2Name" class="text-sm font-black text-red-300 mt-2">여포</span>
+          <span id="duelP2War" class="text-xs text-red-400 font-bold">무력 100</span>
+          <div class="w-24 bg-slate-700 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-600">
+            <div id="duelP2Hp" class="bg-red-500 h-full w-full transition-all duration-300"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 결투 진행 로그 텍스트 -->
+      <div id="duelNarrative" class="bg-black/60 p-2.5 rounded text-xs text-slate-200 min-h-[48px] flex items-center justify-center border border-slate-800 font-bold">
+        두 맹장이 말을 몰아 창검을 맞부딪힙니다!
+      </div>
+
+      <div class="mt-4 flex justify-center gap-3">
+        <button id="btnDuelRound" onclick="progressDuelRound()" class="sam5-btn px-6 py-2 rounded text-xs font-black text-yellow-200 animate-bounce">
+          💥 검을 맞댄다! (합 겨루기)
+        </button>
+        <button id="btnDuelClose" onclick="closeDuelModal()" class="sam5-btn px-4 py-2 rounded text-xs hidden">
+          확인
+        </button>
+      </div>
+    </div>
+  </div>
+
+  

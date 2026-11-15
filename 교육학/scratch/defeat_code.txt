@@ -1,0 +1,16 @@
+function triggerDefeat(msg) {
+      if (sam5BattleState.battleOver) return;
+      sam5BattleState.battleOver = true;
+      playSound('fire');
+      logBattle(`통한의 패배: ${msg}`);
+      logMessage(`⚠️ [작전 실패] ${msg} 본대로 전군 퇴각하여 전국 지도로 복귀합니다.`, 'text-red-400 font-bold');
+
+      alert(`💀 [작전 실패 - 본대 퇴각]\n\n${msg}\n\n전군 퇴각하여 본진(전국 지도)으로 안전하게 철수합니다.`);
+      
+      // 전국 지도로 안전 복귀!
+      closeHexBattle(false);
+    }
+
+
+
+    

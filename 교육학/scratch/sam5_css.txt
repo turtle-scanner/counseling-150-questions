@@ -1,0 +1,91 @@
+
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&family=Nanum+Gothic+Coding:wght@700;800&display=swap');
+
+    * { box-sizing: border-box; user-select: none; }
+    body {
+      font-family: 'Nanum Gothic Coding', 'Noto Serif KR', monospace, serif;
+      background-color: #070a12;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* 코에이 삼국지 5 특유의 전통 골드 프레임 */
+    .koei-frame {
+      background: radial-gradient(circle at 50% 20%, #172554, #080c16);
+      border: 3px double #eab308;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(0, 0, 0, 0.7);
+    }
+    .koei-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #ca8a04;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+    }
+
+    /* 삼국지 5 스타일 액션 버튼 */
+    .sam5-btn {
+      background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+      border: 1.5px solid #eab308;
+      color: #fef08a;
+      font-weight: 800;
+      text-shadow: 1px 1px 2px #000;
+      transition: all 0.15s ease-in-out;
+      cursor: pointer;
+    }
+    .sam5-btn:hover:not(:disabled) {
+      background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      border-color: #fef08a;
+      box-shadow: 0 0 10px rgba(234, 179, 8, 0.6);
+      transform: translateY(-1px);
+    }
+    .sam5-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: #475569;
+      color: #64748b;
+    }
+
+    /* 진형 배지 스타일 */
+    .formation-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 900;
+      border-radius: 4px;
+      border: 1px solid #eab308;
+      background: #854d0e;
+      color: #fef08a;
+    }
+
+    /* 10턴 긴장감 턴 게이지 */
+    .turn-meter-bar {
+      transition: width 0.4s ease-out, background-color 0.4s ease-out;
+    }
+
+    /* 플로팅 대미지 애니메이션 */
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -45px) scale(1.3); }
+    }
+    .damage-pop {
+      position: absolute;
+      pointer-events: none;
+      animation: floatUp 0.85s ease-out forwards;
+      font-weight: 900;
+      text-shadow: 0 0 5px #000, 2px 2px 2px #000;
+      font-size: 1.25rem;
+    }
+
+    /* 일기토 컷신 진동 */
+    @keyframes clashShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-9px) rotate(-1.5deg); }
+      40%, 80% { transform: translateX(9px) rotate(1.5deg); }
+    }
+    .clash-anim {
+      animation: clashShake 0.4s ease-in-out;
+    }
+  

@@ -1,0 +1,70 @@
+id="battleCanvas" width="1160" height="590" class="rounded border border-amber-900/80 cursor-pointer max-w-full h-auto bg-[#0a0f1d]"></canvas>
+        <div id="damageOverlay" class="absolute inset-0 pointer-events-none"></div>
+      </div>
+
+      <!-- 전술 진형 상성 팁 -->
+      <div class="w-full mt-1.5 grid grid-cols-2 md:grid-cols-5 gap-1.5 text-[11px] text-slate-300 px-2 py-1 bg-slate-950/80 rounded border border-slate-800">
+        <div><strong class="text-red-400">어린(魚鱗):</strong> 평지 돌격 +35%</div>
+        <div><strong class="text-blue-400">안행(雁行):</strong> 원거리 궁시(사거리3)</div>
+        <div><strong class="text-emerald-400">방원(方圓):</strong> 방어 1위, 활 차단</div>
+        <div><strong class="text-orange-400">봉시(鋒矢):</strong> 돌파 & 일기토 2배</div>
+        <div><strong class="text-purple-400">추행(錐行):</strong> 이동력 +2칸 (기습)</div>
+      </div>
+    </div>
+
+    <!-- 우측: 부대 정보 & 삼국지 5 특화 군령창 (1열 차지) -->
+    <div class="lg:col-span-1 flex flex-col gap-2">
+      
+      <!-- 선택된 무장 상세 카드 -->
+      <div class="koei-frame p-2.5 rounded-lg flex flex-col gap-1.5">
+        <div class="border-b border-yellow-700 pb-1 flex justify-between items-center">
+          <span class="text-xs text-yellow-300 font-extrabold">무장 정밀 상태</span>
+          <span id="unitFactionBadge" class="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-900 text-blue-200 border border-blue-500">연합군</span>
+        </div>
+
+        <div id="unitDetailBox" class="flex gap-2.5 items-center">
+          <div id="unitAvatar" class="w-14 h-14 rounded border-2 border-yellow-500 bg-slate-900 flex items-center justify-center text-3xl shadow">
+            ⚔️
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <span id="unitName" class="text-sm font-black text-amber-200">부대를 선택하세요</span>
+              <span id="unitFormationBadge" class="formation-badge hidden">어린</span>
+            </div>
+            <div class="text-[11px] text-slate-300 mt-0.5" id="unitGeneralTitle">-</div>
+            <div class="text-xs text-yellow-400 font-bold mt-0.5">
+              병력: <span id="unitTroops" class="text-white">-</span> / 사기: <span id="unitMorale" class="text-emerald-400">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4대 능력치 -->
+        <div class="grid grid-cols-4 gap-1 text-center bg-slate-950/90 p-1 rounded border border-slate-800 text-[11px]">
+          <div><span class="text-slate-400 block text-[10px]">무력</span><strong id="statWar" class="text-red-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">지력</span><strong id="statInt" class="text-blue-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">통솔</span><strong id="statLead" class="text-yellow-400">-</strong></div>
+          <div><span class="text-slate-400 block text-[10px]">매력</span><strong id="statChr" class="text-purple-400">-</strong></div>
+        </div>
+
+        <!-- 무장 보유 특기 리스트 -->
+        <div class="mt-0.5">
+          <div class="text-[10px] text-slate-400 mb-0.5">보유 특기(特技):</div>
+          <div id="unitSkillsList" class="flex flex-wrap gap-1 text-[10px]">
+            <span class="text-slate-500">부대를 클릭하십시오</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 코에이 삼국지 5 정통 군사 명령 패널 -->
+      <div class="koei-frame p-2.5 rounded-lg flex-1 flex flex-col justify-between">
+        <div>
+          <div class="border-b border-yellow-700 pb-1 mb-2 flex justify-between items-center">
+            <span class="text-xs text-yellow-300 font-extrabold">전술 군령 (軍令)</span>
+            <span id="actionPoints" class="text-[10px] text-amber-400 font-bold">10턴 결전 모드</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1.5">
+            <button id="btnAttack" onclick="onCmdAttack()" class="sam5-btn p-2 rounded text-xs flex items-center justify-center gap-1" disabled>
+              <span>🗡️</span> <span>근접 공격</span>
+            </button>
+            <button id="btnArchery" onclick="onCmdArchery()" c

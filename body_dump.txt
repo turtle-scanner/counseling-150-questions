@@ -1,0 +1,80 @@
+<body>
+
+<header class="app-header">
+  <div class="header-top">
+    <div class="brand-title">
+      <h1>🎯 2027 KICE 임용고시 합격 마스터</h1>
+      <span class="brand-badge">2027 0순위 55개 완전압축</span>
+    </div>
+    
+    <div class="tool-group">
+      <div class="timer-widget">
+        <span style="font-size: 0.8rem; color: var(--text-sub);">⏱️</span>
+        <span class="timer-clock" id="timer-display">60:00</span>
+        <button class="tool-btn" style="padding: 2px 8px; font-size: 0.75rem;" onclick="toggleTimer()" id="timer-btn">시작</button>
+        <button class="tool-btn" style="padding: 2px 8px; font-size: 0.75rem;" onclick="resetTimer(60)">60분</button>
+        <button class="tool-btn" style="padding: 2px 8px; font-size: 0.75rem;" onclick="resetTimer(90)">90분</button>
+      </div>
+
+      <button class="tool-btn" id="blind-toggle-btn" onclick="toggleBlindMode()">
+        <span>👁️</span> <span id="blind-label">키워드 가리기</span>
+      </button>
+
+      <button class="tool-btn" onclick="exportAnswers()">
+        <span>📋</span> 답안 전체 복사
+      </button>
+    </div>
+  </div>
+
+  <div class="tab-container">
+    <button class="tab-btn active" onclick="switchTab('top55')" id="tab-btn-top55">
+      <span>⚡</span> 2027 핵심 55선 콤팩트 스피드 암기
+    </button>
+    <button class="tab-btn" onclick="switchTab('pedagogy')" id="tab-btn-pedagogy">
+      <span>🎓</span> 1교시 교육학 논술 [20점]
+    </button>
+    <button class="tab-btn" onclick="switchTab('qa')" id="tab-btn-qa">
+      <span>📘</span> 2교시 전공 A형 [40점]
+    </button>
+    <button class="tab-btn" onclick="switchTab('qb')" id="tab-btn-qb">
+      <span>📙</span> 3교시 전공 B형 [40점]
+    </button>
+  </div>
+</header>
+
+<div class="control-bar" id="control-bar">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="이론명, 학자명, 키워드 실시간 검색..." oninput="handleSearch()">
+  </div>
+
+  <div class="tool-group" id="top55-filters">
+    <button class="tool-btn active-toggle" onclick="filterTop55('all', this)">전체 55개</button>
+    <button class="tool-btn" onclick="filterTop55('pedagogy', this)">교육학 20선</button>
+    <button class="tool-btn" onclick="filterTop55('counseling', this)">전공상담 35선</button>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-text">
+    <span id="progress-label">암기 완료: 0 / 55개 (0%)</span>
+    <span>한국교육과정평가원(KICE) 7개년 정식 공인 키워드 100% 탑재</span>
+  </div>
+</div>
+
+<main class="content-area">
+
+  <!-- ==================== TAB 1: TOP 55 COMPACT DRILL ==================== -->
+  <section class="tab-section active" id="sec-top55">
+    <div class="notice-banner">
+      <div>
+        <h3>⚡ 2027 KICE 영구 동결 55개 핵심 출제 풀 스피드 마스터</h3>
+        <p>기출 7개년 전수 분석 완료! 우측 상단 '키워드 가리기'를 켜고 능동적 인출(Active Recall) 훈련을 진행하세요.</p>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--gold); font-weight: 700;">
+        교육학 20선 + 전공상담 35선 = 총 55개
+      </div>
+    
