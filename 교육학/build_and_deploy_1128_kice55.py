@@ -877,16 +877,36 @@ body.b4-paper-mode .line-by-line-box {{
   user-select: none;
   transition: all 0.18s;
 }}
+.kw-blank-slot.chosung-mode {{
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.16);
+  font-weight: 800;
+}}
 .kw-blank-slot:hover,
 .kw-blank-slot.revealed {{
-  color: #fef08a;
+  color: #fef08a !important;
   background: rgba(251, 191, 36, 0.25);
   border-bottom: 2px solid var(--accent-gold);
 }}
 .kw-blank-slot.solved {{
-  color: #6ee7b7;
+  color: #6ee7b7 !important;
   background: rgba(16, 185, 129, 0.28);
   border-bottom: 2px solid #10b981;
+}}
+.btn-line-mini {{
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid #334155;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  line-height: 1.2;
+}}
+.btn-line-mini:hover {{
+  background: #38bdf8;
+  color: #000;
+  border-color: #38bdf8;
 }}
 .broadcast-select {{
   background: #131c2e;
@@ -1386,16 +1406,18 @@ body.b4-paper-mode .scoring-eval-bar {{
 <header class="kice-exam-header">
   <div class="header-inner">
     <div class="brand-section">
-      <span class="kice-seal">11.28 결전 마스터</span>
+      <span class="kice-seal">v5.0 800케이스 완전체</span>
       <h1 class="exam-main-title">2027 임용 만점 템플릿 & 55개 KICE 핵심키워드 4줄 정답 타이핑</h1>
       <span class="examinee-tag">수험자: 변귀섭 대표님</span>
     </div>
 
     <div class="timer-container">
-      <span class="timer-label">잔여 시간</span>
+      <span class="timer-label">타이머</span>
       <span class="timer-digits" id="timer-display">30:00</span>
       <button class="btn-timer" onclick="toggleTimer()" id="btn-timer-toggle">일시정지</button>
-      <button class="btn-timer" onclick="resetTimer()">30분 리셋</button>
+      <button class="btn-timer" onclick="setCustomTimer(5)" style="color:#fde047; border-color:#f59e0b;" title="ADHD 초단기 5분 타임어택">⚡5분</button>
+      <button class="btn-timer" onclick="setCustomTimer(10)" title="10분 집중 스프린트">10분</button>
+      <button class="btn-timer" onclick="setCustomTimer(60)" title="실전 1교시/2교시 60분">60분</button>
       <span class="wpm-badge" id="wpm-display">0 타/분</span>
       <span class="wpm-badge" id="combo-display" style="color:#fbbf24; border-color:#f59e0b; background:rgba(245,158,11,0.15);">🔥 0 COMBO</span>
       <button class="btn-asmr" id="btn-asmr" onclick="toggleASMR()">🔔 시험장 소리·멘트 OFF</button>
@@ -1424,6 +1446,7 @@ body.b4-paper-mode .scoring-eval-bar {{
 
     <div class="header-actions">
       <button class="btn-kice btn-kw-blank-main" onclick="toggleKeywordBlankMode()" id="btn-kw-blank">🎯 핵심키워드 빈칸 만들기</button>
+      <button class="btn-kice" onclick="toggleChosungHintMode()" id="btn-chosung-hint" style="border-color:#38bdf8; color:#7dd3fc; font-weight:800;" title="빈칸 안에 한글 초성(ㄱㄴㄷ) 힌트를 표시하여 0.5초 만에 연상 인출합니다">🔤 초성 힌트(ㄱㄴㄷ) 보기</button>
       <button class="btn-kice" onclick="toggleCases8Mode()" id="btn-cases8-mode" style="border-color:#38bdf8; color:#38bdf8; font-weight:800;">⚡ 경우의 수 8개 ON</button>
       <button class="btn-kice" onclick="toggleSingleFocusMode()" id="btn-single-focus" style="border-color:#c084fc; color:#e9d5ff; font-weight:800;">🔍 1문제 집중 모드 OFF</button>
       <button class="btn-kice" onclick="toggleRadioMode()" id="btn-radio" style="border-color:#34d399; color:#6ee7b7; font-weight:800;">📻 연속 자동낭독 OFF</button>
@@ -1431,7 +1454,7 @@ body.b4-paper-mode .scoring-eval-bar {{
       <button class="btn-kice" onclick="togglePaperMode()" id="btn-paper-mode">B4 시험지 모드</button>
       <button class="btn-kice" onclick="toggleAllMasks()" id="btn-toggle-all">백지연습(정답 가리기)</button>
       <button class="btn-kice" onclick="shuffleCurrentPeriod()" id="btn-shuffle">랜덤 셔플</button>
-      <button class="btn-kice" onclick="openReportModal()">종합 성적표</button>
+      <button class="btn-kice" onclick="openReportModal()">📊 100문항 성적표</button>
       <button class="btn-kice" onclick="window.print()">B4 인쇄</button>
       <button class="btn-kice danger" onclick="clearCurrentAnswers()">현재 탭 비우기</button>
       <button class="btn-kice danger" onclick="clearAllPracticeRoundAnswers()">★ 오늘 전체 지우기</button>
@@ -1799,18 +1822,63 @@ function stopASMR() {{
   showToast('시험장 현장음 및 방송이 종료되었습니다.');
 }}
 
+let isChosungHintMode = false;
+const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+
+function toChosung(str) {{
+  if (!str) return '';
+  let out = '';
+  for (let i = 0; i < str.length; i++) {{
+    const code = str.charCodeAt(i) - 0xAC00;
+    if (code >= 0 && code <= 11171) {{
+      out += CHOSUNG_LIST[Math.floor(code / 588)];
+    }} else {{
+      out += str[i];
+    }}
+  }}
+  return out;
+}}
+
 function toggleKeywordBlankMode() {{
   isBlankMode = !isBlankMode;
+  if (!isBlankMode) isChosungHintMode = false;
   const btn = document.getElementById('btn-kw-blank');
   if (btn) {{
     btn.classList.toggle('active', isBlankMode);
     btn.textContent = isBlankMode ? '🎯 핵심키워드 빈칸 ON (클릭·타이핑 시 열림)' : '🎯 핵심키워드 빈칸 만들기';
   }}
+  const cBtn = document.getElementById('btn-chosung-hint');
+  if (cBtn) {{
+    cBtn.classList.toggle('active', isChosungHintMode);
+    cBtn.textContent = isChosungHintMode ? '🔤 초성 힌트(ㄱㄴㄷ) ON' : '🔤 초성 힌트(ㄱㄴㄷ) 보기';
+  }}
   renderCards();
   loadSavedAnswers();
   showToast(isBlankMode
-    ? '🎯 핵심키워드 빈칸 모드가 켜졌습니다! 빈칸에 마우스를 올리거나 아래에 타이핑하면 정답이 열립니다.'
+    ? '🎯 핵심키워드 빈칸 모드가 켜졌습니다! 빈칸을 클릭하거나 아래에 타이핑하면 정답이 열립니다.'
     : '핵심키워드 전체 보기 모드로 전환되었습니다.');
+}}
+
+function toggleChosungHintMode() {{
+  isChosungHintMode = !isChosungHintMode;
+  if (isChosungHintMode && !isBlankMode) {{
+    isBlankMode = true;
+    const btn = document.getElementById('btn-kw-blank');
+    if (btn) {{
+      btn.classList.add('active');
+      btn.textContent = '🎯 핵심키워드 빈칸 ON (클릭·타이핑 시 열림)';
+    }}
+  }}
+  const cBtn = document.getElementById('btn-chosung-hint');
+  if (cBtn) {{
+    cBtn.classList.toggle('active', isChosungHintMode);
+    cBtn.textContent = isChosungHintMode ? '🔤 초성 힌트(ㄱㄴㄷ) ON' : '🔤 초성 힌트(ㄱㄴㄷ) 보기';
+  }}
+  renderCards();
+  loadSavedAnswers();
+  showToast(isChosungHintMode
+    ? '🔤 [ADHD 초성 연상 모드] 빈칸 안에 한글 초성(ㄱㄴㄷ) 힌트가 표시됩니다! (클릭 시 정답 확인)'
+    : '초성 힌트를 끄고 일반 빈칸으로 표시합니다.');
 }}
 
 function toggleCases8Mode() {{
@@ -1823,8 +1891,8 @@ function toggleCases8Mode() {{
   renderCards();
   loadSavedAnswers();
   showToast(showCases8
-    ? '⚡ ADHD 도파민 연타 모드: 나올 수 있는 경우의 수 8개(총 440개)가 표시됩니다!'
-    : '경우의 수 8개 박스를 접고 4줄 답안지만 표시합니다.');
+    ? '⚡ ADHD 도파민 연타 모드: 나올 수 있는 경우의 수 8개(총 800개)가 표시됩니다!'
+    : '경우의 수 8개 박스를 접고 답안지만 표시합니다.');
 }}
 
 function isKeywordSolvedInText(kw, typedText) {{
@@ -1847,14 +1915,50 @@ function formatTextWithBlanks(text, blanks, typedText) {{
   uniq.forEach((kw, idx) => {{
     const escKw = escapeHtml(kw);
     const solved = isKeywordSolvedInText(kw, typedText || '');
-    const cls = 'kw-blank-slot' + (solved ? ' solved' : '');
+    const cls = 'kw-blank-slot' + (solved ? ' solved' : (isChosungHintMode ? ' chosung-mode' : ''));
+    const displayStr = (!solved && isChosungHintMode) ? escapeHtml(toChosung(kw)) : escKw;
     const token = `__KW_SLOT_${{idx}}__`;
     safeHtml = safeHtml.split(escKw).join(token);
     safeHtml = safeHtml.split(token).join(
-      `<span class="${{cls}}" data-kw="${{escKw}}" onclick="this.classList.toggle('revealed')" title="클릭하거나 아래 입력창에 키워드를 타이핑하면 열립니다">${{escKw}}</span>`
+      `<span class="${{cls}}" data-kw="${{escKw}}" onclick="this.textContent=this.getAttribute('data-kw'); this.classList.toggle('revealed')" title="클릭하거나 아래 입력창에 키워드를 타이핑하면 열립니다">${{displayStr}}</span>`
     );
   }});
   return safeHtml;
+}}
+
+function speakSingleLine(period, num, lineIdx) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q) return;
+  const lines = q.lines || q.answer.split('\\n');
+  if (lines[lineIdx]) speakAnswer(lines[lineIdx]);
+}}
+
+function fillSingleLine(period, num, lineIdx) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q) return;
+  const key = period + num;
+  const lines = q.lines || q.answer.split('\\n');
+  if (!lines[lineIdx]) return;
+  const inp = document.getElementById(`lbl-in-${{key}}-${{lineIdx}}`);
+  if (inp) {{
+    inp.value = lines[lineIdx];
+    handleLineByLineInput(period, num, lineIdx, lines.length);
+    inp.focus();
+  }}
+}}
+
+function setCustomTimer(mins) {{
+  timerSeconds = mins * 60;
+  updateTimerUI();
+  if (!isTimerRunning) {{
+    startTimer();
+    isTimerRunning = true;
+    const btn = document.getElementById('btn-timer-toggle');
+    if (btn) btn.textContent = '일시정지';
+  }}
+  showToast(`⏱️ 타이머가 ${{mins}}분 스프린트로 설정되었습니다!`);
 }}
 
 function speakAnswer(text) {{
@@ -2304,22 +2408,26 @@ function getList() {{
       content: item.sub_questions.map((sq, i) => `${{i+1}}. ${{sq}}`).join('\\n'),
       instructions: '<작성 방법 및 채점 루브릭>\\n' + item.rubric.map(r => '○ ' + r).join('\\n'),
       lines: item.model_answer,
-      line_blanks: [],
-      cases8: [],
-      ped_platform: [],
+      line_blanks: item.line_blanks || [],
+      cases8: item.cases8 || [],
+      ped_platform: item.ped_platform || [],
       answer: item.model_answer.join('\\n'),
       keywords: item.keywords,
+      quiz_q: item.quiz_q || '',
+      quiz_a: item.quiz_a || '',
       isFourLineMode: false
     }}));
   }} else {{
     const raw = currentPeriod === 'A' ? dataA : dataB;
     list = raw.map(item => ({{
       ...item,
-      lines: item.answer ? item.answer.split('\\n') : [],
-      line_blanks: [],
-      cases8: [],
-      ped_platform: [],
-      isFourLineMode: item.type !== '기입형'
+      lines: item.lines || (item.answer ? item.answer.split('\\n') : []),
+      line_blanks: item.line_blanks || [],
+      cases8: item.cases8 || [],
+      ped_platform: item.ped_platform || [],
+      quiz_q: item.quiz_q || '',
+      quiz_a: item.quiz_a || '',
+      isFourLineMode: true
     }}));
   }}
 
@@ -2463,7 +2571,11 @@ function renderCards() {{
         <div class="lbl-row">
           <div class="lbl-target-line" id="lbl-target-${{key}}-${{idx}}">
             <span class="lbl-target-text" id="lbl-target-text-${{key}}-${{idx}}">${{targetLineInner}}</span>
-            <span style="font-size:0.78rem; color:var(--accent-blue); flex-shrink:0;">${{ln.length}}자</span>
+            <span style="display:inline-flex; align-items:center; gap:5px; flex-shrink:0;">
+              <button class="btn-line-mini" onclick="speakSingleLine('${{currentPeriod}}', ${{q.num}}, ${{idx}})" title="이 줄만 음성으로 듣기">🔊</button>
+              <button class="btn-line-mini" onclick="fillSingleLine('${{currentPeriod}}', ${{q.num}}, ${{idx}})" title="이 줄만 즉시 자동채우기">⚡</button>
+              <span style="font-size:0.78rem; color:var(--accent-blue);">${{ln.length}}자</span>
+            </span>
           </div>
           <div class="lbl-input-wrap">
             <input type="text"
@@ -3299,6 +3411,16 @@ function init() {{
   }}
 }}
 
+window.addEventListener('keydown', (e) => {{
+  if (e.altKey && e.key === 'ArrowLeft' && isSingleFocusMode) {{
+    e.preventDefault();
+    stepSingleCard(-1);
+  }} else if (e.altKey && e.key === 'ArrowRight' && isSingleFocusMode) {{
+    e.preventDefault();
+    stepSingleCard(1);
+  }}
+}});
+
 window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
@@ -3311,10 +3433,15 @@ target_paths = [
     "index.html",
     "exam_master_2027.html",
     "2027_KICE_전문상담_핵심키워드_55제_다크모드.html",
+    "pedagogy_16_topics.html",
+    "counseling_55_topics.html",
+    "exam_2027_kice_ab.html",
     os.path.join("..", "index.html"),
     os.path.join("..", "typing_master.html"),
     os.path.join("..", "exam_master_2027.html"),
     os.path.join("..", "2027_dark_55_keywords.html"),
+    os.path.join("..", "edu.html"),
+    os.path.join("..", "2027_exam_keywords.html"),
 ]
 
 for p in target_paths:
