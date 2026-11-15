@@ -748,6 +748,127 @@ main {{
   font-weight: 600;
 }}
 
+/* 1단계: 1분 족집게 강의 & 이론 설명 박스 */
+.lecture-step-box {{
+  background: linear-gradient(135deg, rgba(88, 28, 135, 0.24) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid rgba(192, 132, 252, 0.45);
+  border-left: 5px solid #c084fc;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}}
+body.b4-paper-mode .lecture-step-box {{
+  background: #efe9f7;
+  border-color: #7e22ce;
+}}
+.lecture-step-header {{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(192, 132, 252, 0.25);
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #e9d5ff;
+}}
+body.b4-paper-mode .lecture-step-header {{
+  color: #581c87;
+}}
+.lecture-summary-text {{
+  font-size: calc(0.95rem * var(--font-scale));
+  line-height: 1.72;
+  color: #f1f5f9;
+  margin-bottom: 10px;
+  font-weight: 500;
+}}
+body.b4-paper-mode .lecture-summary-text {{
+  color: #1f2937;
+}}
+.lecture-point-bar {{
+  background: rgba(251, 191, 36, 0.13);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: calc(0.9rem * var(--font-scale));
+  font-weight: 800;
+  color: #fde047;
+}}
+body.b4-paper-mode .lecture-point-bar {{
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #d97706;
+}}
+
+/* 2단계: 실전 사례 문제 & 작성 방법 발문 박스 */
+.problem-step-box {{
+  background: linear-gradient(180deg, rgba(30, 58, 138, 0.22) 0%, rgba(11, 18, 32, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-left: 5px solid var(--accent-blue);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}}
+body.b4-paper-mode .problem-step-box {{
+  background: #eef4fb;
+  border-color: #1e40af;
+}}
+.problem-step-header {{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #7dd3fc;
+}}
+body.b4-paper-mode .problem-step-header {{
+  color: #1e3a8a;
+}}
+.problem-passage-text {{
+  background: rgba(7, 11, 20, 0.7);
+  border: 1px solid #1e3a5f;
+  border-radius: 6px;
+  padding: 11px 14px;
+  font-size: calc(0.92rem * var(--font-scale));
+  line-height: 1.7;
+  color: #e2e8f0;
+  white-space: pre-line;
+  margin-bottom: 10px;
+}}
+body.b4-paper-mode .problem-passage-text {{
+  background: #ffffff;
+  color: #111827;
+  border-color: #9ca3af;
+}}
+.problem-asks-list {{
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px dashed rgba(16, 185, 129, 0.45);
+  border-radius: 6px;
+  padding: 9px 14px;
+  font-size: calc(0.88rem * var(--font-scale));
+  line-height: 1.65;
+  color: #a7f3d0;
+  font-weight: 700;
+}}
+body.b4-paper-mode .problem-asks-list {{
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #059669;
+}}
+.lbl-subq-caption {{
+  font-size: calc(0.81rem * var(--font-scale));
+  color: #7dd3fc;
+  font-weight: 700;
+  margin-bottom: 3px;
+  padding-left: 4px;
+}}
+body.b4-paper-mode .lbl-subq-caption {{
+  color: #1e40af;
+}}
+
 .passage-wrapper {{
   background: var(--bg-passage);
   border: 1px solid var(--border-kice);
@@ -1445,6 +1566,7 @@ body.b4-paper-mode .scoring-eval-bar {{
     </div>
 
     <div class="header-actions">
+      <button class="btn-kice" onclick="toggleLectureProblemMode()" id="btn-lecture-mode" style="background:rgba(192,132,252,0.18); border-color:#c084fc; color:#f3e8ff; font-weight:800;">🎓 강의+문제 ON</button>
       <button class="btn-kice btn-kw-blank-main" onclick="toggleKeywordBlankMode()" id="btn-kw-blank">🎯 핵심키워드 빈칸 만들기</button>
       <button class="btn-kice" onclick="toggleChosungHintMode()" id="btn-chosung-hint" style="border-color:#38bdf8; color:#7dd3fc; font-weight:800;" title="빈칸 안에 한글 초성(ㄱㄴㄷ) 힌트를 표시하여 0.5초 만에 연상 인출합니다">🔤 초성 힌트(ㄱㄴㄷ) 보기</button>
       <button class="btn-kice" onclick="toggleCases8Mode()" id="btn-cases8-mode" style="border-color:#38bdf8; color:#38bdf8; font-weight:800;">⚡ 경우의 수 8개 ON</button>
@@ -1823,7 +1945,38 @@ function stopASMR() {{
 }}
 
 let isChosungHintMode = false;
+let showLectureProblem = true;
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+
+function toggleLectureProblemMode() {{
+  showLectureProblem = !showLectureProblem;
+  const btn = document.getElementById('btn-lecture-mode');
+  if (btn) {{
+    btn.classList.toggle('active', showLectureProblem);
+    btn.textContent = showLectureProblem ? '🎓 강의+문제 ON' : '🎓 강의+문제 OFF';
+  }}
+  renderCards();
+  loadSavedAnswers();
+  showToast(showLectureProblem
+    ? '🎓 [1단계 강의 ➔ 2단계 문제 ➔ 3단계 4줄 정답] 모드가 켜졌습니다!'
+    : '강의와 문제를 접고 4줄 정답 타이핑만 표시합니다.');
+}}
+
+function speakCardLecture(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q) return;
+  const txt = (q.lecture_summary || '') + ' ' + (q.lecture_point || '').replace('⚡', '');
+  if (txt.trim()) speakAnswer(txt);
+}}
+
+function speakCardProblem(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q) return;
+  const txt = (q.problem_passage || '') + ' 작성 방법. ' + (q.problem_asks || []).join(' ');
+  if (txt.trim()) speakAnswer(txt);
+}}
 
 function toChosung(str) {{
   if (!str) return '';
@@ -2368,8 +2521,12 @@ function getList() {{
       concept: item.concept,
       type: item.part === 'PED20' ? '교육학 4줄정답' : '전공상담 4줄정답',
       score: 4,
-      content: '',
-      instructions: '',
+      content: item.problem_passage || '',
+      instructions: (item.problem_asks || []).join('\\n'),
+      lecture_summary: item.lecture_summary || '',
+      lecture_point: item.lecture_point || '',
+      problem_passage: item.problem_passage || '',
+      problem_asks: item.problem_asks || [],
       lines: item.lines,
       line_blanks: item.line_blanks || [],
       cases8: item.cases8 || [],
@@ -2389,6 +2546,10 @@ function getList() {{
       score: 4,
       content: '',
       instructions: '',
+      lecture_summary: item.concept || '',
+      lecture_point: '⚡ 시험장 1초 공식: ' + (item.keywords || []).join(' ➔ '),
+      problem_passage: '',
+      problem_asks: [],
       lines: item.lines,
       line_blanks: item.line_blanks || [],
       cases8: item.cases8 || [],
@@ -2407,6 +2568,10 @@ function getList() {{
       score: 4,
       content: item.sub_questions.map((sq, i) => `${{i+1}}. ${{sq}}`).join('\\n'),
       instructions: '<작성 방법 및 채점 루브릭>\\n' + item.rubric.map(r => '○ ' + r).join('\\n'),
+      lecture_summary: item.lecture_summary || '',
+      lecture_point: item.lecture_point || '',
+      problem_passage: item.sub_questions.map((sq, i) => `${{i+1}}. ${{sq}}`).join('\\n'),
+      problem_asks: item.problem_asks || item.sub_questions || [],
       lines: item.model_answer,
       line_blanks: item.line_blanks || [],
       cases8: item.cases8 || [],
@@ -2421,6 +2586,10 @@ function getList() {{
     const raw = currentPeriod === 'A' ? dataA : dataB;
     list = raw.map(item => ({{
       ...item,
+      lecture_summary: item.lecture_summary || '',
+      lecture_point: item.lecture_point || '',
+      problem_passage: item.content || '',
+      problem_asks: item.problem_asks || [],
       lines: item.lines || (item.answer ? item.answer.split('\\n') : []),
       line_blanks: item.line_blanks || [],
       cases8: item.cases8 || [],
@@ -2559,6 +2728,37 @@ function renderCards() {{
       `;
     }}
 
+    // [1단계: 🎓 1분 족집게 미니강의 & 핵심 이론 설명]
+    let lectureStepHtml = '';
+    if (showLectureProblem && (q.lecture_summary || q.lecture_point)) {{
+      lectureStepHtml = `
+        <div class="lecture-step-box">
+          <div class="lecture-step-header">
+            <span>🎓 [1단계: 1분 족집게 강의 & 핵심 이론 설명] 왜 출제되며 어떻게 이해해야 할까?</span>
+            <button class="btn-sheet-mini" style="border-color:#c084fc; color:#e9d5ff;" onclick="speakCardLecture('${{currentPeriod}}', ${{q.num}})">🎧 1분 강의 듣기</button>
+          </div>
+          ${{q.lecture_summary ? `<div class="lecture-summary-text">🗣️ <strong>일타 핵심 해설:</strong> ${{escapeHtml(q.lecture_summary)}}</div>` : ''}}
+          ${{q.lecture_point ? `<div class="lecture-point-bar">${{escapeHtml(q.lecture_point)}}</div>` : ''}}
+        </div>
+      `;
+    }}
+
+    // [2단계: 📝 KICE 실전 사례 문제 & 작성 방법 (1~4줄 1:1 매칭 발문)]
+    let problemStepHtml = '';
+    if (showLectureProblem && (q.problem_passage || (q.problem_asks && q.problem_asks.length > 0))) {{
+      const asksHtml = (q.problem_asks || []).map(ask => `<div>${{escapeHtml(ask)}}</div>`).join('');
+      problemStepHtml = `
+        <div class="problem-step-box">
+          <div class="problem-step-header">
+            <span>📝 [2단계: KICE 실전 사례 문제 & 4대 세부 발문] (아래 1~4줄 정답과 1:1 대응)</span>
+            <button class="btn-sheet-mini" style="border-color:#38bdf8; color:#7dd3fc;" onclick="speakCardProblem('${{currentPeriod}}', ${{q.num}})">🎧 문제 지문 듣기</button>
+          </div>
+          ${{q.problem_passage ? `<div class="problem-passage-text">${{escapeHtml(q.problem_passage)}}</div>` : ''}}
+          ${{asksHtml ? `<div class="problem-asks-list"><div style="color:#fde047; margin-bottom:4px;">&lt;작성 방법 (아래 1줄~4줄 정답을 순서대로 작성하시오)&gt;</div>${{asksHtml}}</div>` : ''}}
+        </div>
+      `;
+    }}
+
     // 1줄씩 보고 따라치기 HTML 생성 (핵심키워드 빈칸 모드 연동 & 1:1 가로 길이 일치)
     let lineByLineHtml = '';
     if (linesArr.length >= 4) {{
@@ -2567,8 +2767,10 @@ function renderCards() {{
           ? q.line_blanks[idx]
           : kwList;
         const targetLineInner = formatTextWithBlanks(ln, lineBlanks, '');
+        const subQText = (showLectureProblem && q.problem_asks && q.problem_asks[idx]) ? q.problem_asks[idx] : '';
         return `
         <div class="lbl-row">
+          ${{subQText ? `<div class="lbl-subq-caption">📌 ${{escapeHtml(subQText)}}</div>` : ''}}
           <div class="lbl-target-line" id="lbl-target-${{key}}-${{idx}}">
             <span class="lbl-target-text" id="lbl-target-text-${{key}}-${{idx}}">${{targetLineInner}}</span>
             <span style="display:inline-flex; align-items:center; gap:5px; flex-shrink:0;">
@@ -2593,7 +2795,7 @@ function renderCards() {{
       lineByLineHtml = `
         <div class="line-by-line-box">
           <div class="lbl-header">
-            <span>⌨️ [B4 실전 4줄 답안지] 문장 길이 1:1 맞춤 따라치기 ${{(isBlankMode ? '(🎯 핵심키워드 빈칸 모드 ON)' : '(Enter 키로 다음 줄 즉시 이동)')}}</span>
+            <span>✍️ [3단계: 4줄 만점 정답 적기] 문장 길이 1:1 맞춤 따라치기 ${{(isBlankMode ? '(🎯 핵심키워드 빈칸 모드 ON)' : '(Enter 키로 다음 줄 즉시 이동)')}}</span>
             <div style="display:flex; gap:6px;">
               <button class="btn-sheet-mini" style="border-color:#38bdf8; color:#38bdf8;" onclick="fillSkeletonForCard('${{currentPeriod}}', ${{q.num}})" title="조사·서술어 뼈대는 미리 채워두고 핵심키워드 자리만 직접 채워 넣습니다">✏️ 빈칸 뼈대만 입력창에 넣기</button>
               <button class="btn-sheet-mini" onclick="fillAllLinesForCard('${{currentPeriod}}', ${{q.num}})">모범정답 자동채우기</button>
@@ -2678,9 +2880,13 @@ function renderCards() {{
       </div>
 
       <div class="q-card-body">
-        ${{q.concept ? `<div class="concept-banner">💡 <strong>핵심 요약:</strong> ${{escapeHtml(q.concept)}}</div>` : ''}}
-        ${{q.content ? `<div class="passage-wrapper">${{escapeHtml(q.content)}}</div>` : ''}}
-        ${{q.instructions ? `<div class="instructions-box"><strong>&lt;작성 방법 및 채점 기준&gt;</strong><br>${{escapeHtml(q.instructions)}}</div>` : ''}}
+        ${{q.concept ? `<div class="concept-banner">💡 <strong>한 줄 핵심 공식:</strong> ${{escapeHtml(q.concept)}}</div>` : ''}}
+
+        <!-- [1단계] 1분 족집게 강의 & 핵심 이론 설명 -->
+        ${{lectureStepHtml}}
+
+        <!-- [2단계] KICE 실전 사례 문제 & 작성 방법 (1~4줄 1:1 발문) -->
+        ${{problemStepHtml}}
 
         <!-- KICE 정식 채점 키워드 배지 바 -->
         <div class="kw-tags-strip" id="kw-tags-${{key}}">
@@ -2688,14 +2894,14 @@ function renderCards() {{
           ${{kwList.map((kw, idx) => `<span class="kw-pill" id="kw-${{key}}-${{idx}}">${{formatTextWithBlanks(kw, [kw], '')}}</span>`).join('')}}
         </div>
 
-        <!-- [ADHD 맞춤] 나올 수 있는 경우의 수 8개 스피드 인출 구역 -->
-        ${{cases8Html}}
-
-        <!-- 1줄씩 보고 따라치기 구역 -->
+        <!-- [3단계] 발문 ①~④ 1:1 매칭 4줄 만점 정답 따라치기 구역 -->
         ${{lineByLineHtml}}
 
         <!-- [변귀섭 대표님 전용] 내 교육학 논술 플랫폼 따라치기 구역 -->
         ${{pedPlatformHtml}}
+
+        <!-- [ADHD 맞춤] 나올 수 있는 경우의 수 8개 스피드 인출 구역 -->
+        ${{cases8Html}}
 
         <!-- 족집게 핵심키워드 따라치기 구역 -->
         ${{quizHtml}}
