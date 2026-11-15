@@ -15,33 +15,105 @@ data_ped = exam_master["pedagogy"]
 data_a = exam_master["counselingA"]
 data_b = exam_master["counselingB"]
 
-# Build Universal 4-Line Templates (만점 만능 템플릿 4선)
+# Build Universal 4-Line Templates (내 교육학 논술 플랫폼 3선 + 전공상담 만능 템플릿 3선 = 총 6선)
 templates_data = [
     {
         "id": 1,
-        "domain": "1교시 교육학 만능틀",
-        "title": "[만점 템플릿 1] 1교시 교육학 논술 만능 서론 2줄 + 만능 결론 2줄 템플릿",
-        "concept": "어떤 교육학 논술 주제가 출제되어도 1초 만에 시작하고 끝맺는 20점 만점 황금 틀",
-        "keywords": ["학습자 중심의 맞춤형 교육", "교육과정과 수업 및 평가와 행정", "전인적 성장과 잠재력 계발", "학교 혁신"],
+        "domain": "내 교육학 플랫폼 (서론)",
+        "title": "[내 교육학 플랫폼 1] 1교시 교육학 만능 서론 4줄 공식 (미래 교육환경 속에서 ~ 화제가 대두되고 있다)",
+        "concept": "어떤 대주제가 나와도 (대주제) 자리만 바꿔 넣으면 1분 만에 서론 4줄 만점을 완성하는 변귀섭 대표님 전용 서론 플랫폼",
+        "keywords": ["미래 교육환경 속에서", "화제가 대두되고 있다", "단편적 지식 전달이 아닌 역량", "교육과정, 교육방법, 교육평가, 교육행정"],
         "lines": [
-            "미래 사회의 변화에 발맞추어 학습자 중심의 맞춤형 교육 혁신이 절실히 요구된다.",
-            "이를 실현하기 위해 제시된 교육과정과 수업 및 평가와 행정의 핵심 방안을 논한다.",
-            "학교 현장의 모든 교육 활동은 학생의 전인적 성장과 잠재력 계발로 수렴되어야 한다.",
-            "이처럼 교사가 전문성과 책무성을 발휘한다면 참된 배움의 학교 혁신이 실현될 것이다."
+            "최근 급변하는 미래 교육환경 속에서 (대주제)에 대한 화제가 대두되고 있다.",
+            "이러한 패러다임에 맞춰 교사는 단편적 지식 전달이 아닌 역량을 함양해야 한다.",
+            "여기에서는 제시문에 나온 교사들의 대화를 통해 (대주제) 방안을 살펴본다.",
+            "교육과정, 교육방법, 교육평가, 교육행정의 4가지 측면에서 논하고자 한다."
         ],
         "line_blanks": [
-            ["학습자 중심의 맞춤형 교육"],
-            ["교육과정과 수업 및 평가와 행정"],
-            ["전인적 성장과 잠재력 계발"],
-            ["전문성과 책무성", "학교 혁신"]
+            ["미래 교육환경 속에서", "(대주제)", "화제가 대두되고 있다"],
+            ["단편적 지식 전달", "역량을 함양"],
+            ["교사들의 대화", "(대주제) 방안"],
+            ["교육과정, 교육방법, 교육평가, 교육행정"]
         ],
-        "quiz_q": "교육학 논술 마지막 줄에 반드시 들어가야 하는 교사 실천 종결 공식은?",
-        "quiz_a": "이처럼 교사가 ~한다면 ~이 실현될 것이다"
+        "cases8": [
+            {"q": "① 서론 첫머리 시대 배경 어구", "a": "최근 급변하는 미래 교육환경 속에서"},
+            {"q": "② 서론 1줄 핵심 술어 공식", "a": "화제가 대두되고 있다"},
+            {"q": "③ 서론 2줄 지양해야 할 전통적 교사상", "a": "단편적 지식 전달"},
+            {"q": "④ 서론 2줄 지향해야 할 미래형 교사상", "a": "교육적 역량을 함양해야 한다"},
+            {"q": "⑤ 서론 3줄 분석 대상 제시 어구", "a": "제시문에 나온 교사들의 대화를 통해"},
+            {"q": "⑥ 서론 4줄 교육학 4대 핵심 영역", "a": "교육과정, 교육방법, 교육평가, 교육행정"},
+            {"q": "⑦ 서론 4줄 마무리 서술어 공식", "a": "4가지 측면에서 논하고자 한다"},
+            {"q": "⑧ 서론에서 문제지 제목을 그대로 넣는 칸", "a": "(대주제)"}
+        ],
+        "quiz_q": "내 교육학 플랫폼 서론 1번째 줄을 시작하는 대표님의 황금 도입 문장은?",
+        "quiz_a": "최근 급변하는 미래 교육환경 속에서 (대주제)에 대한 화제가 대두되고 있다."
     },
     {
         "id": 2,
+        "domain": "내 교육학 플랫폼 (본론 이처럼~)",
+        "title": "[내 교육학 플랫폼 2] 1교시 교육학 본론 4대 영역 마무리 공식 (이처럼 교사가 ~에서 ~를 쓰면 ~이 실현된다)",
+        "concept": "본론 1(교육과정)·본론 2(교육방법)·본론 3(교육평가)·본론 4(교육행정) 각 단락의 마지막 줄에 무조건 박아 넣는 만점 연결 공식",
+        "keywords": ["이처럼 교사가 교육과정에서", "미래형 교육 혁신", "신개념 수업 혁신", "교사의 수석 역량"],
+        "lines": [
+            "이처럼 교사가 교육과정에서 (핵심키워드)를 쓰면 미래형 교육 혁신이 실현된다.",
+            "이처럼 교사가 교육방법에서 (핵심키워드)를 쓰면 신개념 수업 혁신이 실현된다.",
+            "이처럼 교사가 교육평가에서 (핵심키워드)를 쓰면 전인적 성장 평가가 실현된다.",
+            "이처럼 교사가 교육행정에서 (핵심키워드)를 쓰면 교사의 수석 역량이 증진된다."
+        ],
+        "line_blanks": [
+            ["이처럼 교사가 교육과정에서", "(핵심키워드)", "미래형 교육 혁신이 실현된다"],
+            ["이처럼 교사가 교육방법에서", "(핵심키워드)", "신개념 수업 혁신이 실현된다"],
+            ["이처럼 교사가 교육평가에서", "(핵심키워드)", "전인적 성장 평가가 실현된다"],
+            ["이처럼 교사가 교육행정에서", "(핵심키워드)", "교사의 수석 역량이 증진된다"]
+        ],
+        "cases8": [
+            {"q": "① 본론 모든 단락 마지막 줄 시작 접속어", "a": "이처럼 교사가"},
+            {"q": "② 본론 1(교육과정) 마지막 줄 공식 효과", "a": "미래형 교육 혁신이 실현된다"},
+            {"q": "③ 본론 2(교육방법) 마지막 줄 공식 효과", "a": "신개념 수업 혁신이 실현된다"},
+            {"q": "④ 본론 3(교육평가) 마지막 줄 공식 효과", "a": "전인적 성장 평가가 실현된다"},
+            {"q": "⑤ 본론 4(교육행정) 마지막 줄 공식 효과", "a": "교사의 수석 역량이 증진된다"},
+            {"q": "⑥ 본론 1~4 단락 시작 번호 표기", "a": "첫째, 둘째, 셋째, 넷째"},
+            {"q": "⑦ 백워드 설계 출제 시 이처럼~ 적용 예", "a": "이처럼 교사가 교육과정에서 백워드 설계를 쓰면"},
+            {"q": "⑧ 동료장학 출제 시 이처럼~ 적용 예", "a": "이처럼 교사가 교육행정에서 동료장학을 활성화하면"}
+        ],
+        "quiz_q": "본론 4대 영역(과정·방법·평가·행정) 각 문단 마지막 줄을 닫는 대표님의 시그니처 공식은?",
+        "quiz_a": "이처럼 교사가 ~에서 (핵심키워드)를 쓰면 ~이 실현된다"
+    },
+    {
+        "id": 3,
+        "domain": "내 교육학 플랫폼 (결론)",
+        "title": "[내 교육학 플랫폼 3] 1교시 교육학 만능 결론 4줄 공식 (지금까지 ~ 든든한 버팀목이자 교육 안내자 및 성장 촉진자)",
+        "concept": "1교시 종료 5분 전 생각할 필요 없이 손가락 근육 기억만으로 4줄을 일필휘지하여 구성·표현 4점 만점을 확정 짓는 결론 플랫폼",
+        "keywords": ["지금까지 (대주제)를", "교사의 인식과 실천", "자기 연찬과 동료 교사와의 협업", "든든한 버팀목이자 교육 안내자 및 성장 촉진자"],
+        "lines": [
+            "지금까지 (대주제)를 교육과정, 교육방법, 교육평가, 교육행정에서 살펴보았다.",
+            "다가오는 미래 교육이 성공하려면 무엇보다 교사의 인식과 실천이 중요하다.",
+            "따라서 교사는 끊임없는 자기 연찬과 동료 교사와의 협업으로 성장해야 한다.",
+            "또한 학생들에게 든든한 버팀목이자 교육 안내자 및 성장 촉진자가 되어야 한다."
+        ],
+        "line_blanks": [
+            ["지금까지 (대주제)를", "교육과정, 교육방법, 교육평가, 교육행정"],
+            ["미래 교육이 성공하려면", "교사의 인식과 실천이 중요하다"],
+            ["자기 연찬", "동료 교사와의 협업"],
+            ["든든한 버팀목", "교육 안내자", "성장 촉진자"]
+        ],
+        "cases8": [
+            {"q": "① 결론 1줄 종합 요약 시작 어구", "a": "지금까지 (대주제)를"},
+            {"q": "② 결론 1줄 4대 영역 재언급", "a": "교육과정, 교육방법, 교육평가, 교육행정에서 살펴보았다"},
+            {"q": "③ 결론 2줄 미래 교육 성공의 핵심 요건", "a": "교사의 인식과 실천이 중요하다"},
+            {"q": "④ 결론 3줄 교사 개인의 전문성 노력", "a": "끊임없는 자기 연찬"},
+            {"q": "⑤ 결론 3줄 공동체적 전문성 노력", "a": "동료 교사와의 협업"},
+            {"q": "⑥ 결론 4줄 학생을 위한 교사의 역할 1", "a": "든든한 버팀목"},
+            {"q": "⑦ 결론 4줄 학생을 위한 교사의 역할 2", "a": "교육 안내자"},
+            {"q": "⑧ 결론 4줄 학생을 위한 교사의 역할 3", "a": "성장 촉진자"}
+        ],
+        "quiz_q": "내 교육학 플랫폼 결론 마지막 줄에 들어가는 교사의 3대 비유적 핵심 역할은?",
+        "quiz_a": "든든한 버팀목, 교육 안내자, 성장 촉진자"
+    },
+    {
+        "id": 4,
         "domain": "전공상담 감별진단 만능틀",
-        "title": "[만점 템플릿 2] 2·3교시 DSM-5-TR 감별진단 및 행동치료 개입 4줄 만능 템플릿",
+        "title": "[만점 템플릿 4] 2·3교시 DSM-5-TR 감별진단 및 행동치료 개입 4줄 만능 템플릿",
         "concept": "진단명 1:1 대조 ➔ 결정적 감별 기준 ➔ 자아 동질/이질 기제 ➔ 노출 치료 개입의 4줄 공식",
         "keywords": ["공식 진단명", "결정적인 감별 기준", "자아 이질적 특성", "불안이 자연 소거"],
         "lines": [
@@ -56,13 +128,23 @@ templates_data = [
             ["자아 이질적 특성"],
             ["회피 반응을 차단", "불안이 자연 소거"]
         ],
+        "cases8": [
+            {"q": "① 감별진단 1줄 필수 키워드", "a": "공식 진단명"},
+            {"q": "② 감별진단 2줄 필수 키워드", "a": "결정적인 감별 기준"},
+            {"q": "③ 증상을 괴로워하는 특성", "a": "자아 이질적(Ego-dystonic)"},
+            {"q": "④ 증상을 당연시하는 특성", "a": "자아 동질적(Ego-syntonic)"},
+            {"q": "⑤ 행동치료 직면 기법", "a": "노출 및 반응방지(ERP)"},
+            {"q": "⑥ 회피 차단 시 일어나는 원리", "a": "불안이 자연 소거"},
+            {"q": "⑦ 단계적 불안 둔감화 기법", "a": "체계적 둔감법"},
+            {"q": "⑧ 인지적 재구조화 병행", "a": "파국적 오해석 교정"}
+        ],
         "quiz_q": "DSM-5-TR 감별진단 서술형 1번째 줄과 2번째 줄에 각각 들어가야 할 핵심 요소는?",
         "quiz_a": "공식 진단명, 결정적인 감별 기준"
     },
     {
-        "id": 3,
+        "id": 5,
         "domain": "전공상담 이론·가족 만능틀",
-        "title": "[만점 템플릿 3] 2·3교시 상담이론 및 가족치료 사례개념화 4줄 만능 템플릿",
+        "title": "[만점 템플릿 5] 2·3교시 상담이론 및 가족치료 사례개념화 4줄 만능 템플릿",
         "concept": "부적응 원인 개념화 ➔ 상담자 태도(중립성·공감) ➔ 지금-여기 기법 ➔ 자아 통합 및 분화",
         "keywords": ["역기능적 가족 경계선", "정서적 중립성", "지금 여기의 갈등", "자기분화와 심리적 유연성"],
         "lines": [
@@ -77,13 +159,23 @@ templates_data = [
             ["지금 여기의 갈등"],
             ["자기분화", "심리적 유연성"]
         ],
+        "cases8": [
+            {"q": "① 인지적 부적응 원인", "a": "왜곡된 신념 체계"},
+            {"q": "② 가족체계적 부적응 원인", "a": "역기능적 가족 경계선"},
+            {"q": "③ 보웬 상담자의 핵심 태도", "a": "정서적 중립성 유지"},
+            {"q": "④ 인간중심 상담자의 핵심 태도", "a": "공감적 수용과 무조건적 긍정적 존중"},
+            {"q": "⑤ 게슈탈트·실존 시공간 초점", "a": "지금-여기(Here and Now)"},
+            {"q": "⑥ 억압된 감정 다루기", "a": "직면 및 미해결 과제 완결"},
+            {"q": "⑦ 보웬 가족치료 궁극적 목표", "a": "자기분화 수준 향상"},
+            {"q": "⑧ 수용전념치료(ACT) 궁극적 목표", "a": "심리적 유연성 회복"}
+        ],
         "quiz_q": "상담이론 및 가족치료 개입에서 내담자의 무의식적 갈등과 감정을 다루는 시공간적 초점은?",
         "quiz_a": "지금-여기(Here and Now)"
     },
     {
-        "id": 4,
+        "id": 6,
         "domain": "전공상담 검사·위기 만능틀",
-        "title": "[만점 템플릿 4] 2·3교시 심리검사 해석 및 자살·학폭 위기개입 4줄 만능 템플릿",
+        "title": "[만점 템플릿 6] 2·3교시 심리검사 해석 및 자살·학폭 위기개입 4줄 만능 템플릿",
         "concept": "과부하 프로파일 해석 ➔ 지금-여기 즉각 사정 ➔ 비밀보장 예외 통보 ➔ 안전계획서 및 연계",
         "keywords": ["심리적 과부하 상태", "자살 충동과 계획", "비밀보장의 예외", "안전계획서와 전문 의료기관"],
         "lines": [
@@ -97,6 +189,16 @@ templates_data = [
             ["지금 여기", "자살 충동과 계획"],
             ["비밀보장의 예외"],
             ["위기관리위원회", "안전계획서", "전문 의료기관"]
+        ],
+        "cases8": [
+            {"q": "① 로샤 D<0, AdjD<0 및 RCd 고점 상태", "a": "심리적 과부하 상태"},
+            {"q": "② CASE 모델 가장 먼저 사정할 영역", "a": "제시된 자살 사건과 즉각적 사건"},
+            {"q": "③ 자살·학폭 위기 시 윤리적 원칙", "a": "비밀보장의 예외"},
+            {"q": "④ 비밀보장 예외 시 1차 통보 대상", "a": "보호자 및 학교장 즉각 통보"},
+            {"q": "⑤ 교내 위기 대응 기구 소집", "a": "위기관리위원회 소집"},
+            {"q": "⑥ 내담자와 함께 작성하는 행동지침", "a": "안전계획서 작성"},
+            {"q": "⑦ 자살 수단 사전 차단 조치", "a": "치명적 자살 수단 제거"},
+            {"q": "⑧ 외부 전문기관 협진 조치", "a": "정신건강의학과 등 전문 의료기관 긴급 연계"}
         ],
         "quiz_q": "자살 및 생명 위협 위기 시 상담자가 법적·윤리적으로 반드시 발동해야 하는 원칙은?",
         "quiz_a": "비밀보장의 예외"
@@ -1337,7 +1439,7 @@ body.b4-paper-mode .scoring-eval-bar {{
 <div class="sub-bar">
   <div class="period-tabs">
     <button class="period-tab-btn highlight-tab active" id="tab-btn-KICE55" onclick="switchPeriod('KICE55')">🔥 11.28 결전: 55개 KICE 키워드 4줄 정답 (55선)</button>
-    <button class="period-tab-btn highlight-tab" id="tab-btn-TEMPLATE" onclick="switchPeriod('TEMPLATE')">🎯 임용 만점 4줄 만능 템플릿 (4선)</button>
+    <button class="period-tab-btn highlight-tab" id="tab-btn-TEMPLATE" onclick="switchPeriod('TEMPLATE')">🏛️ 내 교육학 플랫폼(서론·이처럼·결론) & 만능틀 (6선)</button>
     <button class="period-tab-btn" id="tab-btn-PED" onclick="switchPeriod('PED')">1교시 교육학 실전 (16제)</button>
     <button class="period-tab-btn" id="tab-btn-A" onclick="switchPeriod('A')">2교시 전공 A형 실전 (12제)</button>
     <button class="period-tab-btn" id="tab-btn-B" onclick="switchPeriod('B')">3교시 전공 B형 실전 (11제)</button>
@@ -1354,7 +1456,8 @@ body.b4-paper-mode .scoring-eval-bar {{
 <!-- 55개 KICE 핵심키워드 전용 영역 필터 및 실시간 검색 -->
 <div class="kice55-filter-bar" id="kice55-filter-bar">
   <button class="k55-cat-btn active" onclick="setK55Category('ALL', this)">전체 55선 (01~55)</button>
-  <button class="k55-cat-btn" onclick="setK55Category('PED20', this)">1교시 교육학 20선 (01~20)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('PED20', this)">1교시 교육학 20선 + 내 교육학 플랫폼 (01~20)</button>
+  <button class="k55-cat-btn" style="border-color:#fbbf24; color:#fde047;" onclick="switchPeriod('TEMPLATE')">🏛️ 내 교육학 플랫폼(서론·이처럼·결론) 집중연습</button>
   <button class="k55-cat-btn" onclick="setK55Category('COUNSEL35', this)">2·3교시 전공상담 35선 (21~55)</button>
   <button class="k55-cat-btn" onclick="setK55Category('DSM-5-TR 감별진단', this)">DSM-5-TR 감별 (11선)</button>
   <button class="k55-cat-btn" onclick="setK55Category('심리검사', this)">심리검사 (4선)</button>
@@ -1531,10 +1634,15 @@ function playExamChime(onDone) {{
 
 const EXAM_BROADCAST_SCRIPTS = {{
   start: "안내 말씀 드립니다. 지금부터 2027학년도 공립 중등학교 교사 임용후보자 선정경쟁시험을 시작하겠습니다. 수험생 여러분께서는 문제지의 문항 수와 인쇄 상태를 확인하시고, B4 답안지 작성 규격에 맞추어 침착하게 답안을 작성해 주시기 바랍니다.",
+  START: "안내 말씀 드립니다. 지금부터 2027학년도 공립 중등학교 교사 임용후보자 선정경쟁시험을 시작하겠습니다. 수험생 여러분께서는 문제지의 문항 수와 인쇄 상태를 확인하시고, B4 답안지 작성 규격에 맞추어 침착하게 답안을 작성해 주시기 바랍니다.",
   prep: "수험생 여러분께 안내 말씀 드립니다. 본령 타종 5분 전입니다. 수험표와 신분증을 책상 좌측 상단에 놓아주시고, 컴퓨터용 사인펜과 흑색 필기구 외의 물품은 가방에 넣어 정리해 주시기 바랍니다.",
+  PRE5: "수험생 여러분께 안내 말씀 드립니다. 본령 타종 5분 전입니다. 수험표와 신분증을 책상 좌측 상단에 놓아주시고, 컴퓨터용 사인펜과 흑색 필기구 외의 물품은 가방에 넣어 정리해 주시기 바랍니다.",
   warn10: "안내 말씀 드립니다. 시험 종료 10분 전입니다. 수험생 여러분께서는 작성하신 답안지의 누락 여부와 글자 수 규격을 다시 한번 확인해 주시기 바랍니다.",
+  WARN10: "안내 말씀 드립니다. 시험 종료 10분 전입니다. 수험생 여러분께서는 작성하신 답안지의 누락 여부와 글자 수 규격을 다시 한번 확인해 주시기 바랍니다.",
   end: "시험 종료령이 울렸습니다. 수험생 여러분께서는 즉시 필기구를 내려놓으시고, 답안지를 오른쪽에, 문제지를 왼쪽에 놓아주시기 바랍니다. 감독관의 지시가 있을 때까지 자리에서 일어나지 마십시오.",
-  cheer: "안내 말씀 드립니다. 수험번호 1번 변귀섭 대표님, 지금까지 손끝에 새긴 55개 KICE 핵심 키워드와 440개 경우의 수가 오늘 시험지에서 100퍼센트 그대로 출제됩니다. 끝까지 침착하게 작성하시어 2027학년도 인천 전문상담교사 최종 합격을 진심으로 축하드립니다."
+  END: "시험 종료령이 울렸습니다. 수험생 여러분께서는 즉시 필기구를 내려놓으시고, 답안지를 오른쪽에, 문제지를 왼쪽에 놓아주시기 바랍니다. 감독관의 지시가 있을 때까지 자리에서 일어나지 마십시오.",
+  cheer: "안내 말씀 드립니다. 수험번호 1번 변귀섭 대표님, 지금까지 손끝에 새긴 55개 KICE 핵심 키워드와 440개 경우의 수가 오늘 시험지에서 100퍼센트 그대로 출제됩니다. 끝까지 침착하게 작성하시어 2027학년도 인천 전문상담교사 최종 합격을 진심으로 축하드립니다.",
+  CHEER: "안내 말씀 드립니다. 수험번호 1번 변귀섭 대표님, 지금까지 손끝에 새긴 55개 KICE 핵심 키워드와 440개 경우의 수가 오늘 시험지에서 100퍼센트 그대로 출제됩니다. 끝까지 침착하게 작성하시어 2027학년도 인천 전문상담교사 최종 합격을 진심으로 축하드립니다."
 }};
 
 function playSelectedBroadcast(val) {{
@@ -1826,6 +1934,9 @@ function clearCurrentAnswers() {{
     for (let c = 0; c < 8; c++) {{
       localStorage.removeItem(prefix + key + '_C' + c);
     }}
+    for (let p = 0; p < 4; p++) {{
+      localStorage.removeItem(prefix + key + '_P' + p);
+    }}
   }});
   renderNav();
   renderCards();
@@ -1892,6 +2003,7 @@ function getList() {{
       lines: item.lines,
       line_blanks: item.line_blanks || [],
       cases8: item.cases8 || [],
+      ped_platform: item.ped_platform || [],
       answer: item.lines.join('\\n'),
       keywords: item.keywords,
       quiz_q: item.quiz_q,
@@ -1910,6 +2022,7 @@ function getList() {{
       lines: item.lines,
       line_blanks: item.line_blanks || [],
       cases8: item.cases8 || [],
+      ped_platform: [],
       answer: item.lines.join('\\n'),
       keywords: item.keywords,
       quiz_q: item.quiz_q,
@@ -1927,6 +2040,7 @@ function getList() {{
       lines: item.model_answer,
       line_blanks: [],
       cases8: [],
+      ped_platform: [],
       answer: item.model_answer.join('\\n'),
       keywords: item.keywords,
       isFourLineMode: false
@@ -1938,6 +2052,7 @@ function getList() {{
       lines: item.answer ? item.answer.split('\\n') : [],
       line_blanks: [],
       cases8: [],
+      ped_platform: [],
       isFourLineMode: item.type !== '기입형'
     }}));
   }}
@@ -2082,6 +2197,44 @@ function renderCards() {{
       `;
     }}
 
+    // [변귀섭 대표님 전용] 내 교육학 논술 플랫폼 (서론 공식 · 본론 이처럼~ · 결론 공식) 따라치기 구역
+    let pedPlatformHtml = '';
+    if (q.ped_platform && q.ped_platform.length > 0) {{
+      const platRowsHtml = q.ped_platform.map((pItem, pIdx) => {{
+        const targetInner = formatTextWithBlanks(pItem.text, pItem.blanks || [], '');
+        return `
+        <div class="lbl-row">
+          <div class="lbl-target-line" style="border-left-color: #10b981; background: rgba(16, 185, 129, 0.08);">
+            <span class="lbl-target-text" id="ped-plat-target-${{key}}-${{pIdx}}"><strong style="color:#34d399; margin-right:6px;">[${{escapeHtml(pItem.label)}}]</strong>${{targetInner}}</span>
+            <span style="font-size:0.78rem; color:#34d399; flex-shrink:0;">${{pItem.text.length}}자</span>
+          </div>
+          <div class="lbl-input-wrap">
+            <input type="text"
+              class="lbl-input"
+              id="ped-plat-in-${{key}}-${{pIdx}}"
+              placeholder="${{escapeHtml(pItem.text)}}"
+              oninput="handlePedPlatInput('${{currentPeriod}}', ${{q.num}}, ${{pIdx}})"
+              onkeydown="handlePedPlatKeydown(event, '${{key}}', ${{pIdx}}, ${{q.ped_platform.length}}, ${{cardIdx}})">
+            <span class="lbl-char-badge" id="ped-plat-badge-${{key}}-${{pIdx}}">0자 / 38~45자</span>
+          </div>
+        </div>
+        `;
+      }}).join('');
+
+      pedPlatformHtml = `
+        <div class="line-by-line-box" style="border-color: rgba(16, 185, 129, 0.45); background: rgba(6, 78, 59, 0.14);">
+          <div class="lbl-header" style="color: #34d399;">
+            <span>🏛️ [내 교육학 플랫폼 따라치기] "미래 교육환경 속에서 (대주제)에 대한 화제가 대두되고 있다. ~ 이처럼 교사가 ~"</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-sheet-mini" style="border-color:#10b981; color:#34d399;" onclick="fillPedPlatForCard('${{currentPeriod}}', ${{q.num}})">내 플랫폼 자동채우기</button>
+              <button class="btn-sheet-mini" onclick="clearPedPlatForCard('${{currentPeriod}}', ${{q.num}})">비우기</button>
+            </div>
+          </div>
+          ${{platRowsHtml}}
+        </div>
+      `;
+    }}
+
     // 족집게 핵심키워드 퀴즈 박스
     let quizHtml = '';
     if (q.quiz_q && q.quiz_a) {{
@@ -2133,6 +2286,9 @@ function renderCards() {{
 
         <!-- 1줄씩 보고 따라치기 구역 -->
         ${{lineByLineHtml}}
+
+        <!-- [변귀섭 대표님 전용] 내 교육학 논술 플랫폼 따라치기 구역 -->
+        ${{pedPlatformHtml}}
 
         <!-- 족집게 핵심키워드 따라치기 구역 -->
         ${{quizHtml}}
@@ -2326,11 +2482,94 @@ function handleLineKeydown(e, key, idx, totalLines, cardIdx) {{
       const nextEl = document.getElementById(`lbl-in-${{key}}-${{idx + 1}}`);
       if (nextEl) nextEl.focus();
     }} else {{
+      const pedPlatEl = document.getElementById(`ped-plat-in-${{key}}-0`);
+      if (pedPlatEl) {{
+        pedPlatEl.focus();
+        return;
+      }}
       const quizEl = document.getElementById(`quiz-in-${{key}}`);
       if (quizEl) quizEl.focus();
       else focusNextCardFirstLine(cardIdx);
     }}
   }}
+}}
+
+function handlePedPlatKeydown(e, key, pIdx, totalP, cardIdx) {{
+  if (e.key === 'Enter') {{
+    e.preventDefault();
+    if (pIdx + 1 < totalP) {{
+      const nextEl = document.getElementById(`ped-plat-in-${{key}}-${{pIdx + 1}}`);
+      if (nextEl) nextEl.focus();
+    }} else {{
+      const quizEl = document.getElementById(`quiz-in-${{key}}`);
+      if (quizEl) quizEl.focus();
+      else focusNextCardFirstLine(cardIdx);
+    }}
+  }}
+}}
+
+function handlePedPlatInput(period, num, pIdx, silent) {{
+  if (!silent) playPenStrokeSound();
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q || !q.ped_platform || !q.ped_platform[pIdx]) return;
+  const key = period + num;
+  const pItem = q.ped_platform[pIdx];
+  const inp = document.getElementById(`ped-plat-in-${{key}}-${{pIdx}}`);
+  const badge = document.getElementById(`ped-plat-badge-${{key}}-${{pIdx}}`);
+  const targetEl = document.getElementById(`ped-plat-target-${{key}}-${{pIdx}}`);
+  if (!inp) return;
+
+  const val = inp.value;
+  localStorage.setItem(getRoundKeyPrefix() + key + '_P' + pIdx, val);
+  const len = val.length;
+  const isOk = (len >= 38 && len <= 45);
+  const isOver = len > 45;
+  const wasOk = inp.classList.contains('line-ok');
+
+  if (badge) {{
+    badge.textContent = `${{len}}자 / 38~45자`;
+    badge.className = 'lbl-char-badge' + (isOk ? ' ok' : (isOver ? ' over' : ''));
+  }}
+  inp.classList.toggle('line-ok', isOk);
+  if (targetEl) {{
+    const targetInner = formatTextWithBlanks(pItem.text, pItem.blanks || [], val);
+    targetEl.innerHTML = `<strong style="color:#34d399; margin-right:6px;">[${{escapeHtml(pItem.label)}}]</strong>${{targetInner}}`;
+  }}
+  if (isOk && !wasOk && !silent) {{
+    playMiniHitSound();
+  }}
+}}
+
+function fillPedPlatForCard(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q || !q.ped_platform) return;
+  const key = period + num;
+  q.ped_platform.forEach((pItem, pIdx) => {{
+    const inp = document.getElementById(`ped-plat-in-${{key}}-${{pIdx}}`);
+    if (inp) {{
+      inp.value = pItem.text;
+      handlePedPlatInput(period, num, pIdx, true);
+    }}
+  }});
+  playSuccessChime();
+  showToast('🏛️ 내 교육학 플랫폼(서론·이처럼~·결론) 문장이 자동 입력되었습니다!');
+}}
+
+function clearPedPlatForCard(period, num) {{
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q || !q.ped_platform) return;
+  const key = period + num;
+  q.ped_platform.forEach((pItem, pIdx) => {{
+    const inp = document.getElementById(`ped-plat-in-${{key}}-${{pIdx}}`);
+    if (inp) {{
+      inp.value = '';
+      handlePedPlatInput(period, num, pIdx, true);
+    }}
+  }});
+  showToast('내 교육학 플랫폼 입력창을 비웠습니다.');
 }}
 
 function handleQuizKeydown(e, cardIdx) {{
@@ -2573,6 +2812,18 @@ function loadSavedAnswers() {{
           if (cInp) {{
             cInp.value = savedC;
             handleCase8Input(currentPeriod, q.num, cIdx, true);
+          }}
+        }}
+      }});
+    }}
+    if (q.ped_platform && q.ped_platform.length > 0) {{
+      q.ped_platform.forEach((pItem, pIdx) => {{
+        const savedP = localStorage.getItem(prefix + key + '_P' + pIdx);
+        if (savedP !== null) {{
+          const pInp = document.getElementById(`ped-plat-in-${{key}}-${{pIdx}}`);
+          if (pInp) {{
+            pInp.value = savedP;
+            handlePedPlatInput(currentPeriod, q.num, pIdx, true);
           }}
         }}
       }});
