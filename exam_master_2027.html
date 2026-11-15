@@ -641,13 +641,15 @@ body.b4-paper-mode .line-by-line-box {
   align-items: center;
   gap: 8px;
   font-size: calc(1.02rem * var(--font-scale));
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0px;
   color: #fef08a;
-  margin-bottom: 5px;
-  padding: 4px 8px;
+  margin-bottom: 4px;
+  padding: 8px 14px;
   background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.22);
   border-left: 3px solid var(--accent-gold);
-  border-radius: 4px;
+  border-radius: 6px;
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   transition: filter 0.2s;
 }
@@ -671,13 +673,21 @@ body.b4-paper-mode .lbl-target-line {
   flex: 1;
   background: #050a14;
   border: 1px solid #283a58;
+  border-left: 3px solid var(--accent-blue);
   border-radius: 6px;
-  padding: 9px 14px;
+  padding: 8px 14px;
   color: #ffffff;
   font-size: calc(1.02rem * var(--font-scale));
+  font-weight: 600;
+  letter-spacing: 0px;
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   outline: none;
   transition: all 0.15s;
+}
+.lbl-input::placeholder {
+  color: rgba(148, 163, 184, 0.28);
+  font-weight: 600;
+  letter-spacing: 0px;
 }
 body.b4-paper-mode .lbl-input {
   background: #ffffff;
@@ -1496,14 +1506,14 @@ function renderCards() {
       const rowsHtml = linesArr.map((ln, idx) => `
         <div class="lbl-row">
           <div class="lbl-target-line">
-            <span><strong>${idx + 1}줄 정답:</strong> ${escapeHtml(ln)}</span>
-            <span style="font-size:0.78rem; color:var(--accent-blue);">[모범 ${ln.length}자]</span>
+            <span>${escapeHtml(ln)}</span>
+            <span style="font-size:0.78rem; color:var(--accent-blue);">${ln.length}자</span>
           </div>
           <div class="lbl-input-wrap">
             <input type="text"
               class="lbl-input"
               id="lbl-in-${key}-${idx}"
-              placeholder="${idx + 1}줄 정답 문장을 위에서 눈으로 보고 손가락으로 그대로 타이핑하세요 (Enter 치면 다음 줄 이동)..."
+              placeholder="${escapeHtml(ln)}"
               oninput="handleLineByLineInput('${currentPeriod}', ${q.num}, ${idx}, ${linesArr.length})"
               onkeydown="handleLineKeydown(event, '${key}', ${idx}, ${linesArr.length}, ${cardIdx})">
             <span class="lbl-char-badge" id="lbl-badge-${key}-${idx}">0자 / ${minC}~${maxC}자</span>
