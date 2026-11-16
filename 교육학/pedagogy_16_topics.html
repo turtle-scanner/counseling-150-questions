@@ -1405,6 +1405,111 @@ body.b4-paper-mode .scoring-eval-bar {
   z-index: 9999;
 }
 #toast.show { opacity: 1; transform: translateY(0); }
+
+/* [v6.5] 4대 실전 업그레이드 CSS (D-Day, 오늘 미션, 칼채점, 태블릿 터치 칩) */
+.dday-seal {
+  background: linear-gradient(135deg, #e11d48, #be123c);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #fda4af;
+  letter-spacing: 0.4px;
+}
+.daily-mission-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  color: #6ee7b7;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.daily-mission-bar-wrap {
+  width: 64px;
+  height: 8px;
+  background: #0f172a;
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+.daily-mission-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981, #fde047);
+  transition: width 0.3s ease;
+}
+.touch-chip-tray {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.touch-chip-header {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #7dd3fc;
+  margin-bottom: 8px;
+}
+.touch-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.touch-chip-btn {
+  background: #0f172a;
+  border: 1.5px solid #38bdf8;
+  color: #e0f2fe;
+  font-size: calc(0.9rem * var(--font-scale));
+  font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 40px;
+  transition: all 0.15s;
+}
+.touch-chip-btn:hover {
+  background: rgba(56, 189, 248, 0.22);
+  transform: translateY(-1px);
+}
+.touch-chip-btn.used {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: #10b981;
+  color: #6ee7b7;
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+.touch-chip-btn.trap-shake {
+  background: rgba(244, 63, 94, 0.25);
+  border-color: #f43f5e;
+  color: #fda4af;
+}
+.kal-rubric-bar {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid #334155;
+  border-left: 4px solid #fbbf24;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #fde68a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+body.b4-paper-mode .kal-rubric-bar {
+  background: #f5f0e4;
+  color: #78350f;
+  border-color: #b45309;
+}
 </style>
 </head>
 <body>
@@ -1412,7 +1517,8 @@ body.b4-paper-mode .scoring-eval-bar {
 <header class="kice-exam-header">
   <div class="header-inner">
     <div class="brand-section">
-      <span class="kice-seal">v5.0 800케이스 완전체</span>
+      <span class="dday-seal" id="dday-seal">D-12 (11.28 결전)</span>
+      <span class="kice-seal">v6.5 완전체</span>
       <h1 class="exam-main-title">2027 임용 만점 템플릿 & 55개 KICE 핵심키워드 4줄 정답 타이핑</h1>
       <span class="examinee-tag">수험자: 변귀섭 대표님</span>
     </div>
@@ -1454,6 +1560,7 @@ body.b4-paper-mode .scoring-eval-bar {
       <button class="btn-kice" onclick="toggleLectureProblemMode()" id="btn-lecture-mode" style="background:rgba(192,132,252,0.18); border-color:#c084fc; color:#f3e8ff; font-weight:800;">🎓 강의+문제 ON</button>
       <button class="btn-kice btn-kw-blank-main" onclick="toggleKeywordBlankMode()" id="btn-kw-blank">🎯 핵심키워드 빈칸 만들기</button>
       <button class="btn-kice" onclick="toggleChosungHintMode()" id="btn-chosung-hint" style="border-color:#38bdf8; color:#7dd3fc; font-weight:800;" title="빈칸 안에 한글 초성(ㄱㄴㄷ) 힌트를 표시하여 0.5초 만에 연상 인출합니다">🔤 초성 힌트(ㄱㄴㄷ) 보기</button>
+      <button class="btn-kice" onclick="toggleTouchChipMode()" id="btn-touch-chip" style="border-color:#38bdf8; color:#bae6fd; font-weight:800;" title="태블릿·모바일에서 타이핑 대신 키워드 칩을 터치해 빈칸을 조립합니다">👆 터치 조립 모드 OFF</button>
       <button class="btn-kice" onclick="toggleCases8Mode()" id="btn-cases8-mode" style="border-color:#38bdf8; color:#38bdf8; font-weight:800;">⚡ 경우의 수 8개 ON</button>
       <button class="btn-kice" onclick="toggleSingleFocusMode()" id="btn-single-focus" style="border-color:#c084fc; color:#e9d5ff; font-weight:800;">🔍 1문제 집중 모드 OFF</button>
       <button class="btn-kice" onclick="toggleRadioMode()" id="btn-radio" style="border-color:#34d399; color:#6ee7b7; font-weight:800;">📻 연속 자동낭독 OFF</button>
@@ -1479,9 +1586,16 @@ body.b4-paper-mode .scoring-eval-bar {
     <button class="period-tab-btn" id="tab-btn-B" onclick="switchPeriod('B')">3교시 전공 B형 실전 (11제)</button>
   </div>
   <div class="filter-group">
+    <div class="daily-mission-pill" id="daily-mission-pill" title="오늘 10문제를 완료하면 축하 팡파르가 울립니다!">
+      <span>🎯 오늘 미션: <strong id="daily-mission-count">0</strong>/10</span>
+      <div class="daily-mission-bar-wrap"><div class="daily-mission-bar-fill" id="daily-mission-bar"></div></div>
+    </div>
     <button class="filter-btn" id="btn-incomplete-filter" onclick="toggleIncompleteFilter()" style="border-color:#f43f5e; color:#fda4af;">🔥 미완료 문항만 보기</button>
     <button class="filter-btn" id="btn-bookmark-filter" onclick="toggleBookmarkFilter()">북마크(★) 모아보기</button>
     <button class="filter-btn" onclick="exportWrongNotes()">단권화 노트 다운</button>
+    <button class="filter-btn" onclick="exportProgressBackup()" style="border-color:#38bdf8; color:#7dd3fc;" title="PC·태블릿 간 학습 진도를 파일로 백업합니다">💾 진도 백업</button>
+    <button class="filter-btn" onclick="document.getElementById('backup-file-input').click()" style="border-color:#a78bfa; color:#ddd6fe;" title="백업한 진도 파일을 불러와 이어서 학습합니다">📂 진도 불러오기</button>
+    <input type="file" id="backup-file-input" accept=".json" style="display:none;" onchange="importProgressBackup(event)">
     <div class="status-badge">
       <span class="badge-count" id="progress-count" style="font-weight:900; color:var(--accent-emerald);">0 완료</span>
     </div>
@@ -1831,7 +1945,151 @@ function stopASMR() {
 
 let isChosungHintMode = false;
 let showLectureProblem = true;
+let isTouchChipMode = false;
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+
+function toggleTouchChipMode() {
+  isTouchChipMode = !isTouchChipMode;
+  const btn = document.getElementById('btn-touch-chip');
+  if (btn) {
+    btn.classList.toggle('active', isTouchChipMode);
+    btn.textContent = isTouchChipMode ? '👆 터치 조립 모드 ON' : '👆 터치 조립 모드 OFF';
+  }
+  renderCards();
+  loadSavedAnswers();
+  showToast(isTouchChipMode
+    ? '👆 [태블릿 원터치 조립 모드] 키워드 칩을 터치하면 빈칸에 자동으로 채워집니다!'
+    : '원터치 조립 모드를 껐습니다.');
+}
+
+function handleTouchChipClick(period, num, lineIdx, isCorrect, chipText, btnEl) {
+  if (!isCorrect) {
+    if (btnEl) btnEl.classList.add('trap-shake');
+    showToast(`⚠️ "${chipText}"은(는) 오답 함정 키워드입니다! 지문 단서를 다시 확인하세요.`);
+    return;
+  }
+  const items = getList();
+  const q = items.find(x => x.num === num);
+  if (!q) return;
+  const key = period + num;
+  const lines = q.lines || q.answer.split('\n');
+  const kwList = q.keywords || extractKeywords(q.answer);
+  const targetIdx = (lineIdx >= 0 && lineIdx < lines.length) ? lineIdx : 0;
+  const inp = document.getElementById(`lbl-in-${key}-${targetIdx}`);
+  if (!inp) return;
+
+  // 아직 해당 줄 입력창이 비어있으면 뼈대를 먼저 채운 뒤 해당 키워드 꽂아 넣기
+  if (!inp.value.trim()) {
+    const blanks = (q.line_blanks && q.line_blanks[targetIdx] && q.line_blanks[targetIdx].length > 0)
+      ? q.line_blanks[targetIdx]
+      : kwList;
+    let skel = lines[targetIdx];
+    [...new Set(blanks)].sort((a, b) => b.length - a.length).forEach(kw => {
+      skel = skel.split(kw).join('□'.repeat(kw.length));
+    });
+    inp.value = skel;
+  }
+  const mask = '□'.repeat(chipText.length);
+  if (inp.value.includes(mask)) {
+    inp.value = inp.value.replace(mask, chipText);
+  } else if (inp.value.includes('□')) {
+    inp.value = inp.value.replace(/□+/, chipText);
+  } else if (!inp.value.includes(chipText)) {
+    inp.value = (inp.value.trim() + ' ' + chipText).trim();
+  }
+  if (btnEl) btnEl.classList.add('used');
+  playMiniHitSound();
+  handleLineByLineInput(period, num, targetIdx, lines.length);
+}
+
+function updateDDayBadge() {
+  const el = document.getElementById('dday-seal');
+  if (!el) return;
+  const target = new Date('2026-11-28T00:00:00+09:00');
+  const now = new Date();
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const targetMidnight = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+  const diffDays = Math.round((targetMidnight - todayMidnight) / (1000 * 60 * 60 * 24));
+  if (diffDays > 0) el.textContent = `D-${diffDays} (11.28 결전)`;
+  else if (diffDays === 0) el.textContent = '🔥 D-DAY (오늘이 결전일!)';
+  else el.textContent = `D+${Math.abs(diffDays)} (수고하셨습니다)`;
+}
+
+function getDailyMissionKey() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `kice_daily_${y}-${m}-${day}`;
+}
+
+function recordDailyDone(key) {
+  const storageKey = getDailyMissionKey();
+  const arr = JSON.parse(localStorage.getItem(storageKey) || '[]');
+  if (!arr.includes(key)) {
+    arr.push(key);
+    localStorage.setItem(storageKey, JSON.stringify(arr));
+    updateDailyMissionUI();
+    if (arr.length === 10) {
+      playSuccessChime();
+      showToast('🎉 축하합니다! 오늘의 10문제 미션을 100% 완수하셨습니다!');
+    }
+  }
+}
+
+function updateDailyMissionUI() {
+  const arr = JSON.parse(localStorage.getItem(getDailyMissionKey()) || '[]');
+  const cntEl = document.getElementById('daily-mission-count');
+  const barEl = document.getElementById('daily-mission-bar');
+  if (cntEl) cntEl.textContent = arr.length;
+  if (barEl) barEl.style.width = Math.min(100, (arr.length / 10) * 100) + '%';
+}
+
+function exportProgressBackup() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('kice_')) data[k] = localStorage.getItem(k);
+  }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dt = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `2027_임용_학습진도_백업_${dt}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('💾 PC ↔ 태블릿 진도 백업 파일이 저장되었습니다!');
+}
+
+function importProgressBackup(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const obj = JSON.parse(e.target.result);
+      let count = 0;
+      Object.keys(obj).forEach(k => {
+        if (k.startsWith('kice_')) {
+          localStorage.setItem(k, obj[k]);
+          count++;
+        }
+      });
+      bookmarks = JSON.parse(localStorage.getItem('kice_bookmarks') || '{}');
+      renderNav();
+      renderCards();
+      loadSavedAnswers();
+      updateProgress();
+      updateDailyMissionUI();
+      showToast(`📂 진도 복원 완료! (${count}개 학습 기록이 동기화되었습니다)`);
+    } catch(err) {
+      showToast('⚠️ 올바른 백업 JSON 파일이 아닙니다.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file, 'utf-8');
+}
 
 function toggleLectureProblemMode() {
   showLectureProblem = !showLectureProblem;
@@ -2644,6 +2902,37 @@ function renderCards() {
       `;
     }
 
+    // [태블릿 전용] 👆 원터치 키워드 조립 칩 트레이 생성
+    let touchChipHtml = '';
+    if (isTouchChipMode && linesArr.length >= 1) {
+      const correctChips = [];
+      linesArr.forEach((ln, idx) => {
+        const lbs = (q.line_blanks && q.line_blanks[idx] && q.line_blanks[idx].length > 0)
+          ? q.line_blanks[idx]
+          : kwList;
+        lbs.forEach(b => {
+          if (b && !correctChips.some(x => x.text === b)) {
+            correctChips.push({ text: b, lineIdx: idx, isCorrect: true });
+          }
+        });
+      });
+      const trapPool = ['인지적 융합', '역설적 의도', '자아 동질적', '규범적 차원', '탈목표 평가', '병렬적 왜곡', '외재적 부하', '수용 영역']
+        .filter(t => !correctChips.some(c => c.text.includes(t) || t.includes(c.text)));
+      const traps = trapPool.slice(0, 2).map(t => ({ text: t, lineIdx: -1, isCorrect: false }));
+      const allChips = [...correctChips, ...traps].sort((a, b) => (a.text.length * 7 + a.text.charCodeAt(0)) % 13 - (b.text.length * 7 + b.text.charCodeAt(0)) % 13);
+      const chipsBtnsHtml = allChips.map((ch, cIdx) => `
+        <button class="touch-chip-btn" id="tchip-${key}-${cIdx}" onclick="handleTouchChipClick('${currentPeriod}', ${q.num}, ${ch.lineIdx}, ${ch.isCorrect}, '${escapeHtml(ch.text).replace(/'/g, "\\'")}', this)">
+          ${escapeHtml(ch.text)}
+        </button>
+      `).join('');
+      touchChipHtml = `
+        <div class="touch-chip-tray">
+          <div class="touch-chip-header">👆 [태블릿 원터치 조립 모드] 정답 키워드 칩을 톡톡 터치하면 1~4줄 빈칸에 자동으로 꽂힙니다! (오답 함정 2개 주의)</div>
+          <div class="touch-chip-list">${chipsBtnsHtml}</div>
+        </div>
+      `;
+    }
+
     // 1줄씩 보고 따라치기 HTML 생성 (핵심키워드 빈칸 모드 연동 & 1:1 가로 길이 일치)
     let lineByLineHtml = '';
     if (linesArr.length >= 4) {
@@ -2779,6 +3068,9 @@ function renderCards() {
           ${kwList.map((kw, idx) => `<span class="kw-pill" id="kw-${key}-${idx}">${formatTextWithBlanks(kw, [kw], '')}</span>`).join('')}
         </div>
 
+        <!-- [태블릿 전용] 원터치 키워드 조립 칩 -->
+        ${touchChipHtml}
+
         <!-- [3단계] 발문 ①~④ 1:1 매칭 4줄 만점 정답 따라치기 구역 -->
         ${lineByLineHtml}
 
@@ -2823,6 +3115,9 @@ function renderCards() {
         <div class="scoring-eval-bar">
           <span>B4 답안지 규격: <strong>${isPed6 ? '공백 포함 줄당 50~60자 (총 6줄)' : '공백 포함 줄당 38~45자 (총 4줄 만점)'}</strong></span>
           <span class="eval-score-text" id="eval-score-${key}">판정 대기</span>
+        </div>
+        <div class="kal-rubric-bar" id="kal-rubric-${key}">
+          <span>🎯 [KICE 4점 만점 실시간 칼채점] 답안을 입력하면 필수 채점 키워드 적중 점수와 누락 키워드를 즉시 알려줍니다.</span>
         </div>
       </div>
     `;
@@ -3241,15 +3536,38 @@ function evaluateCard(period, num) {
   chipBox.innerHTML = chipsHtml;
   ta.classList.toggle('error-overflow', hasOverflow);
 
+  let hitCount = 0;
+  const missedKws = [];
   if (q) {
     kwList.forEach((kw, idx) => {
       const el = document.getElementById(`kw-${key}-${idx}`);
+      const isDetected = isKeywordSolvedInText(kw, text);
+      if (isDetected) hitCount++;
+      else missedKws.push(kw);
       if (el) {
-        const isDetected = isKeywordSolvedInText(kw, text);
         el.classList.toggle('detected', isDetected);
         el.innerHTML = formatTextWithBlanks(kw, [kw], isDetected ? kw : text);
       }
     });
+  }
+
+  const kalBar = document.getElementById('kal-rubric-' + key);
+  if (kalBar) {
+    if (text.trim().length === 0) {
+      kalBar.innerHTML = '<span>🎯 [KICE 4점 만점 실시간 칼채점] 답안을 입력하면 필수 채점 키워드 적중 점수와 누락 키워드를 즉시 알려줍니다.</span>';
+    } else {
+      const totalKw = kwList.length || 1;
+      const estScore = ((hitCount / totalKw) * 4.0).toFixed(1);
+      if (hitCount === totalKw) {
+        kalBar.innerHTML = `<span style="color:#34d399;">🏆 [KICE 칼채점: 4.0 / 4.0점] 필수 채점 키워드 ${hitCount}/${totalKw}개 100% 완벽 적중!</span>`;
+      } else {
+        kalBar.innerHTML = `<span>🎯 [KICE 칼채점: <strong style="color:#fde047;">${estScore} / 4.0점</strong>] 적중 ${hitCount}/${totalKw}개</span><span style="color:#fda4af;">❌ 누락 키워드: ${escapeHtml(missedKws.join(', '))}</span>`;
+      }
+    }
+  }
+
+  if (text.trim().length >= 20 && (validLineCount === targetLines || hitCount >= Math.ceil((kwList.length || 1) * 0.5))) {
+    recordDailyDone(key);
   }
 
   const wasPerfect = evalScore.getAttribute('data-perfect') === 'true';
@@ -3502,6 +3820,8 @@ function applyTabletInputAttrs() {
 }
 
 function init() {
+  updateDDayBadge();
+  updateDailyMissionUI();
   renderNav();
   renderCards();
   applyTabletInputAttrs();
