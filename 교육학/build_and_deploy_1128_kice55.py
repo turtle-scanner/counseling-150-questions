@@ -2649,11 +2649,14 @@ function toggleCases8Mode() {{
 
 function isKeywordSolvedInText(kw, typedText) {{
   if (!typedText || !kw) return false;
-  if (typedText.includes(kw)) return true;
+  const normTyped = typedText.replace(/\\s+/g, '').replace(/분화도/g, '변별도');
+  const normKw = kw.replace(/\\s+/g, '').replace(/분화도/g, '변별도');
+  if (normTyped.includes(normKw)) return true;
   const noParen = kw.replace(/\\(.*?\\)/g, '').trim();
-  if (noParen.length >= 2 && typedText.includes(noParen)) return true;
+  const normNoParen = noParen.replace(/\\s+/g, '').replace(/분화도/g, '변별도');
+  if (normNoParen.length >= 2 && normTyped.includes(normNoParen)) return true;
   const parts = noParen.split(/[·/\\s,]+/).filter(x => x.length >= 2);
-  if (parts.length > 0 && parts.every(p => typedText.includes(p))) return true;
+  if (parts.length > 0 && parts.every(p => normTyped.includes(p.replace(/분화도/g, '변별도')))) return true;
   return false;
 }}
 
