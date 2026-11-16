@@ -1510,6 +1510,62 @@ body.b4-paper-mode .kal-rubric-bar {
   color: #78350f;
   border-color: #b45309;
 }
+
+/* [v7.0] 손글씨 사인펜 캔버스 패드 & 모의고사 배너 */
+.hw-pad-wrap {
+  display: none;
+  margin-top: 12px;
+  background: #faf8f3;
+  border: 2px solid #8c826e;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.hw-pad-wrap.open {
+  display: block;
+}
+.hw-pad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #1e3a8a;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+.hw-canvas {
+  width: 100%;
+  height: 200px;
+  display: block;
+  background-color: #fffdf7;
+  background-image: linear-gradient(to bottom, transparent 49px, rgba(30, 58, 138, 0.35) 50px);
+  background-size: 100% 50px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  touch-action: none;
+  cursor: crosshair;
+}
+.mini-mock-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: linear-gradient(90deg, rgba(225, 29, 72, 0.2), rgba(245, 158, 11, 0.2));
+  border: 2px solid #f43f5e;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  color: #ffe4e6;
+  font-weight: 800;
+}
+.weak-item-card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-left: 4px solid #f43f5e;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
 </style>
 </head>
 <body>
@@ -1518,7 +1574,7 @@ body.b4-paper-mode .kal-rubric-bar {
   <div class="header-inner">
     <div class="brand-section">
       <span class="dday-seal" id="dday-seal">D-12 (11.28 결전)</span>
-      <span class="kice-seal">v6.5 완전체</span>
+      <span class="kice-seal">v7.0 완전체</span>
       <h1 class="exam-main-title">2027 임용 만점 템플릿 & 55개 KICE 핵심키워드 4줄 정답 타이핑</h1>
       <span class="examinee-tag">수험자: 변귀섭 대표님</span>
     </div>
@@ -1564,6 +1620,8 @@ body.b4-paper-mode .kal-rubric-bar {
       <button class="btn-kice" onclick="toggleCases8Mode()" id="btn-cases8-mode" style="border-color:#38bdf8; color:#38bdf8; font-weight:800;">⚡ 경우의 수 8개 ON</button>
       <button class="btn-kice" onclick="toggleSingleFocusMode()" id="btn-single-focus" style="border-color:#c084fc; color:#e9d5ff; font-weight:800;">🔍 1문제 집중 모드 OFF</button>
       <button class="btn-kice" onclick="toggleRadioMode()" id="btn-radio" style="border-color:#34d399; color:#6ee7b7; font-weight:800;">📻 연속 자동낭독 OFF</button>
+      <button class="btn-kice" onclick="toggleMiniMockExam()" id="btn-mini-mock" style="border-color:#f43f5e; color:#fda4af; font-weight:800;">🎲 실전 10문제 모의고사</button>
+      <button class="btn-kice" onclick="openWeaknessModal()" style="border-color:#fb7185; color:#fecdd3; font-weight:800;">🚨 내 약점 1분 족보</button>
       <button class="btn-kice" onclick="openPedBuilderModal()" style="border-color:#fbbf24; color:#fde047; font-weight:800;">🏛️ 1교시 논술 자동조립기</button>
       <button class="btn-kice" onclick="togglePaperMode()" id="btn-paper-mode">B4 시험지 모드</button>
       <button class="btn-kice" onclick="toggleAllMasks()" id="btn-toggle-all">백지연습(정답 가리기)</button>
@@ -1668,6 +1726,24 @@ body.b4-paper-mode .kal-rubric-bar {
       <div style="display:flex; gap:8px;">
         <button class="btn-kice" style="border-color:#38bdf8; color:#38bdf8;" onclick="speakPedFullEssay()">🎧 완성된 논술문 전체 음성 듣기</button>
         <button class="btn-kice accent" onclick="copyPedFullEssay()">📋 완성된 논술문 복사</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 시험장 직전 1분 내 약점 키워드 족보 모달 -->
+<div id="weakness-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; padding:20px;">
+  <div class="modal-box" style="max-width:860px; max-height:90vh; overflow-y:auto; border-color:#f43f5e;">
+    <div class="modal-title" style="color:#fda4af; display:flex; justify-content:space-between; align-items:center;">
+      <span>🚨 [시험장 직전 1분 벼락치기] 내가 자주 놓친 약점 키워드 족보</span>
+      <button class="btn-sheet-mini" onclick="closeWeaknessModal()">닫기 ✕</button>
+    </div>
+    <div id="weakness-content" style="font-size:0.9rem; line-height:1.6;"></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:8px;">
+      <button class="btn-kice" style="border-color:#38bdf8; color:#38bdf8;" onclick="speakWeaknessList()">🎧 약점 키워드 연속 듣기</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-kice danger" onclick="clearWeaknessLog()">약점 기록 초기화</button>
+        <button class="btn-kice accent" onclick="closeWeaknessModal()">확인 완료</button>
       </div>
     </div>
   </div>
@@ -1946,7 +2022,180 @@ function stopASMR() {
 let isChosungHintMode = false;
 let showLectureProblem = true;
 let isTouchChipMode = false;
+let isMiniMockMode = false;
+let miniMockIds = [];
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+
+function toggleMiniMockExam() {
+  isMiniMockMode = !isMiniMockMode;
+  const btn = document.getElementById('btn-mini-mock');
+  if (isMiniMockMode) {
+    if (currentPeriod !== 'KICE55') switchPeriod('KICE55');
+    pickMiniMockIds();
+    setCustomTimer(20);
+    if (btn) {
+      btn.classList.add('active');
+      btn.textContent = '🎲 모의고사 종료';
+    }
+    showToast('🎲 [실전 10문제 미니 모의고사] 교육학 3 + 전공 7 문제가 무작위 추첨되었습니다! (20분 시작)');
+  } else {
+    if (btn) {
+      btn.classList.remove('active');
+      btn.textContent = '🎲 실전 10문제 모의고사';
+    }
+    showToast('실전 모의고사 모드를 종료하고 전체 문항으로 복귀했습니다.');
+  }
+  singleFocusIdx = 0;
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateMiniMockScoreBanner();
+}
+
+function pickMiniMockIds() {
+  const pedPool = dataKICE55.filter(x => x.part === 'PED20').map(x => x.id).sort(() => Math.random() - 0.5).slice(0, 3);
+  const cslPool = dataKICE55.filter(x => x.part === 'COUNSEL35').map(x => x.id).sort(() => Math.random() - 0.5).slice(0, 7);
+  miniMockIds = [...pedPool, ...cslPool];
+}
+
+function reshuffleMiniMock() {
+  pickMiniMockIds();
+  setCustomTimer(20);
+  singleFocusIdx = 0;
+  renderNav();
+  renderCards();
+  loadSavedAnswers();
+  updateMiniMockScoreBanner();
+  showToast('🎲 새로운 실전 10문제가 다시 추첨되었습니다!');
+}
+
+function updateMiniMockScoreBanner() {
+  const el = document.getElementById('mini-mock-total-score');
+  if (!el || !isMiniMockMode) return;
+  let total = 0;
+  miniMockIds.forEach(id => {
+    const q = dataKICE55.find(x => x.id === id);
+    if (!q) return;
+    const saved = localStorage.getItem(getRoundKeyPrefix() + 'KICE55' + id) || '';
+    if (saved.trim().length > 0) {
+      const kws = q.keywords || [];
+      const hits = kws.filter(kw => isKeywordSolvedInText(kw, saved)).length;
+      total += kws.length > 0 ? (hits / kws.length) * 4.0 : 0;
+    }
+  });
+  el.textContent = total.toFixed(1);
+}
+
+function openWeaknessModal() {
+  const modal = document.getElementById('weakness-modal');
+  const box = document.getElementById('weakness-content');
+  if (!modal || !box) return;
+  const log = JSON.parse(localStorage.getItem('kice_weak_keywords') || '{}');
+  const entries = Object.entries(log).filter(([, v]) => v && v.missed && v.missed.length > 0);
+  let html = '';
+  if (entries.length === 0) {
+    html = `
+      <div style="background:rgba(16,185,129,0.12); border:1px solid #10b981; border-radius:8px; padding:14px; margin-bottom:12px; color:#a7f3d0;">
+        🎉 아직 답안 작성 중 누락된 약점 키워드가 없습니다! (타이핑 연습 중 빠진 키워드가 생기면 이곳에 자동으로 모입니다.)
+      </div>
+      <div style="font-weight:800; color:#fde047; margin-bottom:8px;">⚡ [기본 탑재] 시험장 직전 가장 많이 실수하는 0순위 족보 5선</div>
+      <div class="weak-item-card"><strong>#21 강박장애 vs 강박성 성격장애</strong><br><span style="color:#fda4af;">핵심:</span> 자아 이질적 vs 자아 동질적 · 노출 및 반응방지(ERP)</div>
+      <div class="weak-item-card"><strong>#24 사회적(실용적) 의사소통장애 vs 자폐스펙트럼장애</strong><br><span style="color:#fda4af;">핵심:</span> 제한적이고 반복적인 행동 패턴(상동 행동) 유무 · 화용론적 언어 결함</div>
+      <div class="weak-item-card"><strong>#40 빅터 프랑클 의미치료</strong><br><span style="color:#fda4af;">핵심:</span> 탈숙고(Dereflection) · 역설적 의도</div>
+      <div class="weak-item-card"><strong>#48 머레이 욕구-압착 이론</strong><br><span style="color:#fda4af;">핵심:</span> 알파 압착(객관적 실제) vs 베타 압착(주관적 지각 · 행동 지배)</div>
+      <div class="weak-item-card"><strong>#55 숀 셰이 (Shawn Shea) CASE 모델 & 길리랜드</strong><br><span style="color:#fda4af;">핵심:</span> 제시-최근-과거-즉각 사건 · 참여 유도(안전계획서) · 학폭 제6호(출석정지)</div>
+    `;
+  } else {
+    html = `<div style="margin-bottom:10px; color:#fecdd3; font-weight:700;">총 <strong>${entries.length}개</strong> 문항에서 누락된 키워드가 감지되었습니다. 시험장 들어가기 직전 이 키워드들만 눈으로 찍고 들어가세요!</div>`;
+    entries.forEach(([k, info]) => {
+      html += `
+        <div class="weak-item-card">
+          <div style="font-weight:800; color:#f8fafc; margin-bottom:4px;">${escapeHtml(info.title || k)}</div>
+          <div style="color:#fda4af; font-weight:700;">❌ 누락 키워드: ${info.missed.map(m => `<span style="background:rgba(244,63,94,0.2); padding:2px 7px; border-radius:4px; margin-right:4px;">${escapeHtml(m)}</span>`).join('')}</div>
+        </div>
+      `;
+    });
+  }
+  box.innerHTML = html;
+  modal.style.display = 'flex';
+}
+
+function closeWeaknessModal() {
+  const modal = document.getElementById('weakness-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function speakWeaknessList() {
+  const log = JSON.parse(localStorage.getItem('kice_weak_keywords') || '{}');
+  const entries = Object.entries(log).filter(([, v]) => v && v.missed && v.missed.length > 0);
+  if (entries.length === 0) {
+    speakAnswer('시험장 직전 핵심 족보. 강박장애는 자아 이질적, 노출 및 반응방지. 프랑클 의미치료는 탈숙고와 역설적 의도. 머레이는 알파 압착과 베타 압착. 숀 셰이 케이쓰 모델은 제시, 최근, 과거, 즉각 사건 순입니다.');
+    return;
+  }
+  const txt = entries.map(([, info]) => `${info.title}의 놓친 키워드는 ${info.missed.join(', ')} 입니다.`).join(' ');
+  speakAnswer(txt);
+}
+
+function clearWeaknessLog() {
+  if (!confirm('누락 약점 키워드 기록을 초기화하시겠습니까?')) return;
+  localStorage.removeItem('kice_weak_keywords');
+  openWeaknessModal();
+  showToast('약점 키워드 기록이 초기화되었습니다.');
+}
+
+function toggleHandwritingPad(key) {
+  const wrap = document.getElementById('hw-wrap-' + key);
+  if (!wrap) return;
+  const isOpen = wrap.classList.toggle('open');
+  if (isOpen) {
+    initHandwritingCanvas(key);
+  }
+}
+
+function initHandwritingCanvas(key) {
+  const canvas = document.getElementById('hw-canvas-' + key);
+  if (!canvas || canvas.dataset.hwInit === '1') return;
+  canvas.dataset.hwInit = '1';
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.max(300, Math.floor((rect.width || 700) * dpr));
+  canvas.height = Math.floor(200 * dpr);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = '#0f172a';
+  ctx.lineWidth = 2.6;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  let drawing = false;
+  const getPos = (e) => {
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  };
+  canvas.addEventListener('pointerdown', (e) => {
+    drawing = true;
+    canvas.setPointerCapture(e.pointerId);
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!drawing) return;
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  });
+  const stopDraw = () => { drawing = false; };
+  canvas.addEventListener('pointerup', stopDraw);
+  canvas.addEventListener('pointercancel', stopDraw);
+}
+
+function clearHandwritingPad(key) {
+  const canvas = document.getElementById('hw-canvas-' + key);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 function toggleTouchChipMode() {
   isTouchChipMode = !isTouchChipMode;
@@ -2777,6 +3026,9 @@ function renderNav() {
 
 function getFilteredItems() {
   let items = getList();
+  if (isMiniMockMode && currentPeriod === 'KICE55' && miniMockIds.length > 0) {
+    items = miniMockIds.map(id => items.find(q => q.num === id)).filter(Boolean);
+  }
   if (showOnlyBookmarks) {
     items = items.filter(q => !!bookmarks[currentPeriod + q.num]);
   }
@@ -2785,7 +3037,7 @@ function getFilteredItems() {
       const key = currentPeriod + q.num;
       const pill = document.getElementById('nav-pill-' + key);
       if (pill && pill.classList.contains('done')) return false;
-      const saved = savedAnswers[key] || '';
+      const saved = localStorage.getItem(getRoundKeyPrefix() + key) || '';
       const linesArr = q.lines || q.answer.split('\n');
       return saved.trim().length < Math.floor(linesArr.join('').length * 0.6);
     });
@@ -2797,6 +3049,19 @@ function renderCards() {
   const container = document.getElementById('exam-cards-container');
   let items = getFilteredItems();
   container.innerHTML = '';
+
+  if (isMiniMockMode && currentPeriod === 'KICE55') {
+    const mBanner = document.createElement('div');
+    mBanner.className = 'mini-mock-banner';
+    mBanner.innerHTML = `
+      <div>🎲 <strong>[실전 10문제 미니 모의고사]</strong> 교육학 3문제 + 전공상담 7문제 (총 40점 만점) · 현재 실시간 점수: <span id="mini-mock-total-score" style="color:#fde047; font-size:1.15rem;">0.0</span> / 40.0점</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-sheet-mini" style="border-color:#fde047; color:#fde047;" onclick="reshuffleMiniMock()">🎲 새 10문제 다시 뽑기</button>
+        <button class="btn-sheet-mini" style="border-color:#fda4af; color:#fda4af;" onclick="toggleMiniMockExam()">모의고사 종료</button>
+      </div>
+    `;
+    container.appendChild(mBanner);
+  }
 
   if (items.length === 0) {
     container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-muted); font-weight:700;">🎉 조건에 해당하는 문항이 없습니다 (모두 완료되었거나 북마크가 없습니다)!</div>';
@@ -3046,7 +3311,8 @@ function renderCards() {
           <span class="type-pill ${badgeCls}">${escapeHtml(q.type)}</span>
           <span style="color:#fff;">${escapeHtml(q.title)}</span>
         </div>
-        <div style="display:flex; gap:8px; align-items:center;">
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <button class="btn-sheet-mini" style="border-color:#fbbf24; color:#fde047;" onclick="toggleHandwritingPad('${key}')" title="태블릿 펜슬이나 손가락으로 직접 4줄을 사인펜처럼 써봅니다">✍️ 손글씨 써보기</button>
           <button class="btn-sheet-mini" onclick="toggleKeywordBlankMode()" title="모든 문장의 핵심 채점 키워드를 빈칸으로 만듭니다">🎯 빈칸 모드 ${isBlankMode ? 'ON' : 'OFF'}</button>
           <button class="btn-sheet-mini" onclick="speakCardAnswer('${currentPeriod}', ${q.num})">음성 듣기 🎧</button>
           <span class="q-score-tag" style="font-weight:800; color:var(--accent-gold);">[${q.score}점 만점]</span>
@@ -3118,6 +3384,16 @@ function renderCards() {
         </div>
         <div class="kal-rubric-bar" id="kal-rubric-${key}">
           <span>🎯 [KICE 4점 만점 실시간 칼채점] 답안을 입력하면 필수 채점 키워드 적중 점수와 누락 키워드를 즉시 알려줍니다.</span>
+        </div>
+        <div class="hw-pad-wrap" id="hw-wrap-${key}">
+          <div class="hw-pad-header">
+            <span>✍️ [B4 실전 4줄 사인펜 손글씨 연습 패드] 태블릿 펜슬이나 손가락으로 직접 써보세요!</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-sheet-mini" onclick="clearHandwritingPad('${key}')">🧹 지우기</button>
+              <button class="btn-sheet-mini" onclick="toggleHandwritingPad('${key}')">접기</button>
+            </div>
+          </div>
+          <canvas class="hw-canvas" id="hw-canvas-${key}"></canvas>
         </div>
       </div>
     `;
@@ -3569,6 +3845,17 @@ function evaluateCard(period, num) {
   if (text.trim().length >= 20 && (validLineCount === targetLines || hitCount >= Math.ceil((kwList.length || 1) * 0.5))) {
     recordDailyDone(key);
   }
+
+  if (q && text.trim().length >= 10) {
+    const weakLog = JSON.parse(localStorage.getItem('kice_weak_keywords') || '{}');
+    if (missedKws.length > 0) {
+      weakLog[key] = { title: q.title, missed: missedKws };
+    } else {
+      delete weakLog[key];
+    }
+    localStorage.setItem('kice_weak_keywords', JSON.stringify(weakLog));
+  }
+  updateMiniMockScoreBanner();
 
   const wasPerfect = evalScore.getAttribute('data-perfect') === 'true';
   if (text.trim().length === 0) {
