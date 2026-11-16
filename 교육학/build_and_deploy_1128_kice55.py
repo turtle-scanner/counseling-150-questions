@@ -2647,16 +2647,25 @@ function toggleCases8Mode() {{
     : '경우의 수 8개 박스를 접고 답안지만 표시합니다.');
 }}
 
+function normalizeKiceSyn(s) {{
+  return s.replace(/\\s+/g, '')
+    .replace(/분화도/g, '변별도')
+    .replace(/압력/g, '압착')
+    .replace(/대지/g, '강령')
+    .replace(/메타인지/g, '초인지')
+    .replace(/소환/g, '회귀');
+}}
+
 function isKeywordSolvedInText(kw, typedText) {{
   if (!typedText || !kw) return false;
-  const normTyped = typedText.replace(/\\s+/g, '').replace(/분화도/g, '변별도');
-  const normKw = kw.replace(/\\s+/g, '').replace(/분화도/g, '변별도');
+  const normTyped = normalizeKiceSyn(typedText);
+  const normKw = normalizeKiceSyn(kw);
   if (normTyped.includes(normKw)) return true;
   const noParen = kw.replace(/\\(.*?\\)/g, '').trim();
-  const normNoParen = noParen.replace(/\\s+/g, '').replace(/분화도/g, '변별도');
+  const normNoParen = normalizeKiceSyn(noParen);
   if (normNoParen.length >= 2 && normTyped.includes(normNoParen)) return true;
   const parts = noParen.split(/[·/\\s,]+/).filter(x => x.length >= 2);
-  if (parts.length > 0 && parts.every(p => normTyped.includes(p.replace(/분화도/g, '변별도')))) return true;
+  if (parts.length > 0 && parts.every(p => normTyped.includes(normalizeKiceSyn(p)))) return true;
   return false;
 }}
 
