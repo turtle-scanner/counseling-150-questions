@@ -1861,7 +1861,7 @@ body.blind-exam-mode .touch-chip-tray {{
 
 <div class="sub-bar">
   <div class="period-tabs">
-    <button class="period-tab-btn highlight-tab active" id="tab-btn-KICE55" onclick="switchPeriod('KICE55')">🔥 11.28 결전: 55개 KICE 키워드 4줄 정답 (55선)</button>
+    <button class="period-tab-btn highlight-tab active" id="tab-btn-KICE55" onclick="switchPeriod('KICE55')">🔥 11.28 결전: 교육학 + 전공 45선 (총 65선)</button>
     <button class="period-tab-btn highlight-tab" id="tab-btn-TEMPLATE" onclick="switchPeriod('TEMPLATE')">🏛️ 내 교육학 플랫폼(서론·이처럼·결론) & 만능틀 (6선)</button>
     <button class="period-tab-btn" id="tab-btn-PED" onclick="switchPeriod('PED')">1교시 교육학 실전 (16제)</button>
     <button class="period-tab-btn" id="tab-btn-A" onclick="switchPeriod('A')">2교시 전공 A형 실전 (12제)</button>
@@ -1886,16 +1886,17 @@ body.blind-exam-mode .touch-chip-tray {{
 
 <!-- 55개 KICE 핵심키워드 전용 영역 필터 및 실시간 검색 -->
 <div class="kice55-filter-bar" id="kice55-filter-bar">
-  <button class="k55-cat-btn active" onclick="setK55Category('ALL', this)">전체 55선 (01~55)</button>
+  <button class="k55-cat-btn active" onclick="setK55Category('ALL', this)">전체 65선 (01~65)</button>
+  <button class="k55-cat-btn" style="border-color:#fde047; color:#fde047; font-weight:900;" onclick="setK55Category('CORE55', this)">🔥 11.28 압축 55선 (교육학10 + 전공45)</button>
   <button class="k55-cat-btn" style="border-color:#f43f5e; color:#fda4af; font-weight:900;" onclick="setK55Category('PED10', this)">🎯 11.28 교육학 0순위 압축 10선</button>
   <button class="k55-cat-btn" onclick="setK55Category('PED20', this)">1교시 교육학 20선 + 내 교육학 플랫폼 (01~20)</button>
   <button class="k55-cat-btn" style="border-color:#fbbf24; color:#fde047;" onclick="switchPeriod('TEMPLATE')">🏛️ 내 교육학 플랫폼(서론·이처럼·결론) 집중연습</button>
-  <button class="k55-cat-btn" onclick="setK55Category('COUNSEL35', this)">2·3교시 전공상담 35선 (21~55)</button>
-  <button class="k55-cat-btn" onclick="setK55Category('DSM-5-TR 감별진단', this)">DSM-5-TR 감별 (11선)</button>
-  <button class="k55-cat-btn" onclick="setK55Category('심리검사', this)">심리검사 (4선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('COUNSEL35', this)">2·3교시 전공상담 45선 (21~65)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('DSM-5-TR 감별진단', this)">DSM-5-TR 감별 (14선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('심리검사', this)">심리검사 (6선)</button>
   <button class="k55-cat-btn" onclick="setK55Category('가족치료', this)">가족치료 (4선)</button>
-  <button class="k55-cat-btn" onclick="setK55Category('상담이론', this)">상담이론·성격 (12선)</button>
-  <button class="k55-cat-btn" onclick="setK55Category('진로·다문화·위기', this)">진로·다문화·위기·학폭 (4선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('상담이론', this)">상담이론·집단·성격 (15선)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('진로·다문화·위기', this)">진로·다문화·윤리·위기 (6선)</button>
   <input type="text" class="k55-search-input" id="k55-search-input" placeholder="🔍 KICE 키워드·학자명·장애명 즉시 검색..." oninput="renderNav(); renderCards(); loadSavedAnswers();">
 </div>
 
@@ -3156,10 +3157,11 @@ function getList() {{
   if (currentPeriod === 'KICE55') {{
     const query = (document.getElementById('k55-search-input')?.value || '').trim().toLowerCase();
     list = dataKICE55.filter(item => {{
+      if (currentK55Cat === 'CORE55' && item.part === 'PED20' && ![1, 4, 5, 8, 10, 12, 13, 15, 17, 18].includes(item.id)) return false;
       if (currentK55Cat === 'PED10' && ![1, 4, 5, 8, 10, 12, 13, 15, 17, 18].includes(item.id)) return false;
       if (currentK55Cat === 'PED20' && item.part !== 'PED20') return false;
       if (currentK55Cat === 'COUNSEL35' && item.part !== 'COUNSEL35') return false;
-      if (!['ALL', 'PED10', 'PED20', 'COUNSEL35'].includes(currentK55Cat) && item.domain !== currentK55Cat) return false;
+      if (!['ALL', 'CORE55', 'PED10', 'PED20', 'COUNSEL35'].includes(currentK55Cat) && item.domain !== currentK55Cat) return false;
       if (query) {{
         const casesStr = (item.cases8 || []).map(c => c.q + ' ' + c.a).join(' ');
         const hay = (item.title + ' ' + item.concept + ' ' + item.keywords.join(' ') + ' ' + item.lines.join(' ') + ' ' + item.quiz_a + ' ' + casesStr).toLowerCase();
