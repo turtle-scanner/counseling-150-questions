@@ -1566,6 +1566,22 @@ body.b4-paper-mode .kal-rubric-bar {
   padding: 10px 14px;
   margin-bottom: 10px;
 }
+
+/* [v7.5] 100% 실전 블라인드 모드 & 라디오 낭독 하이라이트 */
+.q-card.radio-active {
+  border-color: #34d399 !important;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.35), 0 10px 30px rgba(16, 185, 129, 0.25) !important;
+}
+body.blind-exam-mode .concept-banner,
+body.blind-exam-mode .lecture-step-box,
+body.blind-exam-mode .kw-tags-strip,
+body.blind-exam-mode .cases8-box,
+body.blind-exam-mode .lbl-target-line,
+body.blind-exam-mode .quiz-typing-box,
+body.blind-exam-mode .b4-answer-sheet,
+body.blind-exam-mode .touch-chip-tray {
+  display: none !important;
+}
 </style>
 </head>
 <body>
@@ -1574,7 +1590,7 @@ body.b4-paper-mode .kal-rubric-bar {
   <div class="header-inner">
     <div class="brand-section">
       <span class="dday-seal" id="dday-seal">D-12 (11.28 결전)</span>
-      <span class="kice-seal">v7.0 완전체</span>
+      <span class="kice-seal">v7.5 최종완전체</span>
       <h1 class="exam-main-title">2027 임용 만점 템플릿 & 55개 KICE 핵심키워드 4줄 정답 타이핑</h1>
       <span class="examinee-tag">수험자: 변귀섭 대표님</span>
     </div>
@@ -1614,6 +1630,7 @@ body.b4-paper-mode .kal-rubric-bar {
 
     <div class="header-actions">
       <button class="btn-kice" onclick="toggleLectureProblemMode()" id="btn-lecture-mode" style="background:rgba(192,132,252,0.18); border-color:#c084fc; color:#f3e8ff; font-weight:800;">🎓 강의+문제 ON</button>
+      <button class="btn-kice" onclick="toggleBlindExamMode()" id="btn-blind-exam" style="border-color:#f43f5e; color:#fecdd3; font-weight:800;" title="강의·정답·힌트를 모두 숨기고 오직 문제와 빈 4줄 입력창만으로 실전 백지 테스트를 합니다">🙈 실전 블라인드 OFF</button>
       <button class="btn-kice btn-kw-blank-main" onclick="toggleKeywordBlankMode()" id="btn-kw-blank">🎯 핵심키워드 빈칸 만들기</button>
       <button class="btn-kice" onclick="toggleChosungHintMode()" id="btn-chosung-hint" style="border-color:#38bdf8; color:#7dd3fc; font-weight:800;" title="빈칸 안에 한글 초성(ㄱㄴㄷ) 힌트를 표시하여 0.5초 만에 연상 인출합니다">🔤 초성 힌트(ㄱㄴㄷ) 보기</button>
       <button class="btn-kice" onclick="toggleTouchChipMode()" id="btn-touch-chip" style="border-color:#38bdf8; color:#bae6fd; font-weight:800;" title="태블릿·모바일에서 타이핑 대신 키워드 칩을 터치해 빈칸을 조립합니다">👆 터치 조립 모드 OFF</button>
@@ -2023,8 +2040,24 @@ let isChosungHintMode = false;
 let showLectureProblem = true;
 let isTouchChipMode = false;
 let isMiniMockMode = false;
+let isBlindExamMode = false;
 let miniMockIds = [];
 const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+
+function toggleBlindExamMode() {
+  isBlindExamMode = !isBlindExamMode;
+  document.body.classList.toggle('blind-exam-mode', isBlindExamMode);
+  const btn = document.getElementById('btn-blind-exam');
+  if (btn) {
+    btn.classList.toggle('active', isBlindExamMode);
+    btn.textContent = isBlindExamMode ? '🙈 실전 블라인드 ON (정답 보기)' : '🙈 실전 블라인드 OFF';
+  }
+  renderCards();
+  loadSavedAnswers();
+  showToast(isBlindExamMode
+    ? '🙈 [100% 실전 블라인드 모드] 모든 힌트와 정답이 가려졌습니다! 오직 문제와 발문만 보고 4줄을 채워보세요.'
+    : '🔓 블라인드 모드가 해제되었습니다! 방금 작성한 답안의 KICE 칼채점 결과를 확인하세요.');
+}
 
 function toggleMiniMockExam() {
   isMiniMockMode = !isMiniMockMode;
@@ -2642,6 +2675,7 @@ function toggleRadioMode() {
   if (isRadioPlaying) {
     isRadioPlaying = false;
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    document.querySelectorAll('.q-card.radio-active').forEach(el => el.classList.remove('radio-active'));
     const btn = document.getElementById('btn-radio');
     if (btn) btn.textContent = '📻 연속 자동낭독 OFF';
     showToast('연속 자동낭독이 중지되었습니다.');
@@ -2662,6 +2696,7 @@ function toggleRadioMode() {
 function playNextRadioCard() {
   if (!isRadioPlaying) return;
   const items = getFilteredItems();
+  document.querySelectorAll('.q-card.radio-active').forEach(el => el.classList.remove('radio-active'));
   if (radioIndex >= items.length) {
     isRadioPlaying = false;
     const btn = document.getElementById('btn-radio');
@@ -2672,7 +2707,10 @@ function playNextRadioCard() {
   const q = items[radioIndex];
   const key = currentPeriod + q.num;
   const card = document.getElementById('card-' + key);
-  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (card) {
+    card.classList.add('radio-active');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
   const kwStr = (q.keywords || []).join(', ');
   const script = `${q.title}. 핵심 키워드: ${kwStr}. 4줄 만점 정답. ${(q.lines || []).join(' ')}`;
@@ -3234,7 +3272,7 @@ function renderCards() {
             <input type="text"
               class="lbl-input"
               id="lbl-in-${key}-${idx}"
-              placeholder="${isBlankMode ? '위의 파란색 빈칸 키워드가 포함된 문장을 완성하세요 (Enter 다음 줄)...' : escapeHtml(ln)}"
+              placeholder="${isBlindExamMode ? '힌트 없이 직접 4줄 답안을 작성하세요 (Enter 다음 줄)...' : (isBlankMode ? '위의 파란색 빈칸 키워드가 포함된 문장을 완성하세요 (Enter 다음 줄)...' : escapeHtml(ln))}"
               oninput="handleLineByLineInput('${currentPeriod}', ${q.num}, ${idx}, ${linesArr.length})"
               onkeydown="handleLineKeydown(event, '${key}', ${idx}, ${linesArr.length}, ${cardIdx})">
             <span class="lbl-char-badge" id="lbl-badge-${key}-${idx}">0자 / ${minC}~${maxC}자</span>
