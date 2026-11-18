@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027학년도(11.28) 1교시 교육학 0순위 적중 문제지 & 변귀섭 대표님 만점 논술 답안지</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #0f172a;
+    color: #111827;
+    padding: 24px 16px 60px;
+    line-height: 1.7;
+  }
+  .toolbar {
+    max-width: 920px;
+    margin: 0 auto 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #1e293b;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    color: #f8fafc;
+  }
+  .btn {
+    background: #38bdf8;
+    color: #082f49;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .btn.gold { background: #fbbf24; color: #451a03; }
+  .btn.green { background: #10b981; color: #022c22; }
+  .paper-sheet {
+    max-width: 920px;
+    margin: 0 auto 28px;
+    background: #fffdf8;
+    border: 2px solid #111827;
+    padding: 36px 40px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+    page-break-after: always;
+  }
+  .kice-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 3px double #111827;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  .kice-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+  }
+  .kice-meta {
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-align: right;
+  }
+  .prompt-lead {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
+  .passage-box {
+    border: 1.5px solid #1f2937;
+    background: #faf7f0;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 0.98rem;
+    line-height: 1.88;
+  }
+  .passage-box p { margin-bottom: 12px; }
+  .passage-box p:last-child { margin-bottom: 0; }
+  .rubric-box {
+    border: 1.5px solid #1f2937;
+    padding: 16px 22px;
+    background: #fff;
+  }
+  .rubric-title {
+    font-weight: 900;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+  .rubric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 760px) {
+    .rubric-grid { grid-template-columns: 1fr; }
+    .paper-sheet { padding: 20px 16px; }
+  }
+  .rubric-col h4 {
+    font-size: 0.94rem;
+    border-bottom: 1px solid #9ca3af;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    color: #1e3a8a;
+  }
+  .rubric-col ul { padding-left: 16px; }
+  .rubric-col li { margin-bottom: 4px; font-size: 0.87rem; }
+
+  /* B4 논술 답안지 스타일 */
+  .b4-sheet-box {
+    border: 2px solid #1e3a8a;
+    background-color: #fffef9;
+    background-image: linear-gradient(to bottom, transparent 35px, rgba(30, 58, 138, 0.35) 36px);
+    background-size: 100% 36px;
+    padding: 0 20px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 0.98rem;
+    line-height: 36px;
+  }
+  .essay-sec-tag {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 900;
+    color: #b91c1c;
+    font-size: 0.86rem;
+    margin-right: 6px;
+  }
+  .kw {
+    font-weight: 800;
+    color: #1e3a8a;
+    background: rgba(251, 191, 36, 0.28);
+    padding: 0 3px;
+    border-radius: 3px;
+  }
+  .plat {
+    font-weight: 800;
+    color: #047857;
+    text-decoration: underline;
+    text-decoration-color: rgba(4, 120, 87, 0.45);
+    text-underline-offset: 4px;
+  }
+  .blank-practice-area {
+    width: 100%;
+    min-height: 540px;
+    border: 2px solid #1e3a8a;
+    background-color: #fffef9;
+    background-image: linear-gradient(to bottom, transparent 35px, rgba(30, 58, 138, 0.35) 36px);
+    background-size: 100% 36px;
+    padding: 0 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.98rem;
+    line-height: 36px;
+    color: #111827;
+    outline: none;
+    resize: vertical;
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none !important; }
+    .paper-sheet { box-shadow: none; margin: 0 auto 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div><strong>📘 2027학년도(2026.11.28) 1교시 교육학 0순위 적중 시험지 & 모범 논술 답안지</strong></div>
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <button class="btn gold" onclick="toggleEssayHighlight()">🔍 핵심키워드·플랫폼 강조 토글</button>
+    <button class="btn green" onclick="speakFullEssay()">🎧 모범 논술 전체 음성 듣기</button>
+    <button class="btn" onclick="window.print()">🖨️ A4/B4 인쇄하기</button>
+  </div>
+</div>
+
+<!-- 1페이지: 실제 1교시 교육학 문제지 -->
+<section class="paper-sheet">
+  <div class="kice-top-bar">
+    <div>
+      <div style="font-size:0.82rem; font-weight:700; color:#4b5563;">2027학년도 중등학교교사 임용후보자 선정경쟁시험 (2026.11.28 대비)</div>
+      <div class="kice-title">1교시 교 육 학 (논술형)</div>
+    </div>
+    <div class="kice-meta">
+      <div>수험자: 변귀섭 대표님</div>
+      <div>시험 시간: 60분 | 배점: 20점</div>
+    </div>
+  </div>
+
+  <div class="prompt-lead">
+    다음은 ○○고등학교 교사들의 수업 연구 협의회 대화 일부이다. 이를 읽고 <u>‘학생 주도적 성장을 이끄는 미래형 학교 교육’</u>을 주제로 <strong>교육과정, 교육방법, 교육평가, 교육행정</strong>의 4개 영역에서 서론, 본론, 결론을 갖추어 논하시오. [20점]
+  </div>
+
+  <div class="passage-box">
+    <p><strong>김 교사(교육과정):</strong> 그동안 저는 교과서 진도를 끝내거나 재미있는 체험 활동만 나열하는 데 급급했던 것 같아요. 다음 학기에는 먼저 성취기준을 분석해 학생들이 세부 사실을 잊은 후에도 삶에 오래 남아 전이되는 핵심 대개념을 설정하고, 수업 활동을 짜기 전에 수행과제와 채점 기준표부터 먼저 설계하려고 합니다. 아울러 우리 학교가 처한 학부모·지역사회 요구 같은 외적 여건과 교사·학생·물적 시설 같은 내적 여건도 정밀하게 진단해야겠습니다.</p>
+    <p><strong>이 교사(교육방법):</strong> 맞습니다. 저는 수업 전 온라인 짧은 영상으로 기초 개념을 미리 익혀 오게 하고, 교실에서는 일방적 강의 대신 모둠별 협력 문제해결을 진행하며 순회 지도하려고 합니다. 또한 수업 자료에 불필요한 애니메이션과 중복 설명을 없애 학생들의 작동기억 용량이 낭비되지 않게 설계하고, 숙련된 학생에게는 과도한 초보자용 안내를 줄여 오히려 학습을 방해하는 역효과를 막으려 합니다.</p>
+    <p><strong>박 교사(교육평가):</strong> 평가에서도 변화가 필요합니다. 학생이 혼자 해결하는 실제적 수준과 도움을 받아 도달할 수 있는 잠재적 수준 사이의 간극에 주목해, 1차 검사 후 평가 도중 교사가 직접 힌트와 발판을 제공하고 다시 검사하여 미래 성장 가능성을 측정하려고 합니다. 또한 서술형 수행평가를 할 때는 세부 영역별 강약점을 진단해 맞춤형 피드백을 줄 수 있는 다차원 채점기준표를 개발해 과제 부여 전에 학생들에게 미리 공개하려고 합니다.</p>
+    <p><strong>최 교사(교육행정):</strong> 학교장의 역할도 중요합니다. 법규와 지시에 의존하는 관료적 권위를 벗어나 전문성과 도덕적 권위를 바탕으로 교사 한 분 한 분을 자율적인 자기지도자로 세우고, 공유된 교육적 사명감으로 뭉친 공동체를 만들어야 합니다. 동시에 학교 제도의 공식적 역할 기대와 교사 개인의 인성 및 욕구 성향이 충돌해 역할 갈등이 생길 때, 상황에 맞게 양자를 슬기롭게 조화시키는 지도성이 필요합니다.</p>
+  </div>
+
+  <div class="rubric-box">
+    <div class="rubric-title">&lt; 배 점 및 세 부 작 성 방 법 (총 20점) &gt;</div>
+    <div class="rubric-grid">
+      <div class="rubric-col">
+        <h4>① 교육과정 [4점]</h4>
+        <ul>
+          <li>역방향 설계 모형의 1단계 명칭과 핵심 목표</li>
+          <li>평가를 먼저 설계해 극복하려는 2가지 설계 오류</li>
+          <li>학교중심 교육과정 개발 시 제1단계 명칭</li>
+          <li>제1단계에서 분석할 외적·내적 요인 각 2가지</li>
+        </ul>
+      </div>
+      <div class="rubric-col">
+        <h4>② 교육방법 [4점]</h4>
+        <ul>
+          <li>역진행 수업의 수업 전·중·후 3단계 활동</li>
+          <li>비효율적 교수 설계로 발생하는 부하 명칭</li>
+          <li>장기기억 스키마 형성에 투입되는 부하 명칭</li>
+          <li>숙련자에게 상세 안내가 방해가 되는 현상 명칭</li>
+        </ul>
+      </div>
+      <div class="rubric-col">
+        <h4>③ 교육평가 [4점]</h4>
+        <ul>
+          <li>평가 기반 발달 간극의 명칭과 3단계 측정 절차</li>
+          <li>평가-교수 통합을 통해 파악하려는 궁극적 목적</li>
+          <li>세부 영역별 진단 채점기준표 명칭과 3대 구성 요소</li>
+          <li>채점기준표를 평가 전에 사전 공유해야 하는 이유</li>
+        </ul>
+      </div>
+      <div class="rubric-col">
+        <h4>④ 교육행정 [4점]</h4>
+        <ul>
+          <li>학교장이 지향할 지도성 명칭과 기반 권위</li>
+          <li>이 지도성이 교사를 어떤 존재로 키우는지</li>
+          <li>공식적 역할 기대 차원과 개인적 욕구 차원 명칭</li>
+          <li>역할 갈등 시 요구되는 관리자의 지도성 유형</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:10px; font-size:0.86rem; text-align:right; font-weight:700; color:#374151;">
+      ※ 논술의 구성 및 표현 [4점] (서론·본론·결론의 논리적 체계성 및 문장 표현)
+    </div>
+  </div>
+</section>
+
+<!-- 2페이지: 변귀섭 대표님 플랫폼 결합 B4 모범 논술 답안지 -->
+<section class="paper-sheet">
+  <div class="kice-top-bar">
+    <div>
+      <div style="font-size:0.82rem; font-weight:700; color:#047857;">변귀섭 대표님 전용 만능 플랫폼(서론·이처럼~·결론) + KICE 핵심 키워드 결합</div>
+      <div class="kice-title">20점 만점 모범 논술 답안지 (B4 줄노트)</div>
+    </div>
+    <div class="kice-meta">
+      <div>예상 득점: 20.0 / 20.0점</div>
+      <div>초록 밑줄: 내 플랫폼 | 노랑 음영: 채점 키워드</div>
+    </div>
+  </div>
+
+  <div class="b4-sheet-box" id="model-essay-box">
+    <p><span class="essay-sec-tag">[서론]</span>
+      <span class="plat">최근 급변하는 미래 교육환경 속에서 학생 주도적 성장을 이끄는 미래형 학교 교육에 대한 화제가 대두되고 있다.</span>
+      <span class="plat">이러한 패러다임에 맞춰 교사는 단편적 지식 전달이 아닌 역량을 함양해야 한다.</span>
+      <span class="plat">여기에서는 제시문에 나온 교사들의 대화를 통해 학생 주도적 성장 방안을 살펴본다.</span>
+      <span class="plat">교육과정, 교육방법, 교육평가, 교육행정의 4가지 측면에서 논하고자 한다.</span>
+    </p>
+    <p><span class="essay-sec-tag">[본론 1: 교육과정]</span>
+      첫째, 교육과정에서 <span class="kw">백워드 설계 모형</span> 1단계는 <span class="kw">바라는 결과 확인</span>으로 성취기준을 분석해 <span class="kw">영속적 이해(Big Idea)</span>를 설정한다.
+      수업 활동보다 수행과제와 루브릭을 먼저 설계함으로써 <span class="kw">진도 나가기 오류</span>와 <span class="kw">활동 위주의 오류</span>를 극복한다.
+      또한 <span class="kw">학교중심 교육과정 개발(SBCD)</span>에서는 내외적 교육 여건을 진단하는 <span class="kw">상황분석</span>을 가장 먼저 수행한다.
+      이때 외적 요인으로 학부모의 요구와 지역사회 특성을, 내적 요인으로 학생의 적성과 교사의 전문성을 점검한다.
+      <span class="plat">이처럼 교사가 교육과정에서 백워드 설계와 상황분석을 쓰면 미래형 교육 혁신이 실현된다.</span>
+    </p>
+    <p><span class="essay-sec-tag">[본론 2: 교육방법]</span>
+      둘째, 교육방법에서 <span class="kw">플립드 러닝(거꾸로 수업)</span>은 수업 전 <span class="kw">디딤영상 사전학습</span>, 수업 중 <span class="kw">협력적 문제해결</span> 및 순회 비계, 수업 후 <span class="kw">성찰일지(초인지)</span>로 전개된다.
+      수업 자료 설계 시 불필요한 애니메이션과 중복 정보를 제거하여 <span class="kw">외재적 인지부하</span>를 최소화한다.
+      확보된 여유 인지 자원은 <span class="kw">본질적 인지부하</span>에 집중 투입하여 학습자의 장기기억 <span class="kw">스키마 형성</span>을 촉진한다.
+      아울러 초보자에게 유익한 상세 안내가 숙련자에게 오히려 방해가 되는 <span class="kw">전문성 역전 효과</span>를 예방한다.
+      <span class="plat">이처럼 교사가 교육방법에서 역진행 수업과 인지부하 관리를 쓰면 신개념 수업 혁신이 실현된다.</span>
+    </p>
+    <p><span class="essay-sec-tag">[본론 3: 교육평가]</span>
+      셋째, 교육평가에서 비고츠키의 <span class="kw">근접발달영역(ZPD)</span>에 기반한 <span class="kw">역동적 평가</span>는 <span class="kw">사전검사-중재-재검사</span>의 3단계로 진행된다.
+      평가 도중 힌트와 비계를 제공하는 <span class="kw">평가와 교수의 통합</span>을 통해 학생의 <span class="kw">잠재적 발달수준과 성장 가능성</span>을 파악한다.
+      서술형 수행평가에는 <span class="kw">평가 준거, 성취 수준, 척도 기술어</span>로 구성된 <span class="kw">분석적 루브릭</span>을 개발하여 세부 영역별 강약점을 진단한다.
+      특히 루브릭을 평가 전에 <span class="kw">사전 공유</span>함으로써 학생이 도달할 목표를 명확히 알고 자기조절학습을 하도록 돕는다.
+      <span class="plat">이처럼 교사가 교육평가에서 역동적 평가와 분석적 루브릭을 쓰면 전인적 성장 평가가 실현된다.</span>
+    </p>
+    <p><span class="essay-sec-tag">[본론 4: 교육행정]</span>
+      넷째, 교육행정에서 학교장은 관료적 권위를 탈피하여 전문성과 도덕적 권위에 기반한 <span class="kw">도덕적 리더십</span>을 발휘한다.
+      이를 통해 교사를 수동적 피감독자가 아닌 자율적 <span class="kw">자기지도자(Self-leader)</span>로 육성하여 도덕적 공동체를 구축한다.
+      사회체계 모형에서 공식적 역할 기대는 <span class="kw">규범적 차원</span>이며 교사 개인의 인성과 욕구 성향은 <span class="kw">개인적 차원</span>에 속한다.
+      양 차원의 충돌로 역할 갈등이 발생할 때, 관리자는 상황에 맞게 조직과 개인을 조화시키는 <span class="kw">거래적 지도성</span>을 발휘한다.
+      <span class="plat">이처럼 교사가 교육행정에서 도덕적 리더십과 사회체계 조화를 쓰면 교사의 수석 역량이 증진된다.</span>
+    </p>
+    <p><span class="essay-sec-tag">[결론]</span>
+      <span class="plat">지금까지 학생 주도적 성장을 이끄는 미래형 학교 교육을 교육과정, 교육방법, 교육평가, 교육행정에서 살펴보았다.</span>
+      <span class="plat">다가오는 미래 교육이 성공하려면 무엇보다 교사의 인식과 실천이 중요하다.</span>
+      <span class="plat">따라서 교사는 끊임없는 자기 연찬과 동료 교사와의 협업으로 성장해야 한다.</span>
+      <span class="plat">또한 학생들에게 든든한 버팀목이자 교육 안내자 및 성장 촉진자가 되어야 한다.</span>
+    </p>
+  </div>
+</section>
+
+<!-- 3페이지: 직접 써보는 실전 B4 백지 답안지 -->
+<section class="paper-sheet">
+  <div class="kice-top-bar">
+    <div>
+      <div style="font-size:0.82rem; font-weight:700; color:#1e40af;">직접 타이핑하거나 인쇄해서 수성 사인펜으로 써보는 실전 연습지</div>
+      <div class="kice-title">1교시 교육학 실전 B4 백지 답안지</div>
+    </div>
+    <div class="kice-meta">
+      <div id="practice-char-count">작성 글자 수: 0자</div>
+      <div>목표: 서론(4줄)+본론(4영역)+결론(4줄)</div>
+    </div>
+  </div>
+  <textarea class="blank-practice-area" id="practice-essay" oninput="document.getElementById('practice-char-count').textContent='작성 글자 수: '+this.value.length+'자';" placeholder="여기에 위 모범 논술 답안지(또는 나만의 플랫폼 + 핵심 키워드)를 직접 타이핑해 보시거나, 상단 '인쇄하기' 버튼을 눌러 종이에 수성 사인펜으로 옮겨 적어 보세요!"></textarea>
+</section>
+
+<script>
+let hlOn = true;
+function toggleEssayHighlight() {
+  hlOn = !hlOn;
+  document.querySelectorAll('.kw').forEach(el => {
+    el.style.background = hlOn ? 'rgba(251, 191, 36, 0.28)' : 'transparent';
+    el.style.color = hlOn ? '#1e3a8a' : '#111827';
+  });
+  document.querySelectorAll('.plat').forEach(el => {
+    el.style.textDecoration = hlOn ? 'underline' : 'none';
+    el.style.color = hlOn ? '#047857' : '#111827';
+  });
+}
+function speakFullEssay() {
+  if (!('speechSynthesis' in window)) return alert('이 브라우저는 음성 낭독을 지원하지 않습니다.');
+  window.speechSynthesis.cancel();
+  const txt = document.getElementById('model-essay-box').innerText.replace(/\[.*?\]/g, '');
+  const u = new SpeechSynthesisUtterance(txt);
+  u.lang = 'ko-KR';
+  u.rate = 0.96;
+  window.speechSynthesis.speak(u);
+}
+</script>
+</body>
+</html>
