@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>2027학년도(11.28) 2·3교시 전문상담 A형·B형 0순위 적중 시험지 & B4 모범답안지</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #0f172a;
+    color: #111827;
+    padding: 20px 14px 70px;
+    line-height: 1.7;
+  }
+  .toolbar {
+    position: sticky;
+    top: 8px;
+    z-index: 100;
+    max-width: 960px;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(8px);
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #38bdf8;
+    color: #f8fafc;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+  }
+  .btn {
+    background: #38bdf8;
+    color: #082f49;
+    border: none;
+    padding: 7px 13px;
+    border-radius: 6px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn.active-tab { background: #fbbf24; color: #451a03; box-shadow: 0 0 0 2px #fde047; }
+  .btn.dark { background: #1e293b; color: #e2e8f0; border: 1px solid #475569; }
+  .btn.green { background: #10b981; color: #022c22; }
+  .btn.rose { background: #f43f5e; color: #fff; }
+  .paper-sheet {
+    max-width: 960px;
+    margin: 0 auto 28px;
+    background: #fffdf8;
+    border: 2px solid #111827;
+    padding: 34px 38px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+  }
+  @media (max-width: 760px) {
+    .paper-sheet { padding: 20px 14px; }
+    .toolbar { position: static; }
+  }
+  .kice-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 3px double #111827;
+    padding-bottom: 10px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .kice-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+  }
+  .kice-meta {
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-align: right;
+  }
+  .q-block {
+    border: 1.5px solid #cbd5e1;
+    border-left: 5px solid #1e3a8a;
+    background: #ffffff;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+    border-radius: 4px;
+    page-break-inside: avoid;
+  }
+  .q-block.type-b {
+    border-left-color: #b45309;
+  }
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 900;
+    font-size: 1rem;
+    color: #0f172a;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .q-badge {
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #7dd3fc;
+  }
+  .q-badge.essay {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fcd34d;
+  }
+  .q-passage {
+    font-family: 'Nanum Myeongjo', serif;
+    background: #faf7f0;
+    border: 1px solid #d6d3d1;
+    padding: 13px 16px;
+    margin-bottom: 12px;
+    font-size: 0.96rem;
+    line-height: 1.82;
+    white-space: pre-line;
+  }
+  .q-asks {
+    background: #f8fafc;
+    border: 1px dashed #64748b;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+  .q-asks strong { color: #1e3a8a; }
+  .b4-ans-box {
+    border: 1.5px solid #1e3a8a;
+    background-color: #fffef9;
+    background-image: linear-gradient(to bottom, transparent 33px, rgba(30, 58, 138, 0.28) 34px);
+    background-size: 100% 34px;
+    padding: 0 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.94rem;
+    line-height: 34px;
+    margin-bottom: 10px;
+    transition: filter 0.2s;
+  }
+  .b4-ans-box.masked {
+    filter: blur(6px);
+    user-select: none;
+    cursor: pointer;
+  }
+  .b4-ans-box.masked:hover {
+    filter: blur(0);
+  }
+  .kw {
+    font-weight: 800;
+    color: #1e3a8a;
+    background: rgba(251, 191, 36, 0.3);
+    padding: 0 3px;
+    border-radius: 3px;
+  }
+  .practice-input {
+    width: 100%;
+    border: 1.5px solid #94a3b8;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    background: #fff;
+    color: #111827;
+    resize: vertical;
+  }
+  .practice-input:focus {
+    outline: none;
+    border-color: #0284c7;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+  }
+  .char-info {
+    font-size: 0.78rem;
+    color: #475569;
+    text-align: right;
+    margin-top: 3px;
+    font-weight: 700;
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .practice-wrap { display: none !important; }
+    .paper-sheet { box-shadow: none; margin: 0 auto 20px; border: none; padding: 12px; }
+    .b4-ans-box.masked { filter: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+    <button class="btn active-tab" id="btn-show-all" onclick="filterExam('ALL', this)">📚 A+B 전체 (23문항)</button>
+    <button class="btn dark" id="btn-show-a" onclick="filterExam('A', this)">📗 2교시 전공 A형 (12문항)</button>
+    <button class="btn dark" id="btn-show-b" onclick="filterExam('B', this)">📙 3교시 전공 B형 (11문항)</button>
+  </div>
+  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+    <button class="btn rose" id="btn-mask-all" onclick="toggleAllAnswers()">🙈 정답 가리기 (백지 연습)</button>
+    <button class="btn green" onclick="speakCurrentSection()">🎧 모범답안 전체 듣기</button>
+    <button class="btn" onclick="window.print()">🖨️ 인쇄하기</button>
+    <a class="btn dark" href="pedagogy_essay_2027.html">📘 1교시 교육학 시험지</a>
+  </div>
+</div>
+
+<!-- 2교시 전공 A형 -->
+<section class="paper-sheet" id="section-A">
+  <div class="kice-top-bar">
+    <div>
+      <div style="font-size:0.82rem; font-weight:700; color:#4b5563;">2027학년도 중등학교교사 임용후보자 선정경쟁시험 (2026.11.28 적중)</div>
+      <div class="kice-title">2교시 전문상담 [전공 A]</div>
+    </div>
+    <div class="kice-meta">
+      <div>수험자: 변귀섭 대표님</div>
+      <div>기입형 4문항 + 서술형 8문항 (40점)</div>
+    </div>
+  </div>
+  <div id="container-A"></div>
+</section>
+
+<!-- 3교시 전공 B형 -->
+<section class="paper-sheet" id="section-B">
+  <div class="kice-top-bar">
+    <div>
+      <div style="font-size:0.82rem; font-weight:700; color:#4b5563;">2027학년도 중등학교교사 임용후보자 선정경쟁시험 (2026.11.28 적중)</div>
+      <div class="kice-title">3교시 전문상담 [전공 B]</div>
+    </div>
+    <div class="kice-meta">
+      <div>수험자: 변귀섭 대표님</div>
+      <div>기입형 2문항 + 서술형 9문항 (40점)</div>
+    </div>
+  </div>
+  <div id="container-B"></div>
+</section>
+
+<script>
+const EXAM_A = [
+  {
+    num: 1, type: '기입형', score: 2,
+    lead: '다음은 전문상담교사의 사례 연구 노트 일부이다. 괄호 안의 ㉠, ㉡에 들어갈 가장 적합한 용어를 각각 쓰시오.',
+    passage: '내담자 민호는 실제로는 학급 친구들과 담임교사가 자신을 따뜻하게 대하고 있음에도 불구하고, 친구들의 미소를 "나를 조롱하고 따돌리려는 비웃음"으로 주관적으로 왜곡해 지각하며 등교를 거부한다. 인간 행동을 내적 욕구와 외적 환경의 상호작용으로 보는 관점에서, 친구들이 실제로 친절하게 대하는 것과 같이 객관적으로 실재하는 물리적 환경 요인은 ( ㉠ )이며, 민호가 주관적으로 해석하여 실제 부적응 행동을 지배하는 환경 요인은 ( ㉡ )이다.',
+    asks: [],
+    ans: ['정답: ㉠ 알파 압착(알파 압력)  /  ㉡ 베타 압착(베타 압력)'],
+    kws: ['알파 압착(알파 압력)', '베타 압착(베타 압력)']
+  },
+  {
+    num: 2, type: '기입형', score: 2,
+    lead: '다음은 대인관계 상담 수퍼비전 기록 일부이다. 괄호 안의 ㉠, ㉡에 들어갈 가장 적합한 용어를 각각 쓰시오.',
+    passage: '내담자 수진은 유년 시절 양육자로부터 감당할 수 없는 폭력과 극심한 공포를 겪은 기억을 의식에서 완전히 분리하여 해리된 무의식적 자아상인 ( ㉠ )을 형성하였다. 이로 인해 수진은 현재 자신에게 따뜻하게 다가오는 담임교사에게도 과거 폭력적이었던 아버지의 모습을 그대로 투사하여 교사가 자신을 해칠 것이라며 적대적으로 반응하는 ( ㉡ ) 현상을 보이고 있다.',
+    asks: [],
+    ans: ['정답: ㉠ 나-아닌-나(Not-Me)  /  ㉡ 병렬적 왜곡(Parataxic Distortion)'],
+    kws: ['나-아닌-나(Not-Me)', '병렬적 왜곡(Parataxic Distortion)']
+  },
+  {
+    num: 3, type: '기입형', score: 2,
+    lead: '다음은 상담 수퍼비전 및 다문화 상담 협의록 일부이다. 괄호 안의 ㉠, ㉡에 들어갈 가장 적합한 용어를 각각 쓰시오.',
+    passage: '다문화 가정 학생이 학급에서 겪은 미묘한 따돌림과 차별 고충을 털어놓자, 초임 상담교사는 "친구들이 장난친 걸 가지고 네가 너무 예민하게 생각하는 거야"라며 학생의 차별 경험을 부인하고 축소하는 ( ㉠ )을 범하였다. 이에 수퍼바이저는 초임 교사에게 지시하기보다 동등한 동료 입장에서 함께 대안을 모색하는 ( ㉡ ) 역할로 개입하였다.',
+    asks: [],
+    ans: ['정답: ㉠ 미세무효화  /  ㉡ 자문가'],
+    kws: ['미세무효화', '자문가']
+  },
+  {
+    num: 4, type: '기입형', score: 2,
+    lead: '다음은 집단상담 프로그램 평가 보고서 일부이다. 괄호 안의 ㉠, ㉡에 들어갈 가장 적합한 용어를 각각 쓰시오.',
+    passage: '자기성장 집단상담 초기 회기에서 한 학생이 "나만 부모님과 갈등을 겪고 힘든 줄 알았는데, 다른 친구들도 비슷한 아픔이 있다는 걸 알게 되어 안도감이 들었다"라고 보고한 치료적 요인은 ( ㉠ )이다. 한편 집단원이 서로를 신뢰하고 수용하며 개인상담의 치료적 동맹에 해당하는 소속감을 느끼는 핵심 요인은 ( ㉡ )이다.',
+    asks: [],
+    ans: ['정답: ㉠ 보편성  /  ㉡ 집단 응집력'],
+    kws: ['보편성', '집단 응집력']
+  },
+  {
+    num: 5, type: '서술형', score: 4,
+    lead: '다음은 두 학생의 상담 기록 일부이다. <작성 방법>에 따라 서술하시오.',
+    passage: '[진숙] 문고리를 잡을 때마다 세균에 감염될 것 같다는 생각이 머릿속에 침습해 너무 괴롭고 고통스러워하며, 불안을 가라앉히기 위해 손이 짓무를 때까지 하루 50번씩 손을 씻는다.\n[진수] 모든 모둠 과제를 자신의 엄격한 완벽주의 기준과 목록대로 통제해야 직성이 풀리며, 자신의 규칙이 전적으로 옳다고 믿고 타인이 따르지 않으면 분노한다.',
+    asks: [
+      '진숙과 진수의 DSM-5-TR 공식 진단명을 각각 쓸 것.',
+      '증상을 바라보는 태도 측면에서 진숙과 진수가 보이는 심리적 특성을 대비하여 쓸 것.',
+      '진숙에게 적용할 가장 효과적인 행동 치료적 기법의 정식 명칭과 원리를 쓸 것.'
+    ],
+    ans: [
+      '내담자 진숙의 공식 진단명은 강박장애이며 진수는 강박성 성격장애이다.',
+      '진숙은 자아 이질적 특성이며 진수는 완벽주의를 당연시하는 자아 동질적이다.',
+      '진숙에게 적용할 행동 치료적 기법의 정식 명칭은 노출 및 반응방지(ERP)다.',
+      '불안 자극에 노출시킨 후 강박행동을 차단하여 불안이 자연 소거되도록 돕는다.'
+    ],
+    kws: ['강박장애', '강박성 성격장애', '자아 이질적', '자아 동질적', '노출 및 반응방지(ERP)', '자연 소거']
+  },
+  {
+    num: 6, type: '서술형', score: 4,
+    lead: '다음은 고위험군 고등학생 C의 심리검사 및 면담 기록이다. <작성 방법>에 따라 서술하시오.',
+    passage: '최근 결석이 잦고 급격한 우울감을 호소하는 고등학생 C에게 실시한 검사에서, 다른 척도보다 SUI 척도가 T점수 82점으로 가장 높게 상승하였다. 면담 중 C는 "오늘 밤 옥상에서 뛰어내릴 생각인데 부모님께는 절대 비밀로 해 달라"고 요구하고 있다.',
+    asks: [
+      'SUI 척도의 한글 정식 명칭과 T점수 82점이 시사하는 임상적 위험 수준을 쓸 것.',
+      '내담자의 비밀 유지 요구에도 불구하고 상담자가 발동해야 할 윤리적 원칙과 구체적 위기개입 조치를 쓸 것.'
+    ],
+    ans: [
+      '즉각적인 생명 위협을 나타내는 척도는 자살/죽음 사고 척도(SUI)이다.',
+      'T점수 82점은 구체적인 자살 사고와 자살 실행 위험성이 극도로 임박함을 뜻한다.',
+      '자살 위기는 비밀보장의 예외 사안이므로 보호자에게 사실을 즉각 통보한다.',
+      '위기관리위원회를 소집하고 전문 의료기관으로 긴급 연계하여 안전을 지킨다.'
+    ],
+    kws: ['자살/죽음 사고 척도(SUI)', '자살 실행 위험성', '비밀보장의 예외', '위기관리위원회', '전문 의료기관']
+  },
+  {
+    num: 7, type: '서술형', score: 4,
+    lead: '다음은 학교 부적응으로 의뢰된 중학생 D의 가족상담 기록이다. <작성 방법>에 따라 서술하시오.',
+    passage: '중학생 D는 매일 아침 원인을 알 수 없는 심한 복통을 호소하며 등교를 거부한다. 가족상담 결과, 냉전 중이던 부모는 서로 직접 대화하지 않고 D의 문제로만 대화를 나누거나 D에게 상대방의 흉을 보며 자기편이 되어 달라고 요구하고 있었다.',
+    asks: [
+      '부부 갈등에 자녀를 끌어들이는 가족 역동의 명칭과 이로 인한 D의 증상을 쓸 것.',
+      '상담자가 부모에게 유지해야 할 태도와 자녀를 갈등 고리에서 분리하는 개입 기법의 명칭을 쓸 것.'
+    ],
+    ans: [
+      '부부 사이의 갈등에 자녀를 끌어들이는 가족 역동의 명칭은 삼각관계이다.',
+      '자녀는 부모 사이의 불안을 흡수하여 복통이라는 신체화 증상을 나타낸다.',
+      '상담자는 부모 어느 한쪽에도 치우치지 않고 객관적 정서적 중립성을 지킨다.',
+      '자녀를 부모의 갈등에서 분리하여 자율성을 주는 개입 기법은 탈삼각화이다.'
+    ],
+    kws: ['삼각관계', '신체화 증상', '정서적 중립성', '탈삼각화']
+  },
+  {
+    num: 8, type: '서술형', score: 4,
+    lead: '다음은 고등학생 E와의 상담 축어록 일부이다. <작성 방법>에 따라 서술하시오.',
+    passage: 'E: ㉠"1등급이 아니면 완전히 실패한 쓰레기 인생이에요." ㉡"이번 시험을 망쳤으니 대학도 못 가고 제 인생은 영원히 끝장났어요."\n상담자: 만약 대학에 한 번에 못 간다면, 그것이 E에게 어떤 의미인가요?\nE: 제가 무능하고 사랑받을 자격이 없는 인간이라는 뜻이에요.',
+    asks: [
+      '밑줄 친 ㉠, ㉡에 해당하는 인지적 오류의 공식 명칭을 각각 쓸 것.',
+      '상담자가 핵심 신념을 탐색하기 위해 사용한 기법의 명칭을 쓸 것.',
+      '해당 기법의 탐색 원리와 핵심 질문 형식을 쓸 것.'
+    ],
+    ans: [
+      '사례의 1번 오류는 이분법적 사고이며 2번은 파국적 결과를 예상하는 재앙화다.',
+      '핵심 신념을 체계적으로 탐색하기 위해 사용한 기법은 하향 화살표 기법이다.',
+      '자동적 사고의 기저에 깔려 있는 역기능적 신념을 단계별로 파헤쳐 확인한다.',
+      '만약 그 생각이 사실이라면 그것이 무엇을 의미하는지 질문하여 밝혀낸다.'
+    ],
+    kws: ['이분법적 사고', '재앙화', '하향 화살표 기법', '역기능적 신념']
+  },
+  {
+    num: 9, type: '서술형', score: 4,
+    lead: '다음은 고등학교 2학년 민수의 상담 기록이다. <작성 방법>에 따라 서술하시오.',
+    passage: '민수는 달리기 직후 심장이 빨리 뛰자 ㉠"심장이 터져서 지금 당장 죽을지도 모른다"는 극심한 공포를 겪은 뒤, 이후 발작 시 즉시 빠져나오기 어려운 만석 지하철과 영화관에 가는 것을 전면 회피하고 있다. 상담자는 상담실 안에서 민수가 제자리에서 빠르게 숨을 몰아쉬어 어지럼증을 직접 경험하게 한 뒤 아무 일도 일어나지 않음을 확인시켰다.',
+    asks: [
+      '밑줄 친 ㉠ 반응의 공식 명칭을 쓸 것.',
+      '무해한 생리적 각성이 공황발작으로 증폭되는 인지적 기제를 쓸 것.',
+      '상담자가 사용한 행동치료 기법의 정식 명칭을 쓸 것.',
+      '즉시 탈출이 어려운 장소를 회피하는 추가 공식 진단명을 쓸 것.'
+    ],
+    ans: [
+      '밑줄 친 ㉠의 공식 명칭은 신체 감각을 위험으로 여기는 파국적 오해석이다.',
+      '무해한 생리적 각성을 파멸로 잘못 해석하여 극심한 공포가 악순환 증폭된다.',
+      '두려워하는 신체 감각에 직접 직면하게 하는 행동 기법은 내수용성 노출이다.',
+      '즉각 탈출하기 어려운 장소를 지속적으로 회피하는 추가 병명은 광장공포증이다.'
+    ],
+    kws: ['파국적 오해석', '생리적 각성', '내수용성 노출', '광장공포증']
+  },
+  {
+    num: 10, type: '서술형', score: 4,
+    lead: '다음은 상담 윤리 갈등 사례이다. <작성 방법>에 따라 서술하시오.',
+    passage: '박 교사는 평소 친분이 두터운 이웃 학부모로부터 자녀의 개인상담을 부탁받고 고민에 빠졌다. 또한 다른 고위험군 내담자와의 초기 면접에서 비밀보장의 범위와 예외 사안 등을 충분히 설명해 동의를 얻지 않은 채 상담을 진행하였다가 추후 보호자 통보 과정에서 큰 갈등을 겪었다.',
+    asks: [
+      '상담 시작 전 비밀보장의 범위와 한계 등을 설명하고 동의를 얻는 절차의 명칭을 쓸 것.',
+      '친분이 있는 이웃 자녀를 상담할 때 발생할 수 있는 윤리적 문제의 명칭을 쓸 것.',
+      '윤리적 딜레마 판단을 위한 5대 윤리 원칙을 모두 쓸 것.',
+      '위 원칙 중 내담자의 안전과 관련해 가장 우선적으로 고려해야 할 원칙을 쓸 것.'
+    ],
+    ans: [
+      '상담 시작 전 비밀보장과 한계 및 절차를 설명해 동의를 얻는 것은 사전동의다.',
+      '상담자의 객관성을 흐리고 착취 위험을 높이는 다중(이중)관계는 엄격히 피한다.',
+      '윤리적 의사결정 원칙은 자율성, 무해성, 선행, 정의, 충실성의 5가지다.',
+      '윤리적 딜레마가 발생하면 해를 입히지 않는 무해성 원칙을 최우선 고려한다.'
+    ],
+    kws: ['사전동의', '다중(이중)관계', '자율성, 무해성, 선행, 정의, 충실성', '무해성']
+  },
+  {
+    num: 11, type: '서술형', score: 4,
+    lead: '다음은 자살 암시 글을 게시하여 위기상담실로 인계된 학생 G의 위기개입 기록이다. <작성 방법>에 따라 서술하시오.',
+    passage: '전문상담교사는 자살 위험 평가를 위해 최근 사건과 과거 사건을 탐색한 뒤 마지막 4번째 영역을 확인하고 있다. 이어 위기개입의 마지막 제6단계에서 G와 함께 위기 시 연락할 비상 연락망과 자살 수단 제거 지침을 문서로 작성하였다. 한편 이번 사안의 학교폭력 가해학생에게는 출석정지 처분이 내려졌으나, 가해학생이 피해학생에게 보복 협박 문자를 보내 심의위원회가 재소집되었다.',
+    asks: [
+      '4단계 자살 사정 모델의 마지막 단계 명칭과 이 단계에서 직접 묻는 내용을 쓸 것.',
+      '위기개입 제6단계의 명칭과 내담자와 함께 작성하는 문서의 정식 명칭을 쓸 것.',
+      '학교폭력예방법 제17조상 가해학생 출석정지 조치의 호수와 보복행위 시 처분 원칙을 쓸 것.'
+    ],
+    ans: [
+      '숀 셰이 (Shawn Shea) CASE 모델의 마지막 사정 단계는 즉각 사건이다.',
+      '지금 여기 상담실 안에서 자살 충동을 느끼는지 직접 구체적으로 묻는다.',
+      '길리랜드 위기개입 제6단계인 참여 유도 단계에서 안전계획서를 함께 작성한다.',
+      '학폭 가해학생 출석정지는 제6호 조치이며 보복행위 시 처분을 가중 조치한다.'
+    ],
+    kws: ['숀 셰이 (Shawn Shea) CASE 모델', '즉각 사건', '참여 유도 단계', '안전계획서', '제6호 조치', '가중 조치']
+  },
+  {
+    num: 12, type: '서술형', score: 4,
+    lead: '다음은 두 고등학생의 진로상담 사례이다. <작성 방법>에 따라 서술하시오.',
+    passage: '[준호] 한 번도 자신의 적성이나 흥미를 고민해 본 적이 없으면서도, "부모님이 공무원이 안정적이라고 하셨으니 당연히 공무원 시험을 준비할 것"이라고 말한다.\n[혜진] 다양한 동아리 활동을 탐색하며 고민 중이지만 아직 진로를 확정하지 못해 불안해하고 있어, 상담자는 예상치 못한 우연한 사건을 진로 기회로 바꾸는 5가지 기술을 길러주기로 하였다.',
+    asks: [
+      '혜진에게 적용할 진로상담 이론의 명칭을 쓸 것.',
+      '우연한 사건을 진로 기회로 전환하기 위해 길러주어야 할 5가지 핵심 기술을 모두 쓸 것.',
+      '탐색의 위기를 겪고 있으나 아직 결정을 미룬 혜진의 정체감 지위를 쓸 것.',
+      '스스로 탐색한 위기 없이 부모의 결정을 그대로 수용한 준호의 정체감 지위를 쓸 것.'
+    ],
+    ans: [
+      '우연한 사건을 진로 기회로 바꾸는 이론은 크롬볼츠 계획된 우연 이론이다.',
+      '이를 위해 호기심, 인내심, 융통성, 낙관성, 위험감수의 5대 기술을 기른다.',
+      '탐색 위기는 겪고 있으나 아직 결정을 미룬 상태는 정체감 유예 지위다.',
+      '깊은 탐색 없이 부모의 기대를 그대로 수용해 결정한 상태는 정체감 유실이다.'
+    ],
+    kws: ['계획된 우연 이론', '호기심, 인내심, 융통성, 낙관성, 위험감수', '정체감 유예', '정체감 유실']
+  }
+];
+
+const EXAM_B = [
+  {
+    num: 1, type: '기입형', score: 2,
+    lead: '다음은 진로상담교사와 동료 교사의 대화이다. 괄호 안의 ㉠, ㉡에 들어갈 가장 적합한 용어를 각각 쓰시오.',
+    passage: '진로흥미 육각형 모델에서 6개 흥미 유형과 직업 환경 유형 간 심리적 거리가 가까울수록 상관이 높고 거리가 멀수록 상관이 낮다는 가정을 ( ㉠ )이라고 합니다. 한편 특정 흥미 유형의 점수가 다른 유형의 점수들과 뚜렷하게 구별되어 프로파일이 평평하지 않고 높낮이가 명확한 정도를 ( ㉡ )이라고 부릅니다.',
+    asks: [],
+    ans: ['정답: ㉠ 계측성(Calculus)  /  ㉡ 변별도(분화도)'],
+    kws: ['계측성(Calculus)', '변별도(분화도)']
+  },
+  {
+    num: 2, type: '기입형', score: 2,
+    lead: '다음은 성격 구조에 관한 사례 연구 발표문 일부이다. 괄호 안의 ㉠, ㉡에 들어갈 가장 적합한 용어를 각각 쓰시오.',
+    passage: '전교회장인 학생 L은 학교와 가정에서 언제나 완벽하고 착한 모범생 역할만 수행하며 사회적 요구에 적응하기 위해 쓰는 공적 가면인 ( ㉠ )을 형성하였다. 그러나 L은 그 사회적 역할을 진정한 참된 자기 자신으로 착각하는 ( ㉡ ) 부작용에 빠져, 내면의 어두운 욕구를 억압한 채 심각한 내적 공허감과 우울을 호소하고 있다.',
+    asks: [],
+    ans: ['정답: ㉠ 페르소나(Persona)  /  ㉡ 동일시(페르소나 동일시)'],
+    kws: ['페르소나(Persona)', '동일시(페르소나 동일시)']
+  },
+  {
+    num: 3, type: '서술형', score: 4,
+    lead: '다음은 보건실에서 자주 의뢰되는 두 학생의 면담 일지이다. <작성 방법>에 따라 서술하시오.',
+    passage: '[훈이] 내과 검사상 기질적 이상이 없음에도 매일 극심한 복통과 두통이라는 실제 신체 통증이 지속되어 등교하지 못하고 있으며, 통증에 대한 과도한 걱정으로 일상 기능이 손상되었다.\n[병철] 현재 아프거나 뚜렷한 신체 증상이 전혀 없음에도 자신이 희귀 암에 걸렸다는 생각과 불안에 몰두하여, 의사의 정상 소견에도 매주 다른 병원을 전전하며 재검사를 받고 있다.',
+    asks: [
+      '훈이와 병철의 DSM-5-TR 공식 진단명을 각각 쓸 것.',
+      '훈이가 겪고 있는 핵심 임상 증상의 특징을 쓸 것.',
+      '병철이 보이는 인지·정서적 특징 및 부적응적 반복 행동을 쓸 것.'
+    ],
+    ans: [
+      '내담자 훈이의 공식 진단명은 신체증상장애이며 병철은 질병불안장애이다.',
+      '훈이는 실제로 일상생활에 지장을 주는 고통스러운 신체 통증 증상이 지속된다.',
+      '병철은 뚜렷한 신체 증상이 없음에도 불치병에 걸렸다는 집착과 불안에 몰두한다.',
+      '병철은 의사의 정상 소견에도 불구하고 여러 병원을 전전하는 확인 행동을 보인다.'
+    ],
+    kws: ['신체증상장애', '질병불안장애', '신체 통증 증상', '불치병', '확인 행동']
+  },
+  {
+    num: 4, type: '서술형', score: 4,
+    lead: '다음은 대인 의사소통에 어려움을 보이는 두 학생의 발달 평가 기록이다. <작성 방법>에 따라 서술하시오.',
+    passage: '[진호] 친구들과 대화할 때 상황 맥락에 맞지 않는 말을 하거나 농담·비유를 이해하지 못해 고립되지만, 특정 사물에 대한 집착이나 반복적 상동 행동은 전혀 보이지 않는다.\n[민우] 사회적 상호작용 결함뿐만 아니라, 하루 종일 장난감 바퀴만 일렬로 세우며 순서가 조금만 바뀌어도 극심한 분노 발작과 상동 행동을 보인다.',
+    asks: [
+      '진호와 민우의 DSM-5-TR 공식 진단명을 각각 한글 정식명으로 쓸 것.',
+      '두 장애를 구별하는 가장 결정적인 감별 기준과 두 학생의 차이를 쓸 것.',
+      '진호가 사회적 맥락의 대화에서 겪는 핵심적인 언어 사용 기능 결함을 쓸 것.'
+    ],
+    ans: [
+      '학생 진호는 사회적(실용적) 의사소통장애이며 민우는 자폐스펙트럼장애다.',
+      '두 장애를 구별하는 결정적 감별점은 제한적이고 반복적인 행동 패턴의 유무이다.',
+      '민우는 상동 행동과 집착을 동반하지만 진호는 제한적이고 반복적인 행동이 없다.',
+      '진호는 사회적 맥락에 맞게 소통하는 화용론적 언어 사용 기능에서 결함을 보인다.'
+    ],
+    kws: ['사회적(실용적) 의사소통장애', '자폐스펙트럼장애', '제한적이고 반복적인 행동 패턴', '화용론적 언어 사용']
+  },
+  {
+    num: 5, type: '서술형', score: 4,
+    lead: '다음은 무기력과 심리적 붕괴 위기를 호소하는 고등학생 E의 투사검사 구조요약표 일부이다. <작성 방법>에 따라 서술하시오.',
+    passage: '• 인간운동반응(M) = 2, 가중치 색채반응 합(WSumC) = 6.5\n• D점수 = -3, 수정 D점수(Adj D) = -2',
+    asks: [
+      'M과 WSumC 비율에 따른 내담자 E의 대처 유형 명칭을 쓸 것.',
+      '해당 대처 유형의 사람이 보이는 정서 반응 및 문제해결 방식을 쓸 것.',
+      'D점수가 음수(-)로 나타난 상태의 임상적 의미와 우선적인 상담 개입 방향을 쓸 것.'
+    ],
+    ans: [
+      '인간운동반응(M)보다 유색반응(WSumC)이 높으므로 대처 유형은 외향형이다.',
+      '외부의 정서적 자극에 민감하게 반응하고 행동 중심의 문제해결을 우선 시도한다.',
+      'D점수가 음수인 상태는 내적 가용 자원보다 스트레스가 큰 과부하 상태이다.',
+      '충동적 행동화와 통제력 상실을 방지하기 위해 스트레스를 줄이고 지지를 준다.'
+    ],
+    kws: ['외향형', '행동 중심의 문제해결', 'D점수가 음수', '과부하 상태']
+  },
+  {
+    num: 6, type: '서술형', score: 4,
+    lead: '다음은 두 학생의 지능 및 기질·성격검사 결과이다. <작성 방법>에 따라 서술하시오.',
+    passage: '주의력 결핍과 시험 불안으로 의뢰된 학생 F는 언어이해와 유동추론은 우수했으나 작업기억과 처리속도가 현저히 낮아 전체 지능지수(FSIQ)가 낮게 산출되었다. 한편 충동적 일탈 행동으로 함께 실시한 기질·성격검사에서는 자극추구(NS)가 85백분위, 위험회피(HA)가 15백분위로 나타났다.',
+    asks: [
+      '작업기억과 처리속도 저하로 전체 지능이 과소평가될 때 확인해야 할 보조지수를 쓸 것.',
+      '자극추구가 높고 위험회피가 낮을 때 나타나는 행동 특성을 쓸 것.',
+      '기질적 취약성을 보완하여 성숙도와 사회적 적응을 결정하는 핵심 성격 척도 2가지를 쓸 것.'
+    ],
+    ans: [
+      '불안과 주의력 저하로 작업기억과 처리속도가 낮아지면 일반능력지수(GAI)를 본다.',
+      '기질 검사에서 자극추구가 높고 위험회피가 낮으면 강한 호기심과 충동성을 보인다.',
+      '성숙도와 사회적 적응을 결정하는 핵심 성격 척도는 자율성과 연대감이다.',
+      '자기 행동을 책임지는 자율성과 타인을 수용하는 연대감을 함께 길러준다.'
+    ],
+    kws: ['일반능력지수(GAI)', '자극추구', '위험회피', '충동성', '자율성', '연대감']
+  },
+  {
+    num: 7, type: '서술형', score: 4,
+    lead: '다음은 증상 완화를 위해 서로 다른 개입을 적용한 두 상담 사례이다. <작성 방법>에 따라 서술하시오.',
+    passage: '[사례 1] 발표 때마다 자기 목소리가 떨리는지 지나치게 자기 관찰에 몰두하느라 말을 잇지 못하는 학생에게, 목소리 대신 청중에게 전달할 발표 내용의 가치에만 주의를 돌리도록 안내하였다.\n[사례 2] 수업 시간에 얼굴이 빨개질까 봐 극심한 예기불안을 겪는 학생에게, "오늘 수업 시간에 세상에서 가장 빨간 사과처럼 얼굴을 제일 붉게 만들어 보자"라고 스스로 의도하게 하였다.',
+    asks: [
+      '사례 1에서 사용한 기법의 정식 명칭과 이 기법이 불안 악순환을 끊는 원리를 쓸 것.',
+      '사례 2에서 사용한 기법의 정식 명칭과 이를 통해 내담자가 얻는 치료적 깨달음을 쓸 것.'
+    ],
+    ans: [
+      '증상에 대한 주의를 외부 가치로 돌리는 기법은 탈숙고(Dereflection)다.',
+      '지나친 반성으로 생기는 불안 악순환을 차단하여 자발성을 되찾게 한다.',
+      '두려워하는 증상을 스스로 의도하여 증상을 통제하는 기법은 역설적 의도이다.',
+      '회피하려던 증상을 직면하게 함으로써 증상이 스스로 통제됨을 깨닫게 한다.'
+    ],
+    kws: ['탈숙고(Dereflection)', '불안 악순환', '역설적 의도', '증상이 스스로 통제']
+  },
+  {
+    num: 8, type: '서술형', score: 4,
+    lead: '다음은 가족 구조의 역동을 다루는 가족상담 사례이다. <작성 방법>에 따라 서술하시오.',
+    passage: '상담실에 온 어머니는 고등학생 아들의 사소한 감정까지 대신 대변하며 과도하게 간섭하는 반면, 아버지는 팔짱을 낀 채 "집안일은 엄마랑 알아서 해라"라며 대화에 전혀 참여하지 않는다. 상담자는 어머니에게 "지금 이 자리에서 아버지께 아들의 진로 문제를 직접 말씀해 보시겠어요?"라고 요청하였다.',
+    asks: [
+      '어머니-아들 간 및 아버지-가족 간 경계선의 명칭을 각각 쓸 것.',
+      '상담자가 상담실 안에서 가족의 갈등 행동을 직접 재연하게 한 기법의 명칭을 쓸 것.',
+      '해당 기법의 관찰 이점과 궁극적인 가족 구조 변화 목표를 쓸 것.'
+    ],
+    ans: [
+      '어머니와 아들은 밀착된 경계선이며 아버지는 가족과 유리된 경계선이다.',
+      '상담실에서 실제 가족의 갈등 행동을 재연하게 하는 기법은 실연화이다.',
+      '설명으로 듣는 대신 상호작용 패턴을 현장에서 있는 그대로 직접 관찰한다.',
+      '역기능적 의사소통 구조를 교정하고 세대 간 명확한 경계선을 재형성한다.'
+    ],
+    kws: ['밀착된 경계선', '유리된 경계선', '실연화', '명확한 경계선']
+  },
+  {
+    num: 9, type: '서술형', score: 4,
+    lead: '다음은 자해 행동을 보이는 중학생 H의 상담 사례이다. <작성 방법>에 따라 서술하시오.',
+    passage: '중학생 H는 부모님께 부당한 꾸중을 들을 때마다 부모님께 화를 내는 대신 방에 들어와 자신의 머리를 벽에 박거나 팔을 긁는다. 또한 상담 중 "넌 완벽해야 해!"라고 몰아붙이는 목소리와 "난 지쳤어, 할 수 없어"라고 주저앉는 목소리 사이에서 갈등하자, 상담자는 빈 의자를 놓고 두 측면이 번갈아 앉아 대화하도록 하였다.',
+    asks: [
+      '타인에게 하고 싶었던 행동을 자신에게 돌리는 접촉경계혼란의 명칭을 쓸 것.',
+      '내면의 양극성을 대화시켜 해소하는 기법의 명칭을 쓸 것.',
+      '해당 기법을 통해 대면하게 되는 내면의 두 세력과 궁극적인 치료 목표를 쓸 것.'
+    ],
+    ans: [
+      '원래 타인에게 하고 싶었던 행동을 자신에게 돌리는 접촉경계혼란은 반전이다.',
+      '내면의 양극성을 대화시켜 해소하는 게슈탈트 상담 기법은 빈의자 기법이다.',
+      '자신을 자책하는 승리자와 억압된 패배자가 서로 솔직하게 대면하게 한다.',
+      '소외되었던 부정적 감정을 수용하고 온전한 자기 통합을 이루도록 돕는다.'
+    ],
+    kws: ['반전', '빈의자 기법', '승리자', '패배자', '자기 통합']
+  },
+  {
+    num: 10, type: '서술형', score: 4,
+    lead: '다음은 비합리적 신념을 다루는 상담 축어록 일부이다. <작성 방법>에 따라 서술하시오.',
+    passage: '상담자: (가) "모든 사람이 단 한 번도 실수하지 않는다는 객관적 증거가 있나요?"\n상담자: (나) "그 생각을 계속 붙잡고 있는 것이 시험 준비에 실제로 도움이 되나요?"\n상담자: (다) "발표를 한 번 실수했다고 해서 당신이 무가치한 인간이라는 결론이 논리적으로 성립하나요?"\n이어 상담자는 타인의 시선에 대한 두려움을 줄이기 위해 지하철에서 큰 소리로 정거장 이름을 외쳐보는 행동 과제를 부여하였다.',
+    asks: [
+      '(가), (나), (다)에 해당하는 논박 기법의 공식 명칭을 각각 쓸 것.',
+      '타인의 시선에 대한 파국적 두려움을 깨뜨리기 위해 부여한 행동 기법의 명칭을 쓸 것.'
+    ],
+    ans: [
+      '비합리적 신념의 객관적 사실 증거를 묻는 (가)는 실증적(경험적) 논박이다.',
+      '신념이 실제 삶에 어떤 도움이 되는지 유용성을 묻는 (나)는 실용적 논박이다.',
+      '전제와 결론 사이의 비약과 모순을 지적하는 (다)는 논리적 논박이다.',
+      '타인의 시선에 대한 파국적 두려움을 깨뜨리는 수치심 공격 연습을 실천한다.'
+    ],
+    kws: ['실증적(경험적) 논박', '실용적 논박', '논리적 논박', '수치심 공격 연습']
+  },
+  {
+    num: 11, type: '서술형', score: 4,
+    lead: '다음은 아동중심 놀이치료실의 상담 축어록 일부이다. <작성 방법>에 따라 서술하시오.',
+    passage: '아동이 그림을 완성한 뒤 "선생님, 이거 잘 그렸죠?"라고 묻자, 상담자는 결과를 평가하는 대신 아동이 집중해서 색칠한 노력의 과정을 짚어주었다. 잠시 후 아동이 화가 난다며 플라스틱 칼로 상담자의 얼굴을 찌르려 하자, 상담자는 "네가 지금 선생님에게 아주 화가 많이 났구나. 하지만 선생님을 찌르는 건 안 돼. 대신 저기 있는 보보 인형을 찌를 수는 있어"라고 반응하였다.',
+    asks: [
+      '결과를 평가하는 칭찬 대신 사용하여 자아존중감을 키우는 반응 기법을 쓸 것.',
+      '상담자가 아동의 위험한 행동을 다룰 때 적용한 제한설정 3단계의 각 내용을 쓸 것.'
+    ],
+    ans: [
+      '결과를 평가하는 칭찬 대신 노력과 과정을 인정(격려)해 자아존중감을 키운다.',
+      '아동의 분노와 파괴 욕구를 먼저 충분히 수용하고 깊이 공감하며 인정한다(A).',
+      '선생님을 찌르는 행동은 안 된다고 한계와 제한을 명확히 전달한다(C).',
+      '대신 보보 인형을 찌를 수 있도록 안전하고 수용 가능한 대안을 제시한다(T).'
+    ],
+    kws: ['과정 인정(격려)', '수용', '제한', '대안']
+  }
+];
+
+let allMasked = false;
+let activeSection = 'ALL';
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlightKws(line, kws) {
+  let out = escapeHtml(line);
+  [...kws].sort((a, b) => b.length - a.length).forEach(kw => {
+    const ek = escapeHtml(kw);
+    out = out.split(ek).join(`<span class="kw">${ek}</span>`);
+  });
+  return out;
+}
+
+function renderList(list, containerId, periodLabel) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = list.map(q => {
+    const asksHtml = q.asks.length > 0
+      ? `<div class="q-asks"><strong>&lt;작성 방법&gt;</strong><br>${q.asks.map(a => '○ ' + escapeHtml(a)).join('<br>')}</div>`
+      : '';
+    const ansLinesHtml = q.ans.map(ln => `<div>${highlightKws(ln, q.kws)}</div>`).join('');
+    const rows = q.type === '기입형' ? 2 : 4;
+    return `
+      <div class="q-block ${periodLabel === 'B' ? 'type-b' : ''}">
+        <div class="q-header">
+          <span>${q.num}. ${escapeHtml(q.lead)} [${q.score}점]</span>
+          <span class="q-badge ${q.type === '서술형' ? 'essay' : ''}">${q.type}</span>
+        </div>
+        <div class="q-passage">${escapeHtml(q.passage)}</div>
+        ${asksHtml}
+        <div class="b4-ans-box ${allMasked ? 'masked' : ''}" onclick="this.classList.toggle('masked')" title="클릭하면 가리거나 볼 수 있습니다">${ansLinesHtml}</div>
+        <div class="practice-wrap">
+          <textarea class="practice-input" rows="${rows}" placeholder="${q.type === '기입형' ? '㉠, ㉡ 정답을 직접 입력해 보세요...' : '직접 4줄 답안을 타이핑해 보세요 (인쇄 후 손글씨 연습 가능)...'}" oninput="this.nextElementSibling.textContent='작성 글자 수: '+this.value.length+'자';"></textarea>
+          <div class="char-info">작성 글자 수: 0자</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterExam(sec, btnEl) {
+  activeSection = sec;
+  document.getElementById('section-A').style.display = (sec === 'ALL' || sec === 'A') ? 'block' : 'none';
+  document.getElementById('section-B').style.display = (sec === 'ALL' || sec === 'B') ? 'block' : 'none';
+  ['btn-show-all', 'btn-show-a', 'btn-show-b'].forEach(id => {
+    const b = document.getElementById(id);
+    b.className = 'btn ' + (b === btnEl ? 'active-tab' : 'dark');
+  });
+}
+
+function toggleAllAnswers() {
+  allMasked = !allMasked;
+  document.querySelectorAll('.b4-ans-box').forEach(el => el.classList.toggle('masked', allMasked));
+  const btn = document.getElementById('btn-mask-all');
+  btn.textContent = allMasked ? '👀 정답 모두 보기' : '🙈 정답 가리기 (백지 연습)';
+}
+
+function speakCurrentSection() {
+  if (!('speechSynthesis' in window)) return alert('이 브라우저는 음성 낭독을 지원하지 않습니다.');
+  window.speechSynthesis.cancel();
+  const list = activeSection === 'A' ? EXAM_A : (activeSection === 'B' ? EXAM_B : [...EXAM_A, ...EXAM_B]);
+  const text = list.map(q => `${q.num}번 모범답안. ${q.ans.join(' ')}`).join(' ');
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR';
+  u.rate = 0.96;
+  window.speechSynthesis.speak(u);
+}
+
+renderList(EXAM_A, 'container-A', 'A');
+renderList(EXAM_B, 'container-B', 'B');
+</script>
+</body>
+</html>
