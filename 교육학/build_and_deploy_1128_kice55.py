@@ -968,11 +968,14 @@ body.b4-paper-mode .line-by-line-box {{
   justify-content: space-between;
   align-items: center;
   gap: 6px;
-  font-size: max(16px, calc(1.02rem * var(--font-scale)));
-  font-weight: 600;
-  letter-spacing: 0px;
-  word-spacing: 0px;
-  font-variant-ligatures: none;
+  font-family: 'Noto Sans KR', sans-serif !important;
+  font-size: max(16px, calc(1.02rem * var(--font-scale))) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0px !important;
+  word-spacing: 0px !important;
+  font-kerning: none !important;
+  font-feature-settings: "kern" 0 !important;
+  font-variant-ligatures: none !important;
   line-height: 1.2;
   color: #fef08a;
   margin-bottom: 0px;
@@ -982,7 +985,6 @@ body.b4-paper-mode .line-by-line-box {{
   border-left: 3px solid var(--accent-gold);
   border-bottom: none;
   border-radius: 4px 4px 0 0;
-  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   transition: filter 0.2s;
 }}
 .lbl-target-line.masked-hint {{
@@ -1073,13 +1075,15 @@ body.b4-paper-mode .lbl-target-line {{
   border-radius: 0 0 4px 4px;
   padding: 2px 10px;
   color: #ffffff;
-  font-size: max(16px, calc(1.02rem * var(--font-scale)));
-  font-weight: 600;
-  letter-spacing: 0px;
-  word-spacing: 0px;
-  font-variant-ligatures: none;
+  font-family: 'Noto Sans KR', sans-serif !important;
+  font-size: max(16px, calc(1.02rem * var(--font-scale))) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0px !important;
+  word-spacing: 0px !important;
+  font-kerning: none !important;
+  font-feature-settings: "kern" 0 !important;
+  font-variant-ligatures: none !important;
   line-height: 1.2;
-  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   outline: none;
   transition: all 0.15s;
 }}
