@@ -929,8 +929,8 @@ body.b4-paper-mode .lbl-char-badge {
   background: linear-gradient(180deg, rgba(16, 185, 129, 0.07) 0%, rgba(15, 23, 42, 0.7) 100%);
   border: 1px solid rgba(16, 185, 129, 0.35);
   border-radius: 8px;
-  padding: 12px 14px;
-  margin-bottom: 14px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
 }
 body.b4-paper-mode .cases8-box {
   background: #ede7d6;
@@ -940,10 +940,10 @@ body.b4-paper-mode .cases8-box {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
+  margin-bottom: 5px;
+  padding-bottom: 4px;
   border-bottom: 1px solid rgba(16, 185, 129, 0.25);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: #34d399;
 }
@@ -953,14 +953,14 @@ body.b4-paper-mode .cases8-header {
 .cases8-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 3px;
 }
 .case8-item {
   background: rgba(9, 14, 26, 0.88);
   border: 1px solid #1e293b;
-  border-left: 4px solid var(--accent-gold);
-  border-radius: 8px;
-  padding: 11px 14px;
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 5px;
+  padding: 4px 8px;
   transition: all 0.15s;
 }
 body.b4-paper-mode .case8-item {
@@ -970,7 +970,7 @@ body.b4-paper-mode .case8-item {
 .case8-item.solved,
 .case8-item.case-ok {
   border-color: var(--accent-emerald);
-  border-left: 5px solid var(--accent-emerald);
+  border-left: 4px solid var(--accent-emerald);
   background: rgba(16, 185, 129, 0.12);
 }
 .case8-q-row {
@@ -978,20 +978,22 @@ body.b4-paper-mode .case8-item {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: calc(0.9rem * var(--font-scale));
+  gap: 6px;
+  font-size: calc(0.84rem * var(--font-scale));
+  line-height: 1.2;
   color: #e2e8f0;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   font-weight: 700;
 }
 .case8-target-ans {
-  font-size: calc(0.9rem * var(--font-scale));
+  font-size: calc(0.84rem * var(--font-scale));
   font-weight: 800;
   color: #fde047;
   background: rgba(251, 191, 36, 0.14);
   border: 1px solid rgba(251, 191, 36, 0.35);
-  padding: 4px 10px;
-  border-radius: 5px;
+  padding: 1px 7px;
+  border-radius: 4px;
+  line-height: 1.2;
 }
 body.b4-paper-mode .case8-q-row {
   color: #1f2937;
@@ -1024,12 +1026,14 @@ body.b4-paper-mode .case8-target {
   background: #050a14;
   border: 1px solid #283a58;
   border-left: 3px solid var(--accent-blue);
-  border-radius: 6px;
-  padding: 9px 14px;
+  border-radius: 4px;
+  padding: 3px 10px;
   color: #fff;
-  font-size: calc(0.96rem * var(--font-scale));
+  font-size: max(16px, calc(0.96rem * var(--font-scale)));
   font-weight: 700;
-  font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
+  line-height: 1.2;
+  min-height: 28px;
+  font-family: 'Noto Sans KR', sans-serif;
   outline: none;
 }
 body.b4-paper-mode .case8-input {
@@ -1383,7 +1387,13 @@ body.b4-paper-mode .scoring-eval-bar {
     line-height: 1.2 !important;
     min-height: 28px !important;
   }
-  .case8-input, .quiz-input, .b4-typing-sheet, .b4-answer-sheet, .k55-search-input, #pb-theme {
+  .case8-input {
+    font-size: 16px !important;
+    padding: 3px 10px !important;
+    min-height: 28px !important;
+    line-height: 1.2 !important;
+  }
+  .quiz-input, .b4-typing-sheet, .b4-answer-sheet, .k55-search-input, #pb-theme {
     font-size: 16px !important;
     min-height: 44px;
   }
