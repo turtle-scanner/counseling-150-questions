@@ -863,12 +863,7 @@ body.b4-paper-mode .problem-asks-list {{
   border-color: #059669;
 }}
 .lbl-subq-caption {{
-  font-size: calc(0.76rem * var(--font-scale));
-  color: #7dd3fc;
-  font-weight: 700;
-  margin: 0;
-  padding: 0 2px;
-  line-height: 1.2;
+  display: none;
 }}
 body.b4-paper-mode .lbl-subq-caption {{
   color: #1e40af;
@@ -963,7 +958,7 @@ body.b4-paper-mode .line-by-line-box {{
   color: var(--accent-blue);
 }}
 .lbl-row {{
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }}
 .lbl-row:last-child {{
   margin-bottom: 0;
@@ -972,21 +967,21 @@ body.b4-paper-mode .line-by-line-box {{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: max(16px, calc(1.02rem * var(--font-scale)));
   font-weight: 600;
   letter-spacing: 0px;
   word-spacing: 0px;
   font-variant-ligatures: none;
-  line-height: 1.25;
+  line-height: 1.2;
   color: #fef08a;
   margin-bottom: 0px;
-  padding: 4px 12px;
+  padding: 2px 10px;
   background: rgba(251, 191, 36, 0.08);
   border: 1px solid rgba(251, 191, 36, 0.22);
   border-left: 3px solid var(--accent-gold);
   border-bottom: none;
-  border-radius: 5px 5px 0 0;
+  border-radius: 4px 4px 0 0;
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   transition: filter 0.2s;
 }}
@@ -1071,18 +1066,19 @@ body.b4-paper-mode .lbl-target-line {{
 }}
 .lbl-input {{
   flex: 1;
+  min-width: 0;
   background: #050a14;
   border: 1px solid #283a58;
   border-left: 3px solid var(--accent-blue);
-  border-radius: 0 0 5px 5px;
-  padding: 4px 12px;
+  border-radius: 0 0 4px 4px;
+  padding: 2px 10px;
   color: #ffffff;
   font-size: max(16px, calc(1.02rem * var(--font-scale)));
   font-weight: 600;
   letter-spacing: 0px;
   word-spacing: 0px;
   font-variant-ligatures: none;
-  line-height: 1.25;
+  line-height: 1.2;
   font-family: 'JetBrains Mono', 'Noto Sans KR', monospace;
   outline: none;
   transition: all 0.15s;
@@ -1562,31 +1558,33 @@ body.b4-paper-mode .scoring-eval-bar {{
   }}
   .lbl-target-line {{
     font-size: 16px !important;
-    padding: 4px 12px !important;
+    padding: 2px 10px !important;
     letter-spacing: 0px !important;
-    line-height: 1.25 !important;
+    line-height: 1.2 !important;
     margin-bottom: 0px !important;
     word-break: keep-all;
     overflow-wrap: anywhere;
   }}
   .lbl-input-wrap {{
     flex-direction: row !important;
+    flex-wrap: nowrap !important;
     align-items: center !important;
     gap: 6px !important;
   }}
   .lbl-char-badge {{
-    min-width: 78px !important;
-    padding: 3px 6px !important;
+    min-width: 72px !important;
+    padding: 2px 5px !important;
     font-size: 0.72rem !important;
     flex-shrink: 0;
   }}
   /* iOS/iPadOS Safari 입력창 포커스 시 자동 확대(Zoom) 방지 + 위쪽 정답 줄과 1:1 패딩/자간/줄간격 일치 */
   .lbl-input {{
+    min-width: 0 !important;
     font-size: 16px !important;
-    padding: 4px 12px !important;
+    padding: 2px 10px !important;
     letter-spacing: 0px !important;
-    line-height: 1.25 !important;
-    min-height: 32px !important;
+    line-height: 1.2 !important;
+    min-height: 28px !important;
   }}
   .case8-input, .quiz-input, .b4-typing-sheet, .b4-answer-sheet, .k55-search-input, #pb-theme {{
     font-size: 16px !important;
