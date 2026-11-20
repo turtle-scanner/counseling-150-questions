@@ -755,7 +755,7 @@ function escapeHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function highlightKws(line, kws) 
+function highlightKws(line, kws) {
   let out = escapeHtml(line);
   [...kws].sort((a, b) => b.length - a.length).forEach(kw => {
     const ek = escapeHtml(kw);
