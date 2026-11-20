@@ -165,28 +165,59 @@
     padding: 0 3px;
     border-radius: 3px;
   }
-  .practice-input {
-    width: 100%;
+  .practice-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 8px;
+  }
+  .line-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .line-badge {
+    flex-shrink: 0;
+    min-width: 44px;
+    text-align: center;
+    font-size: 0.76rem;
+    font-weight: 800;
+    padding: 4px 6px;
+    border-radius: 4px;
+    background: #e2e8f0;
+    color: #334155;
+  }
+  .line-badge.done {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+  }
+  .line-input {
+    flex: 1;
     border: 1.5px solid #94a3b8;
     border-radius: 5px;
-    padding: 8px 12px;
+    padding: 7px 11px;
     font-family: 'Noto Sans KR', sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 0.92rem;
+    line-height: 1.4;
     background: #fff;
     color: #111827;
-    resize: vertical;
+    transition: border-color 0.15s, background-color 0.15s;
   }
-  .practice-input:focus {
+  .line-input:focus {
     outline: none;
     border-color: #0284c7;
     box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+  }
+  .line-input.matched {
+    border-color: #16a34a;
+    background: #f0fdf4;
   }
   .char-info {
     font-size: 0.78rem;
     color: #475569;
     text-align: right;
-    margin-top: 3px;
+    margin-top: 2px;
     font-weight: 700;
   }
   @media print {
@@ -206,10 +237,12 @@
     <button class="btn dark" id="btn-show-b" onclick="filterExam('B', this)">📙 3교시 전공 B형 (11문항)</button>
   </div>
   <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+    <span id="progress-pill" style="background:#0f172a; border:1px solid #38bdf8; color:#38bdf8; padding:5px 10px; border-radius:6px; font-size:0.82rem; font-weight:800;">완료: 0 / 0줄</span>
     <button class="btn rose" id="btn-mask-all" onclick="toggleAllAnswers()">🙈 정답 가리기 (백지 연습)</button>
     <button class="btn green" onclick="speakCurrentSection()">🎧 모범답안 전체 듣기</button>
+    <button class="btn dark" onclick="resetAllInputs()">🔄 작성 초기화</button>
     <button class="btn" onclick="window.print()">🖨️ 인쇄하기</button>
-    <a class="btn dark" href="pedagogy_essay_2027.html">📘 1교시 교육학 시험지</a>
+    <a class="btn dark" href="index.html">🏠 55제 마스터</a>
   </div>
 </div>
 
@@ -730,6 +763,66 @@ function highlightKws(line, kws) {
   return out;
 }
 
+const STORAGE_KEY = 'kice_2027_ab_exam_inputs_v1';
+let savedInputs = {};
+try {
+  savedInputs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+} catch (e) {
+  savedInputs = {};
+}
+
+function normText(s) {
+  return String(s || '').replace(/[\s.,'"`·()\-:/]/g, '').toLowerCase();
+}
+
+function updateProgress() {
+  const inputs = document.querySelectorAll('.line-input');
+  let done = 0;
+  inputs.forEach(inp => {
+    if (inp.classList.contains('matched')) done++;
+  });
+  const pill = document.getElementById('progress-pill');
+  if (pill) pill.textContent = `완료: ${done} / ${inputs.length}줄`;
+}
+
+function handleLineInput(inp) {
+  const key = inp.dataset.key;
+  const target = inp.dataset.target;
+  const val = inp.value;
+  savedInputs[key] = val;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(savedInputs)); } catch (e) {}
+
+  const isMatch = normText(val).length > 0 && normText(val) === normText(target);
+  inp.classList.toggle('matched', isMatch);
+  const badge = inp.previousElementSibling;
+  if (badge) {
+    badge.classList.toggle('done', isMatch);
+    badge.textContent = isMatch ? '✅ 완료' : inp.dataset.label;
+  }
+  updateProgress();
+}
+
+function handleLineKeydown(e, inp) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const all = Array.from(document.querySelectorAll('.line-input')).filter(el => el.offsetParent !== null);
+    const idx = all.indexOf(inp);
+    if (idx >= 0 && idx + 1 < all.length) {
+      all[idx + 1].focus();
+    }
+  }
+}
+
+function resetAllInputs() {
+  if (!confirm('작성한 모든 답안 연습 기록을 초기화할까요?')) return;
+  savedInputs = {};
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  document.querySelectorAll('.line-input').forEach(inp => {
+    inp.value = '';
+    handleLineInput(inp);
+  });
+}
+
 function renderList(list, containerId, periodLabel) {
   const container = document.getElementById(containerId);
   container.innerHTML = list.map(q => {
@@ -737,7 +830,26 @@ function renderList(list, containerId, periodLabel) {
       ? `<div class="q-asks"><strong>&lt;작성 방법&gt;</strong><br>${q.asks.map(a => '○ ' + escapeHtml(a)).join('<br>')}</div>`
       : '';
     const ansLinesHtml = q.ans.map(ln => `<div>${highlightKws(ln, q.kws)}</div>`).join('');
-    const rows = q.type === '기입형' ? 2 : 4;
+    const practiceRowsHtml = q.ans.map((ln, idx) => {
+      const key = `${periodLabel}_${q.num}_${idx}`;
+      const label = q.type === '기입형' ? '정답' : `${idx + 1}줄`;
+      const prevVal = savedInputs[key] || '';
+      const isMatch = normText(prevVal).length > 0 && normText(prevVal) === normText(ln);
+      return `
+        <div class="line-row">
+          <span class="line-badge ${isMatch ? 'done' : ''}">${isMatch ? '✅ 완료' : label}</span>
+          <input type="text"
+            class="line-input ${isMatch ? 'matched' : ''}"
+            data-key="${key}"
+            data-label="${label}"
+            data-target="${escapeHtml(ln).replace(/"/g, '&quot;')}"
+            value="${escapeHtml(prevVal).replace(/"/g, '&quot;')}"
+            placeholder="${escapeHtml(ln).replace(/"/g, '&quot;')} (보고 치기 / Enter 다음)"
+            oninput="handleLineInput(this)"
+            onkeydown="handleLineKeydown(event, this)">
+        </div>
+      `;
+    }).join('');
     return `
       <div class="q-block ${periodLabel === 'B' ? 'type-b' : ''}">
         <div class="q-header">
@@ -747,13 +859,11 @@ function renderList(list, containerId, periodLabel) {
         <div class="q-passage">${escapeHtml(q.passage)}</div>
         ${asksHtml}
         <div class="b4-ans-box ${allMasked ? 'masked' : ''}" onclick="this.classList.toggle('masked')" title="클릭하면 가리거나 볼 수 있습니다">${ansLinesHtml}</div>
-        <div class="practice-wrap">
-          <textarea class="practice-input" rows="${rows}" placeholder="${q.type === '기입형' ? '㉠, ㉡ 정답을 직접 입력해 보세요...' : '직접 4줄 답안을 타이핑해 보세요 (인쇄 후 손글씨 연습 가능)...'}" oninput="this.nextElementSibling.textContent='작성 글자 수: '+this.value.length+'자';"></textarea>
-          <div class="char-info">작성 글자 수: 0자</div>
-        </div>
+        <div class="practice-wrap">${practiceRowsHtml}</div>
       </div>
     `;
   }).join('');
+  updateProgress();
 }
 
 function filterExam(sec, btnEl) {
