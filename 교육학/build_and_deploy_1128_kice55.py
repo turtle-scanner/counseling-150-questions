@@ -1907,9 +1907,9 @@ body.blind-exam-mode .touch-chip-tray {{
 
 <div class="sub-bar">
   <div class="period-tabs">
-    <button class="period-tab-btn highlight-tab active" id="tab-btn-KICE55" onclick="switchPeriod('KICE55')">🔥 11.28 결전: 교육학 + 전공 45선 (총 65선)</button>
+    <button class="period-tab-btn highlight-tab active" id="tab-btn-KICE55" onclick="switchPeriod('KICE55')">🔥 11.28 결전: 55선 (교육학10·6줄 + 전공45·4줄)</button>
     <button class="period-tab-btn highlight-tab" id="tab-btn-TEMPLATE" onclick="switchPeriod('TEMPLATE')">🏛️ 내 교육학 플랫폼(서론·이처럼·결론) & 만능틀 (6선)</button>
-    <button class="period-tab-btn" id="tab-btn-PED" onclick="switchPeriod('PED')">1교시 교육학 실전 (16제)</button>
+    <button class="period-tab-btn" id="tab-btn-PED" onclick="switchPeriod('PED')">1교시 교육학 실전 (10제 · 6줄)</button>
     <button class="period-tab-btn" id="tab-btn-A" onclick="switchPeriod('A')">2교시 전공 A형 실전 (12제)</button>
     <button class="period-tab-btn" id="tab-btn-B" onclick="switchPeriod('B')">3교시 전공 B형 실전 (11제)</button>
   </div>
@@ -1932,12 +1932,10 @@ body.blind-exam-mode .touch-chip-tray {{
 
 <!-- 55개 KICE 핵심키워드 전용 영역 필터 및 실시간 검색 -->
 <div class="kice55-filter-bar" id="kice55-filter-bar">
-  <button class="k55-cat-btn active" onclick="setK55Category('ALL', this)">전체 65선 (01~65)</button>
-  <button class="k55-cat-btn" style="border-color:#fde047; color:#fde047; font-weight:900;" onclick="setK55Category('CORE55', this)">🔥 11.28 압축 55선 (교육학10 + 전공45)</button>
-  <button class="k55-cat-btn" style="border-color:#f43f5e; color:#fda4af; font-weight:900;" onclick="setK55Category('PED10', this)">🎯 11.28 교육학 0순위 압축 10선</button>
-  <button class="k55-cat-btn" onclick="setK55Category('PED20', this)">1교시 교육학 20선 + 내 교육학 플랫폼 (01~20)</button>
+  <button class="k55-cat-btn active" onclick="setK55Category('ALL', this)">전체 55선 (교육학10 + 전공45)</button>
+  <button class="k55-cat-btn" style="border-color:#f43f5e; color:#fda4af; font-weight:900;" onclick="setK55Category('PED10', this)">🎯 1교시 교육학 10선 (01~10 · 6줄)</button>
   <button class="k55-cat-btn" style="border-color:#fbbf24; color:#fde047;" onclick="switchPeriod('TEMPLATE')">🏛️ 내 교육학 플랫폼(서론·이처럼·결론) 집중연습</button>
-  <button class="k55-cat-btn" onclick="setK55Category('COUNSEL35', this)">2·3교시 전공상담 45선 (21~65)</button>
+  <button class="k55-cat-btn" onclick="setK55Category('COUNSEL45', this)">2·3교시 전공상담 45선 (11~55 · 4줄)</button>
   <button class="k55-cat-btn" onclick="setK55Category('DSM-5-TR 감별진단', this)">DSM-5-TR 감별 (14선)</button>
   <button class="k55-cat-btn" onclick="setK55Category('심리검사', this)">심리검사 (6선)</button>
   <button class="k55-cat-btn" onclick="setK55Category('가족치료', this)">가족치료 (4선)</button>
@@ -2341,8 +2339,8 @@ function toggleMiniMockExam() {{
 }}
 
 function pickMiniMockIds() {{
-  const pedPool = dataKICE55.filter(x => x.part === 'PED20').map(x => x.id).sort(() => Math.random() - 0.5).slice(0, 3);
-  const cslPool = dataKICE55.filter(x => x.part === 'COUNSEL35').map(x => x.id).sort(() => Math.random() - 0.5).slice(0, 7);
+  const pedPool = dataKICE55.filter(x => x.part === 'PED10').map(x => x.id).sort(() => Math.random() - 0.5).slice(0, 3);
+  const cslPool = dataKICE55.filter(x => x.part === 'COUNSEL45').map(x => x.id).sort(() => Math.random() - 0.5).slice(0, 7);
   miniMockIds = [...pedPool, ...cslPool];
 }}
 
@@ -3019,9 +3017,9 @@ function generatePedFullEssay() {{
     return dataKICE55.find(x => x.id === id) || dataKICE55[0];
   }};
   const cItem = getById('pb-sel-curr', 1);
-  const mItem = getById('pb-sel-meth', 11);
-  const eItem = getById('pb-sel-eval', 16);
-  const aItem = getById('pb-sel-adm', 19);
+  const mItem = getById('pb-sel-meth', 4);
+  const eItem = getById('pb-sel-eval', 7);
+  const aItem = getById('pb-sel-adm', 9);
 
   const getClosing = (item, fallback) => {{
     if (item.ped_platform && item.ped_platform[1]) return item.ped_platform[1].text;
@@ -3203,11 +3201,9 @@ function getList() {{
   if (currentPeriod === 'KICE55') {{
     const query = (document.getElementById('k55-search-input')?.value || '').trim().toLowerCase();
     list = dataKICE55.filter(item => {{
-      if (currentK55Cat === 'CORE55' && item.part === 'PED20' && ![1, 4, 5, 8, 10, 12, 13, 15, 17, 18].includes(item.id)) return false;
-      if (currentK55Cat === 'PED10' && ![1, 4, 5, 8, 10, 12, 13, 15, 17, 18].includes(item.id)) return false;
-      if (currentK55Cat === 'PED20' && item.part !== 'PED20') return false;
-      if (currentK55Cat === 'COUNSEL35' && item.part !== 'COUNSEL35') return false;
-      if (!['ALL', 'CORE55', 'PED10', 'PED20', 'COUNSEL35'].includes(currentK55Cat) && item.domain !== currentK55Cat) return false;
+      if (currentK55Cat === 'PED10' && item.part !== 'PED10') return false;
+      if (currentK55Cat === 'COUNSEL45' && item.part !== 'COUNSEL45') return false;
+      if (!['ALL', 'PED10', 'COUNSEL45'].includes(currentK55Cat) && item.domain !== currentK55Cat) return false;
       if (query) {{
         const casesStr = (item.cases8 || []).map(c => c.q + ' ' + c.a).join(' ');
         const hay = (item.title + ' ' + item.concept + ' ' + item.keywords.join(' ') + ' ' + item.lines.join(' ') + ' ' + item.quiz_a + ' ' + casesStr).toLowerCase();
@@ -3218,7 +3214,7 @@ function getList() {{
       num: item.id,
       title: `[#${{String(item.id).padStart(2, '0')}} ${{item.domain}}] ${{item.title}}`,
       concept: item.concept,
-      type: item.part === 'PED20' ? '교육학 4줄정답' : '전공상담 4줄정답',
+      type: item.part === 'PED10' ? '교육학 6줄논술' : '전공상담 4줄정답',
       score: 4,
       content: item.problem_passage || '',
       instructions: (item.problem_asks || []).join('\\n'),
@@ -3399,8 +3395,8 @@ function renderCards() {{
     const badgeCls = q.type === '기입형' ? 'fillin' : (currentPeriod === 'KICE55' || currentPeriod === 'TEMPLATE' ? 'k55' : 'essay');
     const kwList = q.keywords || extractKeywords(q.answer);
     const linesArr = q.lines || q.answer.split('\\n');
-    const isPed6 = (currentPeriod === 'PED');
-    const minC = isPed6 ? 50 : 38;
+    const isPed6 = (currentPeriod === 'PED' || linesArr.length >= 6);
+    const minC = 38;
     const maxC = isPed6 ? 60 : 45;
 
     // [ADHD 도파민 8연타] 나올 수 있는 경우의 수 8개 그리드 생성
@@ -3541,7 +3537,7 @@ function renderCards() {{
       lineByLineHtml = `
         <div class="line-by-line-box">
           <div class="lbl-header">
-            <span>✍️ [3단계: 4줄 만점 정답 적기] 문장 길이 1:1 맞춤 따라치기 ${{(isBlankMode ? '(🎯 핵심키워드 빈칸 모드 ON)' : '(Enter 키로 다음 줄 즉시 이동)')}}</span>
+            <span>✍️ [3단계: ${{isPed6 ? '교육학 6줄 논술' : '4줄 만점 정답'}} 적기] 문장 길이 1:1 맞춤 따라치기 ${{(isBlankMode ? '(🎯 핵심키워드 빈칸 모드 ON)' : '(Enter 키로 다음 줄 즉시 이동)')}}</span>
             <div style="display:flex; gap:6px;">
               <button class="btn-sheet-mini" style="border-color:#38bdf8; color:#38bdf8;" onclick="fillSkeletonForCard('${{currentPeriod}}', ${{q.num}})" title="조사·서술어 뼈대는 미리 채워두고 핵심키워드 자리만 직접 채워 넣습니다">✏️ 빈칸 뼈대만 입력창에 넣기</button>
               <button class="btn-sheet-mini" onclick="fillAllLinesForCard('${{currentPeriod}}', ${{q.num}})">모범정답 자동채우기</button>
@@ -4065,19 +4061,19 @@ function evaluateCard(period, num) {{
     document.getElementById('wpm-display').textContent = wpm + ' 타/분';
   }}
 
-  const isPed = (period === 'PED');
-  const targetLines = isPed ? 6 : 4;
-  const minChars = isPed ? 50 : 38;
-  const maxChars = isPed ? 60 : 45;
-
-  let chipsHtml = `<span class="chip-item">총 ${{text.length}}자</span>`;
-  let validLineCount = 0;
-  let hasOverflow = false;
-
   const items = getList();
   const q = items.find(x => x.num === num);
   const kwList = q ? (q.keywords || extractKeywords(q.answer)) : [];
   const modelLines = q ? (q.lines || q.answer.split('\\n')) : [];
+
+  const targetLines = (modelLines && modelLines.length > 0) ? modelLines.length : (period === 'PED' ? 6 : 4);
+  const isSixLine = (targetLines >= 6);
+  const minChars = 38;
+  const maxChars = isSixLine ? 60 : 45;
+
+  let chipsHtml = `<span class="chip-item">총 ${{text.length}}자</span>`;
+  let validLineCount = 0;
+  let hasOverflow = false;
 
   for (let idx = 0; idx < targetLines; idx++) {{
     const l = lines[idx] || '';
