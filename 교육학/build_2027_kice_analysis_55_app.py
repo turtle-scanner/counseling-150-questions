@@ -452,25 +452,29 @@ html = html.replace(
     1
 )
 
-# 6. Inject Authentic KICE 4-Line Answer Sheet Practice Box inside every 55-question card
-KICE_MINI_SNIPPET = """      <!-- AUTHENTIC KICE 4-LINE PRACTICE SHEET -->
+# 6. Inject Authentic KICE Practice Sheet inside every 55-question card (Education=6 lines / 60 chars, Counseling=4 lines / 45 chars)
+KICE_MINI_SNIPPET = """      <!-- AUTHENTIC KICE PRACTICE SHEET -->
       <div class="kice-mini-wrap ${item.part === '교육학' ? 'p1' : 'p2'}">
         <div class="kice-mini-head">
-          <span>📄 KICE 공식 B4 답안지 실전 작성 (${item.part === '교육학' ? '1교시 초록 양식' : '2·3교시 전공 양식'})</span>
-          <span>권장 38~45자/줄</span>
+          <span>📄 KICE 공식 B4 답안지 실전 작성 (${item.part === '교육학' ? '1교시 초록 · 6줄 양식' : '2·3교시 전공 · 4줄 양식'})</span>
+          <span>${item.part === '교육학' ? '권장 50~60자/줄' : '권장 38~45자/줄'}</span>
         </div>
         <div class="kice-q-row">
           <div class="kice-q-num">문항 ${item.rank}<br>(4점)</div>
           <div class="kice-lines-wrap">
-            ${[0,1,2,3].map(li => {
+            ${(item.part === '교육학' ? [0,1,2,3,4,5] : [0,1,2,3]).map(li => {
+              const limit = item.part === '교육학' ? 60 : 45;
+              const ph = item.part === '교육학'
+                ? (li === 5 ? '6번째 줄 (마무리: 이처럼 교사가 ~한다면 ~이 실현될 것이다.)' : `${li+1}번째 줄 (50~60자 이내 논술 핵심 서술)`)
+                : `${li+1}번째 줄 (38~45자 이내 핵심 서술)`;
               const savedVal = (state.lineDrafts && state.lineDrafts[item.id] && state.lineDrafts[item.id][li]) || '';
               const len = savedVal.length;
-              const cls = len === 0 ? '' : (len <= 45 ? 'ok' : 'over');
+              const cls = len === 0 ? '' : (len <= limit ? 'ok' : 'over');
               return `
                 <div class="kice-line-item">
                   <span class="kice-line-idx">${li+1}</span>
-                  <input type="text" class="kice-line-input" id="kline-${item.id}-${li}" value="${escHtml(savedVal)}" placeholder="${li+1}번째 줄 (38~45자 이내 핵심 서술)" oninput="onKiceLineInput(${item.id}, ${li})">
-                  <span class="kice-char-badge ${cls}" id="kcnt-${item.id}-${li}">${len}/45</span>
+                  <input type="text" class="kice-line-input" id="kline-${item.id}-${li}" value="${escHtml(savedVal)}" placeholder="${ph}" oninput="onKiceLineInput(${item.id}, ${li}, ${limit})">
+                  <span class="kice-char-badge ${cls}" id="kcnt-${item.id}-${li}">${len}/${limit}</span>
                 </div>
               `;
             }).join('')}
@@ -478,7 +482,7 @@ KICE_MINI_SNIPPET = """      <!-- AUTHENTIC KICE 4-LINE PRACTICE SHEET -->
         </div>
         <div class="kice-mini-foot">
           <button class="grade-btn" onclick="gradeDraft(${item.id})">🎯 KICE 키워드 즉시 채점</button>
-          <span style="font-size:0.72rem;color:#475569;font-weight:700;">※ 45자 초과 시 빨간 경고 (B4 1줄 이탈 방지)</span>
+          <span style="font-size:0.72rem;color:#475569;font-weight:700;">※ ${item.part === '교육학' ? '60자 초과 시 빨간 경고 (교육학 6줄 규격)' : '45자 초과 시 빨간 경고 (B4 1줄 이탈 방지)'}</span>
         </div>
         <div class="grade-result" id="grade-res-${item.id}"></div>
       </div>
@@ -509,16 +513,17 @@ function persistExtra() {
   } catch(e) {}
 }
 
-function onKiceLineInput(id, lineIdx) {
+function onKiceLineInput(id, lineIdx, limit) {
+  const maxC = limit || 45;
   const inp = document.getElementById(`kline-${id}-${lineIdx}`);
   const badge = document.getElementById(`kcnt-${id}-${lineIdx}`);
   if (!inp) return;
   const val = inp.value;
-  if (!state.lineDrafts[id]) state.lineDrafts[id] = ['', '', '', ''];
+  if (!state.lineDrafts[id]) state.lineDrafts[id] = ['', '', '', '', '', ''];
   state.lineDrafts[id][lineIdx] = val;
   if (badge) {
-    badge.textContent = `${val.length}/45`;
-    badge.className = 'kice-char-badge ' + (val.length === 0 ? '' : (val.length <= 45 ? 'ok' : 'over'));
+    badge.textContent = `${val.length}/${maxC}`;
+    badge.className = 'kice-char-badge ' + (val.length === 0 ? '' : (val.length <= maxC ? 'ok' : 'over'));
   }
   persistExtra();
 }
@@ -527,7 +532,8 @@ function gradeDraft(id) {
   const item = TOP55.find(x => x.id === id);
   const box = document.getElementById('grade-res-' + id);
   if (!item || !box) return;
-  const lines = [0,1,2,3].map(li => {
+  const lineCnt = item.part === '교육학' ? 6 : 4;
+  const lines = Array.from({length: lineCnt}, (_, li) => {
     const el = document.getElementById(`kline-${id}-${li}`);
     return el ? el.value : '';
   });
