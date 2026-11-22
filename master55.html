@@ -3343,7 +3343,7 @@ function renderCards() {
 
     // [변귀섭 대표님 전용] 내 교육학 논술 플랫폼 (서론 공식 · 본론 이처럼~ · 결론 공식) 따라치기 구역
     let pedPlatformHtml = '';
-    if (q.ped_platform && q.ped_platform.length > 0) {
+    if (q.num === 1 && q.ped_platform && q.ped_platform.length > 0) {
       const platRowsHtml = q.ped_platform.map((pItem, pIdx) => {
         const targetInner = formatTextWithBlanks(pItem.text, pItem.blanks || [], '');
         return `
@@ -4023,7 +4023,7 @@ function loadSavedAnswers() {
         }
       });
     }
-    if (q.ped_platform && q.ped_platform.length > 0) {
+    if (q.num === 1 && q.ped_platform && q.ped_platform.length > 0) {
       q.ped_platform.forEach((pItem, pIdx) => {
         const savedP = localStorage.getItem(prefix + key + '_P' + pIdx);
         if (savedP !== null) {
