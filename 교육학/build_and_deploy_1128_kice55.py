@@ -132,7 +132,7 @@ templates_data = [
             {"q": "① 감별진단 1줄 필수 키워드", "a": "공식 진단명"},
             {"q": "② 감별진단 2줄 필수 키워드", "a": "결정적인 감별 기준"},
             {"q": "③ 증상을 괴로워하는 특성", "a": "자아 이질적(Ego-dystonic)"},
-            {"q": "④ 증상을 당연시하는 특성", "a": "자아 동질적(Ego-syntonic)"},
+            {"q": "④ 증상을 당연시하는 특성", "a": "자아 동조적(Ego-syntonic)"},
             {"q": "⑤ 행동치료 직면 기법", "a": "노출 및 반응방지(ERP)"},
             {"q": "⑥ 회피 차단 시 일어나는 원리", "a": "불안이 자연 소거"},
             {"q": "⑦ 단계적 불안 둔감화 기법", "a": "체계적 둔감법"},
@@ -2385,7 +2385,7 @@ function openWeaknessModal() {{
         🎉 아직 답안 작성 중 누락된 약점 키워드가 없습니다! (타이핑 연습 중 빠진 키워드가 생기면 이곳에 자동으로 모입니다.)
       </div>
       <div style="font-weight:800; color:#fde047; margin-bottom:8px;">⚡ [기본 탑재] 시험장 직전 가장 많이 실수하는 0순위 족보 5선</div>
-      <div class="weak-item-card"><strong>#21 강박장애 vs 강박성 성격장애</strong><br><span style="color:#fda4af;">핵심:</span> 자아 이질적 vs 자아 동질적 · 노출 및 반응방지(ERP)</div>
+      <div class="weak-item-card"><strong>#21 강박장애 vs 강박성 성격장애</strong><br><span style="color:#fda4af;">핵심:</span> 자아 이질적 vs 자아 동조적 · 노출 및 반응방지(ERP)</div>
       <div class="weak-item-card"><strong>#24 사회적(실용적) 의사소통장애 vs 자폐스펙트럼장애</strong><br><span style="color:#fda4af;">핵심:</span> 제한적이고 반복적인 행동 패턴(상동 행동) 유무 · 화용론적 언어 결함</div>
       <div class="weak-item-card"><strong>#40 빅터 프랑클 의미치료</strong><br><span style="color:#fda4af;">핵심:</span> 탈숙고(Dereflection) · 역설적 의도</div>
       <div class="weak-item-card"><strong>#48 머레이 욕구-압착 이론</strong><br><span style="color:#fda4af;">핵심:</span> 알파 압착(객관적 실제) vs 베타 압착(주관적 지각 · 행동 지배)</div>
@@ -3484,7 +3484,7 @@ function renderCards() {{
           }}
         }});
       }});
-      const trapPool = ['인지적 융합', '역설적 의도', '자아 동질적', '규범적 차원', '탈목표 평가', '병렬적 왜곡', '외재적 부하', '수용 영역']
+      const trapPool = ['인지적 융합', '역설적 의도', '자아 동조적', '규범적 차원', '탈목표 평가', '병렬적 왜곡', '외재적 부하', '수용 영역']
         .filter(t => !correctChips.some(c => c.text.includes(t) || t.includes(c.text)));
       const traps = trapPool.slice(0, 2).map(t => ({{ text: t, lineIdx: -1, isCorrect: false }}));
       const allChips = [...correctChips, ...traps].sort((a, b) => (a.text.length * 7 + a.text.charCodeAt(0)) % 13 - (b.text.length * 7 + b.text.charCodeAt(0)) % 13);
