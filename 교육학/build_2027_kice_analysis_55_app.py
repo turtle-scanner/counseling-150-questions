@@ -878,32 +878,36 @@ renderAnalysis();
 renderKiceSheet();
 switchMode('sheet');
 
-// Enter / ArrowUp / ArrowDown navigation for all KICE line inputs (IME-safe)
+// Enter / ArrowUp / ArrowDown navigation for all KICE line inputs (Single-Enter Korean IME friendly!)
 document.addEventListener('keydown', function(e) {
   const target = e.target;
   if (!target || !target.classList || !target.classList.contains('kice-line-input')) return;
-  if (e.isComposing || e.keyCode === 229) return;
 
-  if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-    const scope = target.closest('.kice-mini-wrap, .kice-paper');
-    if (!scope) return;
-    const inputs = Array.from(scope.querySelectorAll('input.kice-line-input'));
-    const idx = inputs.indexOf(target);
-    if (idx === -1) return;
+  const isEnter = (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter');
+  const isDown = (e.key === 'ArrowDown');
+  const isUp = (e.key === 'ArrowUp');
+  if (!isEnter && !isDown && !isUp) return;
 
-    if (e.key === 'Enter' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (idx + 1 < inputs.length) {
-        inputs[idx + 1].focus();
-      } else if (e.key === 'Enter' && scope.classList.contains('kice-mini-wrap')) {
-        // Last line in 55-question card: trigger instant KICE keyword grading
-        const m = target.id.match(/^kline-(\d+)-/);
-        if (m) gradeDraft(Number(m[1]));
-      }
-    } else if (e.key === 'ArrowUp' && idx > 0) {
-      e.preventDefault();
-      inputs[idx - 1].focus();
+  const scope = target.closest('.kice-mini-wrap, .kice-paper');
+  if (!scope) return;
+  const inputs = Array.from(scope.querySelectorAll('input.kice-line-input'));
+  const idx = inputs.indexOf(target);
+  if (idx === -1) return;
+
+  if (isEnter || isDown) {
+    e.preventDefault();
+    if (idx + 1 < inputs.length) {
+      const nextInput = inputs[idx + 1];
+      // Delay focus by 1 tick so Korean IME commits the last syllable cleanly on single Enter
+      setTimeout(() => { nextInput.focus(); }, 10);
+    } else if (isEnter && scope.classList.contains('kice-mini-wrap')) {
+      const m = target.id.match(/^kline-(\\d+)-/);
+      if (m) setTimeout(() => { gradeDraft(Number(m[1])); }, 10);
     }
+  } else if (isUp && idx > 0) {
+    e.preventDefault();
+    const prevInput = inputs[idx - 1];
+    setTimeout(() => { prevInput.focus(); }, 10);
   }
 });
 """
