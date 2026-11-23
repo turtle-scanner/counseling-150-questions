@@ -374,6 +374,27 @@ EXTRA_CSS = """
     font-weight: 800;
     cursor: pointer;
   }
+  .clear-one-btn {
+    background: #fff1f2;
+    color: #be123c;
+    border: 1px solid #fda4af;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .clear-all-btn {
+    background: rgba(244, 63, 94, 0.14);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+  }
   .grade-result {
     display: none;
     padding: 8px 10px;
@@ -452,6 +473,13 @@ html = html.replace(
     1
 )
 
+# Add "전체 지우기" button next to viewToggleBtn in search-row
+html = html.replace(
+    '<button class="view-toggle" id="viewToggleBtn" onclick="toggleViewMode()">📋 리스트</button>',
+    '<button class="view-toggle" id="viewToggleBtn" onclick="toggleViewMode()">📋 리스트</button>\n      <button class="clear-all-btn" onclick="clearAllDrafts()" title="55문제 작성글 모두 지우기">🗑️ 모두 지우기</button>',
+    1
+)
+
 # 6. Inject Authentic KICE Practice Sheet inside every 55-question card (Education=6 lines / 60 chars, Counseling=4 lines / 45 chars)
 KICE_MINI_SNIPPET = """      <!-- AUTHENTIC KICE PRACTICE SHEET -->
       <div class="kice-mini-wrap ${item.part === '교육학' ? 'p1' : 'p2'}">
@@ -481,7 +509,10 @@ KICE_MINI_SNIPPET = """      <!-- AUTHENTIC KICE PRACTICE SHEET -->
           </div>
         </div>
         <div class="kice-mini-foot">
-          <button class="grade-btn" onclick="gradeDraft(${item.id})">🎯 KICE 키워드 즉시 채점</button>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <button class="grade-btn" onclick="gradeDraft(${item.id})">🎯 KICE 키워드 즉시 채점</button>
+            <button class="clear-one-btn" onclick="clearOneDraft(${item.id})">🧹 이 문제 지우기</button>
+          </div>
           <span style="font-size:0.72rem;color:#475569;font-weight:700;">※ ${item.part === '교육학' ? '60자 초과 시 빨간 경고 (교육학 6줄 규격)' : '45자 초과 시 빨간 경고 (B4 1줄 이탈 방지)'}</span>
         </div>
         <div class="grade-result" id="grade-res-${item.id}"></div>
@@ -526,6 +557,34 @@ function onKiceLineInput(id, lineIdx, limit) {
     badge.className = 'kice-char-badge ' + (val.length === 0 ? '' : (val.length <= maxC ? 'ok' : 'over'));
   }
   persistExtra();
+}
+
+function clearOneDraft(id) {
+  const item = TOP55.find(x => x.id === id);
+  const lineCnt = (item && item.part === '교육학') ? 6 : 4;
+  const limit = (item && item.part === '교육학') ? 60 : 45;
+  state.lineDrafts[id] = Array(lineCnt).fill('');
+  for (let li = 0; li < lineCnt; li++) {
+    const inp = document.getElementById(`kline-${id}-${li}`);
+    const badge = document.getElementById(`kcnt-${id}-${li}`);
+    if (inp) inp.value = '';
+    if (badge) {
+      badge.textContent = `0/${limit}`;
+      badge.className = 'kice-char-badge';
+    }
+  }
+  const box = document.getElementById('grade-res-' + id);
+  if (box) { box.innerHTML = ''; box.classList.remove('open'); }
+  persistExtra();
+  const firstInp = document.getElementById(`kline-${id}-0`);
+  if (firstInp) firstInp.focus();
+}
+
+function clearAllDrafts() {
+  if (!confirm('55문제에 작성한 모든 답안 글을 한 번에 지우시겠습니까?\\n(암기 완료 및 북마크 체크는 그대로 유지됩니다)')) return;
+  state.lineDrafts = {};
+  persistExtra();
+  renderTop55();
 }
 
 function gradeDraft(id) {
