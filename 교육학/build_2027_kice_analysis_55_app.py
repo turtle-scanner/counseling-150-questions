@@ -473,7 +473,7 @@ KICE_MINI_SNIPPET = """      <!-- AUTHENTIC KICE PRACTICE SHEET -->
               return `
                 <div class="kice-line-item">
                   <span class="kice-line-idx">${li+1}</span>
-                  <input type="text" class="kice-line-input" id="kline-${item.id}-${li}" value="${escHtml(savedVal)}" placeholder="${ph}" oninput="onKiceLineInput(${item.id}, ${li}, ${limit})">
+                  <input type="text" enterkeyhint="next" class="kice-line-input" id="kline-${item.id}-${li}" value="${escHtml(savedVal)}" placeholder="${ph}" oninput="onKiceLineInput(${item.id}, ${li}, ${limit})">
                   <span class="kice-char-badge ${cls}" id="kcnt-${item.id}-${li}">${len}/${limit}</span>
                 </div>
               `;
@@ -877,6 +877,35 @@ updateProgress();
 renderAnalysis();
 renderKiceSheet();
 switchMode('sheet');
+
+// Enter / ArrowUp / ArrowDown navigation for all KICE line inputs (IME-safe)
+document.addEventListener('keydown', function(e) {
+  const target = e.target;
+  if (!target || !target.classList || !target.classList.contains('kice-line-input')) return;
+  if (e.isComposing || e.keyCode === 229) return;
+
+  if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    const scope = target.closest('.kice-mini-wrap, .kice-paper');
+    if (!scope) return;
+    const inputs = Array.from(scope.querySelectorAll('input.kice-line-input'));
+    const idx = inputs.indexOf(target);
+    if (idx === -1) return;
+
+    if (e.key === 'Enter' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (idx + 1 < inputs.length) {
+        inputs[idx + 1].focus();
+      } else if (e.key === 'Enter' && scope.classList.contains('kice-mini-wrap')) {
+        // Last line in 55-question card: trigger instant KICE keyword grading
+        const m = target.id.match(/^kline-(\d+)-/);
+        if (m) gradeDraft(Number(m[1]));
+      }
+    } else if (e.key === 'ArrowUp' && idx > 0) {
+      e.preventDefault();
+      inputs[idx - 1].focus();
+    }
+  }
+});
 """
 
 assert OLD_INIT in html, "OLD_INIT not found"
