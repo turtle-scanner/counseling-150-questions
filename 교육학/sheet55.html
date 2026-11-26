@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027학년도(11.28) KICE 핵심키워드 55제 공식 4줄(교육학 6줄) 요약 답안지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #0b1120;
+    color: #f1f5f9;
+    padding: 14px 12px 60px;
+    line-height: 1.5;
+  }
+  .toolbar {
+    position: sticky; top: 6px; z-index: 100;
+    max-width: 1120px; margin: 0 auto 16px;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(8px);
+    border: 1.5px solid #38bdf8;
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: center; justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  }
+  .btn-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .btn {
+    border: 1px solid #334155; background: #1e293b; color: #e2e8f0;
+    padding: 6px 11px; border-radius: 6px; font-size: 0.82rem; font-weight: 700;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn.active { background: #fbbf24; color: #451a03; border-color: #f59e0b; }
+  .btn.rose { background: #e11d48; color: #fff; border-color: #f43f5e; }
+  .btn.sky { background: #0284c7; color: #fff; border-color: #38bdf8; }
+  .header-banner {
+    max-width: 1120px; margin: 0 auto 14px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid #334155; border-radius: 10px;
+    padding: 14px 18px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+  }
+  .header-banner h1 { font-size: 1.15rem; color: #fbbf24; font-weight: 900; }
+  .header-banner p { font-size: 0.84rem; color: #94a3b8; }
+  .grid {
+    max-width: 1120px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    gap: 10px;
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .toolbar { position: static; }
+  }
+  .card {
+    background: #111827;
+    border: 1.5px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
+    break-inside: avoid;
+  }
+  .card.ped { border-left: 4px solid #38bdf8; }
+  .card.csl { border-left: 4px solid #fbbf24; }
+  .card.trap { border-color: #f43f5e; }
+  .card-head { margin-bottom: 7px; border-bottom: 1px solid #1f2937; padding-bottom: 6px; }
+  .card-title-wrap { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; margin-bottom: 4px; }
+  .num-badge { background: #0f172a; color: #fbbf24; font-weight: 900; font-size: 0.78rem; padding: 1px 6px; border-radius: 4px; border: 1px solid #475569; }
+  .part-badge { font-size: 0.72rem; font-weight: 800; padding: 1px 6px; border-radius: 4px; }
+  .part-badge.ped { background: rgba(56,189,248,0.18); color: #38bdf8; }
+  .part-badge.csl { background: rgba(251,191,36,0.18); color: #fbbf24; }
+  .dom-badge { font-size: 0.72rem; color: #94a3b8; }
+  .trap-badge { background: rgba(244,63,94,0.2); color: #fda4af; border: 1px solid #f43f5e; font-size: 0.72rem; font-weight: 800; padding: 1px 6px; border-radius: 4px; }
+  .card-title { font-size: 0.92rem; font-weight: 800; color: #f8fafc; }
+  .card-lines { display: flex; flex-direction: column; gap: 4px; }
+  .ans-line { display: flex; gap: 6px; font-size: 0.86rem; color: #e2e8f0; align-items: baseline; }
+  .ln-no {
+    flex-shrink: 0; width: 18px; height: 18px; line-height: 18px; text-align: center;
+    font-size: 0.72rem; font-weight: 800; border-radius: 50%;
+    background: #1e293b; color: #94a3b8;
+  }
+  .kw {
+    color: #fde047; background: rgba(250, 204, 21, 0.16);
+    font-weight: 800; padding: 0 3px; border-radius: 3px;
+    transition: all 0.15s;
+  }
+  body.hide-kw .kw {
+    color: transparent; background: #334155; border-radius: 3px; user-select: none; cursor: pointer;
+  }
+  body.hide-kw .kw.revealed {
+    color: #fde047; background: rgba(250, 204, 21, 0.16);
+  }
+  @media print {
+    body { background: #fff; color: #111; padding: 0; }
+    .toolbar { display: none !important; }
+    .header-banner { background: #fff; border: 1.5px solid #111; color: #111; padding: 8px 12px; margin-bottom: 8px; }
+    .header-banner h1 { color: #111; font-size: 1rem; }
+    .header-banner p { color: #333; font-size: 0.75rem; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .card { background: #fff; border: 1px solid #999; padding: 6px 8px; }
+    .card.ped { border-left: 3px solid #1d4ed8; }
+    .card.csl { border-left: 3px solid #b45309; }
+    .card-head { border-bottom: 1px solid #ddd; margin-bottom: 4px; padding-bottom: 3px; }
+    .card-title { color: #000; font-size: 0.78rem; }
+    .ans-line { color: #111; font-size: 0.74rem; line-height: 1.38; }
+    .ln-no { background: #eee; color: #333; width: 15px; height: 15px; line-height: 15px; font-size: 0.65rem; }
+    .num-badge { background: #eee; color: #000; border-color: #999; }
+    .part-badge.ped { background: #dbeafe; color: #1e40af; }
+    .part-badge.csl { background: #fef3c7; color: #92400e; }
+    .trap-badge { background: #ffe4e6; color: #9f1239; border-color: #f43f5e; }
+    .kw { color: #1e3a8a !important; background: #fef08a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="btn-group">
+    <button class="btn active" onclick="filterCards('ALL', this)">📚 전체 (55제)</button>
+    <button class="btn" onclick="filterCards('PED10', this)">📘 교육학 10선 (6줄)</button>
+    <button class="btn" onclick="filterCards('COUNSEL45', this)">📗 전공 45선 (4줄)</button>
+    <button class="btn" onclick="filterCards('TRAP', this)">🚨 오답주의 (23선)</button>
+  </div>
+  <div class="btn-group">
+    <button class="btn rose" id="btn-kw" onclick="toggleKw()">🙈 키워드 가리기</button>
+    <button class="btn sky" onclick="window.print()">🖨️ A4 인쇄</button>
+    <a class="btn" href="master55.html">⌨️ 55제 타이핑</a>
+    <a class="btn" href="index.html">📝 AB 시험지</a>
+  </div>
+</div>
+
+<div class="header-banner">
+  <div>
+    <h1>🏆 2027학년도(11.28) KICE 핵심키워드 55제 공식 4줄(교육학 6줄) 요약 답안지</h1>
+    <p>수험자: 변귀섭 대표님 | 택시·시험장 직전 3분 컷 초압축 암기 & A4 인쇄 전용 (키워드 가리기 후 클릭 시 1초 확인)</p>
+  </div>
+</div>
+
+<main class="grid" id="card-grid">
+  
+    <article class="card ped trap" data-part="PED10" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#01</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육과정 ★0순위</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">위긴스와 맥타이 백워드 설계 모형 3단계 (Wiggins &amp; McTighe)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">백워드 설계 <span class="kw">1단계 바라는 결과 확인</span>은 성취기준을 분석해 <span class="kw">영속적 이해</span>를 세운다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">2단계 수락할 만한 증거</span> 결정은 수업에 앞서 수행과제와 루브릭을 먼저 설계한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt"><span class="kw">3단계 학습경험과 수업</span> 계획은 평가 기준에 맞추어 수업 활동을 체계화한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">평가를 수업보다 먼저 설계하여 진도 나가기와 활동 위주의 설계 오류를 극복한다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">이를 통해 학생이 세부 사실을 잊은 후에도 삶에 오래 전이되는 깊은 이해에 도달한다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육과정에서 백워드 설계를 쓰면 미래형 교육 혁신이 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped " data-part="PED10" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#02</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육과정</span>
+          
+        </div>
+        <h2 class="card-title">스킬벡(Skilbeck) 학교중심 교육과정 개발 모형(SBCD)과 상황분석</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">스킬벡의 <span class="kw">학교중심 교육과정 개발(SBCD)</span>은 내외적 여건을 진단하는 <span class="kw">상황분석</span>으로 시작한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">외적 요인</span>으로 학부모의 요구와 지역사회 특성 및 사회문화적 변화를 분석한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt"><span class="kw">내적 요인</span>으로 학생의 적성과 교사의 전문성 및 학교의 물적 시설을 점검한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt"><span class="kw">상황분석</span> 결과를 토대로 목표를 설정하고 학교 특색에 맞는 교육과정을 구축한다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">교사들이 학교의 고유한 맥락을 반영하여 교육과정 자율성과 전문성을 함께 신장한다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육과정에서 <span class="kw">상황분석</span>(SBCD)을 쓰면 미래형 교육 혁신이 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped " data-part="PED10" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#03</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육과정</span>
+          
+        </div>
+        <h2 class="card-title">타바(Taba) 교사 중심 귀납적 교육과정 개발 모형</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">타바의 모형은 현장 교사가 수업 요구를 직접 진단하여 단원을 개발하는 상향식 접근이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">개발 절차는 <span class="kw">요구 진단</span>부터 목표 설정, 내용 및 학습경험 선정과 조직, 평가로 전개된다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">시험적 단원을 먼저 개발하여 교실 현장에서 검증한 후 전체 교육과정으로 확대한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">국가 교육과정의 획일성을 극복하고 지역과 학교 실정에 맞는 <span class="kw">현장 적합성</span>을 확보한다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">교육과정 개발 과정에 교사가 주도적으로 참여함으로써 교원의 교육적 전문성을 신장한다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육과정에서 귀납적 모형을 쓰면 미래형 교육 혁신이 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped " data-part="PED10" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#04</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육방법 ★0순위</span>
+          
+        </div>
+        <h2 class="card-title">플립드 러닝(거꾸로 수업) 수업 전·중·후 3단계 및 교사 역할</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">수업 전 단계에서 학생은 교사가 제공한 온라인 디딤영상을 통해 기초 개념을 학습한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">수업 중 단계에서는 전통적 강의를 배제하고 토의 토론과 협력 탐구를 진행한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">교사는 모둠 활동을 순회하며 학생의 오개념을 교정하고 수준별 비계를 제공한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">수업 후 단계에서는 성찰일지를 작성하여 자신의 사고 과정을 점검하고 초인지를 높인다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">교실 수업을 지식 전달 공간에서 고차원적 사고력과 협력 역량을 기르는 장으로 전환한다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육방법에서 역진행 수업을 쓰면 신개념 수업 혁신이 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped " data-part="PED10" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#05</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육방법</span>
+          
+        </div>
+        <h2 class="card-title">콜린스(Collins) 인지적 도제 교수법 6단계와 점진적 비계철회(Fading)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">인지적 도제 교수법은 전문가의 내재적 사고 과정을 가시화하여 관찰하고 모방하게 돕는다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">교사 주도의 전반부 3단계는 시범을 보이는 모델링과 코칭 및 비계설정으로 진행한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">학생 주도의 후반부 3단계는 지식을 언어화하는 명료화와 반성 및 탐색으로 이어진다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">학생의 수행 능력이 향상됨에 따라 교사의 도움을 점진적으로 줄이는 비계철회(Fading)를 쓴다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">단순 기능 모방을 넘어 학습자가 스스로 고차적 문제해결을 수행하는 자율적 주체로 자란다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육방법에서 인지적 도제를 쓰면 신개념 수업 혁신이 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped " data-part="PED10" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#06</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육방법</span>
+          
+        </div>
+        <h2 class="card-title">켈러(Keller) ARCS 동기설계 모형과 스웰러(Sweller) 인지부하 이론</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">켈러의 ARCS 동기설계 모형은 주의집중, 관련성, 자신감, 만족감의 4요소로 구성된다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">스웰러 이론에서 비효율적 교수 설계로 생기는 외재적 인지부하를 최소화하여 기억을 돕는다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">확보된 여유 인지 자원은 본질적 부하에 집중 투입하여 장기기억 스키마 형성을 촉진한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">초보자에게 유익한 상세 안내가 숙련자에게는 방해가 되는 <span class="kw">전문성 역전 효과</span>를 예방한다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">학습자의 동기 유발과 작동기억 용량 최적화를 동시에 달성하여 수업 이해도를 극대화한다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육방법에서 ARCS와 인지부하 관리를 쓰면 신개념 수업 혁신이 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped trap" data-part="PED10" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#07</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육평가 ★0순위</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">비고츠키 근접발달영역(ZPD) 기반 역동적 평가 (3단계 측정)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">혼자 해결하는 실제적 발달과 도움받아 도달하는 잠재적 발달 간극인 ZPD를 주목한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">결과만 재는 정적 평가를 넘어 사전검사와 중재 및 재검사의 3단계로 측정을 진행한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">평가 도중 교사가 힌트와 비계설정을 제공하는 <span class="kw">평가와 교수의 유기적 통합</span>을 이룬다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">상호작용적 평가를 통해 학생의 숨겨진 학습 잠재력과 미래 성장 가능성을 진단한다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">과거의 성취 서열화가 아니라 학생 한 명 한 명의 잠재력을 꽃피우는 맞춤형 지원을 제공한다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육평가에서 역동적 평가를 쓰면 전인적 성장 평가가 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped " data-part="PED10" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#08</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육평가 ★0순위</span>
+          
+        </div>
+        <h2 class="card-title">다차원 수행평가 루브릭(분석적 vs 총체적)과 메이거 행동적 목표</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">수행평가 루브릭은 평가 준거와 성취 수준 및 구체적인 척도 기술어 3요소로 구성된다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">세부 영역별 강약점을 진단하여 맞춤형 피드백을 제공하는 <span class="kw">분석적 루브릭</span>을 활용한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">평가 실시 전에 루브릭을 사전 공유하여 도달 목표를 알리고 자기조절학습을 돕는다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">메이거의 목표 진술에 따라 조건, 도착점 행동, 수락 기준 3요소를 명확히 제시한다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">채점자의 주관적 편향을 줄여 채점 신뢰도와 타당도를 확보하고 공정한 평가를 구현한다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육평가에서 <span class="kw">분석적 루브릭</span>을 쓰면 전인적 성장 평가가 실현된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped trap" data-part="PED10" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#09</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육행정 ★0순위</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">세르지오바니(Sergiovanni) 도덕적 리더십과 학교 공동체 구축</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">도덕적 리더십</span>은 지시와 통제의 관료적 권위를 탈피해 전문성과 도덕적 권위에 기반한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">구성원을 수동적 피감독자가 아닌 학교 사명을 스스로 다하는 자기지도자로 육성한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">공유된 도덕적 가치와 교육적 사명감을 바탕으로 신뢰와 돌봄의 학교 공동체를 구축한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">외적 통제 없이도 교사들의 내적 동기와 자발적 헌신을 이끌어내 지속적 혁신을 이룬다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">지도자는 군림하지 않고 교직원을 섬기는 서번트 리더십을 발휘해 민주적 문화를 세운다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육행정에서 <span class="kw">도덕적 리더십</span>을 쓰면 교사의 수석 역량이 증진된다.</span></div>
+      </div>
+    </article>
+    <article class="card ped " data-part="PED10" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#10</span>
+          <span class="part-badge ped">교육학 6줄</span>
+          <span class="dom-badge">교육행정 ★0순위</span>
+          
+        </div>
+        <h2 class="card-title">겟젤스와 구바(Getzels &amp; Guba) 사회체계 모형 (규범적 vs 개인적 차원)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">규범적 차원</span>은 학교라는 제도와 그 제도가 요구하는 공식적 역할 및 역할 기대로 구성된다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">개인적 차원</span>은 학교 조직 속 고유한 개성을 지닌 개인과 인성 및 개인적 욕구 성향이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">역할 기대와 개인적 욕구가 상충할 때 <span class="kw">역할 갈등</span>이 일어나며 행동은 양자의 상호작용이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">관리자는 상황에 따라 규범적 요구와 개인적 욕구를 조화시키는 <span class="kw">거래적 지도성</span>을 발휘한다.</span></div>
+<div class="ans-line"><span class="ln-no">5</span><span class="ln-txt">공식적 직무 요구와 교사의 창의적 개성을 절충하여 사기를 진작하고 학교 활력을 높인다.</span></div>
+<div class="ans-line"><span class="ln-no">6</span><span class="ln-txt">이처럼 교사가 교육행정에서 사회체계 조화를 쓰면 교사의 수석 역량이 증진된다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#11</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">강박장애(OCD) vs 강박성 성격장애(OCPD) 및 노출 및 반응방지(ERP)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">내담자 진숙의 공식 진단명은 강박장애이며 진수는 강박성 성격장애이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">진숙은 <span class="kw">자아 이질적</span> 특성이며 진수는 완벽주의를 당연시하는 자아 동조적이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">진숙에게 적용할 행동 치료적 기법의 명칭은 <span class="kw">노출 및 반응방지(ERP)</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">자극에 노출시킨 후 강박행동을 차단하여 불안이 자연 소거되도록 돕는다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#12</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">공황장애(클라크의 파국적 오해석) 및 내수용성 노출과 광장공포증</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">밑줄 친 반응의 공식 명칭은 신체 감각을 위험으로 여기는 <span class="kw">파국적 오해석</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">무해한 생리적 각성을 파멸로 잘못 해석하여 극심한 공포가 악순환 증폭된다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">신체 감각에 직접 직면하게 하는 행동 기법의 명칭은 <span class="kw">내수용성 노출</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">즉각 탈출하기 어려운 장소를 지속적으로 회피하는 병명은 <span class="kw">광장공포증</span>이다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#13</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">신체증상장애 vs 질병불안장애 감별 진단 및 확인 행동</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">내담자 훈이의 공식 진단명은 <span class="kw">신체증상장애</span>이며 병철은 <span class="kw">질병불안장애</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">훈이는 실제로 일상생활에 지장을 주는 고통스러운 <span class="kw">신체 통증 증상</span>이 지속된다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">병철은 뚜렷한 신체 증상이 없음에도 불치병에 걸렸다는 집착과 불안에 몰두한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">병철은 의사의 정상 소견에도 불구하고 여러 병원을 전전하는 <span class="kw">확인 행동</span>을 보인다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#14</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          
+        </div>
+        <h2 class="card-title">사회적(실용적) 의사소통장애 vs 자폐스펙트럼장애 감별 진단</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">학생 진호는 <span class="kw">사회적(실용적) 의사소통장애</span>이며 민우는 자폐스펙트럼장애다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">두 장애를 구별하는 결정적 감별점은 <span class="kw">제한적이고 반복적인 행동</span> 패턴의 유무이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">민우는 상동 행동과 집착을 동반하지만 진호는 <span class="kw">제한적이고 반복적인 행동</span>이 없다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">진호는 사회적 맥락에 맞게 소통하는 화용론적 언어 사용 기능에서 결함을 보인다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#15</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          
+        </div>
+        <h2 class="card-title">주의력결핍 과잉행동장애(ADHD) 만 12세 발병 기준 및 3대 하위 유형</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">만 12세 이전</span>에 발병하여 <span class="kw">2개 이상의 장면</span>에서 지속적인 기능 손상을 보인다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">부주의와 과잉행동 및 충동성 기준을 모두 충족하는 <span class="kw">복합형</span>으로 진단한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">부주의 증상만 두드러지게 나타나는 유형은 <span class="kw">주의력 결핍 우세형</span>으로 감별한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">행동 수정 기법과 인지행동치료를 함께 적용하여 자기조절 능력을 강화한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#16</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">적대적 반항장애(ODD) vs 품행장애(CD 아동기 발병형) 감별 진단</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">권위자에게 반항하지만 타인의 권리를 침해하지 않는 <span class="kw">적대적 반항장애</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">타인의 권리와 규칙을 반복적으로 위반하며 공격성을 보이는 <span class="kw">품행장애</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">만 10세 이전에 발병하는 아동기 발병형은 성인기 반사회성으로 쉽게 진행된다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">친사회적 정서 결여를 조기에 선별하고 <span class="kw">부모 관리 훈련</span>과 행동치료를 쓴다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#17</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          
+        </div>
+        <h2 class="card-title">반응성 애착장애(RAD) vs 탈억제 사회관여 장애(DSED) 감별 진단</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">고통 속에서도 위로를 구하지 않고 위축된 반응성 애착장애를 진단한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">낯선 성인에게 경계 없이 과도하게 다가가는 탈억제 사회관여 장애이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">두 장애 모두 영유아기 양육자의 <span class="kw">지속적인 정서적 방임</span>과 결핍에서 비롯된다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">안정적인 <span class="kw">1차 돌봄 환경</span>을 구축하고 일관되고 안전한 치료적 애착을 맺는다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#18</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">외상후 스트레스 장애(PTSD) vs 급성 스트레스 장애(ASD) 감별 진단</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">외상 사건을 재경험하는 침습과 고통스러운 기억을 회피하는 양상을 보인다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">증상이 외상 후 <span class="kw">3일에서 1개월</span> 이내 지속되는 장애는 급성 스트레스 장애이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">핵심 증상이 <span class="kw">1개월 이상</span> 지속되어 기능 손상을 주는 외상후 스트레스 장애이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">안정화 기법과 <span class="kw">안구운동 민감소실 및 재처리 치료(EMDR)</span>로 회복을 돕는다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#19</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">해리성 기억상실(해리성 둔주) vs 해리성 정체성 장애 및 인격 통합</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">내담자 민석의 진단명은 <span class="kw">해리성 기억상실</span>이며 지우는 <span class="kw">해리성 정체성 장애</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">민석은 자신의 과거를 기억하지 못하고 방황하는 <span class="kw">해리성 둔주</span>를 동반한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">지우는 한 사람의 내면에 2개 이상의 구별되는 뚜렷한 하위 인격을 나타낸다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">분리된 여러 하위 인격들을 조화롭게 화해시켜 1개의 온전한 자아로 통합한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#20</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          
+        </div>
+        <h2 class="card-title">경계선 성격장애 vs 의존성 성격장애 및 분열 방어기제와 DBT</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">진희는 <span class="kw">경계선 성격장애</span>이며 수연은 <span class="kw">의존성 성격장애</span>로 각각 감별 진단한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">진희는 타인을 극단적 이상화와 평가절하로 분리하는 분열 방어기제를 쓴다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">수연은 버림받지 않기 위해 타인에게 과도하게 굴종하고 수동적으로 순종한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">수용과 변화를 통합하여 정서 조절을 돕는 <span class="kw">변증법적 행동치료(DBT)</span>를 쓴다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#21</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          
+        </div>
+        <h2 class="card-title">조현성 성격장애 vs 회피성 성격장애 감별 진단</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">내담자 철수는 <span class="kw">조현성 성격장애</span>이며 영희는 <span class="kw">회피성 성격장애</span>로 감별한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">철수는 친밀한 관계에 대한 욕구가 전혀 없고 칭찬이나 비난에 무관심하다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">영희는 친밀한 관계를 간절히 원하지만 거절과 비판이 두려워 관계를 피한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">영희의 <span class="kw">부정적 평가 두려움</span>을 낮추고 단계적인 사회적 기술 훈련을 실시한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#22</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">심리검사</span>
+          
+        </div>
+        <h2 class="card-title">MMPI-2-RF 자살/죽음 사고 척도(SUI) 및 비밀보장 예외 위기개입</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">즉각적인 생명 위협을 나타내는 척도는 <span class="kw">자살/죽음 사고 척도(SUI)</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">T점수 82점</span>은 구체적인 자살 사고와 자살 실행 위험성이 극도로 임박함을 뜻한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">자살 위기는 <span class="kw">비밀보장의 예외</span> 사안이므로 보호자에게 사실을 즉각 통보한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt"><span class="kw">위기관리위원회</span>를 소집하고 전문 의료기관으로 긴급 연계하여 안전을 지킨다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#23</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">심리검사</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">MMPI-2-RF 상위차원(EID·THD·BXD) 및 재구성임상척도(RCd·RC1·RC3)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">상위차원 척도는 정서적 내재화(EID)와 <span class="kw">사고 역기능(THD)</span> 및 BXD가 있다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">의기소침 척도(RCd)</span>는 전반적인 정서적 불편감과 절망감 및 무기력을 잰다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">사고 역기능 척도(THD)는 망상과 환각 등 와해된 정신증적 사고를 측정한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">행동적 외현화 척도(BXD)는 충동 조절 실패와 물질 남용 및 행동화를 잰다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#24</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">심리검사</span>
+          
+        </div>
+        <h2 class="card-title">로샤 종합체계 경험균형(외향형) 및 D점수 스트레스 과부하</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">인간운동반응(M)</span>보다 <span class="kw">유색반응(WSumC)</span>이 높으므로 대처 유형은 <span class="kw">외향형</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">외부의 정서적 자극에 민감하게 반응하고 행동 중심의 문제해결을 우선 시도한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">D점수가 음수인 상태는 내적 가용 자원보다 스트레스가 큰 과부하 상태이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">충동적 행동화와 통제력 상실을 방지하기 위해 스트레스를 줄이고 지지를 준다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#25</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">심리검사</span>
+          
+        </div>
+        <h2 class="card-title">웩슬러 지능검사 일반능력지수(GAI)·인지효능지수(CPI) 및 TCI 검사</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">불안과 주의력 저하로 작업기억과 처리속도가 낮아지면 <span class="kw">일반능력지수(GAI)</span>를 본다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">TCI에서 자극추구가 높고 위험회피가 낮으면 강한 호기심과 충동성을 보인다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">성숙도와 사회적 적응을 결정하는 핵심 성격 척도는 <span class="kw">자율성과 연대감</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">자기 행동을 책임지는 자율성과 타인을 수용하는 연대감을 함께 길러준다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#26</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">가족치료</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">보웬 다세대 가족치료 삼각관계·탈삼각화 및 자기분화</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">부부 사이의 갈등에 자녀를 끌어들이는 가족 역동의 명칭은 <span class="kw">삼각관계</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">자녀는 부모 사이의 불안을 흡수하여 복통이라는 <span class="kw">신체화 증상</span>을 나타낸다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">상담자는 부모 어느 한쪽에도 치우치지 않고 객관적 <span class="kw">정서적 중립성</span>을 지킨다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">자녀를 부모의 갈등에서 분리하여 자율성을 주는 개입 기법은 <span class="kw">탈삼각화</span>이다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#27</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">가족치료</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">미누친 구조적 가족치료 밀착·유리 경계선 및 실연화(Enactment)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">어머니-아들은 산만한 경계선(밀착), 아버지는 경직된 경계선(유리)이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">상담실에서 실제 가족의 갈등 행동을 재연하게 하는 기법은 실연화이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">설명으로 듣는 대신 상호작용 패턴을 현장에서 있는 그대로 직접 관찰한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">역기능적 의사소통 구조를 교정하고 세대 간 <span class="kw">명확한 경계선</span>을 재형성한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#28</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">가족치료</span>
+          
+        </div>
+        <h2 class="card-title">사티어 경험적 가족치료 역기능적 의사소통과 일치형 및 가족조각</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">자기를 무시하고 타인에게만 맞추는 회유형과 논리만 따지는 초이성형을 본다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">가족 간 정서적 거리와 역동을 신체 자세와 공간 배치로 표현하는 가족조각이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">언어적 방어를 우회하여 가족 내 숨겨진 역동과 억압된 감정을 생생히 직면한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">자기와 타인 및 상황을 모두 존중하는 성숙한 <span class="kw">일치형 의사소통</span>으로 변화시킨다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#29</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">가족치료</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">헤일리 전략적 가족치료 역설적 지시와 밀란 모델 순환적 질문</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">문제 행동을 오히려 의도적으로 수행하게 처방하는 기법은 <span class="kw">역설적 지시</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">가족의 저항을 무너뜨리고 증상이 스스로 통제 가능함을 깨닫게 하여 변화시킨다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">문제 행동이 가족의 화합을 지키려는 선한 의도라고 재명명하여 비난을 줄인다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">가족 구성원 간 관계의 차이와 상호작용 고리를 스스로 깨닫는 <span class="kw">순환적 질문</span>을 쓴다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#30</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">빅터 프랑클 의미치료 탈숙고(Dereflection) 및 역설적 의도</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">증상에 대한 주의를 외부 가치로 돌리는 기법은 <span class="kw">탈숙고(Dereflection)</span>다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">지나친 반성으로 생기는 불안 악순환을 차단하여 자발성을 되찾게 한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">두려워하는 증상을 스스로 의도하여 증상을 통제하는 기법은 <span class="kw">역설적 의도</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">회피하려던 증상을 직면하게 함으로써 증상이 스스로 통제됨을 깨닫게 한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#31</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">아론 벡 인지치료 인지적 오류(이분법·재앙화) 및 하향 화살표 기법</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">㉠은 <span class="kw">이분법적 사고</span>이며, ㉡은 파국적 결과를 예상하는 <span class="kw">재앙화</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">핵심 신념을 체계적으로 탐색하기 위해 사용한 기법은 <span class="kw">하향 화살표 기법</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">자동적 사고의 기저에 깔려 있는 <span class="kw">역기능적 신념</span>을 단계별로 파헤쳐 확인한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">만약 그 생각이 사실이라면 그것이 무엇을 의미하는지 질문하여 밝혀낸다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#32</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">엘리스 합리적 정서행동치료(REBT) 3대 논박 및 수치심 공격 연습</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">REBT에서 비합리적 신념을 뒷받침하는 객관적 사실 증거를 묻는 <span class="kw">실증적 논박</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">신념을 고수하는 것이 실제 삶에 어떤 도움이 되는지 묻는 <span class="kw">실용적 논박</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">전제와 결론 사이의 비논리적 비약과 모순을 지적하는 <span class="kw">논리적 논박</span>을 한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">타인의 시선에 대한 파국적 두려움을 깨뜨리는 수치심 공격 연습을 실천한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#33</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">수용전념치료(ACT) 인지적 탈융합 및 기꺼이 경험하기와 전념 행동</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">ACT에서 내담자가 생각과 자신을 동일시하는 <span class="kw">인지적 융합</span>에서 벗어나게 돕는다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">생각은 단지 지나가는 언어적 사건일 뿐임을 깨닫는 <span class="kw">인지적 탈융합</span>을 쓴다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">불안과 고통을 회피하지 않고 있는 그대로 품는 <span class="kw">기꺼이 경험하기</span>를 실천한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">자신이 소중히 여기는 가치를 명료화하고 구체적인 전념 행동을 이행한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#34</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">펄스 게슈탈트 상담 접촉경계혼란 반전(Retroflection) 및 빈의자 기법</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">원래 타인에게 하고 싶었던 행동을 자신에게 돌리는 접촉경계혼란은 <span class="kw">반전</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">내면의 양극성을 대화시켜 해소하는 게슈탈트 상담 기법은 <span class="kw">빈의자 기법</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">자신을 자책하는 승리자와 억압된 패배자가 서로 솔직하게 대면하게 한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">소외되었던 부정적 감정을 수용하고 온전한 <span class="kw">자기 통합</span>을 이루도록 돕는다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#35</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">글래서 현실치료 전행동(Total Behavior) 및 WDEP 자기평가 단계</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">내담자의 <span class="kw">좋은 세계</span>에 담긴 구체적인 바람과 욕구를 탐색하도록 돕는다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">자신의 바람을 채우기 위해 현재 무엇을 하고 있는지 <span class="kw">전행동</span>을 탐색한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">현실치료 WDEP 중 현재 행동이 바람 달성에 도움이 되는지 스스로 자기평가한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">자신이 직접 통제할 수 있는 구체적이고 실현 가능한 <span class="kw">실천 계획</span>을 세운다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#36</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">해결중심 단기상담(SFBT) 4대 질문 기법 (기적·예외·척도·대처질문)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">SFBT에서 문제가 해결된 미래의 구체적 모습을 상상하는 <span class="kw">기적질문</span>을 사용한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">문제가 일어나지 않았던 성공 경험과 자원을 찾아내는 <span class="kw">예외질문</span>을 던진다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">변화에 대한 확신과 현재 상태를 수치로 계량화하는 척도질문을 활용한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">극심한 절망 속에서도 지금까지 어떻게 버텨왔는지 묻는 대처질문을 한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#37</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">설리반 대인관계 이론 3대 자아상(좋은-나·나쁜-나·나-아닌-나) 및 병렬적 왜곡</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">양육자의 칭찬과 수용 속에서 불안이 없는 긍정적인 <span class="kw">좋은-나</span> 자아상을 만든다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">양육자의 비난과 거부로 인한 불안을 경험하며 <span class="kw">나쁜-나</span> 자아상을 갖는다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">극심한 공포와 불안으로 인해 의식에서 해리되는 <span class="kw">나-아닌-나(Not-me)</span>가 된다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">과거의 대인관계 경험을 현재 상대에게 투사하는 <span class="kw">병렬적 왜곡</span>을 교정한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#38</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">머레이 욕구-압착 이론 알파 압착 vs 베타 압착 및 주제통각검사(TAT)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">내담자의 내부에서 일어나는 심리적 욕구와 환경의 압착을 함께 분석한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">객관적으로 실재하는 물리적 현실 환경을 나타내는 알파 압착을 살핀다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">내담자가 주관적으로 지각하여 실제 행동을 지배하는 베타 압착을 교정한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt"><span class="kw">주제통각검사(TAT)</span>를 활용하여 무의식적 욕구와 환경의 상호작용을 파악해 본다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#39</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">융 분석심리학 페르소나 동일시 부작용과 그림자 통합(개성화)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">사회적 역할에 적응하기 위해 외부로 드러내는 가면인 <span class="kw">페르소나</span>를 쓴다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">역할과 자신을 동일시하여 참된 자기를 잃어버리는 부작용을 늘 경계한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">자신이 인정하기 싫어 억압한 무의식의 어두운 측면인 그림자를 자각한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">어두운 그림자를 타인에게 투사하지 않고 온전히 수용하여 <span class="kw">개성화</span>를 이룬다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#40</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          
+        </div>
+        <h2 class="card-title">교류분석(TA) 해리스 4대 생활자세 및 이고그램 어른 자아(A)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">교류분석(TA)</span>에서 타인을 탓하고 책임을 전가하는 <span class="kw">자기긍정-타인부정</span> 자세를 본다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">무력감에 빠져 의존적인 태도를 취하는 자기부정-타인긍정 자세를 극복한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">상호 존중과 신뢰를 바탕으로 한 <span class="kw">자기긍정-타인긍정</span> 자세로 변화시킨다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">상황을 객관적으로 분석하는 <span class="kw">어른 자아(A)</span>를 활성화하여 내적 균형을 회복한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#41</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">랜드레스 아동중심 놀이치료 과정 인정(격려) 및 ACT 제한설정 3단계</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">아동이 놀이실에서 행하는 구체적인 행동을 판단 없이 말로 추적해 준다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">결과를 평가하는 칭찬 대신 노력과 과정을 인정하여 자아존중감을 키운다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">아동의 분노와 파괴 욕구를 먼저 충분히 수용하고 깊이 공감하며 인정한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt"><span class="kw">ACT 제한설정 3단계</span>에 따라 한계를 명확히 알리고 안전한 대안을 제시한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#42</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">진로·다문화·위기</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">갓프레드슨 제한-타협 이론 4단계 및 수퍼 확립기 3단계(수정-안정-발전)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">제한 2단계인 성역할 지향에 따라 성별에 맞지 않는 직업을 가장 먼저 배제한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">제한 3단계인 사회적 가치 지향에 따라 지위와 능력으로 수용 범위를 좁힌다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">타협이 불가피할 때 흥미를 가장 먼저 포기하고 성역할을 끝까지 지킨다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">수퍼의 <span class="kw">확립기 3단계</span>는 적합성을 검토하는 수정기와 안정기 및 발전기로 간다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#43</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">진로·다문화·위기</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">홀랜드 육각형 모델 5대 개념(변별도·계측성) 및 사비카스 CSI·진로적응도 4C</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">내담자의 성격 유형과 작업 환경이 서로 얼마나 부합하는지 일치성을 본다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">특정 흥미 유형의 점수가 뚜렷하게 구별되는 정도인 변별도(분화도)를 확인한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">사비카스 <span class="kw">생애 직업 스타일 면담(CSI)</span>을 통해 파악하려는 핵심은 생애 주제이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt"><span class="kw">진로적응도(4C)</span>를 구성하는 <span class="kw">4대 차원</span>은 관심과 통제 및 호기심과 자신감이다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#44</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">진로·다문화·위기</span>
+          
+        </div>
+        <h2 class="card-title">수(Sue) 다문화 미세공격 3유형(미세무효화), 버나드 수퍼비전, 조하리의 창</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">소수 집단에게 무의식적으로 모욕감을 주는 <span class="kw">미세모욕</span>의 위험성을 자각한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">내담자의 차별 경험과 현실을 부인하고 축소하는 <span class="kw">미세무효화</span>를 배제한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">수퍼비지와 동등한 동료 입장에서 대안을 함께 찾는 <span class="kw">자문가 역할</span>을 한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt"><span class="kw">조하리의 창 4영역</span> 중 진솔한 자기개방으로 은폐 영역을 줄이고 신뢰를 쌓는다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#45</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">진로·다문화·위기</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">숀 셰이 CASE 모델 자살사정, 길리랜드 위기 6단계(안전계획서), 학폭법 제16·17조</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">구체적 자살 사고를 평가하는 <span class="kw">숀 셰이 (Shawn Shea) CASE 모델</span>의 최종 단계는 <span class="kw">즉각 사건</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">지금 여기 상담실 안에서 자살 충동을 느끼는지 직접 구체적으로 묻는다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">길리랜드 위기개입 제6단계인 참여 유도 단계에서 안전계획서를 함께 작성한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">학폭 가해학생 출석정지는 제6호 조치이며 보복행위 시 처분을 가중 조치한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#46</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          
+        </div>
+        <h2 class="card-title">주요우울장애 vs 지속성 우울장애(기분부전장애) &amp; 양극성 I·II형 장애 감별</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">지속성 우울장애</span>는 아동 및 청소년 기준 1년 이상 만성적인 우울 기분이 이어진다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">주요우울장애</span>는 최소 2주 이상 우울 기분과 흥미 상실 및 자살 사고가 온다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">과거에 4일 이상 지속된 <span class="kw">경조증 삽화</span>가 있었다면 <span class="kw">양극성 II형 장애</span>로 감별한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">완전한 조증 삽화를 한 번이라도 경험했다면 양극성 I형 장애로 공식 진단한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#47</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">신경성 식욕부진증 vs 신경성 폭식증 감별 진단 및 인지행동치료</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">신경성 식욕부진증</span>은 에너지 섭취 제한으로 연령 및 신장 대비 <span class="kw">현저한 저체중</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">신경성 폭식증</span>은 반복적인 폭식 일화 후 구토나 하제 남용 등 보상 행동을 보인다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">두 장애를 가르는 가장 결정적인 감별 기준은 <span class="kw">현저한 저체중</span>의 동반 여부이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">체중과 체형에 대한 왜곡된 인지 도식을 교정하고 규칙적인 식사 습관을 세운다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#48</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">DSM-5-TR 감별진단</span>
+          
+        </div>
+        <h2 class="card-title">분리불안장애 vs 선택적 함구증 감별 진단 및 학교 복귀 개입</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt"><span class="kw">분리불안장애</span>는 주요 <span class="kw">애착 대상</span>과 떨어지는 것에 대해 발달 수준을 넘는 공포다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">선택적 함구증</span>은 집에서는 잘 말하나 학교 등 특정 상황에서 일관되게 말을 못한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">분리불안은 아동·청소년 기준 최소 4주 이상이며 <span class="kw">선택적 함구증</span>은 1개월 이상이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">강압적 대면 대신 <span class="kw">단계적 노출</span>과 부모·교사 협력으로 학교 적응을 돕는다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#49</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">심리검사</span>
+          
+        </div>
+        <h2 class="card-title">MMPI-2-RF 타당도 척도(VRIN-r·TRIN-r·F-r·L-r·K-r) 및 HTP 해석</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">VRIN-r과 TRIN-r 상승은 문항을 읽지 않은 비일관적 응답 태도를 뜻한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">비전형 반응(F-r)</span> 척도 상승은 심각한 심리적 고통이나 증상 과장을 시사한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt"><span class="kw">언어적 부인(L-r)</span>과 <span class="kw">자기방어(K-r)</span> 상승은 문제를 축소하는 방어 태도다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">타당도 척도로 수검 태도를 먼저 검증한 뒤에 임상 척도와 HTP 결과를 통합한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#50</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">심리검사</span>
+          
+        </div>
+        <h2 class="card-title">로샤(Rorschach) 정서 지표(FC:CF+C·Pure C·Afr) 및 특수지표(DEPI·CDI)</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">FC보다 CF+C가 크고 Pure C가 나오면 충동적인 정서 표현을 뜻한다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt"><span class="kw">정서비율(Afr)</span>이 0.44 미만으로 낮으면 정서적 자극을 의도적으로 회피한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt"><span class="kw">우울지표(DEPI)</span> 양성은 심각한 우울감과 정서적 위축 및 부정적 자기지각이다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">대처결함지표(CDI) 양성은 대인관계 기술과 대처 자원의 전반적 결핍이다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#51</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">얄롬(Yalom) 집단상담 11대 치료적 요인 &amp; 집단 저항(독점자·중도탈락) 개입</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">나만 힘든 게 아니라 타인도 같은 고통을 겪는다는 깨달음은 <span class="kw">보편성</span> 요인이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">집단 내 소속감과 신뢰를 형성하여 변화의 토대가 되는 핵심은 <span class="kw">집단 응집력</span>이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">독점자나 저항 집단원에게는 비난 대신 지금-여기 대인관계 영향을 피드백한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">중도 탈락을 막기 위해 사전 오리엔테이션으로 규범을 세우고 갈등을 탐색한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#52</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">진로·다문화·위기</span>
+          
+        </div>
+        <h2 class="card-title">상담윤리(이중관계·사전동의) 및 키치너(Kitchener) 윤리적 의사결정 5원칙</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">상담 시작 전 비밀보장과 한계 및 절차를 설명해 동의를 얻는 것은 <span class="kw">사전동의</span>다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">상담자의 객관성을 흐리고 착취 위험을 높이는 다중(이중)관계는 엄격히 피한다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">키치너 윤리 원칙은 자율성, 무해성, 선행, 정의, 충실성의 5가지로 구성된다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">윤리적 딜레마가 발생하면 해를 입히지 않는 무해성 원칙을 최우선으로 고려한다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#53</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">로저스(Rogers) 인간중심상담 3대 핵심 조건 &amp; 경험에 대한 개방성</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">상담자가 가면을 쓰지 않고 내면과 겉표현이 일치하는 태도는 진실성(일치성)이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">내담자의 행동이나 가치와 무관하게 한 인간으로 깊이 수용함이 무조건적 존중이다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">내담자의 내적 참조체계 속으로 들어가 마치 내 일처럼 느끼는 것이 <span class="kw">공감적 이해</span>다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">가치의 조건을 내려놓고 유기체적 경험을 수용해 <span class="kw">충분히 기능하는 사람</span>이 된다.</span></div>
+      </div>
+    </article>
+    <article class="card csl trap" data-part="COUNSEL45" data-trap="1">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#54</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">상담이론</span>
+          <span class="trap-badge">🚨 오답주의</span>
+        </div>
+        <h2 class="card-title">정신분석 방어기제(투사·반동형성·합리화·승화) &amp; 코헛 자기심리학</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">용납 못 할 충동을 남 탓으로 돌리면 투사며 정반대 행동은 반동형성이다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">그럴듯한 핑계로 자존심을 지키는 것은 합리화며 사회적 가치로 돌리는 것이 승화다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">코헛의 자기심리학은 내담자의 건강한 자기를 비추어주는 자기대상 역할을 강조한다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">공감적 반영을 원하는 거울 전이와 완벽한 힘에 의지하는 이상화 전이가 온다.</span></div>
+      </div>
+    </article>
+    <article class="card csl " data-part="COUNSEL45" data-trap="0">
+      <div class="card-head">
+        <div class="card-title-wrap">
+          <span class="num-badge">#55</span>
+          <span class="part-badge csl">전공 4줄</span>
+          <span class="dom-badge">진로·다문화·위기</span>
+          
+        </div>
+        <h2 class="card-title">크롬볼츠(Krumboltz) 계획된 우연 이론 &amp; 마샤(Marcia) 자아정체감 4유형</h2>
+      </div>
+      <div class="card-lines">
+        <div class="ans-line"><span class="ln-no">1</span><span class="ln-txt">크롬볼츠의 <span class="kw">계획된 우연 이론</span>은 예기치 않은 우연한 사건을 진로 기회로 바꾼다.</span></div>
+<div class="ans-line"><span class="ln-no">2</span><span class="ln-txt">이를 위해 호기심과 인내심 및 융통성과 낙관성과 위험감수의 5대 기술을 기른다.</span></div>
+<div class="ans-line"><span class="ln-no">3</span><span class="ln-txt">마샤 이론에서 탐색 위기는 겪고 있으나 아직 결정을 미룬 상태는 <span class="kw">정체감 유예</span>다.</span></div>
+<div class="ans-line"><span class="ln-no">4</span><span class="ln-txt">깊은 탐색 없이 부모의 기대를 그대로 수용해 결정한 상태는 <span class="kw">정체감 유실</span>이다.</span></div>
+      </div>
+    </article>
+</main>
+
+<script>
+function filterCards(mode, btn) {
+  document.querySelectorAll('.toolbar .btn-group:first-child .btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.card').forEach(c => {
+    let show = true;
+    if (mode === 'PED10') show = c.dataset.part === 'PED10';
+    else if (mode === 'COUNSEL45') show = c.dataset.part === 'COUNSEL45';
+    else if (mode === 'TRAP') show = c.dataset.trap === '1';
+    c.style.display = show ? 'block' : 'none';
+  });
+}
+function toggleKw() {
+  const on = document.body.classList.toggle('hide-kw');
+  document.querySelectorAll('.kw.revealed').forEach(k => k.classList.remove('revealed'));
+  document.getElementById('btn-kw').textContent = on ? '👀 키워드 모두 보기' : '🙈 키워드 가리기';
+}
+document.addEventListener('click', e => {
+  if (document.body.classList.contains('hide-kw') && e.target.classList.contains('kw')) {
+    e.target.classList.toggle('revealed');
+  }
+});
+</script>
+</body>
+</html>
